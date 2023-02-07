@@ -103,3 +103,89 @@ var GreetingService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "greeting.proto",
 }
+
+// GreetingServiceAClient is the client API for GreetingServiceA service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type GreetingServiceAClient interface {
+	Greeting(ctx context.Context, in *GreetingRequest, opts ...grpc.CallOption) (*GreetingResponse, error)
+}
+
+type greetingServiceAClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewGreetingServiceAClient(cc grpc.ClientConnInterface) GreetingServiceAClient {
+	return &greetingServiceAClient{cc}
+}
+
+func (c *greetingServiceAClient) Greeting(ctx context.Context, in *GreetingRequest, opts ...grpc.CallOption) (*GreetingResponse, error) {
+	out := new(GreetingResponse)
+	err := c.cc.Invoke(ctx, "/greeting.v3.GreetingServiceA/Greeting", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// GreetingServiceAServer is the server API for GreetingServiceA service.
+// All implementations must embed UnimplementedGreetingServiceAServer
+// for forward compatibility
+type GreetingServiceAServer interface {
+	Greeting(context.Context, *GreetingRequest) (*GreetingResponse, error)
+	mustEmbedUnimplementedGreetingServiceAServer()
+}
+
+// UnimplementedGreetingServiceAServer must be embedded to have forward compatible implementations.
+type UnimplementedGreetingServiceAServer struct {
+}
+
+func (UnimplementedGreetingServiceAServer) Greeting(context.Context, *GreetingRequest) (*GreetingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Greeting not implemented")
+}
+func (UnimplementedGreetingServiceAServer) mustEmbedUnimplementedGreetingServiceAServer() {}
+
+// UnsafeGreetingServiceAServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to GreetingServiceAServer will
+// result in compilation errors.
+type UnsafeGreetingServiceAServer interface {
+	mustEmbedUnimplementedGreetingServiceAServer()
+}
+
+func RegisterGreetingServiceAServer(s grpc.ServiceRegistrar, srv GreetingServiceAServer) {
+	s.RegisterService(&GreetingServiceA_ServiceDesc, srv)
+}
+
+func _GreetingServiceA_Greeting_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GreetingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GreetingServiceAServer).Greeting(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/greeting.v3.GreetingServiceA/Greeting",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GreetingServiceAServer).Greeting(ctx, req.(*GreetingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// GreetingServiceA_ServiceDesc is the grpc.ServiceDesc for GreetingServiceA service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var GreetingServiceA_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "greeting.v3.GreetingServiceA",
+	HandlerType: (*GreetingServiceAServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Greeting",
+			Handler:    _GreetingServiceA_Greeting_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "greeting.proto",
+}

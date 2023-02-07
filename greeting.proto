@@ -28,3 +28,11 @@ service GreetingService {
     };
   }
 }
+
+service GreetingServiceA {
+  rpc Greeting (GreetingRequest) returns (GreetingResponse) {
+    option (google.api.http) = {
+      get: "/api/greeting"
+    };
+  }
+}
