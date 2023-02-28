@@ -3,15 +3,11 @@ package main
 import (
 	"fmt"
 	"os"
-	"sync"
 	"time"
 
-	"github.com/tgiannoukos/charon"
-	"google.golang.org/grpc"
-
+	"github.com/Jiali-Xing/ghz/printer"
+	"github.com/Jiali-Xing/ghz/runner"
 	pb "github.com/Jiali-Xing/protobuf"
-	"github.com/bojand/ghz/printer"
-	"github.com/bojand/ghz/runner"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
@@ -49,8 +45,8 @@ func getEnv(key, fallback string) string {
 }
 
 func main() {
-	md := make(map[string]string)
-	md["tokens"] = "100"
+	// md := make(map[string]string)
+	// md["tokens"] = "100"
 
 	requestGreeting := pb.Greeting{
 		Id:       uuid.New().String(),
@@ -60,26 +56,26 @@ func main() {
 		Hostname: getHostname(),
 	}
 
-	const initialPrice = 0
-	priceTable := charon.NewPriceTable(
-		initialPrice,
-		sync.Map{},
-	)
+	// const initialPrice = 0
+	// priceTable := charon.NewPriceTable(
+	// 	initialPrice,
+	// 	sync.Map{},
+	// )
 
-	var opts []grpc.DialOption
-	opts = append(opts,
-		grpc.WithUnaryInterceptor(priceTable.UnaryInterceptorEnduser),
-	)
+	// var opts []grpc.DialOption
+	// opts = append(opts,
+	// 	grpc.WithUnaryInterceptor(priceTable.UnaryInterceptorEnduser),
+	// )
 
 	report, err := runner.Run(
 		"greeting.v3.GreetingService/Greeting",
 		URLServiceA,
 		runner.WithProtoFile("../greeting.proto", []string{}),
 		runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
-		runner.WithMetadata(md),
+		// runner.WithMetadata(md),
 		runner.WithInsecure(true),
-		runner.WithTotalRequests(1000),
-		runner.WithDefaultCallOptions(opts),
+		runner.WithTotalRequests(1),
+		// runner.WithDefaultCallOptions(opts),
 	)
 
 	if err != nil {
