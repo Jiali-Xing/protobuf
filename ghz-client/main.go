@@ -74,7 +74,7 @@ func main() {
 		runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
 		// runner.WithMetadata(md),
 		runner.WithInsecure(true),
-		runner.WithTotalRequests(1),
+		runner.WithTotalRequests(100000),
 		// runner.WithDefaultCallOptions(opts),
 	)
 
@@ -88,5 +88,5 @@ func main() {
 		Report: report,
 	}
 
-	printer.Print("pretty")
+	printer.Print("summary")
 }
