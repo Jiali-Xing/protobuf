@@ -10,6 +10,8 @@ import (
 	pb "github.com/Jiali-Xing/protobuf"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
+	// printer_wo_charon "github.com/bojand/ghz/printer"
+	// runner_wo_charon "github.com/bojand/ghz/runner"
 )
 
 // ghz --insecure -O html -o test.html \
@@ -27,6 +29,7 @@ var (
 	message     = getEnv("GREETING", "Hello, from Client!")
 	URLServiceA = getEnv("SERVICE_A_URL", "localhost:50051")
 	log         = logrus.New()
+	intercept   = false
 )
 
 func getHostname() string {
@@ -56,17 +59,6 @@ func main() {
 		Hostname: getHostname(),
 	}
 
-	// const initialPrice = 0
-	// priceTable := charon.NewPriceTable(
-	// 	initialPrice,
-	// 	sync.Map{},
-	// )
-
-	// var opts []grpc.DialOption
-	// opts = append(opts,
-	// 	grpc.WithUnaryInterceptor(priceTable.UnaryInterceptorEnduser),
-	// )
-
 	report, err := runner.Run(
 		"greeting.v3.GreetingService/Greeting",
 		URLServiceA,
@@ -74,8 +66,8 @@ func main() {
 		runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
 		// runner.WithMetadata(md),
 		runner.WithInsecure(true),
-		runner.WithTotalRequests(100000),
-		// runner.WithDefaultCallOptions(opts),
+		runner.WithTotalRequests(1),
+		runner.WithCharon(false),
 	)
 
 	if err != nil {

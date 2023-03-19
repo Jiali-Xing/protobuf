@@ -3,8 +3,7 @@ module github.com/Jiali-Xing/protobuf
 go 1.20
 
 require (
-	github.com/Jiali-Xing/ghz v0.0.0-20230228003004-32966486f5c3
-	github.com/bojand/ghz v0.114.0
+	github.com/Jiali-Xing/ghz v0.0.0-20230319030317-8a9233252a35
 	github.com/google/uuid v1.3.0
 	github.com/sirupsen/logrus v1.9.0
 	google.golang.org/api v0.110.0
