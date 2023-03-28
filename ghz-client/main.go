@@ -66,7 +66,13 @@ func main() {
 		runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
 		// runner.WithMetadata(md),
 		runner.WithInsecure(true),
-		runner.WithTotalRequests(1),
+		runner.WithTotalRequests(50000),
+		// runner.WithRPS(2000),
+		runner.WithLoadStart(1000),
+		runner.WithLoadEnd(3000),
+		runner.WithLoadStep(200),
+		runner.WithLoadStepDuration(2),
+		runner.WithLoadStart(1000),
 		runner.WithCharon(false),
 	)
 
