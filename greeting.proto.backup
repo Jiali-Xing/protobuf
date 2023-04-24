@@ -1,0 +1,31 @@
+syntax = "proto3";
+package greeting.v3;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/Jiali-Xing/protobuf";
+
+message Greeting {
+  string id = 1;
+  string service = 2;
+  string message = 3;
+  string created = 4;
+  string hostname = 5;
+}
+
+message GreetingRequest {
+  Greeting greeting = 1;
+}
+
+message GreetingResponse {
+  repeated Greeting greeting = 1;
+}
+
+service GreetingService {
+  rpc Greeting (GreetingRequest) returns (GreetingResponse) {
+    option (google.api.http) = {
+      get: "/api/greeting"
+    };
+  }
+}
+

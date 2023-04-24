@@ -21,13 +21,6 @@ message GreetingResponse {
   repeated Greeting greeting = 1;
 }
 
-service GreetingService {
-  rpc Greeting (GreetingRequest) returns (GreetingResponse) {
-    option (google.api.http) = {
-      get: "/api/greeting"
-    };
-  }
-}
 
 service GreetingServiceA {
   rpc Greeting (GreetingRequest) returns (GreetingResponse) {
@@ -36,3 +29,60 @@ service GreetingServiceA {
     };
   }
 }
+
+service GreetingServiceB {
+  rpc Greeting (GreetingRequest) returns (GreetingResponse) {
+    option (google.api.http) = {
+      get: "/api/greeting"
+    };
+  }
+}
+
+service GreetingServiceC {
+  rpc Greeting (GreetingRequest) returns (GreetingResponse) {
+    option (google.api.http) = {
+      get: "/api/greeting"
+    };
+  }
+}
+
+service GreetingServiceD {
+  rpc Greeting (GreetingRequest) returns (GreetingResponse) {
+    option (google.api.http) = {
+      get: "/api/greeting"
+    };
+  }
+}
+
+service GreetingServiceE {
+  rpc Greeting (GreetingRequest) returns (GreetingResponse) {
+    option (google.api.http) = {
+      get: "/api/greeting"
+    };
+  }
+}
+
+service GreetingServiceF {
+  rpc Greeting (GreetingRequest) returns (GreetingResponse) {
+    option (google.api.http) = {
+      get: "/api/greeting"
+    };
+  }
+}
+
+service GreetingServiceG {
+  rpc Greeting (GreetingRequest) returns (GreetingResponse) {
+    option (google.api.http) = {
+      get: "/api/greeting"
+    };
+  }
+}
+
+service GreetingServiceH {
+  rpc Greeting (GreetingRequest) returns (GreetingResponse) {
+    option (google.api.http) = {
+      get: "/api/greeting"
+    };
+  }
+}
+
