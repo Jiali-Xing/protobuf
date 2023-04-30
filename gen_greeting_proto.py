@@ -39,6 +39,10 @@ service {service_name} {{
 # Define the service names and paths
 services = [
     {
+        "name": "GreetingService",
+        "path": "greeting"
+    },
+    {
         "name": "GreetingServiceA",
         "path": "greeting"
     },

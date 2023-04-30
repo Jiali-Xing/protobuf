@@ -22,6 +22,14 @@ message GreetingResponse {
 }
 
 
+service GreetingService {
+  rpc Greeting (GreetingRequest) returns (GreetingResponse) {
+    option (google.api.http) = {
+      get: "/api/greeting"
+    };
+  }
+}
+
 service GreetingServiceA {
   rpc Greeting (GreetingRequest) returns (GreetingResponse) {
     option (google.api.http) = {
