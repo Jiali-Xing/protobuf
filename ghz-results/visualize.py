@@ -1,11 +1,15 @@
 from cProfile import label
-import json
+import json, sys
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-# read in the JSON file
-with open('data.json', 'r') as f:
+
+# Get the filename from the command-line arguments
+filename = sys.argv[1]
+
+# Read in the JSON file
+with open(filename, 'r') as f:
     data = json.load(f)
 
 # convert JSON to pandas DataFrame
@@ -66,7 +70,7 @@ ax1.set_ylabel('Latency (ms)', color=color)
 # ax1.plot(df.index, df['latency'], color=color)
 ax1.tick_params(axis='y', labelcolor=color)
 ax1.plot(df.index, df['latency_ma'], color='orange', linestyle='--', label='Latency, Moving Average')
-ax1.legend(loc='upper left')
+ax1.legend()
 
 # Throughput plot
 ax2 = ax1.twinx()
@@ -76,7 +80,6 @@ ax2.plot(df.index, df['throughput'], color=color, label='Throughput')
 ax2.tick_params(axis='y', labelcolor=color)
 ax2.grid(False)
 ax2.legend(['Throughput'])
-ax1.legend(loc='upper right')
 
 plt.savefig('timeseries.png')
 
