@@ -24,12 +24,12 @@ import (
 //   0.0.0.0:50051
 
 var (
-	logLevel    = getEnv("LOG_LEVEL", "info")
-	serviceName = getEnv("SERVICE_NAME", "Client")
-	message     = getEnv("GREETING", "Hello, from Client!")
-	URLServiceA = getEnv("SERVICE_A_URL", "localhost:50051")
-	log         = logrus.New()
-	intercept   = false
+	logLevel     = getEnv("LOG_LEVEL", "info")
+	serviceName  = getEnv("SERVICE_NAME", "Client")
+	message      = getEnv("GREETING", "Hello, from Client!")
+	URLServiceA  = getEnv("SERVICE_A_URL", "localhost:50051")
+	log          = logrus.New()
+	enableCharon = false
 )
 
 func getHostname() string {
@@ -65,15 +65,16 @@ func main() {
 		runner.WithProtoFile("../greeting.proto", []string{}),
 		runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
 		// runner.WithMetadata(md),
+		runner.WithConcurrency(100),
 		runner.WithInsecure(true),
-		runner.WithTotalRequests(50000),
+		runner.WithTotalRequests(5000),
 		// runner.WithRPS(2000),
 		runner.WithLoadStart(1000),
 		runner.WithLoadEnd(3000),
 		runner.WithLoadStep(200),
-		runner.WithLoadStepDuration(2),
+		runner.WithLoadStepDuration(1),
 		runner.WithLoadStart(1000),
-		runner.WithCharon(false),
+		runner.WithCharon(enableCharon),
 	)
 
 	if err != nil {
@@ -81,10 +82,24 @@ func main() {
 		os.Exit(1)
 	}
 
-	printer := printer.ReportPrinter{
+	toStd := printer.ReportPrinter{
 		Out:    os.Stdout,
 		Report: report,
 	}
 
-	printer.Print("summary")
+	toStd.Print("summary")
+
+	file, err := os.Create("baseline_stepup.json")
+	if err != nil {
+		fmt.Println("Error creating file:", err)
+		return
+	}
+	defer file.Close()
+
+	toFile := printer.ReportPrinter{
+		Out:    file,
+		Report: report,
+	}
+
+	toFile.Print("pretty")
 }
