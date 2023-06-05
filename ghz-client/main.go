@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/Jiali-Xing/ghz/printer"
@@ -29,7 +30,7 @@ var (
 	message      = getEnv("GREETING", "Hello, from Client!")
 	URLServiceA  = getEnv("SERVICE_A_URL", "localhost:50051")
 	log          = logrus.New()
-	enableCharon = false
+	enableCharon = true
 )
 
 func getHostname() string {
@@ -59,21 +60,31 @@ func main() {
 		Hostname: getHostname(),
 	}
 
+	// Get the concurrency number from the second input argument
+	concurrencyStr := os.Args[1]
+	concurrency, err := strconv.Atoi(concurrencyStr)
+	if err != nil {
+		fmt.Println("Invalid concurrency value:", concurrencyStr)
+		os.Exit(1)
+	}
+
 	report, err := runner.Run(
 		"greeting.v3.GreetingService/Greeting",
 		URLServiceA,
 		runner.WithProtoFile("../greeting.proto", []string{}),
 		runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
 		// runner.WithMetadata(md),
-		runner.WithConcurrency(100),
+		runner.WithConcurrency(uint(concurrency)),
 		runner.WithInsecure(true),
-		runner.WithTotalRequests(5000),
+		// runner.WithTotalRequests(50000),
 		// runner.WithRPS(2000),
-		runner.WithLoadStart(1000),
+		// runner.WithAsync(true),
+		runner.WithRunDuration(time.Second*20),
+		runner.WithLoadSchedule("step"),
+		runner.WithLoadStart(1600),
 		runner.WithLoadEnd(3000),
-		runner.WithLoadStep(200),
-		runner.WithLoadStepDuration(1),
-		runner.WithLoadStart(1000),
+		runner.WithLoadStep(100),
+		runner.WithLoadStepDuration(time.Second*1),
 		runner.WithCharon(enableCharon),
 	)
 
@@ -89,7 +100,15 @@ func main() {
 
 	toStd.Print("summary")
 
-	file, err := os.Create("baseline_stepup.json")
+	var filename string
+	if enableCharon {
+		filename = fmt.Sprintf("../ghz-results/charon_stepup_nclients_%d.json", concurrency)
+	} else {
+		filename = fmt.Sprintf("../ghz-results/baseline_stepup_nclients_%d.json", concurrency)
+	}
+
+	file, err := os.Create(filename)
+
 	if err != nil {
 		fmt.Println("Error creating file:", err)
 		return

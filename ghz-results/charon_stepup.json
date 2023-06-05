@@ -1,0 +1,664 @@
+{
+  "date": "2023-06-05T16:35:29-04:00",
+  "endReason": "cancel",
+  "options": {
+    "call": "greeting.v3.GreetingService/Greeting",
+    "host": "localhost:50051",
+    "proto": "../greeting.proto",
+    "import-paths": [
+      "..",
+      "."
+    ],
+    "insecure": true,
+    "load-schedule": "step",
+    "load-start": 1000,
+    "load-end": 3000,
+    "load-step": 100,
+    "load-step-duration": 1000000000,
+    "load-max-duration": 0,
+    "concurrency": 100,
+    "concurrency-schedule": "",
+    "concurrency-start": 0,
+    "concurrency-end": 0,
+    "concurrency-step": 0,
+    "concurrency-step-duration": 0,
+    "concurrency-max-duration": 0,
+    "total": 10000,
+    "connections": 1,
+    "timeout": 20000000000,
+    "dial-timeout": 10000000000,
+    "data": {
+      "greeting": {
+        "created": "2023-06-05 16:33:54.758877527 -0400 EDT",
+        "hostname": "ying-precision7760",
+        "id": "477beca6-565a-4a46-863c-c427a9460599",
+        "message": "Hello, from Client!",
+        "service": "Client"
+      }
+    },
+    "binary": false,
+    "CPUs": 16
+  },
+  "count": 86,
+  "total": 94930415745,
+  "average": 5241101,
+  "fastest": 3150923,
+  "slowest": 11033896,
+  "rps": 0.9059267182713211,
+  "errorDistribution": {
+    "rpc error: code = DeadlineExceeded desc = context deadline exceeded": 1,
+    "rpc error: code = ResourceExhausted desc = req dropped, try again later": 6,
+    "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp [::1]:50051: connect: connection refused\"": 5
+  },
+  "statusCodeDistribution": {
+    "DeadlineExceeded": 1,
+    "OK": 74,
+    "ResourceExhausted": 6,
+    "Unavailable": 5
+  },
+  "latencyDistribution": [
+    {
+      "percentage": 10,
+      "latency": 3643573
+    },
+    {
+      "percentage": 25,
+      "latency": 3940329
+    },
+    {
+      "percentage": 50,
+      "latency": 5293984
+    },
+    {
+      "percentage": 75,
+      "latency": 8090851
+    },
+    {
+      "percentage": 90,
+      "latency": 9394677
+    },
+    {
+      "percentage": 95,
+      "latency": 10245207
+    },
+    {
+      "percentage": 99,
+      "latency": 11033896
+    }
+  ],
+  "histogram": [
+    {
+      "mark": 0.003150923,
+      "count": 1,
+      "frequency": 0.013513513513513514
+    },
+    {
+      "mark": 0.0039392203,
+      "count": 17,
+      "frequency": 0.22972972972972974
+    },
+    {
+      "mark": 0.0047275176,
+      "count": 17,
+      "frequency": 0.22972972972972974
+    },
+    {
+      "mark": 0.0055158149,
+      "count": 2,
+      "frequency": 0.02702702702702703
+    },
+    {
+      "mark": 0.0063041122,
+      "count": 2,
+      "frequency": 0.02702702702702703
+    },
+    {
+      "mark": 0.0070924095,
+      "count": 10,
+      "frequency": 0.13513513513513514
+    },
+    {
+      "mark": 0.0078807068,
+      "count": 6,
+      "frequency": 0.08108108108108109
+    },
+    {
+      "mark": 0.008669004099999999,
+      "count": 8,
+      "frequency": 0.10810810810810811
+    },
+    {
+      "mark": 0.0094573014,
+      "count": 5,
+      "frequency": 0.06756756756756757
+    },
+    {
+      "mark": 0.0102455987,
+      "count": 3,
+      "frequency": 0.04054054054054054
+    },
+    {
+      "mark": 0.011033896,
+      "count": 3,
+      "frequency": 0.04054054054054054
+    }
+  ],
+  "details": [
+    {
+      "timestamp": "2023-06-05T16:33:54.764724064-04:00",
+      "latency": 233273,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:54.765095404-04:00",
+      "latency": 159146,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:54.766395833-04:00",
+      "latency": 109534,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:54.767746413-04:00",
+      "latency": 107865,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:54.769020802-04:00",
+      "latency": 148577,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:54.769085037-04:00",
+      "latency": 104725,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:54.77020133-04:00",
+      "latency": 7230398,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:54.78531914-04:00",
+      "latency": 3150923,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:54.805381052-04:00",
+      "latency": 3493168,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:54.834848465-04:00",
+      "latency": 3224946,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:54.877638727-04:00",
+      "latency": 5563017,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:54.927025564-04:00",
+      "latency": 5293984,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:54.976104825-04:00",
+      "latency": 4371809,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:55.035108648-04:00",
+      "latency": 3451138,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:55.106237898-04:00",
+      "latency": 3848512,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:55.176293835-04:00",
+      "latency": 3929218,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:55.255091209-04:00",
+      "latency": 3442448,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:55.345539577-04:00",
+      "latency": 3473511,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:55.436594752-04:00",
+      "latency": 4293894,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:55.536066742-04:00",
+      "latency": 3940330,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:55.650157466-04:00",
+      "latency": 8414990,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:55.770306923-04:00",
+      "latency": 8564901,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:55.890117718-04:00",
+      "latency": 8147031,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:56.021912342-04:00",
+      "latency": 9724366,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:56.158865236-04:00",
+      "latency": 6687789,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:56.30022276-04:00",
+      "latency": 8090851,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:56.450511106-04:00",
+      "latency": 8282056,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:56.61103268-04:00",
+      "latency": 8867927,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:56.770353646-04:00",
+      "latency": 8152505,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:56.93815915-04:00",
+      "latency": 6735454,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:57.119873595-04:00",
+      "latency": 7791290,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:57.310565786-04:00",
+      "latency": 8676641,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:57.501427774-04:00",
+      "latency": 9737084,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:57.700433704-04:00",
+      "latency": 8261039,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:57.911003543-04:00",
+      "latency": 8652121,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:58.121374661-04:00",
+      "latency": 9394677,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:58.341827358-04:00",
+      "latency": 10245207,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:58.569030368-04:00",
+      "latency": 7589940,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:58.802410511-04:00",
+      "latency": 10529009,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:59.041706644-04:00",
+      "latency": 9422903,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:59.289456285-04:00",
+      "latency": 6975623,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:59.545117079-04:00",
+      "latency": 3621966,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:33:59.812424352-04:00",
+      "latency": 10853966,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:00.080486249-04:00",
+      "latency": 8687686,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:00.358937116-04:00",
+      "latency": 6980956,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:00.643148365-04:00",
+      "latency": 11033896,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:00.926862537-04:00",
+      "latency": 4677343,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:01.225913675-04:00",
+      "latency": 4483610,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:01.529126523-04:00",
+      "latency": 6972058,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:01.835751415-04:00",
+      "latency": 4264937,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:02.156054331-04:00",
+      "latency": 4478575,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:02.488107587-04:00",
+      "latency": 6420158,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:02.819489314-04:00",
+      "latency": 7692312,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:03.159377466-04:00",
+      "latency": 7538380,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:03.508707885-04:00",
+      "latency": 7034280,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:03.856740493-04:00",
+      "latency": 4631451,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:04.216531594-04:00",
+      "latency": 4471619,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:04.586378999-04:00",
+      "latency": 4232907,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:04.955475473-04:00",
+      "latency": 3915224,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:05.338782328-04:00",
+      "latency": 6327347,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:05.728227474-04:00",
+      "latency": 6593380,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:06.12660448-04:00",
+      "latency": 4273557,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:06.526850962-04:00",
+      "latency": 5203683,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:06.939315442-04:00",
+      "latency": 7083334,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:07.355328441-04:00",
+      "latency": 3730788,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:07.775889658-04:00",
+      "latency": 3930424,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:08.209194111-04:00",
+      "latency": 7255730,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:08.646834488-04:00",
+      "latency": 4566603,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:09.085576452-04:00",
+      "latency": 4129398,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:09.536217894-04:00",
+      "latency": 4210733,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:09.997759331-04:00",
+      "latency": 6199855,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:10.465722375-04:00",
+      "latency": 3774064,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:10.936508247-04:00",
+      "latency": 4450107,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:11.415955457-04:00",
+      "latency": 4313464,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:11.90555728-04:00",
+      "latency": 3718705,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:12.395829297-04:00",
+      "latency": 3889043,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:12.896186524-04:00",
+      "latency": 3964612,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:13.405931942-04:00",
+      "latency": 3643573,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:13.915647754-04:00",
+      "latency": 3673407,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:14.435714425-04:00",
+      "latency": 3646654,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:16.022423646-04:00",
+      "latency": 56375,
+      "error": "rpc error: code = DeadlineExceeded desc = context deadline exceeded",
+      "status": "DeadlineExceeded"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:17.08191065-04:00",
+      "latency": 425023,
+      "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp [::1]:50051: connect: connection refused\"",
+      "status": "Unavailable"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:19.202880993-04:00",
+      "latency": 434370,
+      "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp [::1]:50051: connect: connection refused\"",
+      "status": "Unavailable"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:21.851762158-04:00",
+      "latency": 340067,
+      "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp [::1]:50051: connect: connection refused\"",
+      "status": "Unavailable"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:22.911437911-04:00",
+      "latency": 16778,
+      "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp [::1]:50051: connect: connection refused\"",
+      "status": "Unavailable"
+    },
+    {
+      "timestamp": "2023-06-05T16:34:31.391950598-04:00",
+      "latency": 378470,
+      "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp [::1]:50051: connect: connection refused\"",
+      "status": "Unavailable"
+    }
+  ]
+}

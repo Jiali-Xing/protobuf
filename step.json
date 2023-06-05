@@ -1,0 +1,199 @@
+{
+  "date": "2023-06-01T15:55:46-04:00",
+  "endReason": "normal",
+  "options": {
+    "call": "greeting.v3.GreetingService/Greeting",
+    "host": "0.0.0.0:50051",
+    "proto": "./greeting.proto",
+    "import-paths": [
+      "."
+    ],
+    "insecure": true,
+    "load-schedule": "step",
+    "load-start": 500,
+    "load-end": 4000,
+    "load-step": 100,
+    "load-step-duration": 1000000000,
+    "load-max-duration": 0,
+    "concurrency": 50,
+    "concurrency-schedule": "const",
+    "concurrency-start": 0,
+    "concurrency-end": 0,
+    "concurrency-step": 1,
+    "concurrency-step-duration": 0,
+    "concurrency-max-duration": 0,
+    "total": 10,
+    "connections": 1,
+    "timeout": 20000000000,
+    "dial-timeout": 10000000000,
+    "binary": false,
+    "metadata": {
+      "request-id": "{{.RequestNumber}}",
+      "timestamp": "{{.TimestampUnix}}",
+      "tokens": "12"
+    },
+    "CPUs": 16
+  },
+  "count": 10,
+  "total": 727304311,
+  "average": 297348154,
+  "fastest": 507756949,
+  "slowest": 720718595,
+  "rps": 13.749402896087053,
+  "errorDistribution": {
+    "rpc error: code = ResourceExhausted desc = req dropped, try again later": 5
+  },
+  "statusCodeDistribution": {
+    "OK": 5,
+    "ResourceExhausted": 5
+  },
+  "latencyDistribution": [
+    {
+      "percentage": 10,
+      "latency": 507756949
+    },
+    {
+      "percentage": 25,
+      "latency": 512894634
+    },
+    {
+      "percentage": 50,
+      "latency": 610389894
+    },
+    {
+      "percentage": 75,
+      "latency": 621234156
+    },
+    {
+      "percentage": 90,
+      "latency": 720718595
+    },
+    {
+      "percentage": 95,
+      "latency": 720718595
+    },
+    {
+      "percentage": 99,
+      "latency": 720718595
+    }
+  ],
+  "histogram": [
+    {
+      "mark": 0.507756949,
+      "count": 1,
+      "frequency": 0.2
+    },
+    {
+      "mark": 0.5290531136000001,
+      "count": 1,
+      "frequency": 0.2
+    },
+    {
+      "mark": 0.5503492782,
+      "count": 0,
+      "frequency": 0
+    },
+    {
+      "mark": 0.5716454428,
+      "count": 0,
+      "frequency": 0
+    },
+    {
+      "mark": 0.5929416074,
+      "count": 0,
+      "frequency": 0
+    },
+    {
+      "mark": 0.6142377720000001,
+      "count": 1,
+      "frequency": 0.2
+    },
+    {
+      "mark": 0.6355339366,
+      "count": 1,
+      "frequency": 0.2
+    },
+    {
+      "mark": 0.6568301012,
+      "count": 0,
+      "frequency": 0
+    },
+    {
+      "mark": 0.6781262658,
+      "count": 0,
+      "frequency": 0
+    },
+    {
+      "mark": 0.6994224304000001,
+      "count": 0,
+      "frequency": 0
+    },
+    {
+      "mark": 0.720718595,
+      "count": 1,
+      "frequency": 0.2
+    }
+  ],
+  "details": [
+    {
+      "timestamp": "2023-06-01T15:55:45.901276398-04:00",
+      "latency": 164149,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-01T15:55:45.905011261-04:00",
+      "latency": 83761,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-01T15:55:45.908732754-04:00",
+      "latency": 83615,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-01T15:55:45.91266343-04:00",
+      "latency": 76164,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-01T15:55:45.916298368-04:00",
+      "latency": 79625,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-01T15:55:46.419229391-04:00",
+      "latency": 512894634,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-01T15:55:46.422678237-04:00",
+      "latency": 507756949,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-01T15:55:46.520620589-04:00",
+      "latency": 610389894,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-01T15:55:46.520627588-04:00",
+      "latency": 621234156,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-01T15:55:46.623174737-04:00",
+      "latency": 720718595,
+      "error": "",
+      "status": "OK"
+    }
+  ]
+}

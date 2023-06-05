@@ -1,5 +1,5 @@
 from cProfile import label
-import json, sys
+import json, sys, re
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -48,9 +48,18 @@ ax2 = ax1.twinx()
 ax2.plot(cdf_x, cdf_y, color='orange', label='CDF')
 ax2.set_ylabel('CDF')
 
-ax1.legend()
-ax2.legend()
-plt.savefig('cdf.png')
+# ax1.legend()
+# ax2.legend()
+
+# Legends
+lines1, labels1 = ax1.get_legend_handles_labels()
+lines2, labels2 = ax2.get_legend_handles_labels()
+
+# Position the legends
+ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', bbox_to_anchor=(0, 1), ncol=2)
+ax2.legend().remove()
+
+plt.savefig(filename+'.latency.png')
 plt.show()
 
 # Calculate throughput (number of requests per second)
@@ -60,17 +69,25 @@ df['throughput'] = requests_per_second.reindex(df.index, method='ffill')
 # Calculate moving average of latency
 df['latency_ma'] = df['latency'].rolling(window=50).mean()
 
+
+# Calculate the tail latency over time (e.g., 99th percentile)
+tail_latency = df['latency'].rolling(window=50).quantile(0.99)
+
+# Create a new column 'tail_latency' in the DataFrame
+df['tail_latency'] = tail_latency
+
 # Plot data
 fig, ax1 = plt.subplots(figsize=(12, 4))
 
 # Latency plot
 color = 'tab:red'
 ax1.set_xlabel('Time')
-ax1.set_ylabel('Latency (ms)', color=color)
+ax1.set_ylabel('Latencies (ms)', color=color)
 # ax1.plot(df.index, df['latency'], color=color)
 ax1.tick_params(axis='y', labelcolor=color)
-ax1.plot(df.index, df['latency_ma'], color='orange', linestyle='--', label='Latency, Moving Average')
-ax1.legend()
+ax1.plot(df.index, df['latency_ma'], color='orange', linestyle='--', label='Latency')
+ax1.plot(df.index, df['tail_latency'], color='green', linestyle='-.', label='Tail Latency')
+# ax1.legend()
 
 # Throughput plot
 ax2 = ax1.twinx()
@@ -78,10 +95,25 @@ color = 'tab:blue'
 ax2.set_ylabel('Throughput (req/s)', color=color)
 ax2.plot(df.index, df['throughput'], color=color, label='Throughput')
 ax2.tick_params(axis='y', labelcolor=color)
+ax2.set_ylim(1000, ax2.get_ylim()[1])  # Set the y-axis minimum limit to 1000
 ax2.grid(False)
-ax2.legend(['Throughput'])
+# ax2.legend(['Throughput'])
 
-plt.savefig('timeseries.png')
+
+# Legends
+lines1, labels1 = ax1.get_legend_handles_labels()
+lines2, labels2 = ax2.get_legend_handles_labels()
+
+# Position the legends
+ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', bbox_to_anchor=(0, 1), ncol=2)
+ax2.legend().remove()
+
+concurrent_clients = re.findall(r"\d+", filename)[0]
+
+# Set the title
+plt.title(f"Number of Concurrent Clients: {concurrent_clients}")
+
+plt.savefig(filename+'.timeseries.png')
 
 plt.show()
 
