@@ -1,0 +1,592 @@
+{
+  "date": "2023-06-05T18:33:31-04:00",
+  "endReason": "timeout",
+  "options": {
+    "call": "greeting.v3.GreetingService/Greeting",
+    "host": "localhost:50051",
+    "proto": "../greeting.proto",
+    "import-paths": [
+      "..",
+      "."
+    ],
+    "insecure": true,
+    "load-schedule": "step",
+    "load-start": 1600,
+    "load-end": 3000,
+    "load-step": 100,
+    "load-step-duration": 1000000000,
+    "load-max-duration": 0,
+    "concurrency": 1,
+    "concurrency-schedule": "",
+    "concurrency-start": 0,
+    "concurrency-end": 0,
+    "concurrency-step": 0,
+    "concurrency-step-duration": 0,
+    "concurrency-max-duration": 0,
+    "total": 2147483647,
+    "connections": 1,
+    "duration": 20000000000,
+    "timeout": 20000000000,
+    "dial-timeout": 10000000000,
+    "data": {
+      "greeting": {
+        "created": "2023-06-05 18:33:11.31094647 -0400 EDT",
+        "hostname": "ying-precision7760",
+        "id": "e081cf2b-b969-477b-a710-94cafef46511",
+        "message": "Hello, from Client!",
+        "service": "Client"
+      }
+    },
+    "binary": false,
+    "CPUs": 16
+  },
+  "count": 75,
+  "total": 20290616433,
+  "average": 6340608,
+  "fastest": 2881830,
+  "slowest": 10213474,
+  "rps": 3.69628987111611,
+  "errorDistribution": {},
+  "statusCodeDistribution": {
+    "OK": 75
+  },
+  "latencyDistribution": [
+    {
+      "percentage": 10,
+      "latency": 3354958
+    },
+    {
+      "percentage": 25,
+      "latency": 3995956
+    },
+    {
+      "percentage": 50,
+      "latency": 6837009
+    },
+    {
+      "percentage": 75,
+      "latency": 8375591
+    },
+    {
+      "percentage": 90,
+      "latency": 9523275
+    },
+    {
+      "percentage": 95,
+      "latency": 9950041
+    },
+    {
+      "percentage": 99,
+      "latency": 10213474
+    }
+  ],
+  "histogram": [
+    {
+      "mark": 0.00288183,
+      "count": 1,
+      "frequency": 0.013333333333333334
+    },
+    {
+      "mark": 0.0036149944,
+      "count": 12,
+      "frequency": 0.16
+    },
+    {
+      "mark": 0.0043481588,
+      "count": 15,
+      "frequency": 0.2
+    },
+    {
+      "mark": 0.0050813232000000005,
+      "count": 3,
+      "frequency": 0.04
+    },
+    {
+      "mark": 0.0058144876,
+      "count": 0,
+      "frequency": 0
+    },
+    {
+      "mark": 0.006547652,
+      "count": 3,
+      "frequency": 0.04
+    },
+    {
+      "mark": 0.007280816400000001,
+      "count": 7,
+      "frequency": 0.09333333333333334
+    },
+    {
+      "mark": 0.0080139808,
+      "count": 12,
+      "frequency": 0.16
+    },
+    {
+      "mark": 0.0087471452,
+      "count": 10,
+      "frequency": 0.13333333333333333
+    },
+    {
+      "mark": 0.0094803096,
+      "count": 4,
+      "frequency": 0.05333333333333334
+    },
+    {
+      "mark": 0.010213474,
+      "count": 8,
+      "frequency": 0.10666666666666667
+    }
+  ],
+  "details": [
+    {
+      "timestamp": "2023-06-05T18:33:11.32400684-04:00",
+      "latency": 7895378,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:11.326987613-04:00",
+      "latency": 2881830,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:11.347639073-04:00",
+      "latency": 3308558,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:11.381829649-04:00",
+      "latency": 7093522,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:11.408745351-04:00",
+      "latency": 4333301,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:11.448823775-04:00",
+      "latency": 4386011,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:11.500911763-04:00",
+      "latency": 6837009,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:11.547193327-04:00",
+      "latency": 3248334,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:11.607634627-04:00",
+      "latency": 4023083,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:11.682794288-04:00",
+      "latency": 9012239,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:11.752186494-04:00",
+      "latency": 8600209,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:11.828061208-04:00",
+      "latency": 4184134,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:11.918565712-04:00",
+      "latency": 4048644,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:12.019189808-04:00",
+      "latency": 4853466,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:12.11837385-04:00",
+      "latency": 4219746,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:12.228923104-04:00",
+      "latency": 4515315,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:12.35272678-04:00",
+      "latency": 8823594,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:12.474316904-04:00",
+      "latency": 10206211,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:12.60345004-04:00",
+      "latency": 9851378,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:12.742465543-04:00",
+      "latency": 8736047,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:12.88256779-04:00",
+      "latency": 8471335,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:13.033035064-04:00",
+      "latency": 8375591,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:13.194206065-04:00",
+      "latency": 10194996,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:13.362171003-04:00",
+      "latency": 7479105,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:13.530841718-04:00",
+      "latency": 6769379,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:13.708397255-04:00",
+      "latency": 4231099,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:13.896939691-04:00",
+      "latency": 3358187,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:14.094006053-04:00",
+      "latency": 9523275,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:14.294482613-04:00",
+      "latency": 9803174,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:14.501111698-04:00",
+      "latency": 7087470,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:14.714448229-04:00",
+      "latency": 9950041,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:14.933426169-04:00",
+      "latency": 9009743,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:15.162180745-04:00",
+      "latency": 8136905,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:15.400365136-04:00",
+      "latency": 6438513,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:15.640755351-04:00",
+      "latency": 6628317,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:15.892617844-04:00",
+      "latency": 8613435,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:16.151547009-04:00",
+      "latency": 7575566,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:16.414639427-04:00",
+      "latency": 10213474,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:16.682880661-04:00",
+      "latency": 8387521,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:16.961968087-04:00",
+      "latency": 7878366,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:17.241273237-04:00",
+      "latency": 7640394,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:17.531799223-04:00",
+      "latency": 7367772,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:17.832098655-04:00",
+      "latency": 8469379,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:18.138484567-04:00",
+      "latency": 4324958,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:18.450642069-04:00",
+      "latency": 7032114,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:18.771509454-04:00",
+      "latency": 7315899,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:19.102028676-04:00",
+      "latency": 7594391,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:19.433992102-04:00",
+      "latency": 9453346,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:19.770708418-04:00",
+      "latency": 6437987,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:20.123935885-04:00",
+      "latency": 9733168,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:20.468398258-04:00",
+      "latency": 4098772,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:20.831723334-04:00",
+      "latency": 7899088,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:21.202110281-04:00",
+      "latency": 8066781,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:21.581464696-04:00",
+      "latency": 7327856,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:21.957318563-04:00",
+      "latency": 3706632,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:22.347075338-04:00",
+      "latency": 3530221,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:22.749917602-04:00",
+      "latency": 5908693,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:23.148514544-04:00",
+      "latency": 3972961,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:23.561723657-04:00",
+      "latency": 7889056,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:23.977311309-04:00",
+      "latency": 3327556,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:24.397915855-04:00",
+      "latency": 3859258,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:24.831920822-04:00",
+      "latency": 7304400,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:25.268623623-04:00",
+      "latency": 4238835,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:25.718196062-04:00",
+      "latency": 3638007,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:26.172623187-04:00",
+      "latency": 8146670,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:26.627705177-04:00",
+      "latency": 3404008,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:27.101181472-04:00",
+      "latency": 6750540,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:27.567524731-04:00",
+      "latency": 3227368,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:28.047203372-04:00",
+      "latency": 3601049,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:28.53788306-04:00",
+      "latency": 3995957,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:29.02743775-04:00",
+      "latency": 3489580,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:29.528497588-04:00",
+      "latency": 3937479,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:30.037076266-04:00",
+      "latency": 3240203,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:30.55694201-04:00",
+      "latency": 3076767,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:31.077596072-04:00",
+      "latency": 3354958,
+      "error": "",
+      "status": "OK"
+    }
+  ]
+}

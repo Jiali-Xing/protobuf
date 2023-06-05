@@ -1,0 +1,637 @@
+{
+  "date": "2023-06-05T18:35:10-04:00",
+  "endReason": "timeout",
+  "options": {
+    "call": "greeting.v3.GreetingService/Greeting",
+    "host": "localhost:50051",
+    "proto": "../greeting.proto",
+    "import-paths": [
+      "..",
+      "."
+    ],
+    "insecure": true,
+    "load-schedule": "step",
+    "load-start": 1600,
+    "load-end": 3000,
+    "load-step": 100,
+    "load-step-duration": 1000000000,
+    "load-max-duration": 0,
+    "concurrency": 100,
+    "concurrency-schedule": "",
+    "concurrency-start": 0,
+    "concurrency-end": 0,
+    "concurrency-step": 0,
+    "concurrency-step-duration": 0,
+    "concurrency-max-duration": 0,
+    "total": 2147483647,
+    "connections": 1,
+    "duration": 20000000000,
+    "timeout": 20000000000,
+    "dial-timeout": 10000000000,
+    "data": {
+      "greeting": {
+        "created": "2023-06-05 18:33:58.202029728 -0400 EDT",
+        "hostname": "ying-precision7760",
+        "id": "e435ee24-1edb-4167-9207-d86c483acf45",
+        "message": "Hello, from Client!",
+        "service": "Client"
+      }
+    },
+    "binary": false,
+    "CPUs": 16
+  },
+  "count": 82,
+  "total": 72650753952,
+  "average": 6380820,
+  "fastest": 2743058,
+  "slowest": 10596709,
+  "rps": 1.1286875295771466,
+  "errorDistribution": {
+    "rpc error: code = ResourceExhausted desc = req dropped, try again later": 8
+  },
+  "statusCodeDistribution": {
+    "OK": 74,
+    "ResourceExhausted": 8
+  },
+  "latencyDistribution": [
+    {
+      "percentage": 10,
+      "latency": 3999936
+    },
+    {
+      "percentage": 25,
+      "latency": 5059427
+    },
+    {
+      "percentage": 50,
+      "latency": 7508810
+    },
+    {
+      "percentage": 75,
+      "latency": 8555037
+    },
+    {
+      "percentage": 90,
+      "latency": 9536149
+    },
+    {
+      "percentage": 95,
+      "latency": 10266734
+    },
+    {
+      "percentage": 99,
+      "latency": 10596709
+    }
+  ],
+  "histogram": [
+    {
+      "mark": 0.002743058,
+      "count": 1,
+      "frequency": 0.013513513513513514
+    },
+    {
+      "mark": 0.0035284230999999997,
+      "count": 1,
+      "frequency": 0.013513513513513514
+    },
+    {
+      "mark": 0.0043137882,
+      "count": 14,
+      "frequency": 0.1891891891891892
+    },
+    {
+      "mark": 0.005099153299999999,
+      "count": 3,
+      "frequency": 0.04054054054054054
+    },
+    {
+      "mark": 0.0058845184,
+      "count": 3,
+      "frequency": 0.04054054054054054
+    },
+    {
+      "mark": 0.0066698834999999995,
+      "count": 3,
+      "frequency": 0.04054054054054054
+    },
+    {
+      "mark": 0.007455248599999999,
+      "count": 10,
+      "frequency": 0.13513513513513514
+    },
+    {
+      "mark": 0.0082406137,
+      "count": 14,
+      "frequency": 0.1891891891891892
+    },
+    {
+      "mark": 0.009025978799999999,
+      "count": 13,
+      "frequency": 0.17567567567567569
+    },
+    {
+      "mark": 0.0098113439,
+      "count": 7,
+      "frequency": 0.0945945945945946
+    },
+    {
+      "mark": 0.010596709,
+      "count": 5,
+      "frequency": 0.06756756756756757
+    }
+  ],
+  "details": [
+    {
+      "timestamp": "2023-06-05T18:33:58.208101446-04:00",
+      "latency": 273074,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.209392442-04:00",
+      "latency": 122591,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.209406965-04:00",
+      "latency": 120862,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.210776753-04:00",
+      "latency": 136479,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.210783546-04:00",
+      "latency": 127118,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.212027466-04:00",
+      "latency": 100086,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.212161256-04:00",
+      "latency": 203529,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.212341819-04:00",
+      "latency": 90136,
+      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
+      "status": "ResourceExhausted"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.212506813-04:00",
+      "latency": 5035680,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.214327162-04:00",
+      "latency": 7187286,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.228084263-04:00",
+      "latency": 2743058,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.258778005-04:00",
+      "latency": 4072147,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.304135805-04:00",
+      "latency": 9034255,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.354240469-04:00",
+      "latency": 8873340,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.401768468-04:00",
+      "latency": 6057454,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.461623883-04:00",
+      "latency": 6910285,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.53532408-04:00",
+      "latency": 10533478,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.602763771-04:00",
+      "latency": 7608891,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.68063961-04:00",
+      "latency": 5170011,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.769546994-04:00",
+      "latency": 4220668,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.861256281-04:00",
+      "latency": 5692506,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:58.962573384-04:00",
+      "latency": 7021724,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:59.069162131-04:00",
+      "latency": 4057990,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:59.193325697-04:00",
+      "latency": 8506814,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:59.314043997-04:00",
+      "latency": 8710212,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:59.444722798-04:00",
+      "latency": 8987617,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:59.585922376-04:00",
+      "latency": 10431963,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:59.725729175-04:00",
+      "latency": 10596709,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:33:59.872879406-04:00",
+      "latency": 8171162,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:00.035322891-04:00",
+      "latency": 9586358,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:00.192751681-04:00",
+      "latency": 7508810,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:00.358770204-04:00",
+      "latency": 3837787,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:00.542890592-04:00",
+      "latency": 7273230,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:00.733254106-04:00",
+      "latency": 7482560,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:00.923688604-04:00",
+      "latency": 8352010,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:01.1234502-04:00",
+      "latency": 8118319,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:01.335792793-04:00",
+      "latency": 10266734,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:01.543572319-04:00",
+      "latency": 8452505,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:01.7627805-04:00",
+      "latency": 7308325,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:01.992934269-04:00",
+      "latency": 7668906,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:02.223080197-04:00",
+      "latency": 8226279,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:02.462929493-04:00",
+      "latency": 7542423,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:02.711666636-04:00",
+      "latency": 6501772,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:02.973351529-04:00",
+      "latency": 8555037,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:03.233336248-04:00",
+      "latency": 7585617,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:03.503804875-04:00",
+      "latency": 8316497,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:03.785178289-04:00",
+      "latency": 9536149,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:04.061986314-04:00",
+      "latency": 6761105,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:04.354109578-04:00",
+      "latency": 9330732,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:04.654619433-04:00",
+      "latency": 8947123,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:04.955586629-04:00",
+      "latency": 9862737,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:05.263111989-04:00",
+      "latency": 8055210,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:05.581959846-04:00",
+      "latency": 6318433,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:05.914523869-04:00",
+      "latency": 9416237,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:06.242350242-04:00",
+      "latency": 7197708,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:06.582322153-04:00",
+      "latency": 7024562,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:06.9340568-04:00",
+      "latency": 9046109,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:07.283086278-04:00",
+      "latency": 8361063,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:07.644415877-04:00",
+      "latency": 8770521,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:08.013065438-04:00",
+      "latency": 7776557,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:08.382571659-04:00",
+      "latency": 7647510,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:08.762188453-04:00",
+      "latency": 7239891,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:09.152487767-04:00",
+      "latency": 7036798,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:09.552897515-04:00",
+      "latency": 7921426,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:09.953856762-04:00",
+      "latency": 8893574,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:10.363787245-04:00",
+      "latency": 8171874,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:10.783541838-04:00",
+      "latency": 8363929,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:11.200897116-04:00",
+      "latency": 5854456,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:11.634273183-04:00",
+      "latency": 9597528,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:12.069600004-04:00",
+      "latency": 3928766,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:12.508265128-04:00",
+      "latency": 3423884,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:12.958818027-04:00",
+      "latency": 3831381,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:13.419593583-04:00",
+      "latency": 3999936,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:13.889916388-04:00",
+      "latency": 5059427,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:14.358374868-04:00",
+      "latency": 3700151,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:14.83921646-04:00",
+      "latency": 4114642,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:15.329895902-04:00",
+      "latency": 4221871,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:15.819220589-04:00",
+      "latency": 4054780,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:16.319526065-04:00",
+      "latency": 4128797,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:16.829814965-04:00",
+      "latency": 4398317,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:17.339267017-04:00",
+      "latency": 4162653,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-06-05T18:34:17.859118234-04:00",
+      "latency": 3691147,
+      "error": "",
+      "status": "OK"
+    }
+  ]
+}
