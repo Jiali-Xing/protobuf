@@ -31,6 +31,11 @@ var (
 	URLServiceA  = getEnv("SERVICE_A_URL", "localhost:50051")
 	log          = logrus.New()
 	enableCharon = true
+	runDuration  = time.Second * 20
+	loadSchedule = "step"
+	loadStart    = 1500
+	loadEnd      = 3000
+	loadStep     = 100
 )
 
 func getHostname() string {
@@ -68,6 +73,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	charonOptions := map[string]interface{}{
+		"rateLimiting":    false,
+		"loadShedding":    true,
+		"pinpointLatency": true,
+	}
+
 	report, err := runner.Run(
 		"greeting.v3.GreetingService/Greeting",
 		URLServiceA,
@@ -75,17 +86,19 @@ func main() {
 		runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
 		// runner.WithMetadata(md),
 		runner.WithConcurrency(uint(concurrency)),
+		runner.WithConnections(uint(concurrency)),
 		runner.WithInsecure(true),
 		// runner.WithTotalRequests(50000),
 		// runner.WithRPS(2000),
 		// runner.WithAsync(true),
-		runner.WithRunDuration(time.Second*20),
-		runner.WithLoadSchedule("step"),
-		runner.WithLoadStart(1600),
-		runner.WithLoadEnd(3000),
-		runner.WithLoadStep(100),
+		runner.WithRunDuration(runDuration),
+		runner.WithLoadSchedule(loadSchedule),
+		runner.WithLoadStart(loadStart),
+		runner.WithLoadEnd(loadEnd),
+		runner.WithLoadStep(loadStep),
 		runner.WithLoadStepDuration(time.Second*1),
 		runner.WithCharon(enableCharon),
+		runner.WithCharonOptions(charonOptions),
 	)
 
 	if err != nil {

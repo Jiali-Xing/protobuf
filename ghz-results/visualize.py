@@ -1,119 +1,160 @@
-from cProfile import label
-import json, sys, re
+import json
+import sys
+import re
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
 
-# Get the filename from the command-line arguments
-filename = sys.argv[1]
-
-# Read in the JSON file
-with open(filename, 'r') as f:
-    data = json.load(f)
-
-# convert JSON to pandas DataFrame
-df = pd.DataFrame(data["details"])
+def read_data(filename):
+    with open(filename, 'r') as f:
+        data = json.load(f)
+    return data["details"]
 
 
-# convert the timestamp column to datetime format
-df['timestamp'] = pd.to_datetime(df['timestamp'])
-
-# set the timestamp column as the dataframe index
-df.set_index('timestamp', inplace=True)
-
-# Convert latency to milliseconds
-df['latency'] = df['latency'] / 1000000
-
-# plot histogram of the 'latency' column
-# Get latency column data
-latency = df['latency']
-
-# Compute PDF
-pdf, bins = np.histogram(latency, bins=50, density=True)
-pdf_x = (bins[:-1] + bins[1:]) / 2
-
-# Compute CDF
-cdf_x = np.sort(latency)
-cdf_y = np.arange(1, len(cdf_x)+1) / len(cdf_x)
-
-# Plot PDF and CDF
-fig, ax1 = plt.subplots()
-
-ax1.plot(pdf_x, pdf, label='PDF')
-ax1.set_xlabel('Latency (millisecond)')
-ax1.set_ylabel('PDF')
-
-ax2 = ax1.twinx()
-ax2.plot(cdf_x, cdf_y, color='orange', label='CDF')
-ax2.set_ylabel('CDF')
-
-# ax1.legend()
-# ax2.legend()
-
-# Legends
-lines1, labels1 = ax1.get_legend_handles_labels()
-lines2, labels2 = ax2.get_legend_handles_labels()
-
-# Position the legends
-ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', bbox_to_anchor=(0, 1), ncol=2)
-ax2.legend().remove()
-
-plt.savefig(filename+'.latency.png')
-plt.show()
-
-# Calculate throughput (number of requests per second)
-requests_per_second = df['status'].resample('1S').count()
-df['throughput'] = requests_per_second.reindex(df.index, method='ffill')
-
-# Calculate moving average of latency
-df['latency_ma'] = df['latency'].rolling(window=50).mean()
+def convert_to_dataframe(data):
+    df = pd.DataFrame(data)
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    min_timestamp = df['timestamp'].min()
+    df['timestamp'] = df['timestamp'] - min_timestamp + pd.Timestamp('2000-01-01')
+    df.set_index('timestamp', inplace=True)
+    df['latency'] = df['latency'] / 1000000
+    return df
 
 
-# Calculate the tail latency over time (e.g., 99th percentile)
-tail_latency = df['latency'].rolling(window=50).quantile(0.99)
+def plot_latency_pdf_cdf(df, filename):
+    latency = df['latency']
+    pdf, bins = np.histogram(latency, bins=50, density=True)
+    pdf_x = (bins[:-1] + bins[1:]) / 2
+    cdf_x = np.sort(latency)
+    cdf_y = np.arange(1, len(cdf_x) + 1) / len(cdf_x)
 
-# Create a new column 'tail_latency' in the DataFrame
-df['tail_latency'] = tail_latency
+    fig, ax1 = plt.subplots()
+    ax1.plot(pdf_x, pdf, label='PDF')
+    ax1.set_xlabel('Latency (millisecond)')
+    ax1.set_ylabel('PDF')
 
-# Plot data
-fig, ax1 = plt.subplots(figsize=(12, 4))
+    ax2 = ax1.twinx()
+    ax2.plot(cdf_x, cdf_y, color='orange', label='CDF')
+    ax2.set_ylabel('CDF')
 
-# Latency plot
-color = 'tab:red'
-ax1.set_xlabel('Time')
-ax1.set_ylabel('Latencies (ms)', color=color)
-# ax1.plot(df.index, df['latency'], color=color)
-ax1.tick_params(axis='y', labelcolor=color)
-ax1.plot(df.index, df['latency_ma'], color='orange', linestyle='--', label='Latency')
-ax1.plot(df.index, df['tail_latency'], color='green', linestyle='-.', label='Tail Latency')
-# ax1.legend()
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', bbox_to_anchor=(0, 1), ncol=2)
+    ax2.legend().remove()
 
-# Throughput plot
-ax2 = ax1.twinx()
-color = 'tab:blue'
-ax2.set_ylabel('Throughput (req/s)', color=color)
-ax2.plot(df.index, df['throughput'], color=color, label='Throughput')
-ax2.tick_params(axis='y', labelcolor=color)
-ax2.set_ylim(1000, ax2.get_ylim()[1])  # Set the y-axis minimum limit to 1000
-ax2.grid(False)
-# ax2.legend(['Throughput'])
+    plt.savefig(filename + '.latency.png')
+    plt.show()
 
 
-# Legends
-lines1, labels1 = ax1.get_legend_handles_labels()
-lines2, labels2 = ax2.get_legend_handles_labels()
+def calculate_throughput(df):
+    ok_requests_per_second = df[df['status'] == 'OK']['status'].resample('1S').count()
+    df['throughput'] = ok_requests_per_second.reindex(df.index, method='ffill')
+    return df
 
-# Position the legends
-ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', bbox_to_anchor=(0, 1), ncol=2)
-ax2.legend().remove()
 
-concurrent_clients = re.findall(r"\d+", filename)[0]
+def calculate_goodput(df, slo):
+    goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample('1S').count()
+    df['goodput'] = goodput_requests_per_second.reindex(df.index, method='ffill')
+    return df
 
-# Set the title
-plt.title(f"Number of Concurrent Clients: {concurrent_clients}")
 
-plt.savefig(filename+'.timeseries.png')
+def calculate_loadshedded(df):
+    dropped_requests_per_second = df[df['status'] == 'ResourceExhausted']['status'].resample('1S').count()
+    df['dropped'] = dropped_requests_per_second.reindex(df.index, method='ffill')
+    return df
 
-plt.show()
 
+def calculate_tail_latency(df):
+    tail_latency = df['latency'].rolling(window=50).quantile(0.99)
+    df['tail_latency'] = tail_latency
+    # Calculate moving average of latency
+    df['latency_ma'] = df['latency'].rolling(window=50).mean()
+    return df
+
+
+def plot_timeseries(df, filename):
+    fig, ax1 = plt.subplots(figsize=(12, 4))
+    ax1.set_xlabel('Time')
+    ax1.set_ylabel('Latencies (ms)', color='tab:red')
+    ax1.tick_params(axis='y', labelcolor='tab:red')
+    ax1.plot(df.index, df['latency_ma'], color='orange', linestyle='--', label='Latency')
+    ax1.plot(df.index, df['tail_latency'], color='green', linestyle='-.', label='99% Tail Latency')
+    ax1.set_ylim(0, 2000)
+
+    ax2 = ax1.twinx()
+    ax2.set_ylabel('Throughput (req/s)', color='tab:blue')
+    ax2.plot(df.index, df['throughput'], color='tab:blue', label='Throughput')
+    ax2.tick_params(axis='y', labelcolor='tab:blue')
+    ax2.set_ylim(0, 2500)
+    ax2.grid(True)
+
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', bbox_to_anchor=(0, 1), ncol=2)
+    ax2.legend().remove()
+
+    concurrent_clients = re.findall(r"\d+", filename)[0]
+    start_index = filename.rfind("/") + 1 if "/" in filename else 0
+    end_index = filename.index("_") if "_" in filename else len(filename)
+    mechanism = filename[start_index:end_index]
+    plt.title(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
+
+    plt.savefig(filename + '.timeseries.png')
+    plt.show()
+
+
+def plot_timeseries_ok(df, filename):
+    fig, ax1 = plt.subplots(figsize=(12, 4))
+    ax1.set_xlabel('Time')
+    ax1.set_ylabel('Latencies (ms)', color='tab:red')
+    ax1.tick_params(axis='y', labelcolor='tab:red')
+    ax1.plot(df.index, df['latency_ma'], color='orange', linestyle='--', label='Latency')
+    ax1.plot(df.index, df['tail_latency'], color='c', linestyle='-.', label='99% Tail Latency')
+    ax1.set_ylim(0, 2000)
+
+    ax2 = ax1.twinx()
+    ax2.set_ylabel('Throughput (req/s)', color='tab:blue')
+
+    ax2.plot(df.index, df['throughput'], 'y-.', label='Throughput')
+    ax2.plot(df.index, df['goodput'], color='green', label='Goodput')
+    ax2.plot(df.index, df['dropped'], color='tab:red', linestyle='--', label='Dropped Req')
+
+    ax2.tick_params(axis='y', labelcolor='tab:blue')
+    ax2.set_ylim(0, 2500)
+    ax2.grid(True)
+
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', bbox_to_anchor=(0, 1), ncol=2)
+    ax2.legend().remove()
+
+    concurrent_clients = re.findall(r"\d+", filename)[0]
+    start_index = filename.rfind("/") + 1 if "/" in filename else 0
+    end_index = filename.index("_") if "_" in filename else len(filename)
+    mechanism = filename[start_index:end_index]
+    plt.title(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
+
+    plt.savefig(filename + '.timeseries.png')
+    plt.show()
+
+
+def analyze_data(filename):
+    data = read_data(filename)
+    df = convert_to_dataframe(data)
+    plot_latency_pdf_cdf(df, filename)
+    df = calculate_throughput(df)
+    df = calculate_goodput(df, 20)
+    df = calculate_loadshedded(df)
+    df = calculate_tail_latency(df)
+    plot_timeseries_ok(df, filename)
+    summary = df.groupby('status')['status'].count().reset_index(name='count')
+    print(summary)
+    summary = df.groupby('error')['error'].count().reset_index(name='count')
+    print(summary)
+
+
+
+if __name__ == '__main__':
+    filename = sys.argv[1]
+    analyze_data(filename)
