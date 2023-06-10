@@ -33,8 +33,8 @@ var (
 	enableCharon = true
 	runDuration  = time.Second * 20
 	loadSchedule = "step"
-	loadStart    = 1500
-	loadEnd      = 3000
+	loadStart    = uint(1500)
+	loadEnd      = uint(3000)
 	loadStep     = 100
 )
 
