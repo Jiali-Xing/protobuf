@@ -10,7 +10,7 @@ git add . ; git commit -m "$message"
 git push
 
 cd ~/Sync/Git/ghz
-go get github.com/tgiannoukos/charon@timestamp
+go get github.com/tgiannoukos/charon
 git add . ; git commit -m "$message"
 git push
 
@@ -19,7 +19,7 @@ bash goget_charon.sh
 
 cd /home/ying/Sync/Git/protobuf/ghz-client
 go get github.com/Jiali-Xing/ghz
-go get github.com/tgiannoukos/charon@timestamp
+go get github.com/tgiannoukos/charon
 
 for x in 2000; do
     cd /home/ying/Sync/Git/k8s-istio-observe-backend/services/protobuf-grpc
