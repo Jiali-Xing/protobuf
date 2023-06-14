@@ -66,10 +66,10 @@ def calculate_loadshedded(df):
 
 
 def calculate_tail_latency(df):
-    tail_latency = df['latency'].rolling(window=50).quantile(0.99)
+    tail_latency = df['latency'].rolling(window=500).quantile(0.99)
     df['tail_latency'] = tail_latency
     # Calculate moving average of latency
-    df['latency_ma'] = df['latency'].rolling(window=50).mean()
+    df['latency_ma'] = df['latency'].rolling(window=500).mean()
     return df
 
 
@@ -100,7 +100,7 @@ def plot_timeseries(df, filename):
     mechanism = filename[start_index:end_index]
     plt.title(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
 
-    plt.savefig(filename + '.timeseries.png')
+    plt.savefig(mechanism + '.timeseries.png')
     plt.show()
 
 
@@ -111,17 +111,21 @@ def plot_timeseries_ok(df, filename):
     ax1.tick_params(axis='y', labelcolor='tab:red')
     ax1.plot(df.index, df['latency_ma'], color='orange', linestyle='--', label='Latency')
     ax1.plot(df.index, df['tail_latency'], color='c', linestyle='-.', label='99% Tail Latency')
-    ax1.set_ylim(0, 2000)
+    ax1.set_ylim(2, 2000)
+    ax1.set_yscale('log')
 
     ax2 = ax1.twinx()
     ax2.set_ylabel('Throughput (req/s)', color='tab:blue')
 
-    ax2.plot(df.index, df['throughput'], 'y-.', label='Throughput')
-    ax2.plot(df.index, df['goodput'], color='green', label='Goodput')
-    ax2.plot(df.index, df['dropped'], color='tab:red', linestyle='--', label='Dropped Req')
+    ax2.plot(df.index, df['throughput'], 'r-.', )
+    ax2.plot(df.index, df['goodput'], color='green', linestyle='--')
+    ax2.plot(df.index, df['dropped'].fillna(0)+df['throughput'], color='tab:blue', linestyle='-', label='Total Req')
+    ax2.fill_between(df.index, 0, df['goodput'], color='green', alpha=0.2, label='Goodput')
+    ax2.fill_between(df.index, df['goodput'], df['throughput'], color='red', alpha=0.3, label='SLO Violated Req')
+    ax2.fill_between(df.index, df['throughput'], df['throughput'] + df['dropped'], color='c', alpha=0.3, label='Dropped Req')
 
     ax2.tick_params(axis='y', labelcolor='tab:blue')
-    ax2.set_ylim(0, 2500)
+    ax2.set_ylim(0, 3000)
     ax2.grid(True)
 
     lines1, labels1 = ax1.get_legend_handles_labels()
@@ -135,7 +139,7 @@ def plot_timeseries_ok(df, filename):
     mechanism = filename[start_index:end_index]
     plt.title(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
 
-    plt.savefig(filename + '.timeseries.png')
+    plt.savefig(mechanism + '.timeseries.png')
     plt.show()
 
 

@@ -3,7 +3,7 @@ module github.com/Jiali-Xing/protobuf
 go 1.20
 
 require (
-	github.com/Jiali-Xing/ghz v0.0.0-20230608194431-2e6531837152
+	github.com/Jiali-Xing/ghz v0.0.0-20230614204046-aba09c57c692
 	github.com/google/uuid v1.3.0
 	github.com/sirupsen/logrus v1.9.0
 	google.golang.org/api v0.110.0
@@ -44,7 +44,7 @@ require (
 	github.com/prometheus/common v0.32.1 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
-	github.com/tgiannoukos/charon v0.0.0-20230608194429-9dbb2bfc4fb2 // indirect
+	github.com/tgiannoukos/charon v0.0.0-20230614214040-fb7633ef5895 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
