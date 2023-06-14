@@ -54,8 +54,15 @@ func getEnv(key, fallback string) string {
 }
 
 func main() {
-	// md := make(map[string]string)
-	// md["tokens"] = "100"
+	md := make(map[string]string)
+	md["request-id"] = "{{.RequestNumber}}"
+	md["timestamp"] = "{{.TimestampUnix}}"
+
+	// data := make(map[string]string)
+	// data["order_id"] = "{{newUUID}}"
+	// data["item_id"] = "{{newUUID}}"
+	// data["sku"] = "{{randomString 8 }}"
+	// data["product_name"] = "{{randomString 0}}"
 
 	requestGreeting := pb.Greeting{
 		Id:       uuid.New().String(),
@@ -74,9 +81,14 @@ func main() {
 	}
 
 	charonOptions := map[string]interface{}{
-		"rateLimiting":    false,
-		"loadShedding":    true,
-		"pinpointLatency": true,
+		"rateLimiting":       false,
+		"loadShedding":       true,
+		"pinpointQueuing":    true,
+		"pinpointLatency":    false,
+		"pinpointThroughput": false,
+		"debug":              false,
+		"debugFreq":          int64(20000),
+		// "latencyThreshold":   time.Millisecond * 7,
 	}
 
 	report, err := runner.Run(
@@ -84,11 +96,11 @@ func main() {
 		URLServiceA,
 		runner.WithProtoFile("../greeting.proto", []string{}),
 		runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
-		// runner.WithMetadata(md),
+		runner.WithMetadata(md),
 		runner.WithConcurrency(uint(concurrency)),
 		runner.WithConnections(uint(concurrency)),
 		runner.WithInsecure(true),
-		// runner.WithTotalRequests(50000),
+		// runner.WithTotalRequests(3),
 		// runner.WithRPS(2000),
 		// runner.WithAsync(true),
 		runner.WithRunDuration(runDuration),
