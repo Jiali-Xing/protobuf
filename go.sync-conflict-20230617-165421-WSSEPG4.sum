@@ -41,10 +41,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/toml v1.1.0 h1:ksErzDEI1khOiGPgpwuI7x2ebx/uXQNw7xJpn9Eq1+I=
 github.com/BurntSushi/toml v1.1.0/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/Jiali-Xing/ghz v0.0.0-20230618035733-ff82fd2f59d9 h1:77jyAnHbzUEq7BnIyt5/YG3eDOC+PcDW2znvruXQoSE=
-github.com/Jiali-Xing/ghz v0.0.0-20230618035733-ff82fd2f59d9/go.mod h1:lxTct5cnhgW/nstKAqj7GONUFAl11rsQu+Nd9yxFOpI=
-github.com/Jiali-Xing/ghz v0.0.0-20230618042559-a02dd90392dc h1:wIsuIQH8m5okeSkuEvg5BanpkpXzEoJeOtHStpura2w=
-github.com/Jiali-Xing/ghz v0.0.0-20230618042559-a02dd90392dc/go.mod h1:lxTct5cnhgW/nstKAqj7GONUFAl11rsQu+Nd9yxFOpI=
+github.com/Jiali-Xing/ghz v0.0.0-20230319030317-8a9233252a35 h1:rH+kuhaQ1EVNUfAM8yfDvyXkoCCxqDMpCzSGjbHN0rM=
+github.com/Jiali-Xing/ghz v0.0.0-20230319030317-8a9233252a35/go.mod h1:yyvaFAT9h3pOUuGqp8vyKedPWiaKtfkAiD6/UTaXRPE=
 github.com/Masterminds/goutils v1.1.1 h1:5nUrii3FMTL5diU80unEVvNevw1nH4+ZV4DSLVJLSYI=
 github.com/Masterminds/goutils v1.1.1/go.mod h1:8cTjp+g8YejhMuvIA5y2vz3BpJxksy863GQaJW2MFNU=
 github.com/Masterminds/semver/v3 v3.2.0 h1:3MEsd0SM6jqZojhjLWWeBY+Kcjy9i6MQAeY7YgDP83g=
@@ -286,8 +284,8 @@ github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
-github.com/tgiannoukos/charon v0.0.0-20230618034301-81b272d76f52 h1:6IYvr0DeTFLsQ+HXu5d2/4MO7u9wsPGxjipkK98IdLE=
-github.com/tgiannoukos/charon v0.0.0-20230618034301-81b272d76f52/go.mod h1:qUVp0mj6E1t3QxmGbqb7DgaHNtQWXo66gdIrdsQ80YE=
+github.com/tgiannoukos/charon v0.0.0-20230314023309-94b8e232ecc6 h1:yfCIdoK82saIdkFbe3johFvCE1wQMa/GjPkr31KgP/Y=
+github.com/tgiannoukos/charon v0.0.0-20230314023309-94b8e232ecc6/go.mod h1:lu/OXbfu3ECX3/PBDtZnWvyJoyC57nLxm4iRu0XFlZU=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

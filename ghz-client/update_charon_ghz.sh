@@ -23,10 +23,11 @@ go get github.com/tgiannoukos/charon
 
 for x in 2000; do
     cd /home/ying/Sync/Git/k8s-istio-observe-backend/services/protobuf-grpc
-    bash kill_services.sh
     bash start_services.sh
     cd /home/ying/Sync/Git/protobuf/ghz-client
     go run ./main.go $x
+    cd /home/ying/Sync/Git/k8s-istio-observe-backend/services/protobuf-grpc
+    bash kill_services.sh
 done
 
 cd /home/ying/Sync/Git/protobuf/ghz-results

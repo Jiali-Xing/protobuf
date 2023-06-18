@@ -30,12 +30,12 @@ var (
 	message      = getEnv("GREETING", "Hello, from Client!")
 	URLServiceA  = getEnv("SERVICE_A_URL", "localhost:50051")
 	log          = logrus.New()
-	enableCharon = true
-	runDuration  = time.Second * 20
+	enableCharon = false
+	runDuration  = time.Second * 15
 	loadSchedule = "step"
 	loadStart    = uint(1500)
 	loadEnd      = uint(3000)
-	loadStep     = 100
+	loadStep     = 150
 )
 
 func getHostname() string {
@@ -86,8 +86,9 @@ func main() {
 		"pinpointQueuing":    false,
 		"pinpointLatency":    false,
 		"pinpointThroughput": false,
-		"debug":              false,
+		"debug":              true,
 		"debugFreq":          int64(20000),
+		"tokensLeft":         int64(0),
 		// "latencyThreshold":   time.Millisecond * 7,
 	}
 
@@ -102,7 +103,7 @@ func main() {
 		runner.WithInsecure(true),
 		// runner.WithTotalRequests(3),
 		// runner.WithRPS(2000),
-		runner.WithAsync(true),
+		// runner.WithAsync(true),
 		runner.WithRunDuration(runDuration),
 		runner.WithLoadSchedule(loadSchedule),
 		runner.WithLoadStart(loadStart),
@@ -110,6 +111,7 @@ func main() {
 		runner.WithLoadStep(loadStep),
 		runner.WithLoadStepDuration(time.Second*1),
 		runner.WithCharon(enableCharon),
+		runner.WithCharonEntry("50051"),
 		runner.WithCharonOptions(charonOptions),
 	)
 

@@ -1,0 +1,19 @@
+
+Summary:
+  Count:	36079
+  Total:	14.78 s
+  Slowest:	0 ns
+  Fastest:	0 ns
+  Average:	0.10 ms
+  Requests/sec:	2441.32
+
+Response time histogram:
+
+Latency distribution:
+
+Status code distribution:
+  [InvalidArgument]   36079 responses   
+
+Error distribution:
+  [36079]   rpc error: code = InvalidArgument desc = duplicated tokens   
+
