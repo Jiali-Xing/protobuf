@@ -111,7 +111,7 @@ def plot_timeseries_ok(df, filename):
     ax1.tick_params(axis='y', labelcolor='tab:red')
     ax1.plot(df.index, df['latency_ma'], color='orange', linestyle='--', label='Latency')
     ax1.plot(df.index, df['tail_latency'], color='c', linestyle='-.', label='99% Tail Latency')
-    ax1.set_ylim(2, 2000)
+    ax1.set_ylim(70, 2000)
     ax1.set_yscale('log')
 
     ax2 = ax1.twinx()
@@ -148,7 +148,7 @@ def analyze_data(filename):
     df = convert_to_dataframe(data)
     plot_latency_pdf_cdf(df, filename)
     df = calculate_throughput(df)
-    df = calculate_goodput(df, 20)
+    df = calculate_goodput(df, 200)
     df = calculate_loadshedded(df)
     df = calculate_tail_latency(df)
     plot_timeseries_ok(df, filename)
