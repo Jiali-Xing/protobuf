@@ -56,18 +56,24 @@ def plot_latency_pdf_cdf(df, filename):
 def calculate_throughput(df):
     # sample throughput every time_interval
     ok_requests_per_second = df[df['status'] == 'OK']['status'].resample(time_interval).count()
+    # scale the throughput to requests per second
+    ok_requests_per_second = ok_requests_per_second * (1000 / int(time_interval[:-2]))
     df['throughput'] = ok_requests_per_second.reindex(df.index, method='ffill')
     return df
 
 
 def calculate_goodput(df, slo):
     goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample(time_interval).count()
+    # scale the throughput to requests per second
+    goodput_requests_per_second = goodput_requests_per_second * (1000 / int(time_interval[:-2]))
     df['goodput'] = goodput_requests_per_second.reindex(df.index, method='ffill')
     return df
 
 
 def calculate_loadshedded(df):
     dropped_requests_per_second = df[df['status'] == 'ResourceExhausted']['status'].resample(time_interval).count()
+    # scale the throughput to requests per second
+    dropped_requests_per_second = dropped_requests_per_second * (1000 / int(time_interval[:-2]))
     df['dropped'] = dropped_requests_per_second.reindex(df.index, method='ffill')
     return df
 
@@ -213,7 +219,8 @@ def plot_timeseries_lat(df, filename):
     ax1.tick_params(axis='y', labelcolor='tab:red')
     ax1.plot(df.index, df['latency_ma'], linestyle='--', label='Average Latency (e2e)',)
     ax1.plot(df.index, df['tail_latency'], linestyle='-.', label='99% Tail Latency (e2e)',)
-    ax1.set_ylim(0.001, 400)
+    # set the y axis to be above the 0.001
+    ax1.set_ylim(0.001, np.max(df['tail_latency'])*1.1)
     ax1.set_yscale('log')
 
     # # ax2 = ax1.twinx()
@@ -260,7 +267,7 @@ def analyze_data(filename):
     print(df.head())
     plot_latency_pdf_cdf(df, filename)
     df = calculate_throughput(df)
-    df = calculate_goodput(df, 1)
+    df = calculate_goodput(df, 30)
     df = calculate_loadshedded(df)
     df = calculate_tail_latency(df)
     plot_timeseries_ok(df, filename)
