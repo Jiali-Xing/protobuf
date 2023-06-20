@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+time_interval = '100ms'
+window_size = '200ms'  # Define the window size as 100 milliseconds
+
 def read_data(filename):
     with open(filename, 'r') as f:
         data = json.load(f)
@@ -17,8 +20,11 @@ def convert_to_dataframe(data):
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     min_timestamp = df['timestamp'].min()
     df['timestamp'] = df['timestamp'] - min_timestamp + pd.Timestamp('2000-01-01')
+    # print(df['timestamp'].min())
     df.set_index('timestamp', inplace=True)
     df['latency'] = df['latency'] / 1000000
+    # drop the rows if the `status` is not `OK`
+    df = df[df['status'] == 'OK']
     return df
 
 
@@ -48,28 +54,34 @@ def plot_latency_pdf_cdf(df, filename):
 
 
 def calculate_throughput(df):
-    ok_requests_per_second = df[df['status'] == 'OK']['status'].resample('1S').count()
+    # sample throughput every time_interval
+    ok_requests_per_second = df[df['status'] == 'OK']['status'].resample(time_interval).count()
     df['throughput'] = ok_requests_per_second.reindex(df.index, method='ffill')
     return df
 
 
 def calculate_goodput(df, slo):
-    goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample('1S').count()
+    goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample(time_interval).count()
     df['goodput'] = goodput_requests_per_second.reindex(df.index, method='ffill')
     return df
 
 
 def calculate_loadshedded(df):
-    dropped_requests_per_second = df[df['status'] == 'ResourceExhausted']['status'].resample('1S').count()
+    dropped_requests_per_second = df[df['status'] == 'ResourceExhausted']['status'].resample(time_interval).count()
     df['dropped'] = dropped_requests_per_second.reindex(df.index, method='ffill')
     return df
 
 
 def calculate_tail_latency(df):
-    tail_latency = df['latency'].rolling(window=500).quantile(0.99)
+    # calculate the moving average window length such that the window size is 100 milliseconds
+    # based on the df.index frequency
+
+    # Assuming your DataFrame is named 'df' and the column to calculate the moving average is 'data'
+    df_sorted = df.sort_index(inplace=True)
+    tail_latency = df['latency'].rolling(window_size).quantile(0.99)
     df['tail_latency'] = tail_latency
     # Calculate moving average of latency
-    df['latency_ma'] = df['latency'].rolling(window=500).mean()
+    df['latency_ma'] = df['latency'].rolling(window_size).mean()
     return df
 
 
@@ -78,8 +90,8 @@ def plot_timeseries(df, filename):
     ax1.set_xlabel('Time')
     ax1.set_ylabel('Latencies (ms)', color='tab:red')
     ax1.tick_params(axis='y', labelcolor='tab:red')
-    ax1.plot(df.index, df['latency_ma'], color='orange', linestyle='--', label='Latency')
-    ax1.plot(df.index, df['tail_latency'], color='green', linestyle='-.', label='99% Tail Latency')
+    ax1.plot(df.index, df['latency_ma'], color='orange', linestyle='--', label='Average Latency (e2e)')
+    ax1.plot(df.index, df['tail_latency'], color='green', linestyle='-.', label='99% Tail Latency (e2e)')
     ax1.set_ylim(0, 2000)
 
     ax2 = ax1.twinx()
@@ -104,14 +116,64 @@ def plot_timeseries(df, filename):
     plt.show()
 
 
+def extract_waiting_times(file_path):
+    # Define the regular expression patterns for extracting timestamp and waiting time
+    timestamp_pattern = r"LOG: (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+[-+]\d{2}:\d{2})"
+    waiting_time_patterns = {
+        # "Cumulative Waiting Time Median": r"\[Cumulative Waiting Time Median\]:\s+(\d+\.\d+) ms.",
+        "Incremental Waiting Time 90-tile": r"\[Incremental Waiting Time 90-tile\]:\s+(\d+\.\d+) ms.",
+        # "Incremental Waiting Time Median": r"\[Incremental Waiting Time Median\]:\s+(\d+\.\d+) ms.",
+        "Incremental Waiting Time Maximum": r"\[Incremental Waiting Time Maximum\]:\s+(\d+\.\d+) ms."
+    }
+
+    data = {pattern: [] for pattern in waiting_time_patterns}
+    timestamps = []
+
+    with open(file_path, "r") as file:
+        for line in file:
+            if "Incremental Waiting Time Maximum" in line:
+                match_timestamp = re.search(timestamp_pattern, line)
+                if match_timestamp:
+                    timestamps.append(match_timestamp.group(1))
+
+            for key, pattern in waiting_time_patterns.items():
+                match = re.search(pattern, line)
+                if match:
+                    data[key].append(float(match.group(1)))
+                elif key not in data:
+                    data[key].append(None)
+
+    # print(data)
+    # Create a DataFrame with timestamp as one column with waiting times as columns
+    df = pd.DataFrame(data)
+    df["timestamp"] = pd.to_datetime(timestamps)
+    # adjust the index of df_queuing_delay to match the index of df, time wise
+    # calculate the second last mininum timestamp of df 
+    # df['timestamp'] = df['timestamp'] - min_timestamp + pd.Timestamp('2000-01-01')
+    # print(df['timestamp'].min())
+    df.set_index('timestamp', inplace=True)
+    
+    # sort the df by timestamp
+    df.sort_index(inplace=True)
+    # remove the first many rows in df if the rows has zero waiting time
+    # for i in range(len(df)):
+    #     if df.iloc[i]['Incremental Waiting Time Maximum'] != 0:
+    #         break
+    # df = df.iloc[i:]     
+    
+    min_timestamp = df.index.min()
+    df.index = df.index - min_timestamp + pd.Timestamp('2000-01-01')
+    return df
+
+
 def plot_timeseries_ok(df, filename):
     fig, ax1 = plt.subplots(figsize=(12, 4))
     ax1.set_xlabel('Time')
     ax1.set_ylabel('Latencies (ms)', color='tab:red')
     ax1.tick_params(axis='y', labelcolor='tab:red')
-    ax1.plot(df.index, df['latency_ma'], color='orange', linestyle='--', label='Latency')
-    ax1.plot(df.index, df['tail_latency'], color='c', linestyle='-.', label='99% Tail Latency')
-    ax1.set_ylim(70, 2000)
+    ax1.plot(df.index, df['latency_ma'], linestyle='-.', label='Average Latency (e2e)')
+    ax1.plot(df.index, df['tail_latency'], linestyle='-', label='99% Tail Latency (e2e)')
+    # ax1.set_ylim(70, 2000)
     ax1.set_yscale('log')
 
     ax2 = ax1.twinx()
@@ -120,12 +182,12 @@ def plot_timeseries_ok(df, filename):
     ax2.plot(df.index, df['throughput'], 'r-.', )
     ax2.plot(df.index, df['goodput'], color='green', linestyle='--')
     ax2.plot(df.index, df['dropped'].fillna(0)+df['throughput'], color='tab:blue', linestyle='-', label='Total Req')
-    ax2.fill_between(df.index, 0, df['goodput'], color='green', alpha=0.2, label='Goodput')
-    ax2.fill_between(df.index, df['goodput'], df['throughput'], color='red', alpha=0.3, label='SLO Violated Req')
-    ax2.fill_between(df.index, df['throughput'], df['throughput'] + df['dropped'], color='c', alpha=0.3, label='Dropped Req')
+    ax2.fill_between(df.index, 0, df['goodput'], color='green', alpha=0.1, label='Goodput')
+    ax2.fill_between(df.index, df['goodput'], df['throughput'], color='red', alpha=0.1, label='SLO Violated Req')
+    ax2.fill_between(df.index, df['throughput'], df['throughput'] + df['dropped'], color='c', alpha=0.1, label='Dropped Req')
 
     ax2.tick_params(axis='y', labelcolor='tab:blue')
-    ax2.set_ylim(0, 3000)
+    # ax2.set_ylim(0, 3000)
     ax2.grid(True)
 
     lines1, labels1 = ax1.get_legend_handles_labels()
@@ -139,24 +201,74 @@ def plot_timeseries_ok(df, filename):
     mechanism = filename[start_index:end_index]
     plt.title(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
 
-    plt.savefig(mechanism + '.timeseries.png')
+    plt.savefig(mechanism + '.latency-throughput.png')
     plt.show()
+
+# plot_timeseries_lat is same as the above function, 
+# but in ax2 we add 4 more line from the waiting time dataframe
+def plot_timeseries_lat(df, filename):
+    fig, ax1 = plt.subplots(figsize=(12, 4))
+    ax1.set_xlabel('Time')
+    ax1.set_ylabel('Latencies (ms)', color='tab:red')
+    ax1.tick_params(axis='y', labelcolor='tab:red')
+    ax1.plot(df.index, df['latency_ma'], linestyle='--', label='Average Latency (e2e)',)
+    ax1.plot(df.index, df['tail_latency'], linestyle='-.', label='99% Tail Latency (e2e)',)
+    ax1.set_ylim(0.001, 400)
+    ax1.set_yscale('log')
+
+    # # ax2 = ax1.twinx()
+    # ax2.set_ylabel('Throughput (req/s)', color='tab:blue')
+
+    # ax2.plot(df.index, df['throughput'], 'r-.', )
+    # ax2.plot(df.index, df['goodput'], color='green', linestyle='--')
+    # ax2.plot(df.index, df['dropped'].fillna(0)+df['throughput'], color='tab:blue', linestyle='-', label='Total Req')
+    # ax2.fill_between(df.index, 0, df['goodput'], color='green', alpha=0.2, label='Goodput')
+    # ax2.fill_between(df.index, df['goodput'], df['throughput'], color='red', alpha=0.3, label='SLO Violated Req')
+    # ax2.fill_between(df.index, df['throughput'], df['throughput'] + df['dropped'], color='c', alpha=0.3, label='Dropped Req')
+
+    df_queuing_delay = extract_waiting_times("/home/ying/Sync/Git/service-app/services/protobuf-grpc/server.output")
+    # plot the four waiting time patterns above in ax2, with for loop over the column of df_queuing_delay
+    for waiting_time in df_queuing_delay.columns:
+        # before plotting, we need to calculate the moving average of the waiting time
+        mean_queuing_delay = df_queuing_delay[waiting_time].rolling(window_size).mean()
+        ax1.plot(df_queuing_delay.index, mean_queuing_delay, label=waiting_time)
+
+    print(df_queuing_delay.head())
+    # ax2.tick_params(axis='y', labelcolor='tab:blue')
+    # ax2.set_ylim(0, 3000)
+    # ax2.grid(True)
+
+    # lines1, labels1 = ax1.get_legend_handles_labels()
+    # lines2, labels2 = ax2.get_legend_handles_labels()
+    # ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', bbox_to_anchor=(0, 1), ncol=2)
+    ax1.legend()
+
+    concurrent_clients = re.findall(r"\d+", filename)[0]
+    start_index = filename.rfind("/") + 1 if "/" in filename else 0
+    end_index = filename.index("_") if "_" in filename else len(filename)
+    mechanism = filename[start_index:end_index]
+    plt.title(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
+
+    plt.savefig(mechanism + '.queuing-delay.png')
+    plt.show()
+    
 
 
 def analyze_data(filename):
     data = read_data(filename)
     df = convert_to_dataframe(data)
+    print(df.head())
     plot_latency_pdf_cdf(df, filename)
     df = calculate_throughput(df)
-    df = calculate_goodput(df, 200)
+    df = calculate_goodput(df, 1)
     df = calculate_loadshedded(df)
     df = calculate_tail_latency(df)
     plot_timeseries_ok(df, filename)
+    plot_timeseries_lat(df, filename)
     summary = df.groupby('status')['status'].count().reset_index(name='count')
     print(summary)
-    summary = df.groupby('error')['error'].count().reset_index(name='count')
-    print(summary)
-
+    # summary = df.groupby('error')['error'].count().reset_index(name='count')
+    # print(summary)
 
 
 if __name__ == '__main__':
