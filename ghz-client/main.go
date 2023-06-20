@@ -31,11 +31,11 @@ var (
 	URLServiceA  = getEnv("SERVICE_A_URL", "localhost:50051")
 	log          = logrus.New()
 	enableCharon = false
-	runDuration  = time.Second * 15
+	runDuration  = time.Second * 5
 	loadSchedule = "step"
-	loadStart    = uint(1500)
-	loadEnd      = uint(3000)
-	loadStep     = 150
+	loadStart    = uint(25000)
+	loadEnd      = uint(50000)
+	loadStep     = 5000
 )
 
 func getHostname() string {
@@ -86,8 +86,8 @@ func main() {
 		"pinpointQueuing":    false,
 		"pinpointLatency":    false,
 		"pinpointThroughput": false,
-		"debug":              true,
-		"debugFreq":          int64(20000),
+		"debug":              false,
+		"debugFreq":          int64(2000),
 		"tokensLeft":         int64(0),
 		// "latencyThreshold":   time.Millisecond * 7,
 	}

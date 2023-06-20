@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-time_interval = '100ms'
-window_size = '200ms'  # Define the window size as 100 milliseconds
+throughput_time_interval = '100ms'
+latency_window_size = '200ms'  # Define the window size as 100 milliseconds
 
 def read_data(filename):
     with open(filename, 'r') as f:
@@ -55,25 +55,25 @@ def plot_latency_pdf_cdf(df, filename):
 
 def calculate_throughput(df):
     # sample throughput every time_interval
-    ok_requests_per_second = df[df['status'] == 'OK']['status'].resample(time_interval).count()
+    ok_requests_per_second = df[df['status'] == 'OK']['status'].resample(throughput_time_interval).count()
     # scale the throughput to requests per second
-    ok_requests_per_second = ok_requests_per_second * (1000 / int(time_interval[:-2]))
+    ok_requests_per_second = ok_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
     df['throughput'] = ok_requests_per_second.reindex(df.index, method='ffill')
     return df
 
 
 def calculate_goodput(df, slo):
-    goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample(time_interval).count()
+    goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample(throughput_time_interval).count()
     # scale the throughput to requests per second
-    goodput_requests_per_second = goodput_requests_per_second * (1000 / int(time_interval[:-2]))
+    goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
     df['goodput'] = goodput_requests_per_second.reindex(df.index, method='ffill')
     return df
 
 
 def calculate_loadshedded(df):
-    dropped_requests_per_second = df[df['status'] == 'ResourceExhausted']['status'].resample(time_interval).count()
+    dropped_requests_per_second = df[df['status'] == 'ResourceExhausted']['status'].resample(throughput_time_interval).count()
     # scale the throughput to requests per second
-    dropped_requests_per_second = dropped_requests_per_second * (1000 / int(time_interval[:-2]))
+    dropped_requests_per_second = dropped_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
     df['dropped'] = dropped_requests_per_second.reindex(df.index, method='ffill')
     return df
 
@@ -84,10 +84,10 @@ def calculate_tail_latency(df):
 
     # Assuming your DataFrame is named 'df' and the column to calculate the moving average is 'data'
     df_sorted = df.sort_index(inplace=True)
-    tail_latency = df['latency'].rolling(window_size).quantile(0.99)
+    tail_latency = df['latency'].rolling(latency_window_size).quantile(0.99)
     df['tail_latency'] = tail_latency
     # Calculate moving average of latency
-    df['latency_ma'] = df['latency'].rolling(window_size).mean()
+    df['latency_ma'] = df['latency'].rolling(latency_window_size).mean()
     return df
 
 
@@ -237,7 +237,7 @@ def plot_timeseries_lat(df, filename):
     # plot the four waiting time patterns above in ax2, with for loop over the column of df_queuing_delay
     for waiting_time in df_queuing_delay.columns:
         # before plotting, we need to calculate the moving average of the waiting time
-        mean_queuing_delay = df_queuing_delay[waiting_time].rolling(window_size).mean()
+        mean_queuing_delay = df_queuing_delay[waiting_time].rolling(latency_window_size).mean()
         ax1.plot(df_queuing_delay.index, mean_queuing_delay, label=waiting_time)
 
     print(df_queuing_delay.head())
@@ -267,7 +267,7 @@ def analyze_data(filename):
     print(df.head())
     plot_latency_pdf_cdf(df, filename)
     df = calculate_throughput(df)
-    df = calculate_goodput(df, 30)
+    df = calculate_goodput(df, 10)
     df = calculate_loadshedded(df)
     df = calculate_tail_latency(df)
     plot_timeseries_ok(df, filename)

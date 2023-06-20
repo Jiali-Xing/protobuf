@@ -1,19 +1,202 @@
 
 Summary:
-  Count:	36079
-  Total:	14.78 s
-  Slowest:	0 ns
-  Fastest:	0 ns
-  Average:	0.10 ms
-  Requests/sec:	2441.32
+  Count:	153047
+  Total:	4.84 s
+  Slowest:	585.54 ms
+  Fastest:	0.06 ms
+  Average:	23.90 ms
+  Requests/sec:	31634.12
 
 Response time histogram:
+  0.057   [1]      |
+  58.606  [136724] |∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎
+  117.154 [5254]   |∎∎
+  175.702 [3911]   |∎
+  234.251 [3584]   |∎
+  292.799 [1440]   |
+  351.348 [1128]   |
+  409.896 [701]    |
+  468.445 [118]    |
+  526.993 [12]     |
+  585.542 [9]      |
 
 Latency distribution:
+  10 % in 0.10 ms 
+  25 % in 0.25 ms 
+  50 % in 2.71 ms 
+  75 % in 12.61 ms 
+  90 % in 65.54 ms 
+  95 % in 162.37 ms 
+  99 % in 310.73 ms 
 
 Status code distribution:
-  [InvalidArgument]   36079 responses   
+  [OK]            152882 responses   
+  [Unavailable]   165 responses      
 
 Error distribution:
-  [36079]   rpc error: code = InvalidArgument desc = duplicated tokens   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:33454->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39508->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:43240->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35544->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:40776->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:41002->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:40922->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:41708->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37092->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:40588->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:46026->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:42866->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:42284->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:41976->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35374->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38798->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34322->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35932->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34496->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37008->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38900->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:41416->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34620->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:33570->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38264->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38658->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = transport is closing                                                                             
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:43330->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34428->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39852->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37874->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:33966->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:42266->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37238->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38822->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:41496->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34640->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39596->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36432->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:41886->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37474->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34692->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39572->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38134->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36696->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34086->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:40952->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39378->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36082->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:45812->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36912->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38756->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37530->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35916->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:33504->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36706->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34528->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36818->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34218->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:33542->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:42438->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38592->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34120->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34462->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35774->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38678->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36020->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37594->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:42310->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36218->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:41718->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:42274->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37856->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37970->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:40886->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35182->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:42456->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37490->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39090->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39798->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:45148->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36112->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34768->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37712->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38402->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39782->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39398->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:44216->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37812->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39350->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34922->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:33722->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:40354->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36286->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34252->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38374->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:46070->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:41048->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35552->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39012->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:43230->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36056->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:41208->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35524->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:41898->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36544->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:45868->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34780->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35234->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34234->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38778->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37876->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:41474->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:42572->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36858->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35190->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39214->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:40358->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34098->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38354->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:42598->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:41492->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:43486->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:33630->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37562->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37372->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38916->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38544->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:43422->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35262->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36742->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34280->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35460->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35002->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:40374->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:44670->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36180->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:33430->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34494->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36996->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:41570->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:33958->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:33680->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:41940->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:43508->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37726->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:44882->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35156->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:34910->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38060->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37050->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35312->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38842->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:42776->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:38346->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35298->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37742->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:37952->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:35568->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39748->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:33414->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:36186->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39994->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39474->[::1]:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp [::1]:39738->[::1]:50051: use of closed network connection   
 
