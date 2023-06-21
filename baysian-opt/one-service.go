@@ -222,7 +222,7 @@ func run() error {
 
 	charonOptions := map[string]interface{}{
 		"initprice":           initialPrice,
-		"rateLimiting":        true,
+		"rateLimiting":        false,
 		"loadShedding":        true,
 		"pinpointThroughput":  true,
 		"pinpointQueuing":     false,

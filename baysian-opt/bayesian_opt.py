@@ -18,11 +18,14 @@ import re
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import pickle
 
 
 throughput_time_interval = '100ms'
 latency_window_size = '200ms'  # Define the window size as 100 milliseconds
 filename = '/home/ying/Sync/Git/protobuf/ghz-results/charon_stepup_nclients_2000.json'
+rerun = True
+
 
 def read_data(filename):
     with open(filename, 'r') as f:
@@ -65,9 +68,10 @@ def calculate_goodput(df, slo):
     goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
     df['goodput'] = goodput_requests_per_second.reindex(df.index, method='ffill')
     # take out the goodput during the last 2 seconds by index
-    goodput = df[df.index < df.index[-1] - pd.Timedelta(seconds=2)]['goodput']
-    # return the average goodput
-    return goodput.mean()
+    goodput = df[df.index > df.index[-1] - pd.Timedelta(seconds=2)]['goodput']
+    # return the average goodput, but round it to 2 decimal places
+    goodput = goodput.mean().round(-2)
+    return goodput
 
 
 def calculate_throughput(df):
@@ -80,7 +84,7 @@ def calculate_throughput(df):
 
 
 # Define the parameter ranges
-param_ranges = [(10, 100), (10, 30), (5, 30)]  # (priceUpdateRate, throughputThreshold, clientTimeOut)
+param_ranges = [(10, 200), (5, 50), (5, 50)]  # (priceUpdateRate, throughputThreshold, clientTimeOut)
     
 # Define the function that runs the service and client as experiments
 def run_experiments(priceUpdateRate, throughputThreshold, clientTimeOut):
@@ -88,7 +92,7 @@ def run_experiments(priceUpdateRate, throughputThreshold, clientTimeOut):
     process1 = subprocess.Popen([
         "go", "run", "/home/ying/Sync/Git/protobuf/baysian-opt/one-service.go", "A", "50051",
         str(priceUpdateRate), str(throughputThreshold), str(clientTimeOut)
-    ])
+    ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Set the working directory
     working_dir = "/home/ying/Sync/Git/protobuf/ghz-client"
@@ -108,14 +112,6 @@ def run_experiments(priceUpdateRate, throughputThreshold, clientTimeOut):
         "bash", "/home/ying/Sync/Git/protobuf/baysian-opt/kill_services.sh"
     ])
 
-    # Wait for process3 to finish before proceeding
-    # process3.wait()
-
-    # Access the output of process1, process2, process3 if needed
-    # output1, error1 = process1.communicate()
-    # output2, error2 = process2.communicate()
-    # output3, error3 = process3.communicate()
-    # print(output2)
     return
 
 # Define the objective function to optimize
@@ -132,7 +128,7 @@ def objective(priceUpdateRate, throughputThreshold, clientTimeOut):
     # Insert your code for calculating average goodput here
     average_goodput = calculate_average_goodput(filename)  # Replace with your actual function
 
-    return -average_goodput  # Minimize the negative average goodput
+    return average_goodput  # Minimize the negative average goodput
 
 # import the /home/ying/Sync/Git/protobuf/ghz-results/visualize.py file and run its function `analyze_data` 
 # with the optimal results from the Bayesian Optimization
@@ -151,26 +147,36 @@ def plot_opt(priceUpdateRate, throughputThreshold, clientTimeOut):
     analyze_data(filename)
 
 if __name__ == '__main__':
+    if rerun == True:
+        # Create the optimizer
+        optimizer = BayesianOptimization(
+            f=objective,
+            pbounds=dict(zip(['priceUpdateRate', 'throughputThreshold', 'clientTimeOut'], param_ranges)),
+            random_state=1,
+            
+        )
 
-    # Create the optimizer
-    optimizer = BayesianOptimization(
-        f=objective,
-        pbounds=dict(zip(['priceUpdateRate', 'throughputThreshold', 'clientTimeOut'], param_ranges)),
-        random_state=1,
-    )
+        # Perform the optimization
+        optimizer.maximize(
+            init_points=5,  # Number of initial random points
+            n_iter=15,  # Number of optimization iterations
+        )
 
+        # Print the best parameters and objective value found
+        best_params = optimizer.max['params']
+        best_objective = optimizer.max['target']  # Convert back to positive value
+        print("Best Parameters:", best_params)
+        print("Best Average Goodput:", best_objective)
 
-    # Perform the optimization
-    optimizer.maximize(
-        init_points=5,  # Number of initial random points
-        n_iter=10,  # Number of optimization iterations
-    )
-
-
-    # Print the best parameters and objective value found
-    best_params = optimizer.max['params']
-    best_objective = -optimizer.max['target']  # Convert back to positive value
-    print("Best Parameters:", best_params)
-    print("Best Average Goodput:", best_objective)
+        # save the best parameters to a file, pickle
+        with open('optimizer.pkl', 'wb') as f:
+            pickle.dump(optimizer, f)
+    else:
+        # read the best parameters from the file
+        optimizer = pickle.load(open('optimizer.pkl', 'rb'))
+        best_params = optimizer.max['params']
+        best_objective = optimizer.max['target']  # Convert back to positive value
+        print("Best Parameters:", best_params)
+        print("Best Average Goodput:", best_objective)
 
     plot_opt(**best_params)
