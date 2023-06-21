@@ -81,7 +81,7 @@ func main() {
 	}
 
 	charonOptions := map[string]interface{}{
-		"rateLimiting":       false,
+		"rateLimiting":       true,
 		"loadShedding":       true,
 		"pinpointQueuing":    false,
 		"pinpointLatency":    false,
@@ -103,7 +103,7 @@ func main() {
 		runner.WithInsecure(true),
 		// runner.WithTotalRequests(3),
 		// runner.WithRPS(2000),
-		runner.WithAsync(true),
+		// runner.WithAsync(true),
 		runner.WithRunDuration(runDuration),
 		runner.WithLoadSchedule(loadSchedule),
 		runner.WithLoadStart(loadStart),

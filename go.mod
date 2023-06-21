@@ -4,8 +4,10 @@ go 1.20
 
 require (
 	github.com/Jiali-Xing/ghz v0.0.0-20230618042559-a02dd90392dc
+	github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20190729070250-5ae5475bae5e
 	github.com/google/uuid v1.3.0
 	github.com/sirupsen/logrus v1.9.0
+	github.com/tgiannoukos/charon v0.0.0-20230621060039-8e9b5adefa5e
 	google.golang.org/api v0.110.0
 	google.golang.org/genproto v0.0.0-20230227214838-9b19f0bdc514
 	google.golang.org/grpc v1.53.0
@@ -44,7 +46,6 @@ require (
 	github.com/prometheus/common v0.32.1 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
-	github.com/tgiannoukos/charon v0.0.0-20230618034301-81b272d76f52 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect

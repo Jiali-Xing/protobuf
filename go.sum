@@ -41,8 +41,6 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/toml v1.1.0 h1:ksErzDEI1khOiGPgpwuI7x2ebx/uXQNw7xJpn9Eq1+I=
 github.com/BurntSushi/toml v1.1.0/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/Jiali-Xing/ghz v0.0.0-20230618035733-ff82fd2f59d9 h1:77jyAnHbzUEq7BnIyt5/YG3eDOC+PcDW2znvruXQoSE=
-github.com/Jiali-Xing/ghz v0.0.0-20230618035733-ff82fd2f59d9/go.mod h1:lxTct5cnhgW/nstKAqj7GONUFAl11rsQu+Nd9yxFOpI=
 github.com/Jiali-Xing/ghz v0.0.0-20230618042559-a02dd90392dc h1:wIsuIQH8m5okeSkuEvg5BanpkpXzEoJeOtHStpura2w=
 github.com/Jiali-Xing/ghz v0.0.0-20230618042559-a02dd90392dc/go.mod h1:lxTct5cnhgW/nstKAqj7GONUFAl11rsQu+Nd9yxFOpI=
 github.com/Masterminds/goutils v1.1.1 h1:5nUrii3FMTL5diU80unEVvNevw1nH4+ZV4DSLVJLSYI=
@@ -59,6 +57,8 @@ github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf/go.mod h1:ybxpYRF
 github.com/alecthomas/units v0.0.0-20190717042225-c3de453c63f4/go.mod h1:ybxpYRFXyAe+OPACYpWeL0wqObRcbAqCMya13uyzqw0=
 github.com/alecthomas/units v0.0.0-20190924025748-f65c72e2690d/go.mod h1:rBZYJk541a8SKzHPHnH3zbiI+7dagKZ0cgpgrD7Fyho=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
+github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20190729070250-5ae5475bae5e h1:ZOnKnYG1LLgq4W7wZUYj9ntn3RxQ65EZyYqdtFpP2Dw=
+github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20190729070250-5ae5475bae5e/go.mod h1:hEvEpPmuwKO+0TbrDQKIkmX0gW2s2waZHF8pIhEEmpM=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
@@ -286,8 +286,8 @@ github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
-github.com/tgiannoukos/charon v0.0.0-20230618034301-81b272d76f52 h1:6IYvr0DeTFLsQ+HXu5d2/4MO7u9wsPGxjipkK98IdLE=
-github.com/tgiannoukos/charon v0.0.0-20230618034301-81b272d76f52/go.mod h1:qUVp0mj6E1t3QxmGbqb7DgaHNtQWXo66gdIrdsQ80YE=
+github.com/tgiannoukos/charon v0.0.0-20230621060039-8e9b5adefa5e h1:3nfqPqtNcqxnf/9/NsakRTDrUw54HiGpxC/aYC6E+jA=
+github.com/tgiannoukos/charon v0.0.0-20230621060039-8e9b5adefa5e/go.mod h1:qUVp0mj6E1t3QxmGbqb7DgaHNtQWXo66gdIrdsQ80YE=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
