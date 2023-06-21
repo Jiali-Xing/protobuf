@@ -18,13 +18,17 @@ def read_data(filename):
 def convert_to_dataframe(data):
     df = pd.DataFrame(data)
     df['timestamp'] = pd.to_datetime(df['timestamp'])
-    min_timestamp = df['timestamp'].min()
-    df['timestamp'] = df['timestamp'] - min_timestamp + pd.Timestamp('2000-01-01')
+
     # print(df['timestamp'].min())
     df.set_index('timestamp', inplace=True)
     df['latency'] = df['latency'] / 1000000
-    # drop the rows if the `status` is not `OK`
-    df = df[df['status'] == 'OK']
+    # drop the rows if the `status` is Unavailable
+    df = df[df['status'] != 'Unavailable']
+    # remove the data within first second of df
+    df = df[df.index > df.index[0] + pd.Timedelta(seconds=1)]
+
+    min_timestamp = df.index.min()
+    df.index = df.index - min_timestamp + pd.Timestamp('2000-01-01')
     return df
 
 
@@ -75,15 +79,15 @@ def calculate_loadshedded(df):
     # scale the throughput to requests per second
     dropped_requests_per_second = dropped_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
     df['dropped'] = dropped_requests_per_second.reindex(df.index, method='ffill')
+    print(df['dropped'].describe())
+    print(df['dropped'])
     return df
 
 
 def calculate_tail_latency(df):
-    # calculate the moving average window length such that the window size is 100 milliseconds
-    # based on the df.index frequency
-
+    # Only cound the latency of successful requests, i.e., status == 'OK'
+    df.sort_index(inplace=True)
     # Assuming your DataFrame is named 'df' and the column to calculate the moving average is 'data'
-    df_sorted = df.sort_index(inplace=True)
     tail_latency = df['latency'].rolling(latency_window_size).quantile(0.99)
     df['tail_latency'] = tail_latency
     # Calculate moving average of latency
@@ -161,12 +165,10 @@ def extract_waiting_times(file_path):
     
     # sort the df by timestamp
     df.sort_index(inplace=True)
-    # remove the first many rows in df if the rows has zero waiting time
-    # for i in range(len(df)):
-    #     if df.iloc[i]['Incremental Waiting Time Maximum'] != 0:
-    #         break
-    # df = df.iloc[i:]     
-    
+
+    # remove the data within first second of df
+    df = df[df.index > df.index[0] + pd.Timedelta(seconds=1)]
+
     min_timestamp = df.index.min()
     df.index = df.index - min_timestamp + pd.Timestamp('2000-01-01')
     return df
@@ -198,29 +200,36 @@ def plot_timeseries_ok(df, filename):
 
     lines1, labels1 = ax1.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
-    ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', bbox_to_anchor=(0, 1), ncol=2)
+    # move the legend to be above the plot
+    ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=3)
     ax2.legend().remove()
 
     concurrent_clients = re.findall(r"\d+", filename)[0]
     start_index = filename.rfind("/") + 1 if "/" in filename else 0
     end_index = filename.index("_") if "_" in filename else len(filename)
     mechanism = filename[start_index:end_index]
-    plt.title(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
+    # move the title to be above the plot and above the legend
+    plt.title(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}", y=1.3)
 
     plt.savefig(mechanism + '.latency-throughput.png')
     plt.show()
 
 # plot_timeseries_lat is same as the above function, 
 # but in ax2 we add 4 more line from the waiting time dataframe
-def plot_timeseries_lat(df, filename):
+def plot_timeseries_lat(df, filename, computation_time=0):
     fig, ax1 = plt.subplots(figsize=(12, 4))
     ax1.set_xlabel('Time')
     ax1.set_ylabel('Latencies (ms)', color='tab:red')
     ax1.tick_params(axis='y', labelcolor='tab:red')
-    ax1.plot(df.index, df['latency_ma'], linestyle='--', label='Average Latency (e2e)',)
-    ax1.plot(df.index, df['tail_latency'], linestyle='-.', label='99% Tail Latency (e2e)',)
+    # bound the latency to be above 0.001
+
+    # if computation_time > 0, label is "Average Latency (e2e) minus computation time", otherwise, label is "Average Latency (e2e)"
+    ax1.plot(df.index, np.maximum(0.001, df['latency_ma']-computation_time), linestyle='--', 
+             label='Average Latency (e2e)' if computation_time == 0 else 'Average Latency (e2e) minus computation time')
+    ax1.plot(df.index, np.maximum(0.001, df['tail_latency']-computation_time), linestyle='-.', 
+             label='99% Tail Latency (e2e)' if computation_time == 0 else '99% Tail Latency (e2e) minus computation time')
     # set the y axis to be above the 0.001
-    ax1.set_ylim(0.001, np.max(df['tail_latency'])*1.1)
+    ax1.set_ylim(0.01, np.max(df['tail_latency'])*1.1)
     ax1.set_yscale('log')
 
     # # ax2 = ax1.twinx()
@@ -240,7 +249,7 @@ def plot_timeseries_lat(df, filename):
         mean_queuing_delay = df_queuing_delay[waiting_time].rolling(latency_window_size).mean()
         ax1.plot(df_queuing_delay.index, mean_queuing_delay, label=waiting_time)
 
-    print(df_queuing_delay.head())
+    # print(df_queuing_delay.head())
     # ax2.tick_params(axis='y', labelcolor='tab:blue')
     # ax2.set_ylim(0, 3000)
     # ax2.grid(True)
@@ -264,14 +273,14 @@ def plot_timeseries_lat(df, filename):
 def analyze_data(filename):
     data = read_data(filename)
     df = convert_to_dataframe(data)
-    print(df.head())
+    # print(df.head())
     plot_latency_pdf_cdf(df, filename)
     df = calculate_throughput(df)
-    df = calculate_goodput(df, 10)
+    df = calculate_goodput(df, 20)
     df = calculate_loadshedded(df)
     df = calculate_tail_latency(df)
     plot_timeseries_ok(df, filename)
-    plot_timeseries_lat(df, filename)
+    plot_timeseries_lat(df, filename, 10)
     summary = df.groupby('status')['status'].count().reset_index(name='count')
     print(summary)
     # summary = df.groupby('error')['error'].count().reset_index(name='count')

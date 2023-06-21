@@ -30,10 +30,10 @@ var (
 	message      = getEnv("GREETING", "Hello, from Client!")
 	URLServiceA  = getEnv("SERVICE_A_URL", "localhost:50051")
 	log          = logrus.New()
-	enableCharon = false
-	runDuration  = time.Second * 5
+	enableCharon = true
+	runDuration  = time.Second*5 + 2
 	loadSchedule = "step"
-	loadStart    = uint(25000)
+	loadStart    = uint(20000)
 	loadEnd      = uint(50000)
 	loadStep     = 5000
 )
@@ -103,7 +103,7 @@ func main() {
 		runner.WithInsecure(true),
 		// runner.WithTotalRequests(3),
 		// runner.WithRPS(2000),
-		// runner.WithAsync(true),
+		runner.WithAsync(true),
 		runner.WithRunDuration(runDuration),
 		runner.WithLoadSchedule(loadSchedule),
 		runner.WithLoadStart(loadStart),
