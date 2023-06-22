@@ -1,4 +1,4 @@
-# In this file, we loop over 3 parameters: priceUpdateRate, throughputThreshold, and clientTimeOut, as param1 2 3
+# In this file, we loop over 3 parameters: priceUpdateRate, controlTarget, and clientTimeOut, as param1 2 3
 # run the following bash command:
     # bash go run ./one-service.go A 50051 param1 param2 param3 & > ./server.output
     # cd /home/ying/Sync/Git/protobuf/ghz-client
@@ -20,6 +20,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pickle
 
+# import the /home/ying/Sync/Git/protobuf/ghz-results/visualize.py file and run its function `analyze_data` 
+# with the optimal results from the Bayesian Optimization
+sys.path.append('/home/ying/Sync/Git/protobuf/ghz-results')
+from visualize import analyze_data
 
 throughput_time_interval = '100ms'
 latency_window_size = '200ms'  # Define the window size as 100 milliseconds
@@ -84,14 +88,14 @@ def calculate_throughput(df):
 
 
 # Define the parameter ranges
-param_ranges = [(10, 200), (5, 50), (5, 50)]  # (priceUpdateRate, throughputThreshold, clientTimeOut)
+param_ranges = [(10, 200), (100, 20000), (5, 50)]  # (priceUpdateRate, controlTarget, clientTimeOut)
     
 # Define the function that runs the service and client as experiments
-def run_experiments(priceUpdateRate, throughputThreshold, clientTimeOut):
+def run_experiments(priceUpdateRate, controlTarget, clientTimeOut):
     # Run the bash commands
     process1 = subprocess.Popen([
         "go", "run", "/home/ying/Sync/Git/protobuf/baysian-opt/one-service.go", "A", "50051",
-        str(priceUpdateRate), str(throughputThreshold), str(clientTimeOut)
+        str(priceUpdateRate), str(controlTarget), str(clientTimeOut)
     ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Set the working directory
@@ -115,14 +119,14 @@ def run_experiments(priceUpdateRate, throughputThreshold, clientTimeOut):
     return
 
 # Define the objective function to optimize
-def objective(priceUpdateRate, throughputThreshold, clientTimeOut):
+def objective(priceUpdateRate, controlTarget, clientTimeOut):
     # Convert the parameters to int64
     priceUpdateRate = int(priceUpdateRate)
-    throughputThreshold = int(throughputThreshold)
+    controlTarget = int(controlTarget)
     clientTimeOut = int(clientTimeOut)
 
     # Run the experiments
-    run_experiments(priceUpdateRate, throughputThreshold, clientTimeOut)
+    run_experiments(priceUpdateRate, controlTarget, clientTimeOut)
 
     # Perform the calculations for average goodput
     # Insert your code for calculating average goodput here
@@ -130,19 +134,15 @@ def objective(priceUpdateRate, throughputThreshold, clientTimeOut):
 
     return average_goodput  # Minimize the negative average goodput
 
-# import the /home/ying/Sync/Git/protobuf/ghz-results/visualize.py file and run its function `analyze_data` 
-# with the optimal results from the Bayesian Optimization
-sys.path.append('/home/ying/Sync/Git/protobuf/ghz-results')
-from visualize import analyze_data
 
-def plot_opt(priceUpdateRate, throughputThreshold, clientTimeOut):
+def plot_opt(priceUpdateRate, controlTarget, clientTimeOut):
     # Convert the parameters to int64
     priceUpdateRate = int(priceUpdateRate)
-    throughputThreshold = int(throughputThreshold)
+    controlTarget = int(controlTarget)
     clientTimeOut = int(clientTimeOut)
 
     # Run the experiments
-    run_experiments(priceUpdateRate, throughputThreshold, clientTimeOut)
+    run_experiments(priceUpdateRate, controlTarget, clientTimeOut)
 
     analyze_data(filename)
 
@@ -151,7 +151,7 @@ if __name__ == '__main__':
         # Create the optimizer
         optimizer = BayesianOptimization(
             f=objective,
-            pbounds=dict(zip(['priceUpdateRate', 'throughputThreshold', 'clientTimeOut'], param_ranges)),
+            pbounds=dict(zip(['priceUpdateRate', 'controlTarget', 'clientTimeOut'], param_ranges)),
             random_state=1,
             
         )
@@ -159,7 +159,7 @@ if __name__ == '__main__':
         # Perform the optimization
         optimizer.maximize(
             init_points=5,  # Number of initial random points
-            n_iter=15,  # Number of optimization iterations
+            n_iter=25,  # Number of optimization iterations
         )
 
         # Print the best parameters and objective value found
