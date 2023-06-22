@@ -28,7 +28,7 @@ from visualize import analyze_data
 throughput_time_interval = '100ms'
 latency_window_size = '200ms'  # Define the window size as 100 milliseconds
 filename = '/home/ying/Sync/Git/protobuf/ghz-results/charon_stepup_nclients_2000.json'
-rerun = True
+rerun = False
 
 
 def read_data(filename):
@@ -88,15 +88,22 @@ def calculate_throughput(df):
 
 
 # Define the parameter ranges
-param_ranges = [(10, 200), (100, 20000), (5, 50)]  # (priceUpdateRate, controlTarget, clientTimeOut)
+param_ranges = [(10, 200), (1, 50), (5, 50)]  # (priceUpdateRate, controlTarget, clientTimeOut)
+# param_ranges = [(10, 200), (100, 20000), (5, 50)]  # (priceUpdateRate, controlTarget, clientTimeOut)
     
 # Define the function that runs the service and client as experiments
 def run_experiments(priceUpdateRate, controlTarget, clientTimeOut):
-    # Run the bash commands
-    process1 = subprocess.Popen([
-        "go", "run", "/home/ying/Sync/Git/protobuf/baysian-opt/one-service.go", "A", "50051",
-        str(priceUpdateRate), str(controlTarget), str(clientTimeOut)
-    ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output_file_path = '/home/ying/Sync/Git/service-app/services/protobuf-grpc/server.output'
+    # Open the file in write mode
+    with open(output_file_path, 'w') as output_file:
+        process1 = subprocess.Popen(
+            [
+                "go", "run", "/home/ying/Sync/Git/protobuf/baysian-opt/one-service.go", "A", "50051",
+                str(priceUpdateRate), str(controlTarget), str(clientTimeOut)
+            ],
+            stdout=output_file,  # Save stdout to the file
+            stderr=subprocess.PIPE
+        )
 
     # Set the working directory
     working_dir = "/home/ying/Sync/Git/protobuf/ghz-client"

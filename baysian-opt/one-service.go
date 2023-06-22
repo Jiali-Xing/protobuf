@@ -222,17 +222,17 @@ func run() error {
 
 	charonOptions := map[string]interface{}{
 		"initprice":          initialPrice,
-		"rateLimiting":       false,
+		"rateLimiting":       true,
 		"loadShedding":       true,
-		"pinpointThroughput": false,
-		"pinpointQueuing":    true,
+		"pinpointQueuing":    false,
+		"pinpointThroughput": true,
 		"pinpointLatency":    false,
 		"debug":              false,
 		"debugFreq":          int64(20000),
 		"priceUpdateRate":    time.Millisecond * time.Duration(args[0]),
 		"clientTimeOut":      time.Millisecond * time.Duration(args[2]),
-		"latencyThreshold":   time.Microsecond * time.Duration(args[1]),
-		// "throughputThreshold": int64(args[1] * args[0]),
+		// "latencyThreshold":    time.Microsecond * time.Duration(args[1]),
+		"throughputThreshold": int64(args[1] * args[0]),
 		// "priceStep":           int64(1),
 		// "priceUpdateRate":    time.Second,
 	}

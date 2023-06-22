@@ -85,7 +85,7 @@ func main() {
 		"loadShedding":       true,
 		"pinpointQueuing":    false,
 		"pinpointLatency":    false,
-		"pinpointThroughput": false,
+		"pinpointThroughput": true,
 		"debug":              false,
 		"debugFreq":          int64(2000),
 		"tokensLeft":         int64(0),
