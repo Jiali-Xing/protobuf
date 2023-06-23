@@ -28,7 +28,7 @@ var (
 	logLevel     = getEnv("LOG_LEVEL", "info")
 	serviceName  = getEnv("SERVICE_NAME", "Client")
 	message      = getEnv("GREETING", "Hello, from Client!")
-	URLServiceA  = getEnv("SERVICE_A_URL", "1.2.4.114:50051")
+	URLServiceA  = getEnv("SERVICE_A_URL", "localhost:50051")
 	log          = logrus.New()
 	enableCharon = true
 	runDuration  = time.Second * 10
@@ -87,15 +87,11 @@ func main() {
 	}
 
 	charonOptions := map[string]interface{}{
-		"rateLimiting":       true,
-		"loadShedding":       true,
-		"pinpointQueuing":    true,
-		"pinpointLatency":    false,
-		"pinpointThroughput": false,
-		"debug":              true,
-		"debugFreq":          int64(2000),
-		"tokensLeft":         int64(0),
-		"clientTimeOut":      time.Millisecond * time.Duration(arg),
+		"rateLimiting":  true,
+		"debug":         true,
+		"debugFreq":     int64(2000),
+		"tokensLeft":    int64(0),
+		"clientTimeOut": time.Millisecond * time.Duration(arg),
 		// "latencyThreshold":   time.Millisecond * 7,
 	}
 
@@ -118,8 +114,9 @@ func main() {
 		runner.WithLoadStep(loadStep),
 		runner.WithLoadStepDuration(time.Millisecond*500),
 		runner.WithCharon(enableCharon),
-		runner.WithCharonEntry("grpc-service-1:50051"),
+		runner.WithCharonEntry("50051"),
 		runner.WithCharonOptions(charonOptions),
+		runner.WithEnableCompression(false),
 	)
 
 	if err != nil {
