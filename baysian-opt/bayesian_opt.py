@@ -1,4 +1,4 @@
-# In this file, we loop over 3 parameters: priceUpdateRate, controlTarget, and clientTimeOut, as param1 2 3
+# In this file, we loop over 3 parameters: priceUpdateRate, delayTarget, and clientTimeout, as param1 2 3
 # run the following bash command:
     # bash go run ./one-service.go A 50051 param1 param2 param3 & > ./server.output
     # cd /home/ying/Sync/Git/protobuf/ghz-client
@@ -71,10 +71,11 @@ def calculate_goodput(df, slo):
     # scale the throughput to requests per second
     goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
     df['goodput'] = goodput_requests_per_second.reindex(df.index, method='ffill')
-    # take out the goodput during the last 2 seconds by index
-    goodput = df[df.index > df.index[-1] - pd.Timedelta(seconds=2)]['goodput']
-    # return the average goodput, but round it to 2 decimal places
-    goodput = goodput.mean().round(-2)
+    # take out the goodput during the last 3 seconds by index
+    goodput = df[df.index > df.index[-1] - pd.Timedelta(seconds=3)]['goodput']
+    # return the goodput, but round it to 2 decimal places
+    goodput = goodput.mean()
+    goodput = round(goodput, -2)
     return goodput
 
 
@@ -88,18 +89,19 @@ def calculate_throughput(df):
 
 
 # Define the parameter ranges
-param_ranges = [(10, 200), (1, 50), (5, 50)]  # (priceUpdateRate, controlTarget, clientTimeOut)
-# param_ranges = [(10, 200), (100, 20000), (5, 50)]  # (priceUpdateRate, controlTarget, clientTimeOut)
+# param_ranges = [(10, 200), (1, 50), (100, 20000)]  # (priceUpdateRate, delayTarget, clientTimeout)
+# param_ranges = [(10, 200), (1, 50), (5, 50)]  # (priceUpdateRate, delayTarget, clientTimeout)
+param_ranges = [(10, 200), (100, 20000), (5, 50)]  # (priceUpdateRate, delayTarget, clientTimeout)
     
 # Define the function that runs the service and client as experiments
-def run_experiments(priceUpdateRate, controlTarget, clientTimeOut):
+def run_experiments(priceUpdateRate, delayTarget, clientTimeout):
     output_file_path = '/home/ying/Sync/Git/service-app/services/protobuf-grpc/server.output'
     # Open the file in write mode
     with open(output_file_path, 'w') as output_file:
         process1 = subprocess.Popen(
             [
                 "go", "run", "/home/ying/Sync/Git/protobuf/baysian-opt/one-service.go", "A", "50051",
-                str(priceUpdateRate), str(controlTarget), str(clientTimeOut)
+                str(priceUpdateRate), str(delayTarget), str(clientTimeout)
             ],
             stdout=output_file,  # Save stdout to the file
             stderr=subprocess.PIPE
@@ -108,13 +110,14 @@ def run_experiments(priceUpdateRate, controlTarget, clientTimeOut):
     # Set the working directory
     working_dir = "/home/ying/Sync/Git/protobuf/ghz-client"
 
-    process2 = subprocess.run([
-        "go", "run", "/home/ying/Sync/Git/protobuf/ghz-client/main.go", "2000"
-    ], cwd=working_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # save the stdout to working_dir/ghz.output
+    with open(working_dir + '/ghz.output', 'w') as output_file:
+        process2 = subprocess.run([
+            "go", "run", "/home/ying/Sync/Git/protobuf/ghz-client/main.go", str(clientTimeout)
+        ], cwd=working_dir, stdout=output_file, stderr=subprocess.PIPE)
 
     # Retrieve the stdout and stderr outputs
-    stdout_output = process2.stdout.decode('utf-8')
-    stderr_output = process2.stderr.decode('utf-8')
+    # stderr_output = process2.stderr.decode('utf-8')
 
     # Wait for process2 to finish before proceeding
     # process2.wait()
@@ -126,14 +129,14 @@ def run_experiments(priceUpdateRate, controlTarget, clientTimeOut):
     return
 
 # Define the objective function to optimize
-def objective(priceUpdateRate, controlTarget, clientTimeOut):
+def objective(priceUpdateRate, delayTarget, clientTimeout):
     # Convert the parameters to int64
     priceUpdateRate = int(priceUpdateRate)
-    controlTarget = int(controlTarget)
-    clientTimeOut = int(clientTimeOut)
+    delayTarget = int(delayTarget)
+    clientTimeout = int(clientTimeout)
 
     # Run the experiments
-    run_experiments(priceUpdateRate, controlTarget, clientTimeOut)
+    run_experiments(priceUpdateRate, delayTarget, clientTimeout)
 
     # Perform the calculations for average goodput
     # Insert your code for calculating average goodput here
@@ -142,14 +145,15 @@ def objective(priceUpdateRate, controlTarget, clientTimeOut):
     return average_goodput  # Minimize the negative average goodput
 
 
-def plot_opt(priceUpdateRate, controlTarget, clientTimeOut):
+def plot_opt(priceUpdateRate, delayTarget, clientTimeout):
     # Convert the parameters to int64
     priceUpdateRate = int(priceUpdateRate)
-    controlTarget = int(controlTarget)
-    clientTimeOut = int(clientTimeOut)
+    delayTarget = int(delayTarget)
+    # clientTimeout = int(clientTimeout)
+    clientTimeout = 1
 
     # Run the experiments
-    run_experiments(priceUpdateRate, controlTarget, clientTimeOut)
+    run_experiments(priceUpdateRate, delayTarget, clientTimeout)
 
     analyze_data(filename)
 
@@ -158,9 +162,8 @@ if __name__ == '__main__':
         # Create the optimizer
         optimizer = BayesianOptimization(
             f=objective,
-            pbounds=dict(zip(['priceUpdateRate', 'controlTarget', 'clientTimeOut'], param_ranges)),
+            pbounds=dict(zip(['priceUpdateRate', 'delayTarget', 'clientTimeout'], param_ranges)),
             random_state=1,
-            
         )
 
         # Perform the optimization

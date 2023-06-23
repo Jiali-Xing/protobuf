@@ -31,11 +31,11 @@ var (
 	URLServiceA  = getEnv("SERVICE_A_URL", "localhost:50051")
 	log          = logrus.New()
 	enableCharon = true
-	runDuration  = time.Second*5 + 2
+	runDuration  = time.Second * 10
 	loadSchedule = "step"
-	loadStart    = uint(20000)
+	loadStart    = uint(10000)
 	loadEnd      = uint(50000)
-	loadStep     = 5000
+	loadStep     = 2000
 )
 
 func getHostname() string {
@@ -73,22 +73,29 @@ func main() {
 	}
 
 	// Get the concurrency number from the second input argument
-	concurrencyStr := os.Args[1]
-	concurrency, err := strconv.Atoi(concurrencyStr)
+	// concurrencyStr := os.Args[1]
+	// concurrency, err := strconv.Atoi(concurrencyStr)
+	// if err != nil {
+	// 	fmt.Println("Invalid concurrency value:", concurrencyStr)
+	// 	os.Exit(1)
+	// }
+	concurrency := 2000
+
+	arg, err := strconv.ParseInt(os.Args[1], 10, 64)
 	if err != nil {
-		fmt.Println("Invalid concurrency value:", concurrencyStr)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
 	charonOptions := map[string]interface{}{
 		"rateLimiting":       true,
 		"loadShedding":       true,
-		"pinpointQueuing":    false,
+		"pinpointQueuing":    true,
 		"pinpointLatency":    false,
-		"pinpointThroughput": true,
-		"debug":              false,
+		"pinpointThroughput": false,
+		"debug":              true,
 		"debugFreq":          int64(2000),
 		"tokensLeft":         int64(0),
+		"clientTimeOut":      time.Millisecond * time.Duration(arg),
 		// "latencyThreshold":   time.Millisecond * 7,
 	}
 
@@ -109,7 +116,7 @@ func main() {
 		runner.WithLoadStart(loadStart),
 		runner.WithLoadEnd(loadEnd),
 		runner.WithLoadStep(loadStep),
-		runner.WithLoadStepDuration(time.Second*1),
+		runner.WithLoadStepDuration(time.Millisecond*500),
 		runner.WithCharon(enableCharon),
 		runner.WithCharonEntry("50051"),
 		runner.WithCharonOptions(charonOptions),

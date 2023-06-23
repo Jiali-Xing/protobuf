@@ -174,6 +174,47 @@ def extract_waiting_times(file_path):
     return df
 
 
+# similar to extract_waiting_times, we extract the ownPrice update:
+def extract_ownPrice_update(file_path):
+    # Define the regular expression patterns for extracting timestamp and waiting time
+    timestamp_pattern = r"LOG: (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+[-+]\d{2}:\d{2})"
+    price_update_patterns = r"Own price updated to (\d+)"
+
+    data = []
+    timestamps = []
+
+    with open(file_path, "r") as file:
+        for line in file:
+            if "Update OwnPrice" in line:
+                match_timestamp = re.search(timestamp_pattern, line)
+                if match_timestamp:
+                    timestamps.append(match_timestamp.group(1))
+
+                match = re.search(price_update_patterns, line)
+                if match:
+                    data.append(int(match.group(1)))
+
+    # print(data)
+    # Create a DataFrame with timestamp as one column with waiting times as columns
+    df = pd.DataFrame({"ownPrice": data})
+    df["timestamp"] = pd.to_datetime(timestamps)
+    # adjust the index of df_queuing_delay to match the index of df, time wise
+    # calculate the second last mininum timestamp of df 
+    # df['timestamp'] = df['timestamp'] - min_timestamp + pd.Timestamp('2000-01-01')
+    # print(df['timestamp'].min())
+    df.set_index('timestamp', inplace=True)
+    
+    # sort the df by timestamp
+    df.sort_index(inplace=True)
+
+    # remove the data within first second of df
+    df = df[df.index > df.index[0] + pd.Timedelta(seconds=1)]
+
+    min_timestamp = df.index.min()
+    df.index = df.index - min_timestamp + pd.Timestamp('2000-01-01')
+    return df
+
+
 def plot_timeseries_ok(df, filename):
     fig, ax1 = plt.subplots(figsize=(12, 4))
     ax1.set_xlabel('Time')
