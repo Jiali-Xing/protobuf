@@ -186,13 +186,13 @@ def extract_ownPrice_update(file_path):
     with open(file_path, "r") as file:
         for line in file:
             if "Update OwnPrice" in line:
-                match_timestamp = re.search(timestamp_pattern, line)
-                if match_timestamp:
-                    timestamps.append(match_timestamp.group(1))
-
                 match = re.search(price_update_patterns, line)
                 if match:
                     data.append(int(match.group(1)))
+
+                    match_timestamp = re.search(timestamp_pattern, line)
+                    if match_timestamp:
+                        timestamps.append(match_timestamp.group(1))
 
     # print(data)
     # Create a DataFrame with timestamp as one column with waiting times as columns
@@ -308,7 +308,54 @@ def plot_timeseries_lat(df, filename, computation_time=0):
 
     plt.savefig(mechanism + '.queuing-delay.png')
     plt.show()
+
+
+
+def plot_timeseries_split(df, filename, computation_time=0):
+    fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, figsize=(12, 10), sharex=True)
     
+    ax1.set_ylabel('Latencies (ms)', color='tab:red')
+    ax1.tick_params(axis='y', labelcolor='tab:red')
+    ax1.plot(df.index, np.maximum(0.001, df['latency_ma']-computation_time), linestyle='--', 
+             label='Average Latency (e2e)' if computation_time == 0 else 'Average Latency (e2e) minus computation time')
+    ax1.plot(df.index, np.maximum(0.001, df['tail_latency']-computation_time), linestyle='-.', 
+             label='99% Tail Latency (e2e)' if computation_time == 0 else '99% Tail Latency (e2e) minus computation time')
+    ax1.set_ylim(0.01, np.max(df['tail_latency'])*1.1)
+    ax1.set_yscale('log')
+
+    ax2.set_ylabel('Throughput (req/s)', color='tab:blue')
+    ax2.plot(df.index, df['throughput'], 'r-.', )
+    ax2.plot(df.index, df['goodput'], color='green', linestyle='--')
+    ax2.plot(df.index, df['dropped'].fillna(0)+df['throughput'], color='tab:blue', linestyle='-', label='Total Req')
+    ax2.fill_between(df.index, 0, df['goodput'], color='green', alpha=0.2, label='Goodput')
+    ax2.fill_between(df.index, df['goodput'], df['throughput'], color='red', alpha=0.3, label='SLO Violated Req')
+    ax2.fill_between(df.index, df['throughput'], df['throughput'] + df['dropped'], color='c', alpha=0.3, label='Dropped Req')
+    ax2.tick_params(axis='y', labelcolor='tab:blue')
+    # ax2.set_ylim(0, 3000)
+    ax2.grid(True)
+
+    df_queuing_delay = extract_waiting_times("/home/ying/Sync/Git/service-app/services/protobuf-grpc/server.output")
+    for waiting_time in df_queuing_delay.columns:
+        mean_queuing_delay = df_queuing_delay[waiting_time].rolling(latency_window_size).mean()
+        ax2.plot(df_queuing_delay.index, mean_queuing_delay, label=waiting_time)
+
+    ax1.legend()
+    ax2.legend()
+    
+    df_price = extract_ownPrice_update("/home/ying/Sync/Git/service-app/services/protobuf-grpc/server.output")
+    moving_average_price = df_price['ownPrice'].rolling(latency_window_size).mean()
+    ax3.plot(df_price.index, moving_average_price, label='Service Price')
+    ax3.set_ylabel('Service Price')
+    ax3.set_xlabel('Time')
+
+    concurrent_clients = re.findall(r"\d+", filename)[0]
+    start_index = filename.rfind("/") + 1 if "/" in filename else 0
+    end_index = filename.index("_") if "_" in filename else len(filename)
+    mechanism = filename[start_index:end_index]
+    plt.suptitle(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
+
+    plt.savefig(mechanism + '.price.png')
+    plt.show()
 
 
 def analyze_data(filename):
@@ -322,6 +369,7 @@ def analyze_data(filename):
     df = calculate_tail_latency(df)
     plot_timeseries_ok(df, filename)
     plot_timeseries_lat(df, filename, 10)
+    plot_timeseries_split(df, filename, 10)
     summary = df.groupby('status')['status'].count().reset_index(name='count')
     print(summary)
     # summary = df.groupby('error')['error'].count().reset_index(name='count')
