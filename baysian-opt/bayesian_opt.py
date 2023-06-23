@@ -113,7 +113,7 @@ def run_experiments(priceUpdateRate, delayTarget, clientTimeout):
     # save the stdout to working_dir/ghz.output
     with open(working_dir + '/ghz.output', 'w') as output_file:
         process2 = subprocess.run([
-            "go", "run", "/home/ying/Sync/Git/protobuf/ghz-client/main.go", str(clientTimeout)
+            "go", "run", "/home/ying/Sync/Git/protobuf/ghz-client/old_main.go", str(clientTimeout)
         ], cwd=working_dir, stdout=output_file, stderr=subprocess.PIPE)
 
     # Retrieve the stdout and stderr outputs

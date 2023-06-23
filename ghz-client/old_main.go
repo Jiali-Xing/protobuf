@@ -87,15 +87,11 @@ func main() {
 	}
 
 	charonOptions := map[string]interface{}{
-		"rateLimiting":       true,
-		"loadShedding":       true,
-		"pinpointQueuing":    true,
-		"pinpointLatency":    false,
-		"pinpointThroughput": false,
-		"debug":              true,
-		"debugFreq":          int64(2000),
-		"tokensLeft":         int64(0),
-		"clientTimeOut":      time.Millisecond * time.Duration(arg),
+		"rateLimiting":  true,
+		"debug":         true,
+		"debugFreq":     int64(2000),
+		"tokensLeft":    int64(0),
+		"clientTimeOut": time.Millisecond * time.Duration(arg),
 		// "latencyThreshold":   time.Millisecond * 7,
 	}
 

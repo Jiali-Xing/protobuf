@@ -3,11 +3,11 @@ module github.com/Jiali-Xing/protobuf
 go 1.20
 
 require (
-	github.com/Jiali-Xing/ghz v0.0.0-20230622204340-b1295b6f8e68
+	github.com/Jiali-Xing/ghz v0.0.0-20230622234621-4a4714f199b7
 	github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20190729070250-5ae5475bae5e
 	github.com/google/uuid v1.3.0
 	github.com/sirupsen/logrus v1.9.0
-	github.com/tgiannoukos/charon v0.0.0-20230622201601-cdbcd318059b
+	github.com/tgiannoukos/charon v0.0.0-20230623010206-7e8a786aaed4
 	google.golang.org/api v0.110.0
 	google.golang.org/genproto v0.0.0-20230227214838-9b19f0bdc514
 	google.golang.org/grpc v1.53.0
