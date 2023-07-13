@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/Jiali-Xing/ghz/printer"
@@ -25,17 +24,24 @@ import (
 //   0.0.0.0:50051
 
 var (
-	logLevel     = getEnv("LOG_LEVEL", "info")
+	// logLevel     = getEnv("LOG_LEVEL", "info")
 	serviceName  = getEnv("SERVICE_NAME", "Client")
 	message      = getEnv("GREETING", "Hello, from Client!")
 	URLServiceA  = getEnv("SERVICE_A_URL", "localhost:50051")
 	log          = logrus.New()
 	enableCharon = true
-	runDuration  = time.Second * 10
 	loadSchedule = "step"
-	loadStart    = uint(10000)
-	loadEnd      = uint(50000)
-	loadStep     = 2000
+	// runDuration  = time.Second * 10
+	// loadStart    = uint(10000)
+	// loadEnd      = uint(30000)
+	// loadStep     = 1000
+	constantLoad     = false
+	runDuration      = time.Second * 10
+	capacity         = 24000
+	loadStart        = uint(capacity / 2)
+	loadEnd          = uint(capacity * 3 / 2)
+	loadStep         = capacity / 2
+	loadStepDuration = time.Second * 2
 )
 
 func getHostname() string {
@@ -79,45 +85,77 @@ func main() {
 	// 	fmt.Println("Invalid concurrency value:", concurrencyStr)
 	// 	os.Exit(1)
 	// }
-	concurrency := 2000
+	concurrency := 1000
 
-	arg, err := strconv.ParseInt(os.Args[1], 10, 64)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// arg, err := strconv.ParseInt(os.Args[1], 10, 64)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
 	charonOptions := map[string]interface{}{
-		"rateLimiting":  true,
-		"debug":         true,
-		"debugFreq":     int64(2000),
-		"tokensLeft":    int64(0),
-		"clientTimeOut": time.Millisecond * time.Duration(arg),
+		// "rateLimitWaiting": true,
+		"rateLimiting": true,
+		"debug":        true,
+		"debugFreq":    int64(10000),
+		"tokensLeft":   int64(0),
+		"initprice":    int64(10),
+		// "clientTimeOut":   time.Millisecond * time.Duration(arg),
+		"clientTimeOut":   time.Duration(0),
+		"tokenUpdateStep": int64(10),
+		"tokenUpdateRate": time.Millisecond * 10,
+		// "randomRateLimit": int64(33),
+		// "invokeAfterRL":   true,
+		// "clientBackoff": time.Millisecond * 50,
+		"tokenRefillDist": "poisson",
+		"tokenStrategy":   "uniform",
 		// "latencyThreshold":   time.Millisecond * 7,
 	}
 
-	report, err := runner.Run(
-		"greeting.v3.GreetingService/Greeting",
-		URLServiceA,
-		runner.WithProtoFile("../greeting.proto", []string{}),
-		runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
-		runner.WithMetadata(md),
-		runner.WithConcurrency(uint(concurrency)),
-		runner.WithConnections(uint(concurrency)),
-		runner.WithInsecure(true),
-		// runner.WithTotalRequests(3),
-		// runner.WithRPS(2000),
-		// runner.WithAsync(true),
-		runner.WithRunDuration(runDuration),
-		runner.WithLoadSchedule(loadSchedule),
-		runner.WithLoadStart(loadStart),
-		runner.WithLoadEnd(loadEnd),
-		runner.WithLoadStep(loadStep),
-		runner.WithLoadStepDuration(time.Millisecond*500),
-		runner.WithCharon(enableCharon),
-		runner.WithCharonEntry("50051"),
-		runner.WithCharonOptions(charonOptions),
-		runner.WithEnableCompression(false),
-	)
+	var err error
+	var report *runner.Report
+	if constantLoad {
+		report, err = runner.Run(
+			"greeting.v3.GreetingService/Greeting",
+			URLServiceA,
+			runner.WithProtoFile("../greeting.proto", []string{}),
+			runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
+			runner.WithMetadata(md),
+			runner.WithConcurrency(uint(concurrency)),
+			runner.WithConnections(uint(concurrency)),
+			runner.WithInsecure(true),
+			runner.WithRPS(uint(capacity)),
+			runner.WithRunDuration(runDuration),
+			runner.WithLoadSchedule("const"),
+			runner.WithCharon(enableCharon),
+			runner.WithCharonEntry("50051"),
+			runner.WithCharonOptions(charonOptions),
+			runner.WithEnableCompression(false),
+		)
+	} else {
+		report, err = runner.Run(
+			"greeting.v3.GreetingService/Greeting",
+			URLServiceA,
+			runner.WithProtoFile("../greeting.proto", []string{}),
+			runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
+			runner.WithMetadata(md),
+			runner.WithConcurrency(uint(concurrency)),
+			runner.WithConnections(uint(concurrency)),
+			runner.WithInsecure(true),
+			// runner.WithTotalRequests(3),
+			// runner.WithRPS(2000),
+			// runner.WithAsync(true),
+			runner.WithRunDuration(runDuration),
+			runner.WithLoadSchedule(loadSchedule),
+			runner.WithLoadStart(loadStart),
+			runner.WithLoadEnd(loadEnd),
+			runner.WithLoadStep(loadStep),
+			runner.WithLoadStepDuration(loadStepDuration),
+			runner.WithCharon(enableCharon),
+			runner.WithCharonEntry("50051"),
+			runner.WithCharonOptions(charonOptions),
+			runner.WithEnableCompression(false),
+		)
+	}
 
 	if err != nil {
 		fmt.Println(err.Error())
