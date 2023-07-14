@@ -5,9 +5,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+# import the function calculate_average_goodput from /home/ying/Sync/Git/protobuf/baysian-opt/bayesian_opt.py
 
-throughput_time_interval = '100ms'
+throughput_time_interval = '50ms'
 latency_window_size = '200ms'  # Define the window size as 100 milliseconds
+offset = 0  # Define the offset as 50 milliseconds
+oneNode = True
+
+SLO = 20 if oneNode else 120
+capacity = 24000 if oneNode else 1500
+computationTime = 10 if oneNode else 70
 
 def read_data(filename):
     with open(filename, 'r') as f:
@@ -15,22 +22,34 @@ def read_data(filename):
     return data["details"]
 
 
+def read_tail_latency(filename):
+    with open(filename, 'r') as f:
+        data = json.load(f)
+        
+    latency_distribution = data["latencyDistribution"]
+    for item in latency_distribution:
+        if item["percentage"] == 99:
+            return item["latency"]
+    return None  # Return None if the 99th percentile latency is not found
+
 def convert_to_dataframe(data):
     df = pd.DataFrame(data)
     df['timestamp'] = pd.to_datetime(df['timestamp'])
 
+    summary = df.groupby('status')['status'].count().reset_index(name='count')
+    print("Summary of the status", summary)
     # print(df['timestamp'].min())
+
     df.set_index('timestamp', inplace=True)
     df['latency'] = df['latency'] / 1000000
     # drop the rows if the `status` is Unavailable
     df = df[df['status'] != 'Unavailable']
     # remove the data within first second of df
-    df = df[df.index > df.index[0] + pd.Timedelta(seconds=1)]
+    df = df[df.index > df.index[0] + pd.Timedelta(seconds=offset)]
 
     min_timestamp = df.index.min()
     df.index = df.index - min_timestamp + pd.Timestamp('2000-01-01')
     return df
-
 
 def plot_latency_pdf_cdf(df, filename):
     latency = df['latency']
@@ -74,13 +93,65 @@ def calculate_goodput(df, slo):
     return df
 
 
+def calculate_average_goodput(filename):
+    # Insert your code for calculating average goodput here
+    # Read the ghz.output file and calculate the average goodput
+    # Return the average goodput
+    data = read_data(filename)
+    df = convert_to_dataframe(data)
+    # print(df.head())
+    # df = calculate_throughput(df)
+    goodput, goodputVar = calculate_goodput_ave_var(df, 20)
+    return goodput, goodputVar
+
+
+def calculate_goodput_ave_var(df, slo):
+    goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample(throughput_time_interval).count()
+    # scale the throughput to requests per second
+    goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
+    df['goodput'] = goodput_requests_per_second.reindex(df.index, method='ffill')
+    # take out the goodput during the last 3 seconds by index
+    goodput = df[df.index > df.index[-1] - pd.Timedelta(seconds=3)]['goodput']
+    # return the goodput, but round it to 2 decimal places
+    goodputAve = goodput.mean()
+    # also calculate the standard deviation of the goodput
+    goodputStd = goodput.std()
+    goodputAve = round(goodputAve, 1)
+    goodputStd = round(goodputStd, 1)
+    return goodputAve, goodputStd
+
+
+# when a load is shed, item looks like this:
+    # {
+    #   "timestamp": "2023-07-03T01:24:49.080597187-04:00",
+    #   "latency": 535957,
+    #   "error": "rpc error: code = ResourceExhausted desc = 17 token for 90 price. req dropped, try again later",
+    #   "status": "ResourceExhausted"
+    # },
+
 def calculate_loadshedded(df):
-    dropped_requests_per_second = df[df['status'] == 'ResourceExhausted']['status'].resample(throughput_time_interval).count()
+    # extract the dropped requests by status == 'ResourceExhausted' and error message contains 'req dropped'
+    dropped = df[(df['status'] == 'ResourceExhausted') & (df['error'].str.contains('req dropped'))]
+    dropped_requests_per_second = dropped['status'].resample(throughput_time_interval).count()
     # scale the throughput to requests per second
     dropped_requests_per_second = dropped_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
     df['dropped'] = dropped_requests_per_second.reindex(df.index, method='ffill')
-    print(df['dropped'].describe())
-    print(df['dropped'])
+    return df
+
+# when the rate is limited, item looks like this:
+    # {
+    #   "timestamp": "2023-07-03T01:24:58.847045036-04:00",
+    #   "latency": 13831,
+    #   "error": "rpc error: code = ResourceExhausted desc = trying to send message larger than max (131 vs. 0)",
+    #   "status": "ResourceExhausted"
+    # },
+def calculate_ratelimited(df):
+    # extract the dropped requests by status == 'ResourceExhausted' and error message contains 'trying to send message larger than max'
+    limited = df[(df['status'] == 'ResourceExhausted') & (df['error'].str.contains('trying to send message larger than max'))]
+    limited_requests_per_second = limited['status'].resample(throughput_time_interval).count()
+    # scale the throughput to requests per second
+    limited_requests_per_second = limited_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
+    df['limited'] = limited_requests_per_second.reindex(df.index, method='ffill')
     return df
 
 
@@ -131,7 +202,7 @@ def extract_waiting_times(file_path):
     timestamp_pattern = r"LOG: (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+[-+]\d{2}:\d{2})"
     waiting_time_patterns = {
         # "Cumulative Waiting Time Median": r"\[Cumulative Waiting Time Median\]:\s+(\d+\.\d+) ms.",
-        "Incremental Waiting Time 90-tile": r"\[Incremental Waiting Time 90-tile\]:\s+(\d+\.\d+) ms.",
+        # "Incremental Waiting Time 90-tile": r"\[Incremental Waiting Time 90-tile\]:\s+(\d+\.\d+) ms.",
         # "Incremental Waiting Time Median": r"\[Incremental Waiting Time Median\]:\s+(\d+\.\d+) ms.",
         "Incremental Waiting Time Maximum": r"\[Incremental Waiting Time Maximum\]:\s+(\d+\.\d+) ms."
     }
@@ -156,18 +227,23 @@ def extract_waiting_times(file_path):
     # print(data)
     # Create a DataFrame with timestamp as one column with waiting times as columns
     df = pd.DataFrame(data)
+
+    # if df is empty, return empty df
+    if df.empty:
+        return df
+
     df["timestamp"] = pd.to_datetime(timestamps)
     # adjust the index of df_queuing_delay to match the index of df, time wise
-    # calculate the second last mininum timestamp of df 
+    # calculate the second last mininum timestamp of df
     # df['timestamp'] = df['timestamp'] - min_timestamp + pd.Timestamp('2000-01-01')
     # print(df['timestamp'].min())
     df.set_index('timestamp', inplace=True)
-    
+
     # sort the df by timestamp
     df.sort_index(inplace=True)
 
     # remove the data within first second of df
-    df = df[df.index > df.index[0] + pd.Timedelta(seconds=1)]
+    df = df[df.index > df.index[0] + pd.Timedelta(seconds=offset)]
 
     min_timestamp = df.index.min()
     df.index = df.index - min_timestamp + pd.Timestamp('2000-01-01')
@@ -185,7 +261,8 @@ def extract_ownPrice_update(file_path):
 
     with open(file_path, "r") as file:
         for line in file:
-            if "Update OwnPrice" in line:
+            # if "Update OwnPrice" or "Update Price by Queue Delay" in line:
+            if "Own price updated to" in line:
                 match = re.search(price_update_patterns, line)
                 if match:
                     data.append(int(match.group(1)))
@@ -199,16 +276,15 @@ def extract_ownPrice_update(file_path):
     df = pd.DataFrame({"ownPrice": data})
     df["timestamp"] = pd.to_datetime(timestamps)
     # adjust the index of df_queuing_delay to match the index of df, time wise
-    # calculate the second last mininum timestamp of df 
+    # calculate the second last mininum timestamp of df
     # df['timestamp'] = df['timestamp'] - min_timestamp + pd.Timestamp('2000-01-01')
     # print(df['timestamp'].min())
     df.set_index('timestamp', inplace=True)
-    
+
     # sort the df by timestamp
     df.sort_index(inplace=True)
-
     # remove the data within first second of df
-    df = df[df.index > df.index[0] + pd.Timedelta(seconds=1)]
+    df = df[df.index > df.index[0] + pd.Timedelta(seconds=offset)]
 
     min_timestamp = df.index.min()
     df.index = df.index - min_timestamp + pd.Timestamp('2000-01-01')
@@ -255,7 +331,7 @@ def plot_timeseries_ok(df, filename):
     plt.savefig(mechanism + '.latency-throughput.png')
     plt.show()
 
-# plot_timeseries_lat is same as the above function, 
+# plot_timeseries_lat is same as the above function,
 # but in ax2 we add 4 more line from the waiting time dataframe
 def plot_timeseries_lat(df, filename, computation_time=0):
     fig, ax1 = plt.subplots(figsize=(12, 4))
@@ -265,9 +341,9 @@ def plot_timeseries_lat(df, filename, computation_time=0):
     # bound the latency to be above 0.001
 
     # if computation_time > 0, label is "Average Latency (e2e) minus computation time", otherwise, label is "Average Latency (e2e)"
-    ax1.plot(df.index, np.maximum(0.001, df['latency_ma']-computation_time), linestyle='--', 
+    ax1.plot(df.index, np.maximum(0.001, df['latency_ma']-computation_time), linestyle='--',
              label='Average Latency (e2e)' if computation_time == 0 else 'Average Latency (e2e) minus computation time')
-    ax1.plot(df.index, np.maximum(0.001, df['tail_latency']-computation_time), linestyle='-.', 
+    ax1.plot(df.index, np.maximum(0.001, df['tail_latency']-computation_time), linestyle='-.',
              label='99% Tail Latency (e2e)' if computation_time == 0 else '99% Tail Latency (e2e) minus computation time')
     # set the y axis to be above the 0.001
     ax1.set_ylim(0.01, np.max(df['tail_latency'])*1.1)
@@ -312,49 +388,161 @@ def plot_timeseries_lat(df, filename, computation_time=0):
 
 
 def plot_timeseries_split(df, filename, computation_time=0):
+    start_index = filename.rfind("/") + 1 if "/" in filename else 0
+    end_index = filename.index("_") if "_" in filename else len(filename)
+    mechanism = filename[start_index:end_index]
+
     fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, figsize=(12, 10), sharex=True)
-    
+
+    # add to all 3 axes vertical x grid lines for each second, x axis are datetime objects
+    for ax in [ax1, ax2, ax3]:
+        # x axis are datetime objects, so we want to add vertical grid lines for each second
+        ax.xaxis.grid(True)
+        ax.yaxis.grid(True)
+        #  Set the x-axis locator to show grid lines for each second
+        # ax.xaxis.set_major_locator(mdates.SecondLocator())
+        # also, set the x limit to the end of the last timestamp of the 3 dataframes
+        # ax.set_xlim(0, df.index[-1])
+
+
     ax1.set_ylabel('Latencies (ms)', color='tab:red')
     ax1.tick_params(axis='y', labelcolor='tab:red')
-    ax1.plot(df.index, np.maximum(0.001, df['latency_ma']-computation_time), linestyle='--', 
+    ax1.plot(df.index, np.maximum(0.001, df['latency_ma']-computation_time), linestyle='--',
              label='Average Latency (e2e)' if computation_time == 0 else 'Average Latency (e2e) minus computation time')
-    ax1.plot(df.index, np.maximum(0.001, df['tail_latency']-computation_time), linestyle='-.', 
+    ax1.plot(df.index, np.maximum(0.001, df['tail_latency']-computation_time), linestyle='-.',
              label='99% Tail Latency (e2e)' if computation_time == 0 else '99% Tail Latency (e2e) minus computation time')
     ax1.set_ylim(0.01, np.max(df['tail_latency'])*1.1)
     ax1.set_yscale('log')
 
+    # add .fillna(0) to all the columns of df, so that we can plot the throughput and goodput
+    df = df.fillna(0)
+
     ax2.set_ylabel('Throughput (req/s)', color='tab:blue')
     ax2.plot(df.index, df['throughput'], 'r-.', )
     ax2.plot(df.index, df['goodput'], color='green', linestyle='--')
-    ax2.plot(df.index, df['dropped'].fillna(0)+df['throughput'], color='tab:blue', linestyle='-', label='Total Req')
+    ax2.plot(df.index, df['dropped']+df['throughput'], color='tab:blue', linestyle='-', label='Total Req')
+    # plot dropped requests + rate limit requests + throughput = total demand
+    # if df['limited'].sum() > 0, then plot the rate limited requests
+    if df['limited'].sum() > 0:
+        df['total_demand'] = df['dropped']+df['throughput']+df['limited']
+    else:
+        # otherwise, plot the a total demand that is half of capacity for the first 2 seconds, and then 100% capacity for next 2 seconds
+        # and then 150% capacity for the rest of the time
+        # add a new column to df, called total_demand, fill in with half of capacity for the first 2 seconds, and then 100% capacity for next 2 seconds
+        df['total_demand'] = capacity/2
+
+        # Define the time range from 2nd to 4th second
+        start_time = pd.Timestamp('2000-01-01 00:00:02')
+        end_time = pd.Timestamp('2000-01-01 00:00:04')
+
+        # Create a new column 'new_column' and fill it with 100 for rows within the time range
+        df.loc[start_time:end_time, 'total_demand'] = capacity  # Set the value to 100 for the specified time range
+
+        # from 2nd second to 4th second, total demand is 100% capacity
+        df.loc[end_time:, 'total_demand'] = capacity *3/2
+
+    if mechanism != 'baseline':
+        ax2.plot(df.index, df['total_demand'], color='c', linestyle='-', label='Total Demand')
+
+
     ax2.fill_between(df.index, 0, df['goodput'], color='green', alpha=0.2, label='Goodput')
     ax2.fill_between(df.index, df['goodput'], df['throughput'], color='red', alpha=0.3, label='SLO Violated Req')
     ax2.fill_between(df.index, df['throughput'], df['throughput'] + df['dropped'], color='c', alpha=0.3, label='Dropped Req')
+    # fill between total demand and throughput + dropped requests, only if total demand is larger than throughput + dropped requests
+    if mechanism != 'baseline':
+        ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], where=df['total_demand'] > df['throughput'] + df['dropped'], color='tab:blue', alpha=0.3, label='Rate Limited Req')
+    # ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], color='tab:blue', alpha=0.3, label='Rate Limited Req')
     ax2.tick_params(axis='y', labelcolor='tab:blue')
     # ax2.set_ylim(0, 3000)
-    ax2.grid(True)
 
     df_queuing_delay = extract_waiting_times("/home/ying/Sync/Git/service-app/services/protobuf-grpc/server.output")
+    # assert that df_queuing_delay.index is not empty
+    assert len(df_queuing_delay.index) > 0
+    # only keep the data when the index is smaller than the last timestamp of the df.index
+    df_queuing_delay = df_queuing_delay[df_queuing_delay.index < df.index[-1]]
+    # use the difference between the second timestamp and the first timestamp as the latency window size
+    df_latency_window_size = (df_queuing_delay.index[1] - df_queuing_delay.index[0]).total_seconds() 
     for waiting_time in df_queuing_delay.columns:
-        mean_queuing_delay = df_queuing_delay[waiting_time].rolling(latency_window_size).mean()
-        ax2.plot(df_queuing_delay.index, mean_queuing_delay, label=waiting_time)
+        # compare the df_latency_window_size with the latency_window_size (string), use the smaller one
+        # convert the latency_window_size (string) to milliseconds
+        latency_window_size_ms = pd.Timedelta(latency_window_size).total_seconds() 
+        if df_latency_window_size < latency_window_size_ms:
+            mean_queuing_delay = df_queuing_delay[waiting_time].rolling(latency_window_size).mean()
+        else:
+            mean_queuing_delay = df_queuing_delay[waiting_time]
+        ax1.plot(df_queuing_delay.index, mean_queuing_delay, label=waiting_time)
 
-    ax1.legend()
-    ax2.legend()
-    
+    # put legend on the top left corner
+    # for ax1, don't show the box border of the legend
+    ax1.legend(loc='lower left', bbox_to_anchor=(0, 1), ncol=1, frameon=False)
+    ax2.legend(loc='upper left', bbox_to_anchor=(0, 1), ncol=2)
+
     df_price = extract_ownPrice_update("/home/ying/Sync/Git/service-app/services/protobuf-grpc/server.output")
+    # only keep the data when the index is smaller than the last timestamp of the df.index
+    df_price = df_price[df_price.index < df.index[-1]]
     moving_average_price = df_price['ownPrice'].rolling(latency_window_size).mean()
     ax3.plot(df_price.index, moving_average_price, label='Service Price')
     ax3.set_ylabel('Service Price')
     ax3.set_xlabel('Time')
 
-    concurrent_clients = re.findall(r"\d+", filename)[0]
+    # concurrent_clients = re.findall(r"\d+", filename)[0]
+    # plt.suptitle(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
+
+    # add the ax2 a title, saying that `The Average Goodput Under Overload is: ` + calculate_average_goodput(filename)
+    goodputAve, goodputStd = calculate_average_goodput(filename)
+    ax2.set_title(f"The Goodput after 00:02 has Mean: {goodputAve} and Std: {goodputStd}")
+
+    latency_99th = read_tail_latency(filename)
+    # print("99th percentile latency:", latency_99th)
+    # convert the latency_99th from string to milliseconds
+    latency_99th = pd.Timedelta(latency_99th).total_seconds() * 1000
+    # round the latency_99th to 2 decimal places
+    ax1.set_title(f"99-tile Latency: {round(latency_99th, 2)} ms")
+
+    plt.savefig(mechanism + '.1000c.' + str(capacity) + 'c.png', format='png', dpi=300, bbox_inches='tight')
+    plt.show()
+
+
+def plot_latencies(df, filename, computation_time=0):
     start_index = filename.rfind("/") + 1 if "/" in filename else 0
     end_index = filename.index("_") if "_" in filename else len(filename)
     mechanism = filename[start_index:end_index]
-    plt.suptitle(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
 
-    plt.savefig(mechanism + '.price.png')
+    fig, ax1 = plt.subplots(figsize=(12, 6))
+    ax1.set_ylabel('Latencies (ms)', color='tab:red')
+    ax1.tick_params(axis='y', labelcolor='tab:red')
+    ax1.plot(df.index, np.maximum(0.001, df['latency_ma']-computation_time), linestyle='--',
+             label='Average Latency (e2e)' if computation_time == 0 else 'Average Latency (e2e) minus computation time')
+    ax1.plot(df.index, np.maximum(0.001, df['tail_latency']-computation_time), linestyle='-.',
+             label='99% Tail Latency (e2e)' if computation_time == 0 else '99% Tail Latency (e2e) minus computation time')
+    ax1.set_ylim(0.01, np.max(df['tail_latency'])*1.1)
+    ax1.set_yscale('log')
+    ax1.set_xlabel('Time')
+    # add a vertical grind line per second on x-axis
+    ax1.grid(True, which='both', axis='x', linestyle='--')
+
+    df_queuing_delay = extract_waiting_times("/home/ying/Sync/Git/service-app/services/protobuf-grpc/server.output")
+    assert len(df_queuing_delay.index) > 0
+    df_queuing_delay = df_queuing_delay[df_queuing_delay.index < df.index[-1]]
+    df_latency_window_size = (df_queuing_delay.index[1] - df_queuing_delay.index[0]).total_seconds() 
+    for waiting_time in df_queuing_delay.columns:
+        latency_window_size_ms = pd.Timedelta(latency_window_size).total_seconds() 
+        if df_latency_window_size < latency_window_size_ms:
+            mean_queuing_delay = df_queuing_delay[waiting_time].rolling(latency_window_size).mean()
+        else:
+            mean_queuing_delay = df_queuing_delay[waiting_time]
+        ax1.plot(df_queuing_delay.index, mean_queuing_delay, label=waiting_time)
+
+    ax1.legend(loc='lower left', bbox_to_anchor=(0, 1), ncol=1, frameon=False)
+
+    goodputAve, goodputStd = calculate_average_goodput(filename)
+    ax1.set_title(f"The Goodput after 00:02 has Mean: {goodputAve} and Std: {goodputStd}")
+
+    latency_99th = read_tail_latency(filename)
+    latency_99th = pd.Timedelta(latency_99th).total_seconds() * 1000
+    ax1.set_title(f"99-tile Latency: {round(latency_99th, 2)} ms")
+
+    plt.savefig(mechanism + '.1000c.latency.png', format='png', dpi=300, bbox_inches='tight')
     plt.show()
 
 
@@ -362,16 +550,16 @@ def analyze_data(filename):
     data = read_data(filename)
     df = convert_to_dataframe(data)
     # print(df.head())
-    plot_latency_pdf_cdf(df, filename)
+    # plot_latency_pdf_cdf(df, filename)
     df = calculate_throughput(df)
-    df = calculate_goodput(df, 20)
+    df = calculate_goodput(df, SLO)
     df = calculate_loadshedded(df)
+    df = calculate_ratelimited(df)
     df = calculate_tail_latency(df)
-    plot_timeseries_ok(df, filename)
-    plot_timeseries_lat(df, filename, 10)
-    plot_timeseries_split(df, filename, 10)
-    summary = df.groupby('status')['status'].count().reset_index(name='count')
-    print(summary)
+    # plot_timeseries_ok(df, filename)
+    # plot_timeseries_lat(df, filename, 10)
+    plot_timeseries_split(df, filename, computationTime)
+    plot_latencies(df, filename, computationTime)
     # summary = df.groupby('error')['error'].count().reset_index(name='count')
     # print(summary)
 
