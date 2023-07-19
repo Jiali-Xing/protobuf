@@ -160,8 +160,8 @@ func main() {
 			runner.WithLoadStep(loadStep),
 			runner.WithLoadStepDuration(loadStepDuration),
 			runner.WithCharon(enableCharon),
-			runner.WithCharonEntry("50051"),
-			// runner.WithCharonEntry("grpc-service-1:50051"),
+			// runner.WithCharonEntry("50051"),
+			runner.WithCharonEntry("grpc-service-1:50051"),
 			runner.WithCharonOptions(charonOptions),
 			runner.WithEnableCompression(false),
 		)
