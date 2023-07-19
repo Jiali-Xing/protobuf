@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/Jiali-Xing/ghz/printer"
@@ -35,9 +36,17 @@ var (
 	// loadStart    = uint(10000)
 	// loadEnd      = uint(30000)
 	// loadStep     = 1000
-	constantLoad     = false
-	runDuration      = time.Second * 10
-	capacity         = 24000
+	constantLoad = false
+	runDuration  = time.Second * 7
+	capacity     = func() int {
+		capacityStr := getEnv("CAPACITY", "4000")
+		parsedCapacity, err := strconv.Atoi(capacityStr)
+		if err != nil {
+			log.Warnf("Invalid capacity value, using default: 4000")
+			return 4000
+		}
+		return parsedCapacity
+	}()
 	loadStart        = uint(capacity / 2)
 	loadEnd          = uint(capacity * 3 / 2)
 	loadStep         = capacity / 2
@@ -103,9 +112,9 @@ func main() {
 		"clientTimeOut":   time.Duration(0),
 		"tokenUpdateStep": int64(10),
 		"tokenUpdateRate": time.Millisecond * 10,
-		// "randomRateLimit": int64(33),
+		// "randomRateLimit": int64(35),
 		// "invokeAfterRL":   true,
-		// "clientBackoff": time.Millisecond * 50,
+		// "clientBackoff":   time.Millisecond * 50,
 		"tokenRefillDist": "poisson",
 		"tokenStrategy":   "uniform",
 		// "latencyThreshold":   time.Millisecond * 7,
@@ -152,6 +161,7 @@ func main() {
 			runner.WithLoadStepDuration(loadStepDuration),
 			runner.WithCharon(enableCharon),
 			runner.WithCharonEntry("50051"),
+			// runner.WithCharonEntry("grpc-service-1:50051"),
 			runner.WithCharonOptions(charonOptions),
 			runner.WithEnableCompression(false),
 		)
