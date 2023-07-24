@@ -26,12 +26,13 @@ import (
 
 var (
 	// logLevel     = getEnv("LOG_LEVEL", "info")
-	serviceName  = getEnv("SERVICE_NAME", "Client")
-	message      = getEnv("GREETING", "Hello, from Client!")
-	URLServiceA  = getEnv("SERVICE_A_URL", "localhost:50051")
-	log          = logrus.New()
-	enableCharon = true
-	loadSchedule = "step"
+	serviceName = getEnv("SERVICE_NAME", "Client")
+	message     = getEnv("GREETING", "Hello, from Client!")
+	URLServiceA = getEnv("SERVICE_A_URL", "localhost:50051")
+	log         = logrus.New()
+	// read from the environment variable, and convert it to bool
+	enableCharon, _ = strconv.ParseBool(getEnv("INTERCEPT", "true"))
+	loadSchedule    = "step"
 	// runDuration  = time.Second * 10
 	// loadStart    = uint(10000)
 	// loadEnd      = uint(30000)
@@ -101,6 +102,8 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 
+	// read the environment
+
 	charonOptions := map[string]interface{}{
 		// "rateLimitWaiting": true,
 		"rateLimiting": true,
@@ -114,7 +117,7 @@ func main() {
 		"tokenUpdateRate": time.Millisecond * 10,
 		// "randomRateLimit": int64(35),
 		// "invokeAfterRL":   true,
-		// "clientBackoff":   time.Millisecond * 50,
+		"clientBackoff":   time.Millisecond * 0,
 		"tokenRefillDist": "poisson",
 		"tokenStrategy":   "uniform",
 		// "latencyThreshold":   time.Millisecond * 7,
@@ -160,8 +163,8 @@ func main() {
 			runner.WithLoadStep(loadStep),
 			runner.WithLoadStepDuration(loadStepDuration),
 			runner.WithCharon(enableCharon),
-			// runner.WithCharonEntry("50051"),
-			runner.WithCharonEntry("grpc-service-1:50051"),
+			runner.WithCharonEntry("localhost-50051"),
+			// runner.WithCharonEntry("grpc-service-1:50051"),
 			runner.WithCharonOptions(charonOptions),
 			runner.WithEnableCompression(false),
 		)
