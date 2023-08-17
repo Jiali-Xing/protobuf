@@ -10,7 +10,7 @@ import numpy as np
 # import the function calculate_average_goodput from /home/ying/Sync/Git/protobuf/baysian-opt/bayesian_opt.py
 
 throughput_time_interval = '50ms'
-latency_window_size = '200ms'  # Define the window size as 100 milliseconds
+latency_window_size = '100ms'  # Define the window size as 100 milliseconds
 offset = 0  # Define the offset as 50 milliseconds
 oneNode = False
 # remote = True
@@ -747,24 +747,30 @@ def plot_latencies(df, filename, computation_time=0):
                 # convert the latency_window_size (string) to milliseconds
                 latency_window_size_ms = pd.Timedelta(latency_window_size).total_seconds()
                 if df_latency_window_size < latency_window_size_ms:
-                    mean_queuing_delay = df_queuing_delay[waiting_time].rolling(latency_window_size).mean()
+                    mean_queuing_delay = df_queuing_delay[waiting_time].resample(latency_window_size).mean()
                 else:
                     mean_queuing_delay = df_queuing_delay[waiting_time]
 
-                ax1.plot(df_queuing_delay.index, mean_queuing_delay, label=service_name)
+                ax1.plot(mean_queuing_delay.index, mean_queuing_delay, label=service_name)
 
             # add the queuing delay `df_queuing_delay[waiting_time]` of each service to the sum dataframe
             # also add the index of the sum dataframe to the master_index, join the two dataframes on the index
-            df_queuing_delay_sum = df_queuing_delay_sum.join(df_queuing_delay[waiting_time], how='outer')
+            df_queuing_delay_sum = df_queuing_delay_sum.join(mean_queuing_delay, how='outer')
+
+            # print the average queuing delay of each service
+            print("average queuing delay of service", service_name, ":", mean_queuing_delay.mean())    
         
         # Sum the queuing delay of all services, fill the NaN with 0
-        df_queuing_delay_sum = df_queuing_delay_sum.sum(axis=1).fillna(0)
+        df_queuing_delay_sum = df_queuing_delay_sum.sum(axis=1).fillna(method='bfill')
         # Plot the sum of mean_queuing_delay for all services
         if df_latency_window_size < latency_window_size_ms:
-            sum_queuing_delay = df_queuing_delay_sum.rolling(latency_window_size).sum()
+            sum_queuing_delay = df_queuing_delay_sum.resample(latency_window_size).mean()
         else:
             sum_queuing_delay = df_queuing_delay_sum
-        ax1.plot(df_queuing_delay_sum.index, sum_queuing_delay, label="sum of queuing delay")
+        ax1.plot(sum_queuing_delay.index, sum_queuing_delay, label="sum of queuing delay")
+
+        # print the average queuing delay of all services 
+        print("average queuing delay of all services:", sum_queuing_delay.mean())
 
     # put legend on the top left corner
     # for ax1, don't show the box border of the legend
