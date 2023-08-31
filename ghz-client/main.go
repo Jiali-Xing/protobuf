@@ -52,6 +52,9 @@ var (
 	loadEnd          = uint(capacity * 3 / 2)
 	loadStep         = capacity / 2
 	loadStepDuration = time.Second * 2
+
+	// read the inferface/method from the environment variable
+	method = getEnv("METHOD", "echo")
 )
 
 func getHostname() string {
@@ -73,12 +76,11 @@ func main() {
 	md := make(map[string]string)
 	md["request-id"] = "{{.RequestNumber}}"
 	md["timestamp"] = "{{.TimestampUnix}}"
-
-	// data := make(map[string]string)
-	// data["order_id"] = "{{newUUID}}"
-	// data["item_id"] = "{{newUUID}}"
-	// data["sku"] = "{{randomString 8 }}"
-	// data["product_name"] = "{{randomString 0}}"
+	md["method"] = method
+	// print the metadata used
+	for k, v := range md {
+		fmt.Printf("Metadata: %s=%s\n", k, v)
+	}
 
 	requestGreeting := pb.Greeting{
 		Id:       uuid.New().String(),
@@ -108,16 +110,16 @@ func main() {
 		// "rateLimitWaiting": true,
 		"rateLimiting": true,
 		"debug":        true,
-		"debugFreq":    int64(10000),
+		"debugFreq":    int64(1000),
 		"tokensLeft":   int64(0),
 		"initprice":    int64(10),
 		// "clientTimeOut":   time.Millisecond * time.Duration(arg),
-		"clientTimeOut":   time.Duration(0),
+		// "clientTimeOut":   time.Duration(0),
 		"tokenUpdateStep": int64(10),
 		"tokenUpdateRate": time.Millisecond * 10,
 		// "randomRateLimit": int64(35),
 		// "invokeAfterRL":   true,
-		"clientBackoff":   time.Millisecond * 0,
+		// "clientBackoff": time.Millisecond * 0,
 		"tokenRefillDist": "poisson",
 		"tokenStrategy":   "uniform",
 		// "latencyThreshold":   time.Millisecond * 7,
@@ -163,8 +165,8 @@ func main() {
 			runner.WithLoadStep(loadStep),
 			runner.WithLoadStepDuration(loadStepDuration),
 			runner.WithCharon(enableCharon),
-			runner.WithCharonEntry("localhost-50051"),
-			// runner.WithCharonEntry("grpc-service-1:50051"),
+			// runner.WithCharonEntry("localhost-50051"),
+			runner.WithCharonEntry("nginx-web-server"),
 			runner.WithCharonOptions(charonOptions),
 			runner.WithEnableCompression(false),
 		)
@@ -182,12 +184,12 @@ func main() {
 
 	toStd.Print("summary")
 
-	var filename string
-	if enableCharon {
-		filename = fmt.Sprintf("../ghz-results/charon_stepup_nclients_%d.json", concurrency)
-	} else {
-		filename = fmt.Sprintf("../ghz-results/baseline_stepup_nclients_%d.json", concurrency)
-	}
+	filename := fmt.Sprintf("../ghz-results/charon_stepup_nclients_%d.json", concurrency)
+	// if enableCharon {
+	// 	filename = fmt.Sprintf("../ghz-results/charon_stepup_nclients_%d.json", concurrency)
+	// } else {
+	// 	filename = fmt.Sprintf("../ghz-results/baseline_stepup_nclients_%d.json", concurrency)
+	// }
 
 	file, err := os.Create(filename)
 
