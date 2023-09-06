@@ -1,16 +1,27 @@
 #!/bin/bash
 # Run this file from the kube master node in order to run the ghz experiment
 
-# # First, delete and re-deploy the services
-kubectl delete deployment --all
-kubectl delete service --all
-kubectl apply -f /users/jiali/service-app/cloudlab/deploy/hardcode.yaml
+# # # First, delete and re-deploy the services
+# kubectl delete deployment --all
+# kubectl delete service --all
+# kubectl apply -f /users/jiali/service-app/cloudlab/deploy/hardcode.yaml
 
-# # wait for the deployment to be ready
-kubectl wait --for=condition=Ready -f /users/jiali/service-app/cloudlab/deploy/hardcode.yaml --timeout=20s
+# # # wait for the deployment to be ready
+# kubectl wait --for=condition=Running -f /users/jiali/service-app/cloudlab/deploy/hardcode.yaml --timeout=20s
+# Get the names of all deployments
+deployments=$(kubectl get deployments -o custom-columns=":metadata.name" --no-headers)
+echo "Deployments: $deployments"
 
-# entrypoint is name of service_a 
-ENTRY_POINT="social-graph-mongodb"
+# Loop through each deployment and wait for it to complete
+for deployment in $deployments; do
+  kubectl rollout status deployment/$deployment
+  echo "Deployment $deployment is ready."
+done
+
+sleep 30
+
+# entrypoint is 
+echo "ENTRY_POINT: $ENTRY_POINT"
 
 # Get the Cluster IP of grpc-service-1
 SERVICE_A_IP=$(kubectl get service $ENTRY_POINT -o=jsonpath='{.spec.clusterIP}')
@@ -25,6 +36,7 @@ SERVICE_A_NODEPORT=$(kubectl get service $ENTRY_POINT -o=jsonpath='{.spec.ports[
 #   # Use NodePort if available
 #   SERVICE_A_URL="$(kubectl get nodes -o=jsonpath='{.items[0].status.addresses[0].address}'):${SERVICE_A_NODEPORT}"
 # fi
+
 SERVICE_A_URL="$SERVICE_A_IP:50051"
 
 # Export the SERVICE_A_URL as an environment variable
@@ -244,19 +256,29 @@ copy_output() {
 copy_deathstar_output() {
   target_file="deathstar_*.output"
 
-  # Loop over all pods and copy the target file
-  for pod in $(kubectl get pods --all-namespaces -o=jsonpath='{range .items[*]}{.metadata.name}{" "}{.metadata.namespace}{"\n"}{end}'); do
+  # Loop over all pods
+  kubectl get pods -o=jsonpath='{range .items[*]}{.metadata.name}{" "}{.metadata.namespace}{"\n"}{end}' | while read -r pod; do
     pod_name=$(echo "$pod" | cut -d' ' -f1)
     namespace_name=$(echo "$pod" | cut -d' ' -f2)
 
-    # Check if the pod contains the target file
-    if kubectl exec -n "$namespace_name" "$pod_name" -- ls "/root/$target_file" > /dev/null 2>&1; then
-      # Print the namespace_name and pod_name
-      echo "Namespace Name: $namespace_name"
-      echo "Pod Name: $pod_name"
+    echo "Debug: Checking Namespace=$namespace_name, Pod=$pod_name for Target File=$target_file"
 
-      # Copy the target file from the pod to the local machine
-      kubectl cp "$namespace_name"/"$pod_name":/root/"$target_file" ~/"$target_file"
+    # List matching files in the pod
+    matching_files=$(kubectl exec -n "$namespace_name" "$pod_name" -- sh -c "ls /root/ | grep 'deathstar_'")
+
+    if [ -n "$matching_files" ]; then
+      echo "Namespace: $namespace_name, Pod: $pod_name has the target files."
+      
+      # Loop over matching files and copy them individually
+      for file in $matching_files; do
+        # local_file="${namespace_name}-${pod_name}-$(date +%s)-$file"
+        local_file="$file"
+
+        echo "Copying $file to $local_file"
+        kubectl cp "$namespace_name/$pod_name:/root/$file" ~/"$local_file"
+      done
+    else
+      echo "Target files not found in Pod $pod_name in Namespace $namespace_name."
     fi
   done
 }
