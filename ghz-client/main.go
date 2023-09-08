@@ -164,6 +164,7 @@ func main() {
 			runner.WithLoadEnd(loadEnd),
 			runner.WithLoadStep(loadStep),
 			runner.WithLoadStepDuration(loadStepDuration),
+			runner.WithMethod(method),
 			runner.WithCharon(enableCharon),
 			// runner.WithCharonEntry("localhost-50051"),
 			runner.WithCharonEntry("nginx-web-server"),

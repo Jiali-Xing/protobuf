@@ -1,5 +1,5 @@
 {
-  "date": "2023-06-01T15:55:46-04:00",
+  "date": "2023-08-15T15:14:30-04:00",
   "endReason": "normal",
   "options": {
     "call": "greeting.v3.GreetingService/Greeting",
@@ -35,165 +35,81 @@
     "CPUs": 16
   },
   "count": 10,
-  "total": 727304311,
-  "average": 297348154,
-  "fastest": 507756949,
-  "slowest": 720718595,
-  "rps": 13.749402896087053,
+  "total": 20010819479,
+  "average": 19998844178,
+  "fastest": 0,
+  "slowest": 0,
+  "rps": 0.49972965927229135,
   "errorDistribution": {
-    "rpc error: code = ResourceExhausted desc = req dropped, try again later": 5
+    "rpc error: code = DeadlineExceeded desc = context deadline exceeded": 4,
+    "rpc error: code = Unavailable desc = failed to receive server preface within timeout": 6
   },
   "statusCodeDistribution": {
-    "OK": 5,
-    "ResourceExhausted": 5
+    "DeadlineExceeded": 4,
+    "Unavailable": 6
   },
-  "latencyDistribution": [
-    {
-      "percentage": 10,
-      "latency": 507756949
-    },
-    {
-      "percentage": 25,
-      "latency": 512894634
-    },
-    {
-      "percentage": 50,
-      "latency": 610389894
-    },
-    {
-      "percentage": 75,
-      "latency": 621234156
-    },
-    {
-      "percentage": 90,
-      "latency": 720718595
-    },
-    {
-      "percentage": 95,
-      "latency": 720718595
-    },
-    {
-      "percentage": 99,
-      "latency": 720718595
-    }
-  ],
-  "histogram": [
-    {
-      "mark": 0.507756949,
-      "count": 1,
-      "frequency": 0.2
-    },
-    {
-      "mark": 0.5290531136000001,
-      "count": 1,
-      "frequency": 0.2
-    },
-    {
-      "mark": 0.5503492782,
-      "count": 0,
-      "frequency": 0
-    },
-    {
-      "mark": 0.5716454428,
-      "count": 0,
-      "frequency": 0
-    },
-    {
-      "mark": 0.5929416074,
-      "count": 0,
-      "frequency": 0
-    },
-    {
-      "mark": 0.6142377720000001,
-      "count": 1,
-      "frequency": 0.2
-    },
-    {
-      "mark": 0.6355339366,
-      "count": 1,
-      "frequency": 0.2
-    },
-    {
-      "mark": 0.6568301012,
-      "count": 0,
-      "frequency": 0
-    },
-    {
-      "mark": 0.6781262658,
-      "count": 0,
-      "frequency": 0
-    },
-    {
-      "mark": 0.6994224304000001,
-      "count": 0,
-      "frequency": 0
-    },
-    {
-      "mark": 0.720718595,
-      "count": 1,
-      "frequency": 0.2
-    }
-  ],
+  "latencyDistribution": null,
+  "histogram": null,
   "details": [
     {
-      "timestamp": "2023-06-01T15:55:45.901276398-04:00",
-      "latency": 164149,
-      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
-      "status": "ResourceExhausted"
+      "timestamp": "2023-08-15T15:14:30.25822651-04:00",
+      "latency": 20001607837,
+      "error": "rpc error: code = DeadlineExceeded desc = context deadline exceeded",
+      "status": "DeadlineExceeded"
     },
     {
-      "timestamp": "2023-06-01T15:55:45.905011261-04:00",
-      "latency": 83761,
-      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
-      "status": "ResourceExhausted"
+      "timestamp": "2023-08-15T15:14:30.258299407-04:00",
+      "latency": 20004049752,
+      "error": "rpc error: code = DeadlineExceeded desc = context deadline exceeded",
+      "status": "DeadlineExceeded"
     },
     {
-      "timestamp": "2023-06-01T15:55:45.908732754-04:00",
-      "latency": 83615,
-      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
-      "status": "ResourceExhausted"
+      "timestamp": "2023-08-15T15:14:30.258347464-04:00",
+      "latency": 20007204812,
+      "error": "rpc error: code = DeadlineExceeded desc = context deadline exceeded",
+      "status": "DeadlineExceeded"
     },
     {
-      "timestamp": "2023-06-01T15:55:45.91266343-04:00",
-      "latency": 76164,
-      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
-      "status": "ResourceExhausted"
+      "timestamp": "2023-08-15T15:14:30.258349255-04:00",
+      "latency": 20006064089,
+      "error": "rpc error: code = DeadlineExceeded desc = context deadline exceeded",
+      "status": "DeadlineExceeded"
     },
     {
-      "timestamp": "2023-06-01T15:55:45.916298368-04:00",
-      "latency": 79625,
-      "error": "rpc error: code = ResourceExhausted desc = req dropped, try again later",
-      "status": "ResourceExhausted"
+      "timestamp": "2023-08-15T15:14:30.258674594-04:00",
+      "latency": 19999822735,
+      "error": "rpc error: code = Unavailable desc = failed to receive server preface within timeout",
+      "status": "Unavailable"
     },
     {
-      "timestamp": "2023-06-01T15:55:46.419229391-04:00",
-      "latency": 512894634,
-      "error": "",
-      "status": "OK"
+      "timestamp": "2023-08-15T15:14:30.258696912-04:00",
+      "latency": 19989938993,
+      "error": "rpc error: code = Unavailable desc = failed to receive server preface within timeout",
+      "status": "Unavailable"
     },
     {
-      "timestamp": "2023-06-01T15:55:46.422678237-04:00",
-      "latency": 507756949,
-      "error": "",
-      "status": "OK"
+      "timestamp": "2023-08-15T15:14:30.258705974-04:00",
+      "latency": 19995463013,
+      "error": "rpc error: code = Unavailable desc = failed to receive server preface within timeout",
+      "status": "Unavailable"
     },
     {
-      "timestamp": "2023-06-01T15:55:46.520620589-04:00",
-      "latency": 610389894,
-      "error": "",
-      "status": "OK"
+      "timestamp": "2023-08-15T15:14:30.258715953-04:00",
+      "latency": 19997737743,
+      "error": "rpc error: code = Unavailable desc = failed to receive server preface within timeout",
+      "status": "Unavailable"
     },
     {
-      "timestamp": "2023-06-01T15:55:46.520627588-04:00",
-      "latency": 621234156,
-      "error": "",
-      "status": "OK"
+      "timestamp": "2023-08-15T15:14:30.258722108-04:00",
+      "latency": 19994338012,
+      "error": "rpc error: code = Unavailable desc = failed to receive server preface within timeout",
+      "status": "Unavailable"
     },
     {
-      "timestamp": "2023-06-01T15:55:46.623174737-04:00",
-      "latency": 720718595,
-      "error": "",
-      "status": "OK"
+      "timestamp": "2023-08-15T15:14:30.258732076-04:00",
+      "latency": 19992214794,
+      "error": "rpc error: code = Unavailable desc = failed to receive server preface within timeout",
+      "status": "Unavailable"
     }
   ]
 }

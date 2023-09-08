@@ -9,7 +9,7 @@
 # done
 
 # define var capacity
-export CAPACITY=50
+export CAPACITY=1000
 # define the method to run
 export METHOD=compose
 # export the INTERCEPT env var as true or false

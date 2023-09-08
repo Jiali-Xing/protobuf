@@ -18,7 +18,7 @@ for deployment in $deployments; do
   echo "Deployment $deployment is ready."
 done
 
-sleep 30
+sleep 20
 
 # entrypoint is 
 echo "ENTRY_POINT: $ENTRY_POINT"

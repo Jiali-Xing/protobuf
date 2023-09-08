@@ -18,16 +18,20 @@ cloudlab = True
 
 # SLO = 20 if oneNode else 80
 capacity = 24000 if oneNode else 1000
-computationTime = 10 if oneNode else 70
-SLO = 10 + computationTime
+# computationTime = 10 if oneNode else 70
+computationTime = 27
+SLO = 50 + computationTime
 
+# cloudlabOutput = r"grpc-(service-\d+)"
+# match `deathstar_social-graph-service.output` with regex 
+cloudlabOutput = r"deathstar_([\w-]+)\.output"
 # if remote:
 #     # SLO = 200
 #     capacity = 4000
 
 # if capacity is given as an environment variable, use it
-if 'capacity' in os.environ:
-    capacity = int(os.environ['capacity'])
+if 'CAPACITY' in os.environ:
+    capacity = int(os.environ['CAPACITY'])
     print("Capacity is set to", capacity)
 
 def read_data(filename):
@@ -36,15 +40,23 @@ def read_data(filename):
     return data["details"]
 
 
-def read_tail_latency(filename):
+def read_tail_latency(filename, percentile=99):
     with open(filename, 'r') as f:
         data = json.load(f)
         
     latency_distribution = data["latencyDistribution"]
     for item in latency_distribution:
-        if item["percentage"] == 99:
+        if item["percentage"] == percentile:
             return item["latency"]
     return None  # Return None if the 99th percentile latency is not found
+
+
+# similarly to read_tail_latency, read_mean_latency returns the mean latency
+def read_mean_latency(filename):
+    with open(filename, 'r') as f:
+        data = json.load(f)
+    return data["average"]  
+
 
 def convert_to_dataframe(data, init=False):
     df = pd.DataFrame(data)
@@ -343,7 +355,7 @@ def extract_ownPrices(file_pattern):
         timestamps = []
 
         # Extract the service name from the file name (assuming it follows the pattern "grpc-service-x.output")
-        match_service_name = re.search(r"grpc-(service-\d+)", file_path)
+        match_service_name = re.search(cloudlabOutput, file_path)
         if match_service_name:
             service_name = match_service_name.group(1)
         else:
@@ -401,7 +413,7 @@ def extract_waiting_times_all(file_pattern):
         # timestamps = []
 
         # Extract the service name from the file name (assuming it follows the pattern "grpc-service-x.output")
-        match_service_name = re.search(r"grpc-(service-\d+)", file_path)
+        match_service_name = re.search(cloudlabOutput, file_path)
         if match_service_name:
             service_name = match_service_name.group(1)
         else:
@@ -600,7 +612,7 @@ def plot_timeseries_split(df, filename, computation_time=0):
             ax1.plot(df_queuing_delay.index, mean_queuing_delay, label=waiting_time)
     else:
         # loop over /home/ying/Sync/Git/protobuf/ghz-results/grpc-service-*.output to get the df queuing delay
-        dict_queuing_delay = extract_waiting_times_all(r"grpc-service-\d+\.output")
+        dict_queuing_delay = extract_waiting_times_all(cloudlabOutput)
         for service_name, df_queuing_delay in dict_queuing_delay.items():
             # assert len(df_queuing_delay.index) > 0
             if len(df_queuing_delay.index) == 0:
@@ -617,7 +629,7 @@ def plot_timeseries_split(df, filename, computation_time=0):
                     mean_queuing_delay = df_queuing_delay[waiting_time].rolling(latency_window_size).mean()
                 else:
                     mean_queuing_delay = df_queuing_delay[waiting_time]
-                ax1.plot(df_queuing_delay.index, mean_queuing_delay, label=service_name)
+                ax1.plot(mean_queuing_delay.index, mean_queuing_delay, label=service_name)
     # add a horizontal line at y=SLO
     ax1.axhline(y=SLO - computation_time, color='c', linestyle='-.', label='SLO minus computation')
     # find the line `export LATENCY_THRESHOLD=???us` in `/home/ying/Sync/Git/service-app/cloudlab/scripts/cloudlab_run_and_fetch.sh`
@@ -638,7 +650,7 @@ def plot_timeseries_split(df, filename, computation_time=0):
 
     if cloudlab:
         max_price = 0
-        df_price_dict = extract_ownPrices(r"grpc-service-\d+\.output")
+        df_price_dict = extract_ownPrices(cloudlabOutput)
         for service_name, df_price in df_price_dict.items():
             # only keep the data when the index is smaller than the last timestamp of the df.index
             df_price = df_price[df_price.index < df.index[-1]]
@@ -676,7 +688,8 @@ def plot_timeseries_split(df, filename, computation_time=0):
     # round the latency_99th to 2 decimal places
     ax1.set_title(f"99-tile Latency: {round(latency_99th, 2)} ms")
 
-    plt.savefig(mechanism + '.1000c.' + str(capacity) + 'c.png', format='png', dpi=300, bbox_inches='tight')
+    filetosave = mechanism + '.deathstar.1000c.' + str(capacity) + 'c.png' 
+    plt.savefig(filetosave, format='png', dpi=300, bbox_inches='tight')
     plt.show()
 
 
@@ -729,7 +742,7 @@ def plot_latencies(df, filename, computation_time=0):
             ax1.plot(df_queuing_delay.index, mean_queuing_delay, label=waiting_time)
     else:
         # loop over /home/ying/Sync/Git/protobuf/ghz-results/grpc-service-*.output to get the df queuing delay
-        dict_queuing_delay = extract_waiting_times_all(r"grpc-service-\d+\.output")
+        dict_queuing_delay = extract_waiting_times_all(cloudlabOutput)
         
         # also, plot the sum of the queuing delay of all services by adding up the queuing delay of each service
         # first create an empty dataframe 
@@ -795,7 +808,12 @@ def plot_latencies(df, filename, computation_time=0):
 
     latency_99th = read_tail_latency(filename)
     latency_99th = pd.Timedelta(latency_99th).total_seconds() * 1000
-    ax1.set_title(f"99-tile Latency: {round(latency_99th, 2)} ms")
+    latency_median = read_tail_latency(filename, percentile=50)
+    latency_median = pd.Timedelta(latency_median).total_seconds() * 1000
+    latency_mean = read_mean_latency(filename)
+    latency_mean = pd.Timedelta(latency_mean).total_seconds() * 1000
+
+    ax1.set_title(f"Mean, Median, 99-tile Latency: {round(latency_mean, 2)} ms, {round(latency_median, 2)} ms, {round(latency_99th, 2)} ms")
 
     plt.savefig(mechanism + '.1000c.latency.png', format='png', dpi=300, bbox_inches='tight')
     plt.show()

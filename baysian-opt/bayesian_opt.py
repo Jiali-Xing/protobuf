@@ -25,10 +25,10 @@ import pickle
 sys.path.append('/home/ying/Sync/Git/protobuf/ghz-results')
 from visualize import analyze_data
 
-throughput_time_interval = '100ms'
+throughput_time_interval = '50ms'
 latency_window_size = '200ms'  # Define the window size as 100 milliseconds
-filename = '/home/ying/Sync/Git/protobuf/ghz-results/charon_stepup_nclients_2000.json'
-rerun = False
+filename = '/home/ying/Sync/Git/protobuf/ghz-results/charon_stepup_nclients_1000.json'
+rerun = True
 
 
 def read_data(filename):
@@ -72,7 +72,7 @@ def calculate_goodput(df, slo):
     goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
     df['goodput'] = goodput_requests_per_second.reindex(df.index, method='ffill')
     # take out the goodput during the last 3 seconds by index
-    goodput = df[df.index > df.index[-1] - pd.Timedelta(seconds=3)]['goodput']
+    goodput = df[df.index > df.index[0] + pd.Timedelta(seconds=4)]['goodput']
     # return the goodput, but round it to 2 decimal places
     goodput = goodput.mean()
     goodput = round(goodput, -2)
@@ -91,17 +91,20 @@ def calculate_throughput(df):
 # Define the parameter ranges
 # param_ranges = [(10, 200), (1, 50), (100, 20000)]  # (priceUpdateRate, delayTarget, clientTimeout)
 # param_ranges = [(10, 200), (1, 50), (5, 50)]  # (priceUpdateRate, delayTarget, clientTimeout)
-param_ranges = [(10, 200), (100, 20000), (5, 50)]  # (priceUpdateRate, delayTarget, clientTimeout)
+# param_ranges = [(-5, 5), (-2000, 2000), (1, 75)]  # (priceUpdateRate, delayTarget, clientTimeout)
+# param_ranges = [(1, 200), (1, 10000), (1, 10)]  # (priceUpdateRate, delayTarget) 
+# param_ranges = [(1, 200), (1, 40), (1, 10), (5, 50)]  # (priceUpdateRate, delayTarget) 
+param_ranges = [(50, 500), (1000, 10000), (1, 20), ]  # (priceUpdateRate, delayTarget) 
     
 # Define the function that runs the service and client as experiments
-def run_experiments(priceUpdateRate, delayTarget, clientTimeout):
+def run_experiments(priceUpdateRate, delayTarget, priceStep, guidePrice, clientTimeout):
     output_file_path = '/home/ying/Sync/Git/service-app/services/protobuf-grpc/server.output'
     # Open the file in write mode
     with open(output_file_path, 'w') as output_file:
         process1 = subprocess.Popen(
             [
                 "go", "run", "/home/ying/Sync/Git/protobuf/baysian-opt/one-service.go", "A", "50051",
-                str(priceUpdateRate), str(delayTarget), str(clientTimeout)
+                str(priceUpdateRate), str(delayTarget), str(priceStep), str(guidePrice)
             ],
             stdout=output_file,  # Save stdout to the file
             stderr=subprocess.PIPE
@@ -113,7 +116,7 @@ def run_experiments(priceUpdateRate, delayTarget, clientTimeout):
     # save the stdout to working_dir/ghz.output
     with open(working_dir + '/ghz.output', 'w') as output_file:
         process2 = subprocess.run([
-            "go", "run", "/home/ying/Sync/Git/protobuf/ghz-client/old_main.go", str(clientTimeout)
+            "go", "run", "/home/ying/Sync/Git/protobuf/ghz-client/main.go", str(clientTimeout)
         ], cwd=working_dir, stdout=output_file, stderr=subprocess.PIPE)
 
     # Retrieve the stdout and stderr outputs
@@ -129,14 +132,19 @@ def run_experiments(priceUpdateRate, delayTarget, clientTimeout):
     return
 
 # Define the objective function to optimize
-def objective(priceUpdateRate, delayTarget, clientTimeout):
+def objective(priceUpdateRate, clientTimeout, delayTarget, guidePrice, priceStep):
     # Convert the parameters to int64
     priceUpdateRate = int(priceUpdateRate)
+    # priceUpdateRate = 100
     delayTarget = int(delayTarget)
+    guidePrice = int(guidePrice)
+    # clientTimeout = int(clientTimeout)
     clientTimeout = int(clientTimeout)
+    priceStep = int(priceStep)
 
     # Run the experiments
-    run_experiments(priceUpdateRate, delayTarget, clientTimeout)
+    # run_experiments(priceUpdateRate, delayTarget, guidePrice, clientTimeout)
+    run_experiments(priceUpdateRate, delayTarget, priceStep, guidePrice, clientTimeout)
 
     # Perform the calculations for average goodput
     # Insert your code for calculating average goodput here
@@ -145,24 +153,37 @@ def objective(priceUpdateRate, delayTarget, clientTimeout):
     return average_goodput  # Minimize the negative average goodput
 
 
-def plot_opt(priceUpdateRate, delayTarget, clientTimeout):
+def plot_opt(priceUpdateRate, clientTimeout, delayTarget, guidePrice, priceStep):
     # Convert the parameters to int64
     priceUpdateRate = int(priceUpdateRate)
+    # priceUpdateRate = 100
     delayTarget = int(delayTarget)
+    guidePrice = int(guidePrice)
     # clientTimeout = int(clientTimeout)
-    clientTimeout = 1
+    clientTimeout = int(clientTimeout)
+    priceStep = int(priceStep)
 
     # Run the experiments
-    run_experiments(priceUpdateRate, delayTarget, clientTimeout)
+    run_experiments(priceUpdateRate, delayTarget, priceStep, guidePrice, clientTimeout)
 
     analyze_data(filename)
+
+
+# Define the objective function to optimize
+def objective_wrapper(priceUpdateRate, delayTarget, priceStep,):
+    return objective(priceUpdateRate, 0, delayTarget, -1, priceStep)
+
+
+def plot_opt_wrapper(priceUpdateRate, delayTarget, priceStep,):
+    return plot_opt(priceUpdateRate, 0, delayTarget, -1, priceStep)
 
 if __name__ == '__main__':
     if rerun == True:
         # Create the optimizer
         optimizer = BayesianOptimization(
-            f=objective,
-            pbounds=dict(zip(['priceUpdateRate', 'delayTarget', 'clientTimeout'], param_ranges)),
+            f=objective_wrapper,
+            # pbounds={'guidePrice': param_ranges[2]},  # Only optimize the guidePrice parameter
+            pbounds=dict(zip(['priceUpdateRate', 'delayTarget', 'priceStep'], param_ranges)),
             random_state=1,
         )
 
@@ -170,12 +191,16 @@ if __name__ == '__main__':
         optimizer.maximize(
             init_points=5,  # Number of initial random points
             n_iter=25,  # Number of optimization iterations
+            # add initial values of priceUpdateRate, delayTarget, guidePrice as 50, -1, 7
+            # init_points=[{'clientTimeout': 0, 'delayTarget': 0}]
         )
 
         # Print the best parameters and objective value found
         best_params = optimizer.max['params']
+        # best_guide_price = optimizer.max['params']['guidePrice']
         best_objective = optimizer.max['target']  # Convert back to positive value
         print("Best Parameters:", best_params)
+        # print("Best Guide Price:", best_guide_price)
         print("Best Average Goodput:", best_objective)
 
         # save the best parameters to a file, pickle
@@ -189,4 +214,7 @@ if __name__ == '__main__':
         print("Best Parameters:", best_params)
         print("Best Average Goodput:", best_objective)
 
-    plot_opt(**best_params)
+    # plot_opt(**best_params)
+    plot_opt_wrapper(**best_params)
+    # print: the best obj is objective_wrapper(**best_params)
+    print("Best Average Goodput:", objective_wrapper(**best_params))
