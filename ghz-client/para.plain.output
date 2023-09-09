@@ -1,0 +1,228 @@
+Deployments: compose-post-service
+home-timeline-redis
+home-timeline-service
+media-service
+nginx-web-server
+post-storage-mongo
+post-storage-service
+social-graph-redis
+social-graph-service
+text-service
+unique-id-service
+url-shorten-mongo
+url-shorten-service
+user-mention-memcached
+user-mention-service
+user-service
+user-timeline-mongo
+user-timeline-redis
+user-timeline-service
+Waiting for deployment "compose-post-service" rollout to finish: 0 of 1 updated replicas are available...
+deployment "compose-post-service" successfully rolled out
+Deployment compose-post-service is ready.
+deployment "home-timeline-redis" successfully rolled out
+Deployment home-timeline-redis is ready.
+deployment "home-timeline-service" successfully rolled out
+Deployment home-timeline-service is ready.
+deployment "media-service" successfully rolled out
+Deployment media-service is ready.
+deployment "nginx-web-server" successfully rolled out
+Deployment nginx-web-server is ready.
+deployment "post-storage-mongo" successfully rolled out
+Deployment post-storage-mongo is ready.
+deployment "post-storage-service" successfully rolled out
+Deployment post-storage-service is ready.
+deployment "social-graph-redis" successfully rolled out
+Deployment social-graph-redis is ready.
+deployment "social-graph-service" successfully rolled out
+Deployment social-graph-service is ready.
+deployment "text-service" successfully rolled out
+Deployment text-service is ready.
+deployment "unique-id-service" successfully rolled out
+Deployment unique-id-service is ready.
+deployment "url-shorten-mongo" successfully rolled out
+Deployment url-shorten-mongo is ready.
+deployment "url-shorten-service" successfully rolled out
+Deployment url-shorten-service is ready.
+deployment "user-mention-memcached" successfully rolled out
+Deployment user-mention-memcached is ready.
+deployment "user-mention-service" successfully rolled out
+Deployment user-mention-service is ready.
+deployment "user-service" successfully rolled out
+Deployment user-service is ready.
+deployment "user-timeline-mongo" successfully rolled out
+Deployment user-timeline-mongo is ready.
+deployment "user-timeline-redis" successfully rolled out
+Deployment user-timeline-redis is ready.
+deployment "user-timeline-service" successfully rolled out
+Deployment user-timeline-service is ready.
+ENTRY_POINT: nginx-web-server
+SERVICE_A_URL: 10.97.150.159:50051
+Capacity: 5000
+Metadata: request-id={{.RequestNumber}}
+Metadata: timestamp={{.TimestampUnix}}
+Metadata: method=compose
+
+Summary:
+  Count:	36377
+  Total:	6.88 s
+  Slowest:	2.91 s
+  Fastest:	15.18 ms
+  Average:	32.16 ms
+  Requests/sec:	5284.87
+
+Response time histogram:
+  15.181   [1]     |
+  304.661  [35990] |∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎
+  594.141  [3]     |
+  883.621  [288]   |
+  1173.102 [32]    |
+  1462.582 [0]     |
+  1752.062 [0]     |
+  2041.542 [0]     |
+  2331.022 [0]     |
+  2620.502 [0]     |
+  2909.982 [12]    |
+
+Latency distribution:
+  10 % in 17.04 ms 
+  25 % in 18.79 ms 
+  50 % in 22.53 ms 
+  75 % in 28.08 ms 
+  90 % in 35.09 ms 
+  95 % in 42.23 ms 
+  99 % in 71.12 ms 
+
+Status code distribution:
+  [OK]            36326 responses   
+  [Unavailable]   51 responses      
+
+Error distribution:
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54776->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54374->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54492->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54398->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54434->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54616->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54786->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54892->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54340->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54570->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54620->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:55116->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54558->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54562->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:55206->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54330->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54396->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:55104->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54888->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:55092->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54316->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54362->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54380->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54588->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54358->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54496->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54826->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:55080->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54308->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54378->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54500->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54772->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54290->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54338->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54404->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54288->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54306->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54320->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54346->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54462->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54542->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54798->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54816->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54584->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54294->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54406->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54544->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54662->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54384->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:54502->10.97.150.159:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.205:55146->10.97.150.159:50051: use of closed network connection   
+
+Debug: Checking Namespace=default, Pod=compose-post-service-6db8bd7fb5-mxnw4 for Target File=deathstar_*.output
+Namespace: default, Pod: compose-post-service-6db8bd7fb5-mxnw4 has the target files.
+Copying deathstar_compose-post-service.output to deathstar_compose-post-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=home-timeline-redis-68bdbb459f-nrx4f for Target File=deathstar_*.output
+Namespace: default, Pod: home-timeline-redis-68bdbb459f-nrx4f has the target files.
+Copying deathstar_home-timeline-redis.output to deathstar_home-timeline-redis.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=home-timeline-service-6fcb4679db-g8jj7 for Target File=deathstar_*.output
+Namespace: default, Pod: home-timeline-service-6fcb4679db-g8jj7 has the target files.
+Copying deathstar_home-timeline-service.output to deathstar_home-timeline-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=media-service-cfc4b74c7-lk72n for Target File=deathstar_*.output
+Namespace: default, Pod: media-service-cfc4b74c7-lk72n has the target files.
+Copying deathstar_media-service.output to deathstar_media-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=nginx-web-server-64fc6fd886-bwjhk for Target File=deathstar_*.output
+Namespace: default, Pod: nginx-web-server-64fc6fd886-bwjhk has the target files.
+Copying deathstar_nginx-web-server.output to deathstar_nginx-web-server.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=post-storage-mongo-65c79c9bcd-dtlk7 for Target File=deathstar_*.output
+Namespace: default, Pod: post-storage-mongo-65c79c9bcd-dtlk7 has the target files.
+Copying deathstar_post-storage-mongo.output to deathstar_post-storage-mongo.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=post-storage-service-6cb68b6d86-c6ff4 for Target File=deathstar_*.output
+Namespace: default, Pod: post-storage-service-6cb68b6d86-c6ff4 has the target files.
+Copying deathstar_post-storage-service.output to deathstar_post-storage-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=social-graph-redis-6fdf7b4459-5mdfn for Target File=deathstar_*.output
+Namespace: default, Pod: social-graph-redis-6fdf7b4459-5mdfn has the target files.
+Copying deathstar_social-graph-redis.output to deathstar_social-graph-redis.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=social-graph-service-7d9d94b79d-nccnb for Target File=deathstar_*.output
+Namespace: default, Pod: social-graph-service-7d9d94b79d-nccnb has the target files.
+Copying deathstar_social-graph-service.output to deathstar_social-graph-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=text-service-58d95db9d4-j6rl2 for Target File=deathstar_*.output
+Namespace: default, Pod: text-service-58d95db9d4-j6rl2 has the target files.
+Copying deathstar_text-service.output to deathstar_text-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=unique-id-service-545ffbdd6c-8mnwb for Target File=deathstar_*.output
+Namespace: default, Pod: unique-id-service-545ffbdd6c-8mnwb has the target files.
+Copying deathstar_unique-id-service.output to deathstar_unique-id-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=url-shorten-mongo-6b4c85bb87-vwm4r for Target File=deathstar_*.output
+Namespace: default, Pod: url-shorten-mongo-6b4c85bb87-vwm4r has the target files.
+Copying deathstar_url-shorten-mongo.output to deathstar_url-shorten-mongo.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=url-shorten-service-68d694d594-hbndv for Target File=deathstar_*.output
+Namespace: default, Pod: url-shorten-service-68d694d594-hbndv has the target files.
+Copying deathstar_url-shorten-service.output to deathstar_url-shorten-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-mention-memcached-64575cd9dc-j96hn for Target File=deathstar_*.output
+Namespace: default, Pod: user-mention-memcached-64575cd9dc-j96hn has the target files.
+Copying deathstar_user-mention-memcached.output to deathstar_user-mention-memcached.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-mention-service-6dcfcb4b8d-bp8d2 for Target File=deathstar_*.output
+Namespace: default, Pod: user-mention-service-6dcfcb4b8d-bp8d2 has the target files.
+Copying deathstar_user-mention-service.output to deathstar_user-mention-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-service-5b549c744-9ckrv for Target File=deathstar_*.output
+Namespace: default, Pod: user-service-5b549c744-9ckrv has the target files.
+Copying deathstar_user-service.output to deathstar_user-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-mongo-6dfc455859-92dsd for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-mongo-6dfc455859-92dsd has the target files.
+Copying deathstar_user-timeline-mongo.output to deathstar_user-timeline-mongo.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-redis-7b55f9ffd9-cdv49 for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-redis-7b55f9ffd9-cdv49 has the target files.
+Copying deathstar_user-timeline-redis.output to deathstar_user-timeline-redis.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-service-f648cb4f4-lwcfg for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-service-f648cb4f4-lwcfg has the target files.
+Copying deathstar_user-timeline-service.output to deathstar_user-timeline-service.output
+tar: removing leading '/' from member names

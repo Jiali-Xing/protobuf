@@ -37,9 +37,11 @@ var (
 	// loadStart    = uint(10000)
 	// loadEnd      = uint(30000)
 	// loadStep     = 1000
-	constantLoad = false
-	runDuration  = time.Second * 7
-	capacity     = func() int {
+	constantLoadStr = getEnv("CONSTANT_LOAD", "false")
+	// make it a boolean
+	constantLoad, _ = strconv.ParseBool(constantLoadStr)
+	runDuration     = time.Second * 7
+	capacity        = func() int {
 		capacityStr := getEnv("CAPACITY", "4000")
 		parsedCapacity, err := strconv.Atoi(capacityStr)
 		if err != nil {
@@ -140,8 +142,9 @@ func main() {
 			runner.WithRPS(uint(capacity)),
 			runner.WithRunDuration(runDuration),
 			runner.WithLoadSchedule("const"),
+			runner.WithMethod(method),
 			runner.WithCharon(enableCharon),
-			runner.WithCharonEntry("50051"),
+			runner.WithCharonEntry("nginx-web-server"),
 			runner.WithCharonOptions(charonOptions),
 			runner.WithEnableCompression(false),
 		)
@@ -166,7 +169,6 @@ func main() {
 			runner.WithLoadStepDuration(loadStepDuration),
 			runner.WithMethod(method),
 			runner.WithCharon(enableCharon),
-			// runner.WithCharonEntry("localhost-50051"),
 			runner.WithCharonEntry("nginx-web-server"),
 			runner.WithCharonOptions(charonOptions),
 			runner.WithEnableCompression(false),
@@ -185,12 +187,20 @@ func main() {
 
 	toStd.Print("summary")
 
-	filename := fmt.Sprintf("../ghz-results/charon_stepup_nclients_%d.json", concurrency)
-	// if enableCharon {
-	// 	filename = fmt.Sprintf("../ghz-results/charon_stepup_nclients_%d.json", concurrency)
-	// } else {
-	// 	filename = fmt.Sprintf("../ghz-results/baseline_stepup_nclients_%d.json", concurrency)
-	// }
+	// filename := fmt.Sprintf("../ghz-results/xxx json. where xxx tells us if interceptor is enabled or not")
+	// and method, constant load or not, capacity, etc.
+	// filename := fmt.Sprintf("../ghz-results/.json", enableCharon, method, constantLoadStr, capacity)
+	// enableCharonStr := strconv.FormatBool(enableCharon)
+	// filename := fmt.Sprintf("../ghz-results/charon-%s-method-%s-constantload-%s-capacity-%d.json", enableCharonStr, method, constantLoadStr, capacity)
+	// if enableCharon, name it charon-xxx, otherwise, plain-xxx
+	filename := ""
+	if enableCharon {
+		filename = fmt.Sprintf("../ghz-results/social-charon-%s-capacity-%d.json", method, capacity)
+		// writeToFile(filename, report)
+	} else {
+		filename = fmt.Sprintf("../ghz-results/social-plain-%s-capacity-%d.json", method, capacity)
+		// writeToFile(filename, report)
+	}
 
 	file, err := os.Create(filename)
 
