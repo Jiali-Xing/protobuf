@@ -434,6 +434,8 @@ github.com/tgiannoukos/charon v0.0.0-20230905220436-af1684829a0d h1:lyBJKfh7woH4
 github.com/tgiannoukos/charon v0.0.0-20230905220436-af1684829a0d/go.mod h1:qUVp0mj6E1t3QxmGbqb7DgaHNtQWXo66gdIrdsQ80YE=
 github.com/tgiannoukos/charon v0.0.0-20230908000630-3283425cb596 h1:mFk/6Twmy4jgNC5RKJQMwAmNUCcT4h2oyyoLF2ycaFc=
 github.com/tgiannoukos/charon v0.0.0-20230908000630-3283425cb596/go.mod h1:qUVp0mj6E1t3QxmGbqb7DgaHNtQWXo66gdIrdsQ80YE=
+github.com/tgiannoukos/charon v0.0.0-20230908034213-875700184c58 h1:fEHkFf1Qff8Fu1c/oEPPmWrkur84TBKoZ0GM6y9/8/k=
+github.com/tgiannoukos/charon v0.0.0-20230908034213-875700184c58/go.mod h1:qUVp0mj6E1t3QxmGbqb7DgaHNtQWXo66gdIrdsQ80YE=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

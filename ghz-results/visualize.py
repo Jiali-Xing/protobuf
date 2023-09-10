@@ -17,7 +17,7 @@ oneNode = False
 cloudlab = True
 
 # SLO = 20 if oneNode else 80
-capacity = 24000 if oneNode else 1000
+capacity = 24000 if oneNode else 5000
 # computationTime = 10 if oneNode else 70
 computationTime = 27
 SLO = 50 + computationTime
@@ -375,6 +375,10 @@ def extract_ownPrices(file_pattern):
 
         # Create a DataFrame with timestamp as one column and own price data as another
         df = pd.DataFrame({service_name: data})
+        # if df is empty, return
+        if df.empty:
+            continue
+
         df["timestamp"] = pd.to_datetime(timestamps)
         df.set_index('timestamp', inplace=True)
         # sort the df by timestamp
