@@ -56,7 +56,8 @@ var (
 	loadStepDuration = time.Second * 2
 
 	// read the inferface/method from the environment variable
-	method = getEnv("METHOD", "echo")
+	method  = getEnv("METHOD", "echo")
+	subcall = getEnv("SUBCALL", "sequential")
 )
 
 func getHostname() string {
@@ -203,10 +204,10 @@ func main() {
 	// if enableCharon, name it charon-xxx, otherwise, plain-xxx
 	filename := ""
 	if enableCharon {
-		filename = fmt.Sprintf("../ghz-results/social-charon-%s-capacity-%d.json", method, capacity)
+		filename = fmt.Sprintf("../ghz-results/social-%s-charon-%s-capacity-%d.json", method, subcall, capacity)
 		// writeToFile(filename, report)
 	} else {
-		filename = fmt.Sprintf("../ghz-results/social-plain-%s-capacity-%d.json", method, capacity)
+		filename = fmt.Sprintf("../ghz-results/social-%s-plain-%s-capacity-%d.json", method, subcall, capacity)
 		// writeToFile(filename, report)
 	}
 
