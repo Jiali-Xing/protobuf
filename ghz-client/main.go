@@ -127,6 +127,14 @@ func main() {
 		// "latencyThreshold":   time.Millisecond * 7,
 	}
 
+	// print all the options
+	fmt.Printf("Constant load: %s\n", constantLoadStr)
+	fmt.Printf("Capacity: %d\n", capacity)
+	fmt.Printf("Run duration: %s\n", runDuration)
+	fmt.Printf("Enable Charon: %t\n", enableCharon)
+	// fmt.Printf("Method: %s\n", method)
+	fmt.Printf("Charon options: %v\n", charonOptions)
+
 	var err error
 	var report *runner.Report
 	if constantLoad {
