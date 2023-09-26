@@ -29,6 +29,12 @@ cloudlabOutput = r"deathstar_([\w-]+)\.output"
 #     # SLO = 200
 #     capacity = 4000
 
+# read CONSTANT_LOAD as bool from env
+CONSTANT_LOAD = False
+if 'CONSTANT_LOAD' in os.environ:
+    CONSTANT_LOAD = os.environ['CONSTANT_LOAD'].lower() == 'true'
+    print("CONSTANT_LOAD is set to", CONSTANT_LOAD)
+
 # if capacity is given as an environment variable, use it
 if 'CAPACITY' in os.environ:
     capacity = int(os.environ['CAPACITY'])
@@ -569,6 +575,8 @@ def plot_timeseries_split(df, filename, computation_time=0):
     # if df['limited'].sum() > 0, then plot the rate limited requests
     if df['limited'].sum() > 0:
         df['total_demand'] = df['dropped']+df['throughput']+df['limited']
+    elif CONSTANT_LOAD:
+        df['total_demand'] = capacity
     else:
         # otherwise, plot the a total demand that is half of capacity for the first 2 seconds, and then 100% capacity for next 2 seconds
         # and then 150% capacity for the rest of the time
@@ -576,14 +584,15 @@ def plot_timeseries_split(df, filename, computation_time=0):
         df['total_demand'] = capacity/2
 
         # Define the time range from 2nd to 4th second
-        start_time = pd.Timestamp('2000-01-01 00:00:02')
-        end_time = pd.Timestamp('2000-01-01 00:00:04')
+        mid_start_time = pd.Timestamp('2000-01-01 00:00:02')
+        mid_end_time = pd.Timestamp('2000-01-01 00:00:04')
 
         # Create a new column 'new_column' and fill it with 100 for rows within the time range
-        df.loc[start_time:end_time, 'total_demand'] = capacity  # Set the value to 100 for the specified time range
+        df.loc[mid_start_time:mid_end_time, 'total_demand'] = capacity  # Set the value to 100 for the specified time range
 
         # from 2nd second to 4th second, total demand is 100% capacity
-        df.loc[end_time:, 'total_demand'] = capacity *3/2
+        df.loc[mid_end_time:, 'total_demand'] = capacity *3/2
+    
 
     if mechanism != 'baseline':
         ax2.plot(df.index, df['total_demand'], color='c', linestyle='-', label='Total Demand')
@@ -638,14 +647,18 @@ def plot_timeseries_split(df, filename, computation_time=0):
     ax1.axhline(y=SLO - computation_time, color='c', linestyle='-.', label='SLO minus computation')
     # find the line `export LATENCY_THRESHOLD=???us` in `/home/ying/Sync/Git/service-app/cloudlab/scripts/cloudlab_run_and_fetch.sh`
     # and add a horizontal line at y=???us
-    with open ("/home/ying/Sync/Git/service-app/cloudlab/scripts/cloudlab_run_and_fetch.sh", "r") as file:
-        for line in file:
-            if "export LATENCY_THRESHOLD=" in line:
-                latency_threshold = int(re.findall(r"\d+", line)[0])
-                # convert the latency_threshold from us to ms
-                latency_threshold = latency_threshold / 1000
-                ax1.axhline(y=latency_threshold, color='g', linestyle='-.', label='Latency Threshold')
-                break
+    latency_threshold = os.environ.get('LATENCY_THRESHOLD')
+    latency_ms = pd.Timedelta(latency_threshold).total_seconds() * 1000
+    # convert the latency_threshold from 5000us to 5ms
+    ax1.axhline(y=latency_ms, color='g', linestyle='-.', label='Latency Threshold')
+    # with open ("/home/ying/Sync/Git/service-app/cloudlab/scripts/cloudlab_run_and_fetch.sh", "r") as file:
+    #     for line in file:
+    #         if "export LATENCY_THRESHOLD=" in line:
+    #             latency_threshold = int(re.findall(r"\d+", line)[0])
+    #             # convert the latency_threshold from us to ms
+    #             latency_threshold = latency_threshold / 1000
+    #             ax1.axhline(y=latency_threshold, color='g', linestyle='-.', label='Latency Threshold')
+    #             break
     
 
     # put legend on the top left corner
@@ -694,7 +707,10 @@ def plot_timeseries_split(df, filename, computation_time=0):
 
     filetosave = mechanism + '.deathstar.1000c.' + str(capacity) + 'c.png' 
     plt.savefig(filetosave, format='png', dpi=300, bbox_inches='tight')
-    plt.show()
+    # plt.show()
+    if not noPlot:
+        plt.show()
+    plt.close()
 
 
 def plot_latencies(df, filename, computation_time=0):
@@ -719,14 +735,21 @@ def plot_latencies(df, filename, computation_time=0):
     ax1.axhline(y=SLO - computation_time, color='c', linestyle='-.', label='SLO - computation time')
     # find the line `export LATENCY_THRESHOLD=???us` in `/home/ying/Sync/Git/service-app/cloudlab/scripts/cloudlab_run_and_fetch.sh`
     # and add a horizontal line at y=???us
-    with open ("/home/ying/Sync/Git/service-app/cloudlab/scripts/cloudlab_run_and_fetch.sh", "r") as file:
-        for line in file:
-            if "export LATENCY_THRESHOLD=" in line:
-                latency_threshold = int(re.findall(r"\d+", line)[0])
-                # convert the latency_threshold from us to ms
-                latency_threshold = latency_threshold / 1000
-                ax1.axhline(y=latency_threshold, color='g', linestyle='-.', label='Latency Threshold')
-                break
+    # with open ("/home/ying/Sync/Git/service-app/cloudlab/scripts/cloudlab_run_and_fetch.sh", "r") as file:
+    #     for line in file:
+    #         if "export LATENCY_THRESHOLD=" in line:
+    #             latency_threshold = int(re.findall(r"\d+", line)[0])
+    #             # convert the latency_threshold from us to ms
+    #             latency_threshold = latency_threshold / 1000
+    #             ax1.axhline(y=latency_threshold, color='g', linestyle='-.', label='Latency Threshold')
+    #             break
+    # read the latency_threshold from the environment variable, it looks like 5000us
+    # latency_threshold read as time delta
+    latency_threshold = os.environ.get('LATENCY_THRESHOLD')
+    latency_ms = pd.Timedelta(latency_threshold).total_seconds() * 1000
+    # convert the latency_threshold from 5000us to 5ms
+    ax1.axhline(y=latency_ms, color='g', linestyle='-.', label='Latency Threshold')
+
     if not cloudlab:
         df_queuing_delay = extract_waiting_times("/home/ying/Sync/Git/service-app/services/protobuf-grpc/server.output")
         # assert that df_queuing_delay.index is not empty
@@ -747,7 +770,7 @@ def plot_latencies(df, filename, computation_time=0):
     else:
         # loop over /home/ying/Sync/Git/protobuf/ghz-results/grpc-service-*.output to get the df queuing delay
         dict_queuing_delay = extract_waiting_times_all(cloudlabOutput)
-        
+
         # also, plot the sum of the queuing delay of all services by adding up the queuing delay of each service
         # first create an empty dataframe 
         df_queuing_delay_sum = pd.DataFrame()
@@ -777,17 +800,21 @@ def plot_latencies(df, filename, computation_time=0):
             # print the average queuing delay of each service
             print("average queuing delay of service", service_name, ":", mean_queuing_delay.mean())    
         
-        # Sum the queuing delay of all services, fill the NaN with 0
-        df_queuing_delay_sum = df_queuing_delay_sum.sum(axis=1).fillna(method='bfill')
-        # Plot the sum of mean_queuing_delay for all services
-        if df_latency_window_size < latency_window_size_ms:
-            sum_queuing_delay = df_queuing_delay_sum.resample(latency_window_size).mean()
-        else:
-            sum_queuing_delay = df_queuing_delay_sum
-        ax1.plot(sum_queuing_delay.index, sum_queuing_delay, label="sum of queuing delay")
+        # if the charon is turned on, plot the sum of the queuing delay of all services
+        INTERCPTOR = os.environ.get('INTERCEPT').lower()
+        # if INTERCPTOR is true 
+        if INTERCPTOR == 'true':
+            # Sum the queuing delay of all services, fill the NaN with 0
+            df_queuing_delay_sum = df_queuing_delay_sum.sum(axis=1).fillna(method='bfill')
+            # Plot the sum of mean_queuing_delay for all services
+            if df_latency_window_size < latency_window_size_ms:
+                sum_queuing_delay = df_queuing_delay_sum.resample(latency_window_size).mean()
+            else:
+                sum_queuing_delay = df_queuing_delay_sum
+            ax1.plot(sum_queuing_delay.index, sum_queuing_delay, label="sum of queuing delay")
 
-        # print the average queuing delay of all services 
-        print("average queuing delay of all services:", sum_queuing_delay.mean())
+            # print the average queuing delay of all services 
+            print("average queuing delay of all services:", sum_queuing_delay.mean())
 
     # put legend on the top left corner
     # for ax1, don't show the box border of the legend
@@ -820,7 +847,9 @@ def plot_latencies(df, filename, computation_time=0):
     ax1.set_title(f"Mean, Median, 99-tile Latency: {round(latency_mean, 2)} ms, {round(latency_median, 2)} ms, {round(latency_99th, 2)} ms")
 
     plt.savefig(mechanism + '.1000c.latency.png', format='png', dpi=300, bbox_inches='tight')
-    plt.show()
+    if not noPlot:
+        plt.show()
+    plt.close()
 
 
 def analyze_data(filename):
@@ -843,4 +872,9 @@ def analyze_data(filename):
 
 if __name__ == '__main__':
     filename = sys.argv[1]
+    # if there is a second argument, it is the handle of showing the plot
+    if len(sys.argv) > 2:
+        noPlot = sys.argv[2]
+        # convert it to boolean
+        noPlot = noPlot.lower() == 'no-plot'
     analyze_data(filename)
