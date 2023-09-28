@@ -58,6 +58,10 @@ var (
 	// read the inferface/method from the environment variable
 	method  = getEnv("METHOD", "echo")
 	subcall = getEnv("SUBCALL", "sequential")
+
+	// rateLimiting = getEnv("RATE_LIMITING", "true") convert to bool
+	rateLimiting, _ = strconv.ParseBool(getEnv("RATE_LIMITING", "true"))
+	entry_point     = getEnv("ENTRY_POINT", "nginx-web-server")
 )
 
 func getHostname() string {
@@ -111,7 +115,7 @@ func main() {
 
 	charonOptions := map[string]interface{}{
 		// "rateLimitWaiting": true,
-		"rateLimiting": true,
+		"rateLimiting": rateLimiting,
 		"debug":        true,
 		"debugFreq":    int64(1000),
 		"tokensLeft":   int64(0),
@@ -153,7 +157,7 @@ func main() {
 			runner.WithLoadSchedule("const"),
 			runner.WithMethod(method),
 			runner.WithCharon(enableCharon),
-			runner.WithCharonEntry("nginx-web-server"),
+			runner.WithCharonEntry(entry_point),
 			runner.WithCharonOptions(charonOptions),
 			runner.WithEnableCompression(false),
 		)
@@ -178,7 +182,7 @@ func main() {
 			runner.WithLoadStepDuration(loadStepDuration),
 			runner.WithMethod(method),
 			runner.WithCharon(enableCharon),
-			runner.WithCharonEntry("nginx-web-server"),
+			runner.WithCharonEntry(entry_point),
 			runner.WithCharonOptions(charonOptions),
 			runner.WithEnableCompression(false),
 		)

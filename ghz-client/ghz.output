@@ -20,8 +20,10 @@ user-timeline-service
 Waiting for deployment "compose-post-service" rollout to finish: 0 of 1 updated replicas are available...
 deployment "compose-post-service" successfully rolled out
 Deployment compose-post-service is ready.
+Waiting for deployment "home-timeline-redis" rollout to finish: 0 of 1 updated replicas are available...
 deployment "home-timeline-redis" successfully rolled out
 Deployment home-timeline-redis is ready.
+Waiting for deployment "home-timeline-service" rollout to finish: 0 of 1 updated replicas are available...
 deployment "home-timeline-service" successfully rolled out
 Deployment home-timeline-service is ready.
 deployment "media-service" successfully rolled out
@@ -57,124 +59,146 @@ Deployment user-timeline-redis is ready.
 deployment "user-timeline-service" successfully rolled out
 Deployment user-timeline-service is ready.
 ENTRY_POINT: nginx-web-server
-SERVICE_A_URL: 10.98.57.73:50051
-Capacity: 500
+SERVICE_A_URL: 10.111.205.7:50051
+Capacity: 6000
 Metadata: request-id={{.RequestNumber}}
 Metadata: timestamp={{.TimestampUnix}}
 Metadata: method=compose
 Constant load: true
-Capacity: 500
+Capacity: 6000
 Run duration: 7s
 Enable Charon: false
 Charon options: map[debug:true debugFreq:1000 initprice:10 rateLimiting:true tokenRefillDist:poisson tokenStrategy:uniform tokenUpdateRate:10ms tokenUpdateStep:10 tokensLeft:0]
 
 Summary:
-  Count:	3420
+  Count:	41028
   Total:	6.86 s
-  Slowest:	611.55 ms
-  Fastest:	15.76 ms
-  Average:	33.19 ms
-  Requests/sec:	498.21
+  Slowest:	964.24 ms
+  Fastest:	15.11 ms
+  Average:	27.80 ms
+  Requests/sec:	5980.48
 
 Response time histogram:
-  15.757  [1]    |
-  75.337  [3277] |∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎
-  134.916 [8]    |
-  194.496 [15]   |
-  254.076 [14]   |
-  313.655 [12]   |
-  373.235 [14]   |
-  432.815 [15]   |
-  492.395 [22]   |
-  551.974 [26]   |
-  611.554 [16]   |
+  15.111  [1]     |
+  110.024 [40733] |∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎
+  204.937 [0]     |
+  299.850 [0]     |
+  394.764 [0]     |
+  489.677 [0]     |
+  584.590 [0]     |
+  679.503 [0]     |
+  774.417 [0]     |
+  869.330 [55]    |
+  964.243 [219]   |
 
 Latency distribution:
-  10 % in 17.29 ms 
-  25 % in 17.60 ms 
-  50 % in 18.05 ms 
-  75 % in 18.68 ms 
-  90 % in 19.58 ms 
-  95 % in 23.93 ms 
-  99 % in 511.75 ms 
+  10 % in 16.65 ms 
+  25 % in 18.03 ms 
+  50 % in 20.38 ms 
+  75 % in 23.89 ms 
+  90 % in 28.29 ms 
+  95 % in 32.93 ms 
+  99 % in 73.82 ms 
 
 Status code distribution:
-  [OK]   3420 responses   
+  [OK]            41008 responses   
+  [Unavailable]   20 responses      
 
+Error distribution:
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59522->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59812->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59814->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59732->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59800->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59424->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59548->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59636->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59642->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59722->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59836->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:60022->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59356->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59480->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59558->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59614->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59742->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59710->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59806->10.111.205.7:50051: use of closed network connection   
+  [1]   rpc error: code = Unavailable desc = error reading from server: read tcp 128.110.217.43:59832->10.111.205.7:50051: use of closed network connection   
 
-Debug: Checking Namespace=default, Pod=compose-post-service-6f9845489d-76hzm for Target File=deathstar_*.output
-Namespace: default, Pod: compose-post-service-6f9845489d-76hzm has the target files.
+Debug: Checking Namespace=default, Pod=compose-post-service-6db8bd7fb5-64qfg for Target File=deathstar_*.output
+Namespace: default, Pod: compose-post-service-6db8bd7fb5-64qfg has the target files.
 Copying deathstar_compose-post-service.output to deathstar_compose-post-service.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=home-timeline-redis-68bdbb459f-6xr5m for Target File=deathstar_*.output
-Namespace: default, Pod: home-timeline-redis-68bdbb459f-6xr5m has the target files.
+Debug: Checking Namespace=default, Pod=home-timeline-redis-68bdbb459f-xq4l6 for Target File=deathstar_*.output
+Namespace: default, Pod: home-timeline-redis-68bdbb459f-xq4l6 has the target files.
 Copying deathstar_home-timeline-redis.output to deathstar_home-timeline-redis.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=home-timeline-service-7974fb9949-4znnp for Target File=deathstar_*.output
-Namespace: default, Pod: home-timeline-service-7974fb9949-4znnp has the target files.
+Debug: Checking Namespace=default, Pod=home-timeline-service-6fcb4679db-p578p for Target File=deathstar_*.output
+Namespace: default, Pod: home-timeline-service-6fcb4679db-p578p has the target files.
 Copying deathstar_home-timeline-service.output to deathstar_home-timeline-service.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=media-service-cfc4b74c7-vjf5r for Target File=deathstar_*.output
-Namespace: default, Pod: media-service-cfc4b74c7-vjf5r has the target files.
+Debug: Checking Namespace=default, Pod=media-service-57f4b9d99d-26mqg for Target File=deathstar_*.output
+Namespace: default, Pod: media-service-57f4b9d99d-26mqg has the target files.
 Copying deathstar_media-service.output to deathstar_media-service.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=nginx-web-server-64fc6fd886-vfm5w for Target File=deathstar_*.output
-Namespace: default, Pod: nginx-web-server-64fc6fd886-vfm5w has the target files.
+Debug: Checking Namespace=default, Pod=nginx-web-server-64fc6fd886-rvvpt for Target File=deathstar_*.output
+Namespace: default, Pod: nginx-web-server-64fc6fd886-rvvpt has the target files.
 Copying deathstar_nginx-web-server.output to deathstar_nginx-web-server.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=post-storage-mongo-65c79c9bcd-9trj7 for Target File=deathstar_*.output
-Namespace: default, Pod: post-storage-mongo-65c79c9bcd-9trj7 has the target files.
+Debug: Checking Namespace=default, Pod=post-storage-mongo-65c79c9bcd-l5k6c for Target File=deathstar_*.output
+Namespace: default, Pod: post-storage-mongo-65c79c9bcd-l5k6c has the target files.
 Copying deathstar_post-storage-mongo.output to deathstar_post-storage-mongo.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=post-storage-service-6cb68b6d86-mzh82 for Target File=deathstar_*.output
-Namespace: default, Pod: post-storage-service-6cb68b6d86-mzh82 has the target files.
+Debug: Checking Namespace=default, Pod=post-storage-service-6cb68b6d86-st4jb for Target File=deathstar_*.output
+Namespace: default, Pod: post-storage-service-6cb68b6d86-st4jb has the target files.
 Copying deathstar_post-storage-service.output to deathstar_post-storage-service.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=social-graph-redis-6fdf7b4459-d6fhj for Target File=deathstar_*.output
-Namespace: default, Pod: social-graph-redis-6fdf7b4459-d6fhj has the target files.
+Debug: Checking Namespace=default, Pod=social-graph-redis-6fdf7b4459-wwnm9 for Target File=deathstar_*.output
+Namespace: default, Pod: social-graph-redis-6fdf7b4459-wwnm9 has the target files.
 Copying deathstar_social-graph-redis.output to deathstar_social-graph-redis.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=social-graph-service-7d9d94b79d-pw2kb for Target File=deathstar_*.output
-Namespace: default, Pod: social-graph-service-7d9d94b79d-pw2kb has the target files.
+Debug: Checking Namespace=default, Pod=social-graph-service-7d9d94b79d-k4dtx for Target File=deathstar_*.output
+Namespace: default, Pod: social-graph-service-7d9d94b79d-k4dtx has the target files.
 Copying deathstar_social-graph-service.output to deathstar_social-graph-service.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=text-service-58d95db9d4-vwh9h for Target File=deathstar_*.output
-Namespace: default, Pod: text-service-58d95db9d4-vwh9h has the target files.
+Debug: Checking Namespace=default, Pod=text-service-6674d788d7-vmllz for Target File=deathstar_*.output
+Namespace: default, Pod: text-service-6674d788d7-vmllz has the target files.
 Copying deathstar_text-service.output to deathstar_text-service.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=unique-id-service-545ffbdd6c-5qsfh for Target File=deathstar_*.output
-Namespace: default, Pod: unique-id-service-545ffbdd6c-5qsfh has the target files.
+Debug: Checking Namespace=default, Pod=unique-id-service-64bdc5f76-5nvc8 for Target File=deathstar_*.output
+Namespace: default, Pod: unique-id-service-64bdc5f76-5nvc8 has the target files.
 Copying deathstar_unique-id-service.output to deathstar_unique-id-service.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=url-shorten-mongo-6b4c85bb87-8q7f7 for Target File=deathstar_*.output
-Namespace: default, Pod: url-shorten-mongo-6b4c85bb87-8q7f7 has the target files.
+Debug: Checking Namespace=default, Pod=url-shorten-mongo-6b4c85bb87-5bb2k for Target File=deathstar_*.output
+Namespace: default, Pod: url-shorten-mongo-6b4c85bb87-5bb2k has the target files.
 Copying deathstar_url-shorten-mongo.output to deathstar_url-shorten-mongo.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=url-shorten-service-68d694d594-jww6j for Target File=deathstar_*.output
-Namespace: default, Pod: url-shorten-service-68d694d594-jww6j has the target files.
+Debug: Checking Namespace=default, Pod=url-shorten-service-68d694d594-5l6sx for Target File=deathstar_*.output
+Namespace: default, Pod: url-shorten-service-68d694d594-5l6sx has the target files.
 Copying deathstar_url-shorten-service.output to deathstar_url-shorten-service.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=user-mention-memcached-64575cd9dc-2kckn for Target File=deathstar_*.output
-Namespace: default, Pod: user-mention-memcached-64575cd9dc-2kckn has the target files.
+Debug: Checking Namespace=default, Pod=user-mention-memcached-64575cd9dc-p4fzz for Target File=deathstar_*.output
+Namespace: default, Pod: user-mention-memcached-64575cd9dc-p4fzz has the target files.
 Copying deathstar_user-mention-memcached.output to deathstar_user-mention-memcached.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=user-mention-service-6dcfcb4b8d-zhhp2 for Target File=deathstar_*.output
-Namespace: default, Pod: user-mention-service-6dcfcb4b8d-zhhp2 has the target files.
+Debug: Checking Namespace=default, Pod=user-mention-service-6dcfcb4b8d-4zkgf for Target File=deathstar_*.output
+Namespace: default, Pod: user-mention-service-6dcfcb4b8d-4zkgf has the target files.
 Copying deathstar_user-mention-service.output to deathstar_user-mention-service.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=user-service-5b549c744-w6rll for Target File=deathstar_*.output
-Namespace: default, Pod: user-service-5b549c744-w6rll has the target files.
+Debug: Checking Namespace=default, Pod=user-service-f4bc49647-glcff for Target File=deathstar_*.output
+Namespace: default, Pod: user-service-f4bc49647-glcff has the target files.
 Copying deathstar_user-service.output to deathstar_user-service.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=user-timeline-mongo-6dfc455859-6rs87 for Target File=deathstar_*.output
-Namespace: default, Pod: user-timeline-mongo-6dfc455859-6rs87 has the target files.
+Debug: Checking Namespace=default, Pod=user-timeline-mongo-6dfc455859-4sjsj for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-mongo-6dfc455859-4sjsj has the target files.
 Copying deathstar_user-timeline-mongo.output to deathstar_user-timeline-mongo.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=user-timeline-redis-7b55f9ffd9-4qsvb for Target File=deathstar_*.output
-Namespace: default, Pod: user-timeline-redis-7b55f9ffd9-4qsvb has the target files.
+Debug: Checking Namespace=default, Pod=user-timeline-redis-7b55f9ffd9-66dch for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-redis-7b55f9ffd9-66dch has the target files.
 Copying deathstar_user-timeline-redis.output to deathstar_user-timeline-redis.output
 tar: removing leading '/' from member names
-Debug: Checking Namespace=default, Pod=user-timeline-service-f648cb4f4-mspxp for Target File=deathstar_*.output
-Namespace: default, Pod: user-timeline-service-f648cb4f4-mspxp has the target files.
+Debug: Checking Namespace=default, Pod=user-timeline-service-f648cb4f4-26x85 for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-service-f648cb4f4-26x85 has the target files.
 Copying deathstar_user-timeline-service.output to deathstar_user-timeline-service.output
 tar: removing leading '/' from member names

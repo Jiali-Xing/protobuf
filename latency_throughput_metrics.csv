@@ -1,0 +1,5 @@
+Label,Average Latency,Median Latency,99th %ile Latency,Throughput
+Charon Lazy,217.52,210.67,386.11,4093.49
+Charon Full,231.64,218.16,1061.63,4020.07
+Charon w/o Log,181.82,178.12,361.12,4927.12
+Plain,27.81,20.38,73.76,5919.05
