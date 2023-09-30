@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
+	"runtime/pprof"
 	"strconv"
 	"time"
 
@@ -142,6 +144,37 @@ func main() {
 
 	var err error
 	var report *runner.Report
+
+	if profiling := getEnv("PROFILING", "true"); profiling == "true" {
+		// ... Inside your main or init function
+		// if serviceName contains "nginx", then set the http based pprof
+		if serviceName == "grpc-service-1" {
+			log.Println("Setting up http based pprof")
+			go func() {
+				log.Println(http.ListenAndServe("localhost:6060", nil))
+			}()
+		}
+
+		f, err := os.Create(serviceName + ".pprof")
+		if err != nil {
+			log.Fatalf("Could not create pprof file: %v", err)
+			return
+		}
+
+		if err := pprof.StartCPUProfile(f); err != nil {
+			log.Fatalf("Could not start CPU profile: %v", err)
+			return
+		}
+
+		// stop the CPU profile and write the profiling data to the file after 5 seconds
+		go func() {
+			time.Sleep(6 * time.Second)
+			pprof.StopCPUProfile()
+			f.Close()
+			log.Println("Stopped CPU profiling")
+		}()
+	}
+
 	if constantLoad {
 		report, err = runner.Run(
 			"greeting.v3.GreetingService/Greeting",

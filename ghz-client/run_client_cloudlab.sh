@@ -284,3 +284,41 @@ copy_deathstar_output() {
 }
 
 copy_deathstar_output
+
+# copy pprof files from server pods their location is /go/service-app/services/protobuf-grpc/{service-name}.pprof
+copy_deathstar_pprof() {
+  if [ -z "$1" ]; then
+    echo "Usage: copy_pprof <x>"
+    exit 1
+  fi
+
+  target_file="*.pprof"
+
+  # Loop over all pods
+  kubectl get pods -o=jsonpath='{range .items[*]}{.metadata.name}{" "}{.metadata.namespace}{"\n"}{end}' | while read -r pod; do
+    pod_name=$(echo "$pod" | cut -d' ' -f1)
+    namespace_name=$(echo "$pod" | cut -d' ' -f2)
+
+    echo "Debug: Checking Namespace=$namespace_name, Pod=$pod_name for Target File=$target_file"
+
+    # List matching files in the pod
+    matching_files=$(kubectl exec -n "$namespace_name" "$pod_name" -- sh -c "ls /go/service-app/services/protobuf-grpc/ | grep 'pprof'")
+
+    if [ -n "$matching_files" ]; then
+      echo "Namespace: $namespace_name, Pod: $pod_name has the target files."
+      
+      # Loop over matching files and copy them individually
+      for file in $matching_files; do
+        # local_file="${namespace_name}-${pod_name}-$(date +%s)-$file"
+        local_file="$file"
+
+        echo "Copying $file to $local_file"
+        kubectl cp "$namespace_name/$pod_name:/go/service-app/services/protobuf-grpc/$file" ~/"$local_file"
+      done
+    else
+      echo "Target files not found in Pod $pod_name in Namespace $namespace_name."
+    fi
+  done
+}
+
+copy_deathstar_pprof
