@@ -1,0 +1,60 @@
+Total: 110ms
+ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).queuingCheck in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20230929184655-44ffc2071f6d/overloadDetection.go
+         0       30ms (flat, cum) 27.27% of Total
+         .          .     37:func (pt *PriceTable) queuingCheck() {
+         .          .     38:	// init a null histogram
+         .          .     39:	var prevHist *metrics.Float64Histogram
+         .          .     40:	for range time.Tick(pt.priceUpdateRate) {
+         .          .     41:		// start a timer to measure the query latency
+         .          .     42:		start := time.Now()
+         .          .     43:		// get the current histogram
+         .       10ms     44:		currHist := readHistogram()
+         .          .     45:		/*
+         .          .     46:			// calculate the differernce between the two histograms prevHist and currHist
+         .          .     47:			diff := metrics.Float64Histogram{}
+         .          .     48:			// if preHist is empty pointer, return currHist
+         .          .     49:			if prevHist == nil {
+         .          .     50:				diff = *currHist
+         .          .     51:			} else {
+         .          .     52:				diff = GetHistogramDifference(*prevHist, *currHist)
+         .          .     53:			}
+         .          .     54:			// maxLatency is the max of the histogram in milliseconds.
+         .          .     55:			gapLatency := maximumBucket(&diff)
+         .          .     56:		*/
+         .          .     57:		if prevHist == nil {
+         .          .     58:			// directly go to next iteration
+         .          .     59:			prevHist = currHist
+         .          .     60:			continue
+         .          .     61:		}
+         .          .     62:		gapLatency := maximumQueuingDelayms(prevHist, currHist)
+         .          .     63:		// medianLatency := medianBucket(&diff)
+         .          .     64:		// gapLatency := percentileBucket(&diff, 90)
+         .          .     65:
+         .       20ms     66:		ctx := metadata.NewIncomingContext(context.Background(), metadata.Pairs("request-id", "0"))
+         .          .     67:
+         .          .     68:		// ToDo: move the print of the histogram to a file
+         .          .     69:		/*
+         .          .     70:			cumulativeLat := medianBucket(currHist)
+         .          .     71:			// printHistogram(currHist)
+ROUTINE ======================== github.com/tgiannoukos/charon.readHistogram in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20230929184655-44ffc2071f6d/queuingDelay.go
+         0       10ms (flat, cum)  9.09% of Total
+         .          .    133:func readHistogram() *metrics.Float64Histogram {
+         .          .    134:	// Create a sample for metric /sched/latencies:seconds and /sync/mutex/wait/total:seconds
+         .          .    135:	const queueingDelay = "/sched/latencies:seconds"
+         .          .    136:	measureMutexWait := false
+         .          .    137:
+         .          .    138:	// Create a sample for the metric.
+         .          .    139:	sample := make([]metrics.Sample, 1)
+         .          .    140:	sample[0].Name = queueingDelay
+         .          .    141:	if measureMutexWait {
+         .          .    142:		const mutexWait = "/sync/mutex/wait/total:seconds"
+         .          .    143:		sample[1].Name = mutexWait
+         .          .    144:	}
+         .          .    145:
+         .          .    146:	// Sample the metric.
+         .       10ms    147:	metrics.Read(sample)
+         .          .    148:
+         .          .    149:	// Check if the metric is actually supported.
+         .          .    150:	// If it's not, the resulting value will always have
+         .          .    151:	// kind KindBad.
+         .          .    152:	if sample[0].Value.Kind() == metrics.KindBad {
