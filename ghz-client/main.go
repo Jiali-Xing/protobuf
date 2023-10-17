@@ -42,7 +42,7 @@ var (
 	constantLoadStr = getEnv("CONSTANT_LOAD", "false")
 	// make it a boolean
 	constantLoad, _ = strconv.ParseBool(constantLoadStr)
-	runDuration     = time.Second * 7
+	runDuration     = time.Second * 10
 	capacity        = func() int {
 		capacityStr := getEnv("CAPACITY", "4000")
 		parsedCapacity, err := strconv.Atoi(capacityStr)
@@ -118,7 +118,7 @@ func main() {
 	charonOptions := map[string]interface{}{
 		// "rateLimitWaiting": true,
 		"rateLimiting": rateLimiting,
-		"debug":        true,
+		"debug":        false,
 		"debugFreq":    int64(1000),
 		"tokensLeft":   int64(0),
 		"initprice":    int64(10),
@@ -164,6 +164,8 @@ func main() {
 		if err := pprof.StartCPUProfile(f); err != nil {
 			log.Fatalf("Could not start CPU profile: %v", err)
 			return
+		} else {
+			log.Println("Started CPU profiling")
 		}
 
 		// stop the CPU profile and write the profiling data to the file after 5 seconds

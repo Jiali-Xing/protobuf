@@ -287,11 +287,7 @@ copy_deathstar_output
 
 # copy pprof files from server pods their location is /go/service-app/services/protobuf-grpc/{service-name}.pprof
 copy_deathstar_pprof() {
-  if [ -z "$1" ]; then
-    echo "Usage: copy_pprof <x>"
-    exit 1
-  fi
-
+  # target_file="*.pprof" but not starting with "grpc-service"
   target_file="*.pprof"
 
   # Loop over all pods
@@ -302,18 +298,29 @@ copy_deathstar_pprof() {
     echo "Debug: Checking Namespace=$namespace_name, Pod=$pod_name for Target File=$target_file"
 
     # List matching files in the pod
-    matching_files=$(kubectl exec -n "$namespace_name" "$pod_name" -- sh -c "ls /go/service-app/services/protobuf-grpc/ | grep 'pprof'")
+    matching_files=$(kubectl exec -n "$namespace_name" "$pod_name" -- sh -c "ls /go/service-app/services/protobuf-grpc/ | grep '\.pprof$'")
+    # matching_files=$(kubectl exec -n "$namespace_name" "$pod_name" -- sh -c "ls /go/service-app/services/protobuf-grpc/ | grep 'pprof'")
 
     if [ -n "$matching_files" ]; then
       echo "Namespace: $namespace_name, Pod: $pod_name has the target files."
       
       # Loop over matching files and copy them individually
       for file in $matching_files; do
-        # local_file="${namespace_name}-${pod_name}-$(date +%s)-$file"
-        local_file="$file"
+        # # local_file="${namespace_name}-${pod_name}-$(date +%s)-$file"
+        # local_file="$file"
 
-        echo "Copying $file to $local_file"
-        kubectl cp "$namespace_name/$pod_name:/go/service-app/services/protobuf-grpc/$file" ~/"$local_file"
+        # echo "Copying $file to $local_file"
+        # kubectl cp "$namespace_name/$pod_name:/go/service-app/services/protobuf-grpc/$file" ~/"$local_file"
+        if [[ ! $file =~ ^grpc-service ]]; then
+          # local_file="${namespace_name}-${pod_name}-$(date +%s)-$file"
+          local_file="$file"
+
+          kubectl exec -n "$namespace_name" "$pod_name" -- /bin/sh -c "go tool pprof -list charon $file > ~/$file.txt"
+
+          echo "Copying $file to $local_file"
+          kubectl cp "$namespace_name/$pod_name:/go/service-app/services/protobuf-grpc/$file" ~/"$local_file"
+          kubectl cp "$namespace_name/$pod_name:/root/$file.txt" ~/"$local_file.txt"
+        fi
       done
     else
       echo "Target files not found in Pod $pod_name in Namespace $namespace_name."
