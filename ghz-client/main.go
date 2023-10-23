@@ -248,15 +248,11 @@ func main() {
 	// filename := fmt.Sprintf("../ghz-results/charon-%s-method-%s-constantload-%s-capacity-%d.json", enableCharonStr, method, constantLoadStr, capacity)
 	// if enableCharon, name it charon-xxx, otherwise, plain-xxx
 	filename := ""
-	if interceptor == "charon" {
-		filename = fmt.Sprintf("../ghz-results/social-%s-charon-%s-capacity-%d.json", method, subcall, capacity)
-		// writeToFile(filename, report)
-	} else if interceptor == "breakwater" {
-		filename = fmt.Sprintf("../ghz-results/social-%s-breakwater-%s-capacity-%d.json", method, subcall, capacity)
-	} else {
-		filename = fmt.Sprintf("../ghz-results/social-%s-plain-%s-capacity-%d.json", method, subcall, capacity)
-		// writeToFile(filename, report)
-	}
+	// if interceptor == "charon" || interceptor == "breakwater" {
+	// else {
+	filename = fmt.Sprintf("../ghz-results/social-%s-%s-%s-capacity-%d.json", method, interceptor, subcall, capacity)
+	// writeToFile(filename, report)
+	// }
 
 	file, err := os.Create(filename)
 
