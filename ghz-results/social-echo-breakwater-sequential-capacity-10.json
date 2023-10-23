@@ -1,0 +1,858 @@
+{
+  "date": "2023-10-22T21:46:55-04:00",
+  "endReason": "timeout",
+  "options": {
+    "call": "greeting.v3.GreetingService/Greeting",
+    "host": "localhost:50051",
+    "proto": "../greeting.proto",
+    "import-paths": [
+      "..",
+      "."
+    ],
+    "insecure": true,
+    "load-schedule": "step",
+    "load-start": 5,
+    "load-end": 15,
+    "load-step": 5,
+    "load-step-duration": 2000000000,
+    "load-max-duration": 0,
+    "concurrency": 1000,
+    "concurrency-schedule": "",
+    "concurrency-start": 0,
+    "concurrency-end": 0,
+    "concurrency-step": 0,
+    "concurrency-step-duration": 0,
+    "concurrency-max-duration": 0,
+    "total": 2147483647,
+    "connections": 1000,
+    "duration": 10000000000,
+    "timeout": 20000000000,
+    "dial-timeout": 10000000000,
+    "data": {
+      "greeting": {
+        "created": "2023-10-22 21:46:45.897020344 -0400 EDT",
+        "hostname": "ying-precision7760",
+        "id": "2e992eb4-174e-4dc0-8f6c-75efbd70da13",
+        "message": "Hello, from Client!",
+        "service": "Client"
+      }
+    },
+    "binary": false,
+    "metadata": {
+      "method": "echo",
+      "request-id": "{{.RequestNumber}}",
+      "timestamp": "{{.TimestampUnix}}"
+    },
+    "CPUs": 16
+  },
+  "count": 118,
+  "total": 9948193718,
+  "average": 13010240,
+  "fastest": 9150526,
+  "slowest": 19932815,
+  "rps": 11.86144976112537,
+  "errorDistribution": {
+    "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp [::1]:50051: connect: connection refused\"": 6
+  },
+  "statusCodeDistribution": {
+    "OK": 112,
+    "Unavailable": 6
+  },
+  "latencyDistribution": [
+    {
+      "percentage": 10,
+      "latency": 12874945
+    },
+    {
+      "percentage": 25,
+      "latency": 13279150
+    },
+    {
+      "percentage": 50,
+      "latency": 13799660
+    },
+    {
+      "percentage": 75,
+      "latency": 14272563
+    },
+    {
+      "percentage": 90,
+      "latency": 14697043
+    },
+    {
+      "percentage": 95,
+      "latency": 14901949
+    },
+    {
+      "percentage": 99,
+      "latency": 19289976
+    }
+  ],
+  "histogram": [
+    {
+      "mark": 0.009150526,
+      "count": 1,
+      "frequency": 0.008928571428571428
+    },
+    {
+      "mark": 0.010228754900000001,
+      "count": 4,
+      "frequency": 0.03571428571428571
+    },
+    {
+      "mark": 0.0113069838,
+      "count": 1,
+      "frequency": 0.008928571428571428
+    },
+    {
+      "mark": 0.0123852127,
+      "count": 1,
+      "frequency": 0.008928571428571428
+    },
+    {
+      "mark": 0.0134634416,
+      "count": 32,
+      "frequency": 0.2857142857142857
+    },
+    {
+      "mark": 0.014541670500000001,
+      "count": 59,
+      "frequency": 0.5267857142857143
+    },
+    {
+      "mark": 0.015619899400000001,
+      "count": 12,
+      "frequency": 0.10714285714285714
+    },
+    {
+      "mark": 0.0166981283,
+      "count": 0,
+      "frequency": 0
+    },
+    {
+      "mark": 0.017776357200000002,
+      "count": 0,
+      "frequency": 0
+    },
+    {
+      "mark": 0.0188545861,
+      "count": 0,
+      "frequency": 0
+    },
+    {
+      "mark": 0.019932815,
+      "count": 2,
+      "frequency": 0.017857142857142856
+    }
+  ],
+  "details": [
+    {
+      "timestamp": "2023-10-22T21:46:46.237600649-04:00",
+      "latency": 21688,
+      "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp [::1]:50051: connect: connection refused\"",
+      "status": "Unavailable"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:46.437362259-04:00",
+      "latency": 26696,
+      "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp [::1]:50051: connect: connection refused\"",
+      "status": "Unavailable"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:46.637837692-04:00",
+      "latency": 25787,
+      "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp [::1]:50051: connect: connection refused\"",
+      "status": "Unavailable"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:46.838257024-04:00",
+      "latency": 25346,
+      "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp [::1]:50051: connect: connection refused\"",
+      "status": "Unavailable"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:47.047351903-04:00",
+      "latency": 35587,
+      "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp [::1]:50051: connect: connection refused\"",
+      "status": "Unavailable"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:47.237840009-04:00",
+      "latency": 27090,
+      "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing: dial tcp [::1]:50051: connect: connection refused\"",
+      "status": "Unavailable"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:47.457624822-04:00",
+      "latency": 19932815,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:47.652373338-04:00",
+      "latency": 14262830,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:47.846622021-04:00",
+      "latency": 9409256,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:48.046608124-04:00",
+      "latency": 9150526,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:48.147636888-04:00",
+      "latency": 10001596,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:48.247910135-04:00",
+      "latency": 10489357,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:48.346886881-04:00",
+      "latency": 9198083,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:48.44780409-04:00",
+      "latency": 10044920,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:48.552032635-04:00",
+      "latency": 14233214,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:48.652384243-04:00",
+      "latency": 14381654,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:48.752781607-04:00",
+      "latency": 14466794,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:48.852688593-04:00",
+      "latency": 14918515,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:48.952251084-04:00",
+      "latency": 14701269,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:49.053201379-04:00",
+      "latency": 14901949,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:49.151833169-04:00",
+      "latency": 13724855,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:49.251215457-04:00",
+      "latency": 13516975,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:49.351790882-04:00",
+      "latency": 13672311,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:49.452084513-04:00",
+      "latency": 14352369,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:49.552094794-04:00",
+      "latency": 14071139,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:49.652760713-04:00",
+      "latency": 14811951,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:49.750749574-04:00",
+      "latency": 13150759,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:49.852786626-04:00",
+      "latency": 15062803,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:49.952492831-04:00",
+      "latency": 14778187,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.051789734-04:00",
+      "latency": 14376844,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.117525784-04:00",
+      "latency": 12991777,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.185124294-04:00",
+      "latency": 13694425,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.252497972-04:00",
+      "latency": 14530585,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.318652726-04:00",
+      "latency": 14256968,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.38503752-04:00",
+      "latency": 13519972,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.451155619-04:00",
+      "latency": 13484388,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.518501027-04:00",
+      "latency": 13512923,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.585276109-04:00",
+      "latency": 13961218,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.653039081-04:00",
+      "latency": 14679486,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.718824817-04:00",
+      "latency": 13799660,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.784182442-04:00",
+      "latency": 13255413,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.852040767-04:00",
+      "latency": 14066058,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.918452412-04:00",
+      "latency": 13457513,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:50.985247702-04:00",
+      "latency": 13905417,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.052504132-04:00",
+      "latency": 14353582,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.118960189-04:00",
+      "latency": 14451842,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.184105259-04:00",
+      "latency": 13402209,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.251741252-04:00",
+      "latency": 13857871,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.319386612-04:00",
+      "latency": 14745999,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.384860321-04:00",
+      "latency": 13633996,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.452444425-04:00",
+      "latency": 14397028,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.51860159-04:00",
+      "latency": 14272563,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.584942931-04:00",
+      "latency": 13520249,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.653036758-04:00",
+      "latency": 15196514,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.718250376-04:00",
+      "latency": 13339594,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.784255153-04:00",
+      "latency": 13315832,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.852136679-04:00",
+      "latency": 14097570,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.918741652-04:00",
+      "latency": 13787333,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:51.984864327-04:00",
+      "latency": 13398823,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.050926009-04:00",
+      "latency": 13350495,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.118499947-04:00",
+      "latency": 13841223,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.184555574-04:00",
+      "latency": 13257240,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.250987684-04:00",
+      "latency": 13858743,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.318059658-04:00",
+      "latency": 13267816,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.3850472-04:00",
+      "latency": 14105125,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.450989551-04:00",
+      "latency": 13316884,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.518051527-04:00",
+      "latency": 13348567,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.584308666-04:00",
+      "latency": 13599039,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.651661415-04:00",
+      "latency": 13470497,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.718587616-04:00",
+      "latency": 14143596,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.785887623-04:00",
+      "latency": 14503564,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.851822916-04:00",
+      "latency": 14062035,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.919109106-04:00",
+      "latency": 14440424,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:52.985736616-04:00",
+      "latency": 14663897,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.050859527-04:00",
+      "latency": 13235668,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.119374752-04:00",
+      "latency": 14697043,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.184820722-04:00",
+      "latency": 13607702,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.251587772-04:00",
+      "latency": 13985300,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.323842196-04:00",
+      "latency": 19289976,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.382343732-04:00",
+      "latency": 12104526,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.45032653-04:00",
+      "latency": 12546103,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.516326665-04:00",
+      "latency": 12445602,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.584970871-04:00",
+      "latency": 13823952,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.652370584-04:00",
+      "latency": 14510429,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.718442909-04:00",
+      "latency": 14228078,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.785401558-04:00",
+      "latency": 14154886,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.852138968-04:00",
+      "latency": 13805894,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.917786689-04:00",
+      "latency": 13883679,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:53.986069006-04:00",
+      "latency": 14492345,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.050701151-04:00",
+      "latency": 12874945,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.117969482-04:00",
+      "latency": 13445202,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.185441302-04:00",
+      "latency": 14702586,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.251042747-04:00",
+      "latency": 13813990,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.318886741-04:00",
+      "latency": 13890525,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.383608932-04:00",
+      "latency": 13184936,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.450997523-04:00",
+      "latency": 13761860,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.518691767-04:00",
+      "latency": 13960595,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.584770413-04:00",
+      "latency": 13401628,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.650714614-04:00",
+      "latency": 13196463,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.718784482-04:00",
+      "latency": 14228327,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.784591352-04:00",
+      "latency": 13154174,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.850596383-04:00",
+      "latency": 13262526,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.917555297-04:00",
+      "latency": 13402536,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:54.984444613-04:00",
+      "latency": 13096506,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:55.051291063-04:00",
+      "latency": 13171995,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:55.117076722-04:00",
+      "latency": 13028958,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:55.185001756-04:00",
+      "latency": 14023825,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:55.250752346-04:00",
+      "latency": 13217209,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:55.317334559-04:00",
+      "latency": 12882263,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:55.384983603-04:00",
+      "latency": 13799286,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:55.451293963-04:00",
+      "latency": 13634087,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:55.51796508-04:00",
+      "latency": 13951108,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:55.585155585-04:00",
+      "latency": 14335294,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:55.651950213-04:00",
+      "latency": 14268164,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:55.716959696-04:00",
+      "latency": 12463585,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:55.783176224-04:00",
+      "latency": 12777760,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:55.852516903-04:00",
+      "latency": 14298568,
+      "error": "",
+      "status": "OK"
+    },
+    {
+      "timestamp": "2023-10-22T21:46:55.917520051-04:00",
+      "latency": 13279150,
+      "error": "",
+      "status": "OK"
+    }
+  ]
+}

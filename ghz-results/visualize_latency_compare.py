@@ -2,13 +2,14 @@ import glob
 import json, csv
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 import os
 import seaborn as sns
 
 
 latency_window_size = '100ms'  # Define the window size as 100 milliseconds
 throughput_time_interval = '150ms'
-offset = 0  # Define the offset as 50 milliseconds
+offset = 1  # Define the offset as 50 milliseconds
 
 def read_data(filename):
     with open(filename, 'r') as f:
@@ -34,7 +35,7 @@ def convert_to_dataframe(data):
         return df
     # remove the data within first couple seconds of df
     df = df[df.index > df.index[0] + pd.Timedelta(seconds=offset)]
-    # df = df[df.index < df.index[-1] - pd.Timedelta(seconds=offset)]
+    df = df[df.index < df.index[-1] - pd.Timedelta(seconds=offset)]
 
     min_timestamp = df.index.min()
     df.index = df.index - min_timestamp + pd.Timestamp('2000-01-01')
@@ -49,14 +50,21 @@ def plot_combined(dfs, labels):
     
     fig, axs = plt.subplots(4, 1, figsize=(12, 18))
     ax1, ax2, ax3, ax4 = axs
+    # Find the global min and max latency values across all dfs
+    global_min = 0
+    global_max = 300
 
+    # Define the bin edges based on the global range and desired number of bins
+    # The np.histogram_bin_edges function can help with this
+    num_bins = 250  # or whatever desired number of bins you want
+    bin_edges = np.linspace(global_min, global_max, num_bins)
     # Histograms on ax1
     for df, label in zip(dfs, labels):
-        ax1.hist(df['latency'], alpha=0.5, label=label, bins='auto')
+        ax1.hist(df['latency'], alpha=0.5, label=label, bins=bin_edges)
     ax1.set_ylabel('Frequency')
     ax1.set_title('Histogram of Latencies (ms)')
     ax1.legend(loc='upper right')
-    ax1.set_xlim([0, 500])
+    ax1.set_xlim([0, global_max])
 
     # Throughput on ax2
     for df, label in zip(dfs, labels):
@@ -73,10 +81,16 @@ def plot_combined(dfs, labels):
     ax3.legend(loc='upper right')
 
     # Average latency on ax4
+    # for df, label in zip(dfs, labels):
+    #     ax4.plot(df.index, df['latency_ma'], label=f"{label} - avg percentile")
+    # ax4.set_ylabel('Latency (ms)')
+    # ax4.set_title('Average Latency Over Time')
+    # ax4.legend(loc='upper right')
+
     for df, label in zip(dfs, labels):
-        ax4.plot(df.index, df['latency_ma'], label=f"{label} - avg percentile")
+        ax4.plot(df.index, df['latency_median'], label=f"{label} - median")
     ax4.set_ylabel('Latency (ms)')
-    ax4.set_title('Average Latency Over Time')
+    ax4.set_title('Median Latency Over Time')
     ax4.legend(loc='upper right')
 
     # Share x-axis for ax2, ax3, ax4
@@ -85,6 +99,10 @@ def plot_combined(dfs, labels):
     # Add grid to all subplots
     for ax in axs:
         ax.grid(True)
+
+    # for 3 and 4, use log scale
+    ax3.set_yscale('log')
+    ax4.set_yscale('log')
     
     # Adjust spacing
     plt.tight_layout(h_pad=4)
@@ -200,13 +218,43 @@ def plot_combined(df1, df2, df3, labels):
 '''
 
 def main():
-    files = ['/home/ying/Sync/Git/protobuf/ghz-results/lazy-social-compose-charon-parallel-capacity-6000.json',
-             '/home/ying/Sync/Git/protobuf/ghz-results/nolazy-social-compose-charon-parallel-capacity-6000.json',
-             '/home/ying/Sync/Git/protobuf/ghz-results/nolog-charon-parallel-capacity-6000.json',
-             '/home/ying/Sync/Git/protobuf/ghz-results/social-compose-plain-parallel-capacity-6000.json',
-    ]
+    capacity = 5000
+    directory = '/home/ying/Sync/Git/protobuf/ghz-results/'
+
+    # List of all charon files for the given capacity
+    charon_files = glob.glob(f"{directory}social-compose-charon-parallel-capacity-{capacity}-*.json")
+
+    # List of all plain files for the given capacity
+    plain_files = glob.glob(f"{directory}social-compose-plain-parallel-capacity-{capacity}-*.json")
+
+    # Sort the files by their modification time to get the latest file
+    charon_files.sort(key=os.path.getmtime, reverse=True)
+    plain_files.sort(key=os.path.getmtime, reverse=True)
+
+    # Now you can read the latest files (if they exist)
+    if charon_files:
+        charon_file = charon_files[0]  # this will be the latest file
+    else:
+        print("No charon files found for the given capacity!")
+
+    if plain_files:
+        plain_file = plain_files[0]
+    else:
+        print("No plain files found for the given capacity!")
+
+    files = [charon_file, plain_file] if charon_files and plain_files else []
+
+    print(files)
+
+    # files = [f'/home/ying/Sync/Git/protobuf/ghz-results/social-compose-charon-parallel-capacity-{capacity}.json',
+    # # files = ['/home/ying/Sync/Git/protobuf/ghz-results/lazy-price-social-compose-charon-parallel-capacity-7000.json',
+    #         #  '/home/ying/Sync/Git/protobuf/ghz-results/nolazy-social-compose-charon-parallel-capacity-6000.json',
+    #         #  '/home/ying/Sync/Git/protobuf/ghz-results/nolog-charon-parallel-capacity-6000.json',
+    #          f'/home/ying/Sync/Git/protobuf/ghz-results/social-compose-plain-parallel-capacity-{capacity}.json'
+    # ]
     colors = ['red', 'blue', 'green']
-    labels = ['Charon Lazy', 'Charon Full', 'Charon w/o Log', 'Plain']
+    # labels = ['Charon Lazy', 'Charon Full', 'Charon w/o Log', 'Plain']
+    labels = ['Charon Lazy', 'Plain']
     dfs = []
 
     for i, filename in enumerate(files):
@@ -215,8 +263,9 @@ def main():
         df = df.fillna(0)
         dfs.append(df)
 
-    df1, df2, df3, df4 = dfs    
-    plot_combined([df1, df2, df3, df4], labels)
+    # df1, df2, df3, df4 = dfs    
+    # plot_combined([df1, df2, df3, df4], labels)
+    plot_combined(dfs, labels)
 
     # fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 12))
 
@@ -256,6 +305,8 @@ def calculate_tail_latency(df):
     df['tail_latency'] = tail_latency
     # Calculate moving average of latency
     df['latency_ma'] = df['latency'].rolling(latency_window_size).mean()
+    # and the median latency
+    df['latency_median'] = df['latency'].rolling(latency_window_size).median()
     return df
 
 

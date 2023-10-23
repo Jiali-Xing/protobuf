@@ -1,0 +1,444 @@
+Deployments: compose-post-service
+home-timeline-redis
+home-timeline-service
+media-service
+nginx-web-server
+post-storage-mongo
+post-storage-service
+social-graph-redis
+social-graph-service
+text-service
+unique-id-service
+url-shorten-mongo
+url-shorten-service
+user-mention-memcached
+user-mention-service
+user-service
+user-timeline-mongo
+user-timeline-redis
+user-timeline-service
+Waiting for deployment "compose-post-service" rollout to finish: 0 of 1 updated replicas are available...
+deployment "compose-post-service" successfully rolled out
+Deployment compose-post-service is ready.
+deployment "home-timeline-redis" successfully rolled out
+Deployment home-timeline-redis is ready.
+deployment "home-timeline-service" successfully rolled out
+Deployment home-timeline-service is ready.
+deployment "media-service" successfully rolled out
+Deployment media-service is ready.
+deployment "nginx-web-server" successfully rolled out
+Deployment nginx-web-server is ready.
+Waiting for deployment "post-storage-mongo" rollout to finish: 0 of 1 updated replicas are available...
+deployment "post-storage-mongo" successfully rolled out
+Deployment post-storage-mongo is ready.
+deployment "post-storage-service" successfully rolled out
+Deployment post-storage-service is ready.
+deployment "social-graph-redis" successfully rolled out
+Deployment social-graph-redis is ready.
+deployment "social-graph-service" successfully rolled out
+Deployment social-graph-service is ready.
+deployment "text-service" successfully rolled out
+Deployment text-service is ready.
+deployment "unique-id-service" successfully rolled out
+Deployment unique-id-service is ready.
+deployment "url-shorten-mongo" successfully rolled out
+Deployment url-shorten-mongo is ready.
+deployment "url-shorten-service" successfully rolled out
+Deployment url-shorten-service is ready.
+deployment "user-mention-memcached" successfully rolled out
+Deployment user-mention-memcached is ready.
+deployment "user-mention-service" successfully rolled out
+Deployment user-mention-service is ready.
+deployment "user-service" successfully rolled out
+Deployment user-service is ready.
+deployment "user-timeline-mongo" successfully rolled out
+Deployment user-timeline-mongo is ready.
+deployment "user-timeline-redis" successfully rolled out
+Deployment user-timeline-redis is ready.
+deployment "user-timeline-service" successfully rolled out
+Deployment user-timeline-service is ready.
+ENTRY_POINT: nginx-web-server
+SERVICE_A_URL: 10.102.111.12:50051
+Capacity: 11500
+Metadata: method=compose
+Metadata: request-id={{.RequestNumber}}
+Metadata: timestamp={{.TimestampUnix}}
+Constant load: true
+Capacity: 11500
+Run duration: 10s
+Enable Charon: false
+Charon options: map[debug:false debugFreq:1000 initprice:10 rateLimiting:true tokenRefillDist:poisson tokenStrategy:uniform tokenUpdateRate:10ms tokenUpdateStep:10 tokensLeft:0]
+
+Summary:
+  Count:	67466
+  Total:	9.85 s
+  Slowest:	7.54 s
+  Fastest:	15.37 ms
+  Average:	138.87 ms
+  Requests/sec:	6852.21
+
+Response time histogram:
+  15.368   [1]     |
+  767.694  [43323] |∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎
+  1520.019 [0]     |
+  2272.345 [0]     |
+  3024.671 [0]     |
+  3776.996 [129]   |
+  4529.322 [0]     |
+  5281.647 [0]     |
+  6033.973 [0]     |
+  6786.298 [0]     |
+  7538.624 [604]   |∎
+
+Latency distribution:
+  10 % in 20.81 ms 
+  25 % in 24.58 ms 
+  50 % in 52.24 ms 
+  75 % in 83.45 ms 
+  90 % in 106.74 ms 
+  95 % in 118.92 ms 
+  99 % in 6.94 s 
+
+Status code distribution:
+  [Unavailable]   22886 responses   
+  [Canceled]      523 responses     
+  [OK]            44057 responses   
+
+Error distribution:
+  [170]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51770->10.102.111.12:50051: read: connection reset by peer"   
+  [120]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52148->10.102.111.12:50051: read: connection reset by peer"   
+  [523]   rpc error: code = Canceled desc = grpc: the client connection is closing                                                                                                           
+  [187]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52298->10.102.111.12:50051: read: connection reset by peer"   
+  [142]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51372->10.102.111.12:50051: read: connection reset by peer"   
+  [145]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51816->10.102.111.12:50051: read: connection reset by peer"   
+  [134]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51870->10.102.111.12:50051: read: connection reset by peer"   
+  [143]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52150->10.102.111.12:50051: read: connection reset by peer"   
+  [142]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51364->10.102.111.12:50051: read: connection reset by peer"   
+  [110]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51790->10.102.111.12:50051: read: connection reset by peer"   
+  [141]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52388->10.102.111.12:50051: read: connection reset by peer"   
+  [144]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51386->10.102.111.12:50051: read: connection reset by peer"   
+  [133]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51814->10.102.111.12:50051: read: connection reset by peer"   
+  [147]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52208->10.102.111.12:50051: read: connection reset by peer"   
+  [147]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51806->10.102.111.12:50051: read: connection reset by peer"   
+  [138]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52372->10.102.111.12:50051: read: connection reset by peer"   
+  [119]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52456->10.102.111.12:50051: read: connection reset by peer"   
+  [115]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52180->10.102.111.12:50051: read: connection reset by peer"   
+  [148]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51782->10.102.111.12:50051: read: connection reset by peer"   
+  [159]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52318->10.102.111.12:50051: read: connection reset by peer"   
+  [133]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51762->10.102.111.12:50051: read: connection reset by peer"   
+  [180]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51496->10.102.111.12:50051: read: connection reset by peer"   
+  [154]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51564->10.102.111.12:50051: read: connection reset by peer"   
+  [144]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52410->10.102.111.12:50051: read: connection reset by peer"   
+  [202]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51934->10.102.111.12:50051: read: connection reset by peer"   
+  [124]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52412->10.102.111.12:50051: read: connection reset by peer"   
+  [121]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52394->10.102.111.12:50051: read: connection reset by peer"   
+  [120]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52450->10.102.111.12:50051: read: connection reset by peer"   
+  [151]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51390->10.102.111.12:50051: read: connection reset by peer"   
+  [151]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51988->10.102.111.12:50051: read: connection reset by peer"   
+  [171]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52144->10.102.111.12:50051: read: connection reset by peer"   
+  [163]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51486->10.102.111.12:50051: read: connection reset by peer"   
+  [175]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52544->10.102.111.12:50051: read: connection reset by peer"   
+  [124]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52310->10.102.111.12:50051: read: connection reset by peer"   
+  [139]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51424->10.102.111.12:50051: read: connection reset by peer"   
+  [129]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52254->10.102.111.12:50051: read: connection reset by peer"   
+  [103]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51968->10.102.111.12:50051: read: connection reset by peer"   
+  [172]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51646->10.102.111.12:50051: read: connection reset by peer"   
+  [139]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52242->10.102.111.12:50051: read: connection reset by peer"   
+  [125]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52076->10.102.111.12:50051: read: connection reset by peer"   
+  [94]    rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51658->10.102.111.12:50051: read: connection reset by peer"   
+  [130]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51414->10.102.111.12:50051: read: connection reset by peer"   
+  [145]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52330->10.102.111.12:50051: read: connection reset by peer"   
+  [183]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51636->10.102.111.12:50051: read: connection reset by peer"   
+  [125]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51654->10.102.111.12:50051: read: connection reset by peer"   
+  [118]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52284->10.102.111.12:50051: read: connection reset by peer"   
+  [151]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51980->10.102.111.12:50051: read: connection reset by peer"   
+  [136]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52272->10.102.111.12:50051: read: connection reset by peer"   
+  [95]    rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52360->10.102.111.12:50051: read: connection reset by peer"   
+  [112]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51958->10.102.111.12:50051: read: connection reset by peer"   
+  [115]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52112->10.102.111.12:50051: read: connection reset by peer"   
+  [144]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52092->10.102.111.12:50051: read: connection reset by peer"   
+  [124]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51536->10.102.111.12:50051: read: connection reset by peer"   
+  [129]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52134->10.102.111.12:50051: read: connection reset by peer"   
+  [136]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52002->10.102.111.12:50051: read: connection reset by peer"   
+  [154]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52370->10.102.111.12:50051: read: connection reset by peer"   
+  [124]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52478->10.102.111.12:50051: read: connection reset by peer"   
+  [114]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52440->10.102.111.12:50051: read: connection reset by peer"   
+  [139]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52444->10.102.111.12:50051: read: connection reset by peer"   
+  [122]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51850->10.102.111.12:50051: read: connection reset by peer"   
+  [167]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51884->10.102.111.12:50051: read: connection reset by peer"   
+  [147]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52430->10.102.111.12:50051: read: connection reset by peer"   
+  [131]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52014->10.102.111.12:50051: read: connection reset by peer"   
+  [160]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51860->10.102.111.12:50051: read: connection reset by peer"   
+  [147]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51388->10.102.111.12:50051: read: connection reset by peer"   
+  [98]    rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52280->10.102.111.12:50051: read: connection reset by peer"   
+  [110]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51482->10.102.111.12:50051: read: connection reset by peer"   
+  [110]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52354->10.102.111.12:50051: read: connection reset by peer"   
+  [113]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52204->10.102.111.12:50051: read: connection reset by peer"   
+  [307]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52536->10.102.111.12:50051: read: connection reset by peer"   
+  [151]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52216->10.102.111.12:50051: read: connection reset by peer"   
+  [157]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52548->10.102.111.12:50051: read: connection reset by peer"   
+  [150]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51624->10.102.111.12:50051: read: connection reset by peer"   
+  [113]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51932->10.102.111.12:50051: read: connection reset by peer"   
+  [147]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52452->10.102.111.12:50051: read: connection reset by peer"   
+  [140]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52488->10.102.111.12:50051: read: connection reset by peer"   
+  [147]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52244->10.102.111.12:50051: read: connection reset by peer"   
+  [128]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52010->10.102.111.12:50051: read: connection reset by peer"   
+  [120]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52438->10.102.111.12:50051: read: connection reset by peer"   
+  [143]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52198->10.102.111.12:50051: read: connection reset by peer"   
+  [96]    rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52082->10.102.111.12:50051: read: connection reset by peer"   
+  [114]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51748->10.102.111.12:50051: read: connection reset by peer"   
+  [167]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51746->10.102.111.12:50051: read: connection reset by peer"   
+  [112]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51404->10.102.111.12:50051: read: connection reset by peer"   
+  [160]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51926->10.102.111.12:50051: read: connection reset by peer"   
+  [165]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51594->10.102.111.12:50051: read: connection reset by peer"   
+  [148]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52190->10.102.111.12:50051: read: connection reset by peer"   
+  [144]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52470->10.102.111.12:50051: read: connection reset by peer"   
+  [149]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52292->10.102.111.12:50051: read: connection reset by peer"   
+  [164]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52546->10.102.111.12:50051: read: connection reset by peer"   
+  [118]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51662->10.102.111.12:50051: read: connection reset by peer"   
+  [135]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51812->10.102.111.12:50051: read: connection reset by peer"   
+  [115]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51728->10.102.111.12:50051: read: connection reset by peer"   
+  [133]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52260->10.102.111.12:50051: read: connection reset by peer"   
+  [150]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52474->10.102.111.12:50051: read: connection reset by peer"   
+  [140]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51906->10.102.111.12:50051: read: connection reset by peer"   
+  [142]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52192->10.102.111.12:50051: read: connection reset by peer"   
+  [138]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52212->10.102.111.12:50051: read: connection reset by peer"   
+  [150]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51488->10.102.111.12:50051: read: connection reset by peer"   
+  [131]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52132->10.102.111.12:50051: read: connection reset by peer"   
+  [137]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52044->10.102.111.12:50051: read: connection reset by peer"   
+  [124]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52268->10.102.111.12:50051: read: connection reset by peer"   
+  [128]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51694->10.102.111.12:50051: read: connection reset by peer"   
+  [107]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52252->10.102.111.12:50051: read: connection reset by peer"   
+  [133]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51986->10.102.111.12:50051: read: connection reset by peer"   
+  [116]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51630->10.102.111.12:50051: read: connection reset by peer"   
+  [153]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51768->10.102.111.12:50051: read: connection reset by peer"   
+  [157]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52288->10.102.111.12:50051: read: connection reset by peer"   
+  [133]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52308->10.102.111.12:50051: read: connection reset by peer"   
+  [100]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51518->10.102.111.12:50051: read: connection reset by peer"   
+  [118]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52506->10.102.111.12:50051: read: connection reset by peer"   
+  [131]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52434->10.102.111.12:50051: read: connection reset by peer"   
+  [144]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51686->10.102.111.12:50051: read: connection reset by peer"   
+  [132]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52380->10.102.111.12:50051: read: connection reset by peer"   
+  [320]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52034->10.102.111.12:50051: read: connection reset by peer"   
+  [160]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51978->10.102.111.12:50051: read: connection reset by peer"   
+  [137]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52262->10.102.111.12:50051: read: connection reset by peer"   
+  [160]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52340->10.102.111.12:50051: read: connection reset by peer"   
+  [125]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51656->10.102.111.12:50051: read: connection reset by peer"   
+  [146]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52250->10.102.111.12:50051: read: connection reset by peer"   
+  [148]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52342->10.102.111.12:50051: read: connection reset by peer"   
+  [118]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52362->10.102.111.12:50051: read: connection reset by peer"   
+  [115]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51950->10.102.111.12:50051: read: connection reset by peer"   
+  [176]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52344->10.102.111.12:50051: read: connection reset by peer"   
+  [161]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51852->10.102.111.12:50051: read: connection reset by peer"   
+  [138]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51592->10.102.111.12:50051: read: connection reset by peer"   
+  [88]    rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52494->10.102.111.12:50051: read: connection reset by peer"   
+  [159]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51786->10.102.111.12:50051: read: connection reset by peer"   
+  [117]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51956->10.102.111.12:50051: read: connection reset by peer"   
+  [95]    rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51876->10.102.111.12:50051: read: connection reset by peer"   
+  [139]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52466->10.102.111.12:50051: read: connection reset by peer"   
+  [127]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52332->10.102.111.12:50051: read: connection reset by peer"   
+  [119]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51832->10.102.111.12:50051: read: connection reset by peer"   
+  [144]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52064->10.102.111.12:50051: read: connection reset by peer"   
+  [176]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51794->10.102.111.12:50051: read: connection reset by peer"   
+  [134]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52114->10.102.111.12:50051: read: connection reset by peer"   
+  [179]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51858->10.102.111.12:50051: read: connection reset by peer"   
+  [159]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52498->10.102.111.12:50051: read: connection reset by peer"   
+  [113]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52418->10.102.111.12:50051: read: connection reset by peer"   
+  [138]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51644->10.102.111.12:50051: read: connection reset by peer"   
+  [157]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52124->10.102.111.12:50051: read: connection reset by peer"   
+  [121]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52096->10.102.111.12:50051: read: connection reset by peer"   
+  [191]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52458->10.102.111.12:50051: read: connection reset by peer"   
+  [125]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51546->10.102.111.12:50051: read: connection reset by peer"   
+  [114]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52018->10.102.111.12:50051: read: connection reset by peer"   
+  [147]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52040->10.102.111.12:50051: read: connection reset by peer"   
+  [115]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52302->10.102.111.12:50051: read: connection reset by peer"   
+  [174]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51842->10.102.111.12:50051: read: connection reset by peer"   
+  [155]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51734->10.102.111.12:50051: read: connection reset by peer"   
+  [80]    rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52224->10.102.111.12:50051: read: connection reset by peer"   
+  [151]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51948->10.102.111.12:50051: read: connection reset by peer"   
+  [154]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51650->10.102.111.12:50051: read: connection reset by peer"   
+  [115]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52052->10.102.111.12:50051: read: connection reset by peer"   
+  [139]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52258->10.102.111.12:50051: read: connection reset by peer"   
+  [178]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52432->10.102.111.12:50051: read: connection reset by peer"   
+  [123]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52226->10.102.111.12:50051: read: connection reset by peer"   
+  [136]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52378->10.102.111.12:50051: read: connection reset by peer"   
+  [151]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51724->10.102.111.12:50051: read: connection reset by peer"   
+  [131]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51664->10.102.111.12:50051: read: connection reset by peer"   
+  [108]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51582->10.102.111.12:50051: read: connection reset by peer"   
+  [124]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:51784->10.102.111.12:50051: read: connection reset by peer"   
+  [151]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52238->10.102.111.12:50051: read: connection reset by peer"   
+  [114]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52350->10.102.111.12:50051: read: connection reset by peer"   
+  [164]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52476->10.102.111.12:50051: read: connection reset by peer"   
+  [113]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:52404->10.102.111.12:50051: read: connection reset by peer"   
+
+Debug: Checking Namespace=default, Pod=compose-post-service-6db8bd7fb5-ghzx4 for Target File=deathstar_*.output
+Namespace: default, Pod: compose-post-service-6db8bd7fb5-ghzx4 has the target files.
+Copying deathstar_compose-post-service.output to deathstar_compose-post-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=home-timeline-redis-68bdbb459f-h95mb for Target File=deathstar_*.output
+Namespace: default, Pod: home-timeline-redis-68bdbb459f-h95mb has the target files.
+Copying deathstar_home-timeline-redis.output to deathstar_home-timeline-redis.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=home-timeline-service-6fcb4679db-j8mbk for Target File=deathstar_*.output
+Namespace: default, Pod: home-timeline-service-6fcb4679db-j8mbk has the target files.
+Copying deathstar_home-timeline-service.output to deathstar_home-timeline-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=media-service-57f4b9d99d-jnqvh for Target File=deathstar_*.output
+Namespace: default, Pod: media-service-57f4b9d99d-jnqvh has the target files.
+Copying deathstar_media-service.output to deathstar_media-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=nginx-web-server-64fc6fd886-nkhmp for Target File=deathstar_*.output
+Namespace: default, Pod: nginx-web-server-64fc6fd886-nkhmp has the target files.
+Copying deathstar_nginx-web-server.output to deathstar_nginx-web-server.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=post-storage-mongo-65c79c9bcd-gq5fj for Target File=deathstar_*.output
+Namespace: default, Pod: post-storage-mongo-65c79c9bcd-gq5fj has the target files.
+Copying deathstar_post-storage-mongo.output to deathstar_post-storage-mongo.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=post-storage-service-b544cfc5c-cqg2z for Target File=deathstar_*.output
+Namespace: default, Pod: post-storage-service-b544cfc5c-cqg2z has the target files.
+Copying deathstar_post-storage-service.output to deathstar_post-storage-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=social-graph-redis-6fdf7b4459-pl7v4 for Target File=deathstar_*.output
+Namespace: default, Pod: social-graph-redis-6fdf7b4459-pl7v4 has the target files.
+Copying deathstar_social-graph-redis.output to deathstar_social-graph-redis.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=social-graph-service-7d9d94b79d-cdmfd for Target File=deathstar_*.output
+Namespace: default, Pod: social-graph-service-7d9d94b79d-cdmfd has the target files.
+Copying deathstar_social-graph-service.output to deathstar_social-graph-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=text-service-58d95db9d4-8h7wz for Target File=deathstar_*.output
+Namespace: default, Pod: text-service-58d95db9d4-8h7wz has the target files.
+Copying deathstar_text-service.output to deathstar_text-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=unique-id-service-545ffbdd6c-7gxrf for Target File=deathstar_*.output
+Namespace: default, Pod: unique-id-service-545ffbdd6c-7gxrf has the target files.
+Copying deathstar_unique-id-service.output to deathstar_unique-id-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=url-shorten-mongo-6b4c85bb87-rr8jz for Target File=deathstar_*.output
+Namespace: default, Pod: url-shorten-mongo-6b4c85bb87-rr8jz has the target files.
+Copying deathstar_url-shorten-mongo.output to deathstar_url-shorten-mongo.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=url-shorten-service-68d694d594-khb6s for Target File=deathstar_*.output
+Namespace: default, Pod: url-shorten-service-68d694d594-khb6s has the target files.
+Copying deathstar_url-shorten-service.output to deathstar_url-shorten-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-mention-memcached-64575cd9dc-c6rbd for Target File=deathstar_*.output
+Namespace: default, Pod: user-mention-memcached-64575cd9dc-c6rbd has the target files.
+Copying deathstar_user-mention-memcached.output to deathstar_user-mention-memcached.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-mention-service-6dcfcb4b8d-2jnq4 for Target File=deathstar_*.output
+Namespace: default, Pod: user-mention-service-6dcfcb4b8d-2jnq4 has the target files.
+Copying deathstar_user-mention-service.output to deathstar_user-mention-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-service-5b549c744-r6dsm for Target File=deathstar_*.output
+Namespace: default, Pod: user-service-5b549c744-r6dsm has the target files.
+Copying deathstar_user-service.output to deathstar_user-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-mongo-6dfc455859-88fgn for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-mongo-6dfc455859-88fgn has the target files.
+Copying deathstar_user-timeline-mongo.output to deathstar_user-timeline-mongo.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-redis-7b55f9ffd9-txs2c for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-redis-7b55f9ffd9-txs2c has the target files.
+Copying deathstar_user-timeline-redis.output to deathstar_user-timeline-redis.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-service-f648cb4f4-jtvnf for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-service-f648cb4f4-jtvnf has the target files.
+Copying deathstar_user-timeline-service.output to deathstar_user-timeline-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=compose-post-service-6db8bd7fb5-ghzx4 for Target File=*.pprof
+Namespace: default, Pod: compose-post-service-6db8bd7fb5-ghzx4 has the target files.
+Copying compose-post-service.pprof to compose-post-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=home-timeline-redis-68bdbb459f-h95mb for Target File=*.pprof
+Namespace: default, Pod: home-timeline-redis-68bdbb459f-h95mb has the target files.
+Copying home-timeline-redis.pprof to home-timeline-redis.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=home-timeline-service-6fcb4679db-j8mbk for Target File=*.pprof
+Namespace: default, Pod: home-timeline-service-6fcb4679db-j8mbk has the target files.
+Copying home-timeline-service.pprof to home-timeline-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=media-service-57f4b9d99d-jnqvh for Target File=*.pprof
+Namespace: default, Pod: media-service-57f4b9d99d-jnqvh has the target files.
+Copying media-service.pprof to media-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=nginx-web-server-64fc6fd886-nkhmp for Target File=*.pprof
+Namespace: default, Pod: nginx-web-server-64fc6fd886-nkhmp has the target files.
+Copying nginx-web-server.pprof to nginx-web-server.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=post-storage-mongo-65c79c9bcd-gq5fj for Target File=*.pprof
+Namespace: default, Pod: post-storage-mongo-65c79c9bcd-gq5fj has the target files.
+Copying post-storage-mongo.pprof to post-storage-mongo.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=post-storage-service-b544cfc5c-cqg2z for Target File=*.pprof
+Namespace: default, Pod: post-storage-service-b544cfc5c-cqg2z has the target files.
+Copying post-storage-service.pprof to post-storage-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=social-graph-redis-6fdf7b4459-pl7v4 for Target File=*.pprof
+Namespace: default, Pod: social-graph-redis-6fdf7b4459-pl7v4 has the target files.
+Copying social-graph-redis.pprof to social-graph-redis.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=social-graph-service-7d9d94b79d-cdmfd for Target File=*.pprof
+Namespace: default, Pod: social-graph-service-7d9d94b79d-cdmfd has the target files.
+Copying social-graph-service.pprof to social-graph-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=text-service-58d95db9d4-8h7wz for Target File=*.pprof
+Namespace: default, Pod: text-service-58d95db9d4-8h7wz has the target files.
+Copying text-service.pprof to text-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=unique-id-service-545ffbdd6c-7gxrf for Target File=*.pprof
+Namespace: default, Pod: unique-id-service-545ffbdd6c-7gxrf has the target files.
+Copying unique-id-service.pprof to unique-id-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=url-shorten-mongo-6b4c85bb87-rr8jz for Target File=*.pprof
+Namespace: default, Pod: url-shorten-mongo-6b4c85bb87-rr8jz has the target files.
+Copying url-shorten-mongo.pprof to url-shorten-mongo.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=url-shorten-service-68d694d594-khb6s for Target File=*.pprof
+Namespace: default, Pod: url-shorten-service-68d694d594-khb6s has the target files.
+Copying url-shorten-service.pprof to url-shorten-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-mention-memcached-64575cd9dc-c6rbd for Target File=*.pprof
+Namespace: default, Pod: user-mention-memcached-64575cd9dc-c6rbd has the target files.
+Copying user-mention-memcached.pprof to user-mention-memcached.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-mention-service-6dcfcb4b8d-2jnq4 for Target File=*.pprof
+Namespace: default, Pod: user-mention-service-6dcfcb4b8d-2jnq4 has the target files.
+Copying user-mention-service.pprof to user-mention-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-service-5b549c744-r6dsm for Target File=*.pprof
+Namespace: default, Pod: user-service-5b549c744-r6dsm has the target files.
+Copying user-service.pprof to user-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-mongo-6dfc455859-88fgn for Target File=*.pprof
+Namespace: default, Pod: user-timeline-mongo-6dfc455859-88fgn has the target files.
+Copying user-timeline-mongo.pprof to user-timeline-mongo.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-redis-7b55f9ffd9-txs2c for Target File=*.pprof
+Namespace: default, Pod: user-timeline-redis-7b55f9ffd9-txs2c has the target files.
+Copying user-timeline-redis.pprof to user-timeline-redis.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-service-f648cb4f4-jtvnf for Target File=*.pprof
+Namespace: default, Pod: user-timeline-service-f648cb4f4-jtvnf has the target files.
+Copying user-timeline-service.pprof to user-timeline-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names

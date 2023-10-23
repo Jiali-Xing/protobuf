@@ -1,0 +1,314 @@
+Deployments: compose-post-service
+home-timeline-redis
+home-timeline-service
+media-service
+nginx-web-server
+post-storage-mongo
+post-storage-service
+social-graph-redis
+social-graph-service
+text-service
+unique-id-service
+url-shorten-mongo
+url-shorten-service
+user-mention-memcached
+user-mention-service
+user-service
+user-timeline-mongo
+user-timeline-redis
+user-timeline-service
+Waiting for deployment "compose-post-service" rollout to finish: 0 of 1 updated replicas are available...
+deployment "compose-post-service" successfully rolled out
+Deployment compose-post-service is ready.
+Waiting for deployment "home-timeline-redis" rollout to finish: 0 of 1 updated replicas are available...
+deployment "home-timeline-redis" successfully rolled out
+Deployment home-timeline-redis is ready.
+deployment "home-timeline-service" successfully rolled out
+Deployment home-timeline-service is ready.
+deployment "media-service" successfully rolled out
+Deployment media-service is ready.
+deployment "nginx-web-server" successfully rolled out
+Deployment nginx-web-server is ready.
+Waiting for deployment "post-storage-mongo" rollout to finish: 0 of 1 updated replicas are available...
+deployment "post-storage-mongo" successfully rolled out
+Deployment post-storage-mongo is ready.
+deployment "post-storage-service" successfully rolled out
+Deployment post-storage-service is ready.
+deployment "social-graph-redis" successfully rolled out
+Deployment social-graph-redis is ready.
+deployment "social-graph-service" successfully rolled out
+Deployment social-graph-service is ready.
+deployment "text-service" successfully rolled out
+Deployment text-service is ready.
+deployment "unique-id-service" successfully rolled out
+Deployment unique-id-service is ready.
+deployment "url-shorten-mongo" successfully rolled out
+Deployment url-shorten-mongo is ready.
+deployment "url-shorten-service" successfully rolled out
+Deployment url-shorten-service is ready.
+deployment "user-mention-memcached" successfully rolled out
+Deployment user-mention-memcached is ready.
+deployment "user-mention-service" successfully rolled out
+Deployment user-mention-service is ready.
+deployment "user-service" successfully rolled out
+Deployment user-service is ready.
+deployment "user-timeline-mongo" successfully rolled out
+Deployment user-timeline-mongo is ready.
+deployment "user-timeline-redis" successfully rolled out
+Deployment user-timeline-redis is ready.
+deployment "user-timeline-service" successfully rolled out
+Deployment user-timeline-service is ready.
+ENTRY_POINT: nginx-web-server
+SERVICE_A_URL: 10.104.105.45:50051
+Capacity: 10500
+Metadata: request-id={{.RequestNumber}}
+Metadata: timestamp={{.TimestampUnix}}
+Metadata: method=compose
+Constant load: true
+Capacity: 10500
+Run duration: 10s
+Enable Charon: false
+Charon options: map[debug:false debugFreq:1000 initprice:10 rateLimiting:true tokenRefillDist:poisson tokenStrategy:uniform tokenUpdateRate:10ms tokenUpdateStep:10 tokensLeft:0]
+
+Summary:
+  Count:	46461
+  Total:	9.85 s
+  Slowest:	7.41 s
+  Fastest:	16.00 ms
+  Average:	206.73 ms
+  Requests/sec:	4718.79
+
+Response time histogram:
+  16.005   [1]     |
+  755.839  [21899] |∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎
+  1495.674 [0]     |
+  2235.509 [0]     |
+  2975.344 [0]     |
+  3715.179 [0]     |
+  4455.013 [0]     |
+  5194.848 [0]     |
+  5934.683 [0]     |
+  6674.518 [129]   |
+  7414.353 [571]   |∎
+
+Latency distribution:
+  10 % in 36.57 ms 
+  25 % in 63.30 ms 
+  50 % in 85.68 ms 
+  75 % in 107.97 ms 
+  90 % in 126.39 ms 
+  95 % in 143.36 ms 
+  99 % in 7.22 s 
+
+Status code distribution:
+  [Unavailable]   23066 responses   
+  [Canceled]      795 responses     
+  [OK]            22600 responses   
+
+Error distribution:
+  [699]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50666->10.104.105.45:50051: read: connection reset by peer"   
+  [680]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50898->10.104.105.45:50051: read: connection reset by peer"   
+  [677]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50012->10.104.105.45:50051: read: connection reset by peer"   
+  [719]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50478->10.104.105.45:50051: read: connection reset by peer"   
+  [693]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50626->10.104.105.45:50051: read: connection reset by peer"   
+  [696]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50004->10.104.105.45:50051: read: connection reset by peer"   
+  [715]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50814->10.104.105.45:50051: read: connection reset by peer"   
+  [662]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:49836->10.104.105.45:50051: read: connection reset by peer"   
+  [747]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50780->10.104.105.45:50051: read: connection reset by peer"   
+  [666]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50902->10.104.105.45:50051: read: connection reset by peer"   
+  [713]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50158->10.104.105.45:50051: read: connection reset by peer"   
+  [710]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50870->10.104.105.45:50051: read: connection reset by peer"   
+  [688]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50808->10.104.105.45:50051: read: connection reset by peer"   
+  [686]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50768->10.104.105.45:50051: read: connection reset by peer"   
+  [697]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:49956->10.104.105.45:50051: read: connection reset by peer"   
+  [715]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:49530->10.104.105.45:50051: read: connection reset by peer"   
+  [710]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50732->10.104.105.45:50051: read: connection reset by peer"   
+  [718]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50160->10.104.105.45:50051: read: connection reset by peer"   
+  [735]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50988->10.104.105.45:50051: read: connection reset by peer"   
+  [687]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50038->10.104.105.45:50051: read: connection reset by peer"   
+  [662]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50648->10.104.105.45:50051: read: connection reset by peer"   
+  [697]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50374->10.104.105.45:50051: read: connection reset by peer"   
+  [700]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50224->10.104.105.45:50051: read: connection reset by peer"   
+  [795]   rpc error: code = Canceled desc = grpc: the client connection is closing                                                                                                           
+  [671]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:49784->10.104.105.45:50051: read: connection reset by peer"   
+  [727]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50548->10.104.105.45:50051: read: connection reset by peer"   
+  [722]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:49868->10.104.105.45:50051: read: connection reset by peer"   
+  [707]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50532->10.104.105.45:50051: read: connection reset by peer"   
+  [681]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50484->10.104.105.45:50051: read: connection reset by peer"   
+  [664]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50622->10.104.105.45:50051: read: connection reset by peer"   
+  [723]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50676->10.104.105.45:50051: read: connection reset by peer"   
+  [667]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50618->10.104.105.45:50051: read: connection reset by peer"   
+  [706]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50252->10.104.105.45:50051: read: connection reset by peer"   
+  [726]   rpc error: code = Unavailable desc = connection error: desc = "error reading server preface: read tcp 128.110.217.91:50008->10.104.105.45:50051: read: connection reset by peer"   
+
+Debug: Checking Namespace=default, Pod=compose-post-service-6f9845489d-5ctpq for Target File=deathstar_*.output
+Namespace: default, Pod: compose-post-service-6f9845489d-5ctpq has the target files.
+Copying deathstar_compose-post-service.output to deathstar_compose-post-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=home-timeline-redis-68bdbb459f-62p7c for Target File=deathstar_*.output
+Namespace: default, Pod: home-timeline-redis-68bdbb459f-62p7c has the target files.
+Copying deathstar_home-timeline-redis.output to deathstar_home-timeline-redis.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=home-timeline-service-7974fb9949-8vx98 for Target File=deathstar_*.output
+Namespace: default, Pod: home-timeline-service-7974fb9949-8vx98 has the target files.
+Copying deathstar_home-timeline-service.output to deathstar_home-timeline-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=media-service-57f4b9d99d-qkqp8 for Target File=deathstar_*.output
+Namespace: default, Pod: media-service-57f4b9d99d-qkqp8 has the target files.
+Copying deathstar_media-service.output to deathstar_media-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=nginx-web-server-64fc6fd886-m8k7c for Target File=deathstar_*.output
+Namespace: default, Pod: nginx-web-server-64fc6fd886-m8k7c has the target files.
+Copying deathstar_nginx-web-server.output to deathstar_nginx-web-server.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=post-storage-mongo-65c79c9bcd-szr2d for Target File=deathstar_*.output
+Namespace: default, Pod: post-storage-mongo-65c79c9bcd-szr2d has the target files.
+Copying deathstar_post-storage-mongo.output to deathstar_post-storage-mongo.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=post-storage-service-b544cfc5c-jzml2 for Target File=deathstar_*.output
+Namespace: default, Pod: post-storage-service-b544cfc5c-jzml2 has the target files.
+Copying deathstar_post-storage-service.output to deathstar_post-storage-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=social-graph-redis-6fdf7b4459-qf5d8 for Target File=deathstar_*.output
+Namespace: default, Pod: social-graph-redis-6fdf7b4459-qf5d8 has the target files.
+Copying deathstar_social-graph-redis.output to deathstar_social-graph-redis.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=social-graph-service-7d9d94b79d-mwz5f for Target File=deathstar_*.output
+Namespace: default, Pod: social-graph-service-7d9d94b79d-mwz5f has the target files.
+Copying deathstar_social-graph-service.output to deathstar_social-graph-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=text-service-6674d788d7-pk84l for Target File=deathstar_*.output
+Namespace: default, Pod: text-service-6674d788d7-pk84l has the target files.
+Copying deathstar_text-service.output to deathstar_text-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=unique-id-service-64bdc5f76-plclq for Target File=deathstar_*.output
+Namespace: default, Pod: unique-id-service-64bdc5f76-plclq has the target files.
+Copying deathstar_unique-id-service.output to deathstar_unique-id-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=url-shorten-mongo-6b4c85bb87-gbgch for Target File=deathstar_*.output
+Namespace: default, Pod: url-shorten-mongo-6b4c85bb87-gbgch has the target files.
+Copying deathstar_url-shorten-mongo.output to deathstar_url-shorten-mongo.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=url-shorten-service-68d694d594-cxrcq for Target File=deathstar_*.output
+Namespace: default, Pod: url-shorten-service-68d694d594-cxrcq has the target files.
+Copying deathstar_url-shorten-service.output to deathstar_url-shorten-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-mention-memcached-64575cd9dc-kwtkf for Target File=deathstar_*.output
+Namespace: default, Pod: user-mention-memcached-64575cd9dc-kwtkf has the target files.
+Copying deathstar_user-mention-memcached.output to deathstar_user-mention-memcached.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-mention-service-6dcfcb4b8d-qdrtz for Target File=deathstar_*.output
+Namespace: default, Pod: user-mention-service-6dcfcb4b8d-qdrtz has the target files.
+Copying deathstar_user-mention-service.output to deathstar_user-mention-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-service-5b549c744-wtjqx for Target File=deathstar_*.output
+Namespace: default, Pod: user-service-5b549c744-wtjqx has the target files.
+Copying deathstar_user-service.output to deathstar_user-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-mongo-6dfc455859-9b4cz for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-mongo-6dfc455859-9b4cz has the target files.
+Copying deathstar_user-timeline-mongo.output to deathstar_user-timeline-mongo.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-redis-7b55f9ffd9-mqhqb for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-redis-7b55f9ffd9-mqhqb has the target files.
+Copying deathstar_user-timeline-redis.output to deathstar_user-timeline-redis.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-service-f648cb4f4-pxxpm for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-service-f648cb4f4-pxxpm has the target files.
+Copying deathstar_user-timeline-service.output to deathstar_user-timeline-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=compose-post-service-6f9845489d-5ctpq for Target File=*.pprof
+Namespace: default, Pod: compose-post-service-6f9845489d-5ctpq has the target files.
+Copying compose-post-service.pprof to compose-post-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=home-timeline-redis-68bdbb459f-62p7c for Target File=*.pprof
+Namespace: default, Pod: home-timeline-redis-68bdbb459f-62p7c has the target files.
+Copying home-timeline-redis.pprof to home-timeline-redis.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=home-timeline-service-7974fb9949-8vx98 for Target File=*.pprof
+Namespace: default, Pod: home-timeline-service-7974fb9949-8vx98 has the target files.
+Copying home-timeline-service.pprof to home-timeline-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=media-service-57f4b9d99d-qkqp8 for Target File=*.pprof
+Namespace: default, Pod: media-service-57f4b9d99d-qkqp8 has the target files.
+Copying media-service.pprof to media-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=nginx-web-server-64fc6fd886-m8k7c for Target File=*.pprof
+Namespace: default, Pod: nginx-web-server-64fc6fd886-m8k7c has the target files.
+Copying nginx-web-server.pprof to nginx-web-server.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=post-storage-mongo-65c79c9bcd-szr2d for Target File=*.pprof
+Namespace: default, Pod: post-storage-mongo-65c79c9bcd-szr2d has the target files.
+Copying post-storage-mongo.pprof to post-storage-mongo.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=post-storage-service-b544cfc5c-jzml2 for Target File=*.pprof
+Namespace: default, Pod: post-storage-service-b544cfc5c-jzml2 has the target files.
+Copying post-storage-service.pprof to post-storage-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=social-graph-redis-6fdf7b4459-qf5d8 for Target File=*.pprof
+Namespace: default, Pod: social-graph-redis-6fdf7b4459-qf5d8 has the target files.
+Copying social-graph-redis.pprof to social-graph-redis.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=social-graph-service-7d9d94b79d-mwz5f for Target File=*.pprof
+Namespace: default, Pod: social-graph-service-7d9d94b79d-mwz5f has the target files.
+Copying social-graph-service.pprof to social-graph-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=text-service-6674d788d7-pk84l for Target File=*.pprof
+Namespace: default, Pod: text-service-6674d788d7-pk84l has the target files.
+Copying text-service.pprof to text-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=unique-id-service-64bdc5f76-plclq for Target File=*.pprof
+Namespace: default, Pod: unique-id-service-64bdc5f76-plclq has the target files.
+Copying unique-id-service.pprof to unique-id-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=url-shorten-mongo-6b4c85bb87-gbgch for Target File=*.pprof
+Namespace: default, Pod: url-shorten-mongo-6b4c85bb87-gbgch has the target files.
+Copying url-shorten-mongo.pprof to url-shorten-mongo.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=url-shorten-service-68d694d594-cxrcq for Target File=*.pprof
+Namespace: default, Pod: url-shorten-service-68d694d594-cxrcq has the target files.
+Copying url-shorten-service.pprof to url-shorten-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-mention-memcached-64575cd9dc-kwtkf for Target File=*.pprof
+Namespace: default, Pod: user-mention-memcached-64575cd9dc-kwtkf has the target files.
+Copying user-mention-memcached.pprof to user-mention-memcached.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-mention-service-6dcfcb4b8d-qdrtz for Target File=*.pprof
+Namespace: default, Pod: user-mention-service-6dcfcb4b8d-qdrtz has the target files.
+Copying user-mention-service.pprof to user-mention-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-service-5b549c744-wtjqx for Target File=*.pprof
+Namespace: default, Pod: user-service-5b549c744-wtjqx has the target files.
+Copying user-service.pprof to user-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-mongo-6dfc455859-9b4cz for Target File=*.pprof
+Namespace: default, Pod: user-timeline-mongo-6dfc455859-9b4cz has the target files.
+Copying user-timeline-mongo.pprof to user-timeline-mongo.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-redis-7b55f9ffd9-mqhqb for Target File=*.pprof
+Namespace: default, Pod: user-timeline-redis-7b55f9ffd9-mqhqb has the target files.
+Copying user-timeline-redis.pprof to user-timeline-redis.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-service-f648cb4f4-pxxpm for Target File=*.pprof
+Namespace: default, Pod: user-timeline-service-f648cb4f4-pxxpm has the target files.
+Copying user-timeline-service.pprof to user-timeline-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names

@@ -1,0 +1,22 @@
+Service Name:  url-shorten-mongo
+Call Graph of the Service:
+map[]
+Downstreams of the Service:
+[]
+Server Configurations:
+[{COMPUTATION_DISTRIBUTION constant} {PROCESS_TIME 1ms} {APP_PORT 50051} {LOG_LEVEL Info} {GREETING Hi Malaka!} {SUBCALL parallel} {PROFILING true}]
+Charon Configurations:
+[{PRICE_UPDATE_RATE 10ms} {LATENCY_THRESHOLD 500000us} {PRICE_STEP 10} {PRICE_STRATEGY proportional} {INTERCEPT false} {LAZY_UPDATE true}]
+Price Update Rate: 10ms
+Latency Threshold: 500ms
+Price Step: 10
+Price Strategy: proportional
+Intercept: false
+Lazy Update: true
+Computation Distribution: constant
+Process Time: 1ms
+Address Listening on: 0.0.0.0:50051
+Greeting Message: Hi Malaka!
+Log Level: Info
+Subcall Pattern: parallel
+{"function":"func2","level":"info","line":"260","msg":"Stopped CPU profiling","time":"2023-10-20T00:57:10Z"}

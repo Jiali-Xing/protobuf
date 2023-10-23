@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	bw "github.com/Jiali-Xing/breakwater-grpc/breakwater"
 	"github.com/Jiali-Xing/ghz/printer"
 	"github.com/Jiali-Xing/ghz/runner"
 	pb "github.com/Jiali-Xing/protobuf"
@@ -33,8 +34,11 @@ var (
 	URLServiceA = getEnv("SERVICE_A_URL", "localhost:50051")
 	log         = logrus.New()
 	// read from the environment variable, and convert it to bool
-	enableCharon, _ = strconv.ParseBool(getEnv("INTERCEPT", "true"))
-	loadSchedule    = "step"
+	// interceptor, _ = strconv.ParseBool(getEnv("INTERCEPT", "true"))
+	// interceptor if the INTERCEPT environment variable is set to charon
+	interceptor = getEnv("INTERCEPT", "charon")
+
+	loadSchedule = "step"
 	// runDuration  = time.Second * 10
 	// loadStart    = uint(10000)
 	// loadEnd      = uint(30000)
@@ -138,7 +142,7 @@ func main() {
 	fmt.Printf("Constant load: %s\n", constantLoadStr)
 	fmt.Printf("Capacity: %d\n", capacity)
 	fmt.Printf("Run duration: %s\n", runDuration)
-	fmt.Printf("Enable Charon: %t\n", enableCharon)
+	fmt.Printf("Interceptor is: %s\n", interceptor)
 	// fmt.Printf("Method: %s\n", method)
 	fmt.Printf("Charon options: %v\n", charonOptions)
 
@@ -191,9 +195,10 @@ func main() {
 			runner.WithRunDuration(runDuration),
 			runner.WithLoadSchedule("const"),
 			runner.WithMethod(method),
-			runner.WithCharon(enableCharon),
-			runner.WithCharonEntry(entry_point),
+			runner.WithInterceptor(interceptor),
+			runner.WithInterceptorEntry(entry_point),
 			runner.WithCharonOptions(charonOptions),
+			runner.WithBreakwaterOptions(bw.BWParametersDefault),
 			runner.WithEnableCompression(false),
 		)
 	} else {
@@ -216,9 +221,10 @@ func main() {
 			runner.WithLoadStep(loadStep),
 			runner.WithLoadStepDuration(loadStepDuration),
 			runner.WithMethod(method),
-			runner.WithCharon(enableCharon),
-			runner.WithCharonEntry(entry_point),
+			runner.WithInterceptor(interceptor),
+			runner.WithInterceptorEntry(entry_point),
 			runner.WithCharonOptions(charonOptions),
+			runner.WithBreakwaterOptions(bw.BWParametersDefault),
 			runner.WithEnableCompression(false),
 		)
 	}
@@ -242,9 +248,11 @@ func main() {
 	// filename := fmt.Sprintf("../ghz-results/charon-%s-method-%s-constantload-%s-capacity-%d.json", enableCharonStr, method, constantLoadStr, capacity)
 	// if enableCharon, name it charon-xxx, otherwise, plain-xxx
 	filename := ""
-	if enableCharon {
+	if interceptor == "charon" {
 		filename = fmt.Sprintf("../ghz-results/social-%s-charon-%s-capacity-%d.json", method, subcall, capacity)
 		// writeToFile(filename, report)
+	} else if interceptor == "breakwater" {
+		filename = fmt.Sprintf("../ghz-results/social-%s-breakwater-%s-capacity-%d.json", method, subcall, capacity)
 	} else {
 		filename = fmt.Sprintf("../ghz-results/social-%s-plain-%s-capacity-%d.json", method, subcall, capacity)
 		// writeToFile(filename, report)

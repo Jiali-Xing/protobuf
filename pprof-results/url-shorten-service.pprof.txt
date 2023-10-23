@@ -1,6 +1,35 @@
 Total: 110ms
-ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).queuingCheck in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20230929184655-44ffc2071f6d/overloadDetection.go
-         0       30ms (flat, cum) 27.27% of Total
+ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).UpdatePricebyQueueDelay in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231016025447-7c2c4e5003cd/tokenAndPrice.go
+      10ms       20ms (flat, cum) 18.18% of Total
+         .          .    112:func (pt *PriceTable) UpdatePricebyQueueDelay(ctx context.Context) error {
+         .          .    113:	ownPrice_string, _ := pt.priceTableMap.Load("ownprice")
+      10ms       10ms    114:	ownPrice := ownPrice_string.(int64)
+         .          .    115:
+         .          .    116:	// read the gapLatency from context ctx
+         .          .    117:	gapLatency := ctx.Value("gapLatency").(float64)
+         .          .    118:	// Calculate the priceStep as a fraction of the difference between gapLatency and latencyThreshold
+         .          .    119:
+         .          .    120:	diff := int64(gapLatency*1000) - pt.latencyThreshold.Microseconds()
+         .          .    121:	adjustment := pt.calculatePriceAdjustment(diff)
+         .          .    122:
+         .          .    123:	pt.logger(ctx, "[Update Price by Queue Delay]: Own price %d, step %d\n", ownPrice, adjustment)
+         .          .    124:
+         .          .    125:	ownPrice += adjustment
+         .          .    126:	// Set reservePrice to the larger of pt.guidePrice and 0
+         .          .    127:	reservePrice := int64(math.Max(float64(pt.guidePrice), 0))
+         .          .    128:
+         .          .    129:	if ownPrice <= reservePrice {
+         .          .    130:		ownPrice = reservePrice
+         .          .    131:	}
+         .          .    132:
+         .       10ms    133:	pt.priceTableMap.Store("ownprice", ownPrice)
+         .          .    134:	pt.logger(ctx, "[Update Price by Queue Delay]: Own price updated to %d\n", ownPrice)
+         .          .    135:
+         .          .    136:	return nil
+         .          .    137:}
+         .          .    138:
+ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).queuingCheck in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231016025447-7c2c4e5003cd/overloadDetection.go
+         0       40ms (flat, cum) 36.36% of Total
          .          .     37:func (pt *PriceTable) queuingCheck() {
          .          .     38:	// init a null histogram
          .          .     39:	var prevHist *metrics.Float64Histogram
@@ -8,7 +37,7 @@ ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).que
          .          .     41:		// start a timer to measure the query latency
          .          .     42:		start := time.Now()
          .          .     43:		// get the current histogram
-         .       10ms     44:		currHist := readHistogram()
+         .          .     44:		currHist := readHistogram()
          .          .     45:		/*
          .          .     46:			// calculate the differernce between the two histograms prevHist and currHist
          .          .     47:			diff := metrics.Float64Histogram{}
@@ -30,31 +59,28 @@ ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).que
          .          .     63:		// medianLatency := medianBucket(&diff)
          .          .     64:		// gapLatency := percentileBucket(&diff, 90)
          .          .     65:
-         .       20ms     66:		ctx := metadata.NewIncomingContext(context.Background(), metadata.Pairs("request-id", "0"))
+         .       10ms     66:		ctx := metadata.NewIncomingContext(context.Background(), metadata.Pairs("request-id", "0"))
          .          .     67:
          .          .     68:		// ToDo: move the print of the histogram to a file
          .          .     69:		/*
          .          .     70:			cumulativeLat := medianBucket(currHist)
          .          .     71:			// printHistogram(currHist)
-ROUTINE ======================== github.com/tgiannoukos/charon.readHistogram in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20230929184655-44ffc2071f6d/queuingDelay.go
-         0       10ms (flat, cum)  9.09% of Total
-         .          .    133:func readHistogram() *metrics.Float64Histogram {
-         .          .    134:	// Create a sample for metric /sched/latencies:seconds and /sync/mutex/wait/total:seconds
-         .          .    135:	const queueingDelay = "/sched/latencies:seconds"
-         .          .    136:	measureMutexWait := false
-         .          .    137:
-         .          .    138:	// Create a sample for the metric.
-         .          .    139:	sample := make([]metrics.Sample, 1)
-         .          .    140:	sample[0].Name = queueingDelay
-         .          .    141:	if measureMutexWait {
-         .          .    142:		const mutexWait = "/sync/mutex/wait/total:seconds"
-         .          .    143:		sample[1].Name = mutexWait
-         .          .    144:	}
-         .          .    145:
-         .          .    146:	// Sample the metric.
-         .       10ms    147:	metrics.Read(sample)
-         .          .    148:
-         .          .    149:	// Check if the metric is actually supported.
-         .          .    150:	// If it's not, the resulting value will always have
-         .          .    151:	// kind KindBad.
-         .          .    152:	if sample[0].Value.Kind() == metrics.KindBad {
+         .          .     72:			pt.logger(ctx, "[Cumulative Waiting Time Median]:	%f ms.\n", cumulativeLat)
+         .          .     73:			// printHistogram(&diff)
+         .          .     74:			pt.logger(ctx, "[Incremental Waiting Time 90-tile]:	%f ms.\n", percentileBucket(&diff, 90))
+         .          .     75:			pt.logger(ctx, "[Incremental Waiting Time Median]:	%f ms.\n", medianBucket(&diff))
+         .          .     76:			pt.logger(ctx, "[Incremental Waiting Time Maximum]:	%f ms.\n", maximumBucket(&diff))
+         .          .     77:		*/
+         .          .     78:		pt.logger(ctx, "[Incremental Waiting Time Maximum]:	%f ms.\n", gapLatency)
+         .          .     79:		// store the gapLatency in the context ctx
+         .       10ms     80:		ctx = context.WithValue(ctx, "gapLatency", gapLatency)
+         .          .     81:
+         .          .     82:		if pt.priceStrategy == "step" {
+         .          .     83:			pt.UpdateOwnPrice(ctx, pt.overloadDetection(ctx))
+         .          .     84:		} else if pt.priceStrategy == "proportional" {
+         .       20ms     85:			pt.UpdatePricebyQueueDelay(ctx)
+         .          .     86:		} else if pt.priceStrategy == "exponential" {
+         .          .     87:			pt.UpdatePricebyQueueDelayExp(ctx)
+         .          .     88:		} else if pt.priceStrategy == "log" {
+         .          .     89:			pt.UpdatePricebyQueueDelayLog(ctx)
+         .          .     90:		}

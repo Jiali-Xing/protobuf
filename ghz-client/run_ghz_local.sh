@@ -14,11 +14,17 @@ export CAPACITY=1000
 # export METHOD=compose
 export METHOD=echo
 # export the INTERCEPT env var as true or false
-export INTERCEPT=true
+export INTERCEPT=breakwater
 export PROFILING=true
 export YAML_FILE=local.yaml
 
+# export CLOUDLAB=false
+
 cd /home/ying/Sync/Git/service-app/services/protobuf-grpc
+# activate charon and run msgraph.py
+# conda activate charon
+# python msgraph.py
+
 bash kill_services.sh
 bash start_services.sh
 cd /home/ying/Sync/Git/protobuf/ghz-client

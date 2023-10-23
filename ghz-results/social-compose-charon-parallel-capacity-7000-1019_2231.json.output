@@ -1,0 +1,280 @@
+Deployments: compose-post-service
+home-timeline-redis
+home-timeline-service
+media-service
+nginx-web-server
+post-storage-mongo
+post-storage-service
+social-graph-redis
+social-graph-service
+text-service
+unique-id-service
+url-shorten-mongo
+url-shorten-service
+user-mention-memcached
+user-mention-service
+user-service
+user-timeline-mongo
+user-timeline-redis
+user-timeline-service
+Waiting for deployment "compose-post-service" rollout to finish: 0 of 1 updated replicas are available...
+deployment "compose-post-service" successfully rolled out
+Deployment compose-post-service is ready.
+Waiting for deployment "home-timeline-redis" rollout to finish: 0 of 1 updated replicas are available...
+deployment "home-timeline-redis" successfully rolled out
+Deployment home-timeline-redis is ready.
+deployment "home-timeline-service" successfully rolled out
+Deployment home-timeline-service is ready.
+deployment "media-service" successfully rolled out
+Deployment media-service is ready.
+deployment "nginx-web-server" successfully rolled out
+Deployment nginx-web-server is ready.
+deployment "post-storage-mongo" successfully rolled out
+Deployment post-storage-mongo is ready.
+deployment "post-storage-service" successfully rolled out
+Deployment post-storage-service is ready.
+deployment "social-graph-redis" successfully rolled out
+Deployment social-graph-redis is ready.
+Waiting for deployment "social-graph-service" rollout to finish: 0 of 1 updated replicas are available...
+deployment "social-graph-service" successfully rolled out
+Deployment social-graph-service is ready.
+deployment "text-service" successfully rolled out
+Deployment text-service is ready.
+deployment "unique-id-service" successfully rolled out
+Deployment unique-id-service is ready.
+deployment "url-shorten-mongo" successfully rolled out
+Deployment url-shorten-mongo is ready.
+deployment "url-shorten-service" successfully rolled out
+Deployment url-shorten-service is ready.
+deployment "user-mention-memcached" successfully rolled out
+Deployment user-mention-memcached is ready.
+deployment "user-mention-service" successfully rolled out
+Deployment user-mention-service is ready.
+deployment "user-service" successfully rolled out
+Deployment user-service is ready.
+deployment "user-timeline-mongo" successfully rolled out
+Deployment user-timeline-mongo is ready.
+deployment "user-timeline-redis" successfully rolled out
+Deployment user-timeline-redis is ready.
+deployment "user-timeline-service" successfully rolled out
+Deployment user-timeline-service is ready.
+ENTRY_POINT: nginx-web-server
+SERVICE_A_URL: 10.99.41.54:50051
+Capacity: 7000
+Metadata: timestamp={{.TimestampUnix}}
+Metadata: method=compose
+Metadata: request-id={{.RequestNumber}}
+Constant load: true
+Capacity: 7000
+Run duration: 10s
+Enable Charon: true
+Charon options: map[debug:false debugFreq:1000 initprice:10 rateLimiting:true tokenRefillDist:poisson tokenStrategy:uniform tokenUpdateRate:10ms tokenUpdateStep:10 tokensLeft:0]
+
+Summary:
+  Count:	63875
+  Total:	9.83 s
+  Slowest:	1.04 s
+  Fastest:	16.26 ms
+  Average:	115.57 ms
+  Requests/sec:	6496.35
+
+Response time histogram:
+  16.262   [1]     |
+  118.271  [34005] |∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎
+  220.280  [26107] |∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎
+  322.289  [2941]  |∎∎∎
+  424.298  [140]   |
+  526.307  [0]     |
+  628.316  [0]     |
+  730.325  [0]     |
+  832.334  [0]     |
+  934.343  [23]    |
+  1036.352 [60]    |
+
+Latency distribution:
+  10 % in 40.22 ms 
+  25 % in 62.03 ms 
+  50 % in 112.65 ms 
+  75 % in 152.70 ms 
+  90 % in 190.66 ms 
+  95 % in 220.30 ms 
+  99 % in 278.16 ms 
+
+Status code distribution:
+  [OK]         63277 responses   
+  [Canceled]   598 responses     
+
+Error distribution:
+  [598]   rpc error: code = Canceled desc = grpc: the client connection is closing   
+
+Debug: Checking Namespace=default, Pod=compose-post-service-6f9845489d-8757v for Target File=deathstar_*.output
+Namespace: default, Pod: compose-post-service-6f9845489d-8757v has the target files.
+Copying deathstar_compose-post-service.output to deathstar_compose-post-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=home-timeline-redis-68bdbb459f-qv7rf for Target File=deathstar_*.output
+Namespace: default, Pod: home-timeline-redis-68bdbb459f-qv7rf has the target files.
+Copying deathstar_home-timeline-redis.output to deathstar_home-timeline-redis.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=home-timeline-service-7974fb9949-4kxd2 for Target File=deathstar_*.output
+Namespace: default, Pod: home-timeline-service-7974fb9949-4kxd2 has the target files.
+Copying deathstar_home-timeline-service.output to deathstar_home-timeline-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=media-service-cfc4b74c7-llm7c for Target File=deathstar_*.output
+Namespace: default, Pod: media-service-cfc4b74c7-llm7c has the target files.
+Copying deathstar_media-service.output to deathstar_media-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=nginx-web-server-64fc6fd886-mskdb for Target File=deathstar_*.output
+Namespace: default, Pod: nginx-web-server-64fc6fd886-mskdb has the target files.
+Copying deathstar_nginx-web-server.output to deathstar_nginx-web-server.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=post-storage-mongo-65c79c9bcd-8zjdb for Target File=deathstar_*.output
+Namespace: default, Pod: post-storage-mongo-65c79c9bcd-8zjdb has the target files.
+Copying deathstar_post-storage-mongo.output to deathstar_post-storage-mongo.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=post-storage-service-6cb68b6d86-w7qqd for Target File=deathstar_*.output
+Namespace: default, Pod: post-storage-service-6cb68b6d86-w7qqd has the target files.
+Copying deathstar_post-storage-service.output to deathstar_post-storage-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=social-graph-redis-6fdf7b4459-6whbj for Target File=deathstar_*.output
+Namespace: default, Pod: social-graph-redis-6fdf7b4459-6whbj has the target files.
+Copying deathstar_social-graph-redis.output to deathstar_social-graph-redis.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=social-graph-service-7d9d94b79d-kjnjg for Target File=deathstar_*.output
+Namespace: default, Pod: social-graph-service-7d9d94b79d-kjnjg has the target files.
+Copying deathstar_social-graph-service.output to deathstar_social-graph-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=text-service-6674d788d7-9x49k for Target File=deathstar_*.output
+Namespace: default, Pod: text-service-6674d788d7-9x49k has the target files.
+Copying deathstar_text-service.output to deathstar_text-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=unique-id-service-64bdc5f76-dpv7l for Target File=deathstar_*.output
+Namespace: default, Pod: unique-id-service-64bdc5f76-dpv7l has the target files.
+Copying deathstar_unique-id-service.output to deathstar_unique-id-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=url-shorten-mongo-6b4c85bb87-dbrht for Target File=deathstar_*.output
+Namespace: default, Pod: url-shorten-mongo-6b4c85bb87-dbrht has the target files.
+Copying deathstar_url-shorten-mongo.output to deathstar_url-shorten-mongo.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=url-shorten-service-68d694d594-ksp9n for Target File=deathstar_*.output
+Namespace: default, Pod: url-shorten-service-68d694d594-ksp9n has the target files.
+Copying deathstar_url-shorten-service.output to deathstar_url-shorten-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-mention-memcached-64575cd9dc-mdlwp for Target File=deathstar_*.output
+Namespace: default, Pod: user-mention-memcached-64575cd9dc-mdlwp has the target files.
+Copying deathstar_user-mention-memcached.output to deathstar_user-mention-memcached.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-mention-service-6dcfcb4b8d-w55pc for Target File=deathstar_*.output
+Namespace: default, Pod: user-mention-service-6dcfcb4b8d-w55pc has the target files.
+Copying deathstar_user-mention-service.output to deathstar_user-mention-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-service-5b549c744-7sbqg for Target File=deathstar_*.output
+Namespace: default, Pod: user-service-5b549c744-7sbqg has the target files.
+Copying deathstar_user-service.output to deathstar_user-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-mongo-6dfc455859-cwggv for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-mongo-6dfc455859-cwggv has the target files.
+Copying deathstar_user-timeline-mongo.output to deathstar_user-timeline-mongo.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-redis-7b55f9ffd9-zx8md for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-redis-7b55f9ffd9-zx8md has the target files.
+Copying deathstar_user-timeline-redis.output to deathstar_user-timeline-redis.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-service-f648cb4f4-krb6n for Target File=deathstar_*.output
+Namespace: default, Pod: user-timeline-service-f648cb4f4-krb6n has the target files.
+Copying deathstar_user-timeline-service.output to deathstar_user-timeline-service.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=compose-post-service-6f9845489d-8757v for Target File=*.pprof
+Namespace: default, Pod: compose-post-service-6f9845489d-8757v has the target files.
+Copying compose-post-service.pprof to compose-post-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=home-timeline-redis-68bdbb459f-qv7rf for Target File=*.pprof
+Namespace: default, Pod: home-timeline-redis-68bdbb459f-qv7rf has the target files.
+Copying home-timeline-redis.pprof to home-timeline-redis.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=home-timeline-service-7974fb9949-4kxd2 for Target File=*.pprof
+Namespace: default, Pod: home-timeline-service-7974fb9949-4kxd2 has the target files.
+Copying home-timeline-service.pprof to home-timeline-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=media-service-cfc4b74c7-llm7c for Target File=*.pprof
+Namespace: default, Pod: media-service-cfc4b74c7-llm7c has the target files.
+Copying media-service.pprof to media-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=nginx-web-server-64fc6fd886-mskdb for Target File=*.pprof
+Namespace: default, Pod: nginx-web-server-64fc6fd886-mskdb has the target files.
+Copying nginx-web-server.pprof to nginx-web-server.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=post-storage-mongo-65c79c9bcd-8zjdb for Target File=*.pprof
+Namespace: default, Pod: post-storage-mongo-65c79c9bcd-8zjdb has the target files.
+Copying post-storage-mongo.pprof to post-storage-mongo.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=post-storage-service-6cb68b6d86-w7qqd for Target File=*.pprof
+Namespace: default, Pod: post-storage-service-6cb68b6d86-w7qqd has the target files.
+Copying post-storage-service.pprof to post-storage-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=social-graph-redis-6fdf7b4459-6whbj for Target File=*.pprof
+Namespace: default, Pod: social-graph-redis-6fdf7b4459-6whbj has the target files.
+Copying social-graph-redis.pprof to social-graph-redis.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=social-graph-service-7d9d94b79d-kjnjg for Target File=*.pprof
+Namespace: default, Pod: social-graph-service-7d9d94b79d-kjnjg has the target files.
+Copying social-graph-service.pprof to social-graph-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=text-service-6674d788d7-9x49k for Target File=*.pprof
+Namespace: default, Pod: text-service-6674d788d7-9x49k has the target files.
+Copying text-service.pprof to text-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=unique-id-service-64bdc5f76-dpv7l for Target File=*.pprof
+Namespace: default, Pod: unique-id-service-64bdc5f76-dpv7l has the target files.
+Copying unique-id-service.pprof to unique-id-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=url-shorten-mongo-6b4c85bb87-dbrht for Target File=*.pprof
+Namespace: default, Pod: url-shorten-mongo-6b4c85bb87-dbrht has the target files.
+Copying url-shorten-mongo.pprof to url-shorten-mongo.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=url-shorten-service-68d694d594-ksp9n for Target File=*.pprof
+Namespace: default, Pod: url-shorten-service-68d694d594-ksp9n has the target files.
+Copying url-shorten-service.pprof to url-shorten-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-mention-memcached-64575cd9dc-mdlwp for Target File=*.pprof
+Namespace: default, Pod: user-mention-memcached-64575cd9dc-mdlwp has the target files.
+Copying user-mention-memcached.pprof to user-mention-memcached.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-mention-service-6dcfcb4b8d-w55pc for Target File=*.pprof
+Namespace: default, Pod: user-mention-service-6dcfcb4b8d-w55pc has the target files.
+Copying user-mention-service.pprof to user-mention-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-service-5b549c744-7sbqg for Target File=*.pprof
+Namespace: default, Pod: user-service-5b549c744-7sbqg has the target files.
+Copying user-service.pprof to user-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-mongo-6dfc455859-cwggv for Target File=*.pprof
+Namespace: default, Pod: user-timeline-mongo-6dfc455859-cwggv has the target files.
+Copying user-timeline-mongo.pprof to user-timeline-mongo.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-redis-7b55f9ffd9-zx8md for Target File=*.pprof
+Namespace: default, Pod: user-timeline-redis-7b55f9ffd9-zx8md has the target files.
+Copying user-timeline-redis.pprof to user-timeline-redis.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-timeline-service-f648cb4f4-krb6n for Target File=*.pprof
+Namespace: default, Pod: user-timeline-service-f648cb4f4-krb6n has the target files.
+Copying user-timeline-service.pprof to user-timeline-service.pprof
+tar: removing leading '/' from member names
+tar: removing leading '/' from member names

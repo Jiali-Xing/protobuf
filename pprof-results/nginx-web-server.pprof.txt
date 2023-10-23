@@ -1,6 +1,6 @@
-Total: 70ms
-ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).queuingCheck in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20230929184655-44ffc2071f6d/overloadDetection.go
-      10ms       10ms (flat, cum) 14.29% of Total
+Total: 130ms
+ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).queuingCheck in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231016025447-7c2c4e5003cd/overloadDetection.go
+         0       30ms (flat, cum) 23.08% of Total
          .          .     37:func (pt *PriceTable) queuingCheck() {
          .          .     38:	// init a null histogram
          .          .     39:	var prevHist *metrics.Float64Histogram
@@ -8,7 +8,7 @@ ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).que
          .          .     41:		// start a timer to measure the query latency
          .          .     42:		start := time.Now()
          .          .     43:		// get the current histogram
-         .          .     44:		currHist := readHistogram()
+         .       10ms     44:		currHist := readHistogram()
          .          .     45:		/*
          .          .     46:			// calculate the differernce between the two histograms prevHist and currHist
          .          .     47:			diff := metrics.Float64Histogram{}
@@ -30,7 +30,7 @@ ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).que
          .          .     63:		// medianLatency := medianBucket(&diff)
          .          .     64:		// gapLatency := percentileBucket(&diff, 90)
          .          .     65:
-         .          .     66:		ctx := metadata.NewIncomingContext(context.Background(), metadata.Pairs("request-id", "0"))
+         .       10ms     66:		ctx := metadata.NewIncomingContext(context.Background(), metadata.Pairs("request-id", "0"))
          .          .     67:
          .          .     68:		// ToDo: move the print of the histogram to a file
          .          .     69:		/*
@@ -44,13 +44,23 @@ ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).que
          .          .     77:		*/
          .          .     78:		pt.logger(ctx, "[Incremental Waiting Time Maximum]:	%f ms.\n", gapLatency)
          .          .     79:		// store the gapLatency in the context ctx
-         .          .     80:		ctx = context.WithValue(ctx, "gapLatency", gapLatency)
+         .       10ms     80:		ctx = context.WithValue(ctx, "gapLatency", gapLatency)
          .          .     81:
          .          .     82:		if pt.priceStrategy == "step" {
          .          .     83:			pt.UpdateOwnPrice(ctx, pt.overloadDetection(ctx))
-      10ms       10ms     84:		} else if pt.priceStrategy == "proportional" {
+         .          .     84:		} else if pt.priceStrategy == "proportional" {
          .          .     85:			pt.UpdatePricebyQueueDelay(ctx)
-         .          .     86:		} else if pt.priceStrategy == "exponential" {
-         .          .     87:			pt.UpdatePricebyQueueDelayExp(ctx)
-         .          .     88:		} else if pt.priceStrategy == "log" {
-         .          .     89:			pt.UpdatePricebyQueueDelayLog(ctx)
+ROUTINE ======================== github.com/tgiannoukos/charon.readHistogram in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231016025447-7c2c4e5003cd/queuingDelay.go
+         0       10ms (flat, cum)  7.69% of Total
+         .          .    133:func readHistogram() *metrics.Float64Histogram {
+         .          .    134:	// Create a sample for metric /sched/latencies:seconds and /sync/mutex/wait/total:seconds
+         .          .    135:	const queueingDelay = "/sched/latencies:seconds"
+         .          .    136:	measureMutexWait := false
+         .          .    137:
+         .          .    138:	// Create a sample for the metric.
+         .       10ms    139:	sample := make([]metrics.Sample, 1)
+         .          .    140:	sample[0].Name = queueingDelay
+         .          .    141:	if measureMutexWait {
+         .          .    142:		const mutexWait = "/sync/mutex/wait/total:seconds"
+         .          .    143:		sample[1].Name = mutexWait
+         .          .    144:	}
