@@ -9,12 +9,12 @@
 # done
 
 # define var capacity
-export CAPACITY=1000
+export CAPACITY=4000
 # define the method to run
 # export METHOD=compose
 export METHOD=echo
 # export the INTERCEPT env var as true or false
-export INTERCEPT=breakwater
+export INTERCEPT=charon
 export PROFILING=true
 export YAML_FILE=local.yaml
 

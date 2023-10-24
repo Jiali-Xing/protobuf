@@ -315,7 +315,7 @@ copy_deathstar_pprof() {
           # local_file="${namespace_name}-${pod_name}-$(date +%s)-$file"
           local_file="$file"
 
-          kubectl exec -n "$namespace_name" "$pod_name" -- /bin/sh -c "go tool pprof -list charon $file > ~/$file.txt"
+          kubectl exec -n "$namespace_name" "$pod_name" -- /bin/sh -c "go tool pprof -list $INTERCEPT $file > ~/$file.txt"
 
           echo "Copying $file to $local_file"
           kubectl cp "$namespace_name/$pod_name:/go/service-app/services/protobuf-grpc/$file" ~/"$local_file"
