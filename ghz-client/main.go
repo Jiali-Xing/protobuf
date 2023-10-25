@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"runtime/pprof"
 	"strconv"
@@ -68,6 +67,7 @@ var (
 	// rateLimiting = getEnv("RATE_LIMITING", "true") convert to bool
 	rateLimiting, _ = strconv.ParseBool(getEnv("RATE_LIMITING", "true"))
 	entry_point     = getEnv("ENTRY_POINT", "nginx-web-server")
+	profiling, _    = strconv.ParseBool(getEnv("PROFILING", "true"))
 )
 
 func getHostname() string {
@@ -146,19 +146,13 @@ func main() {
 	// fmt.Printf("Method: %s\n", method)
 	fmt.Printf("Charon options: %v\n", charonOptions)
 
+	fmt.Printf("Profiling: %v\n", profiling)
+
 	var err error
 	var report *runner.Report
 
-	if profiling := getEnv("PROFILING", "true"); profiling == "true" {
+	if profiling {
 		// ... Inside your main or init function
-		// if serviceName contains "nginx", then set the http based pprof
-		if serviceName == "grpc-service-1" {
-			log.Println("Setting up http based pprof")
-			go func() {
-				log.Println(http.ListenAndServe("localhost:6060", nil))
-			}()
-		}
-
 		f, err := os.Create(serviceName + ".pprof")
 		if err != nil {
 			log.Fatalf("Could not create pprof file: %v", err)
