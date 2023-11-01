@@ -22,6 +22,27 @@ sleep 20
 
 # entrypoint is 
 echo "ENTRY_POINT: $ENTRY_POINT"
+    # export METHOD=compose 
+    # export CONSTANT_LOAD=true
+    # # export the INTERCEPT env var as true or false
+    # export INTERCEPT=$3
+    # # export SUBCALL=parallel
+    # export SUBCALL=$2
+    # export PROFILING=true
+
+    # # export the environment variables to set the options for charon (priceUpdateRate, latencyThreshold, priceStep, priceStrategy)
+    # export PRICE_UPDATE_RATE=10ms
+    # export LATENCY_THRESHOLD=500000us
+    # export PRICE_STEP=10
+    # export PRICE_STRATEGY=proportional
+    # export LAZY_UPDATE=true
+    # # export ENTRY_POINT as the corresponding one for the method from file msgraph.yaml
+    # export ENTRY_POINT=nginx-web-server
+    # export RATE_LIMITING=true
+# echo all the env vars above
+for var in METHOD CONSTANT_LOAD INTERCEPT SUBCALL PROFILING PRICE_UPDATE_RATE LATENCY_THRESHOLD PRICE_STEP PRICE_STRATEGY LAZY_UPDATE ENTRY_POINT RATE_LIMITING DEBUG_INFO; do
+    echo "$var: ${!var}"
+done
 
 # Get the Cluster IP of grpc-service-1
 SERVICE_A_IP=$(kubectl get service $ENTRY_POINT -o=jsonpath='{.spec.clusterIP}')
@@ -326,6 +347,10 @@ copy_deathstar_pprof() {
       echo "Target files not found in Pod $pod_name in Namespace $namespace_name."
     fi
   done
+  # client profiling file is ~/protobuf/ghz-client/Client.pprof. cp it to ~/
+  # cd to the dir, then go tool pprof -list $INTERCEPT Client.pprof > ~/Client.pprof.txt
+  cp ~/protobuf/ghz-client/Client.pprof ~/Client.pprof
+  /usr/local/go/bin/go tool pprof -list $INTERCEPT ~/Client.pprof > ~/Client.pprof.txt 
 }
 
 copy_deathstar_pprof

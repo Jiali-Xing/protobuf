@@ -68,6 +68,8 @@ var (
 	rateLimiting, _ = strconv.ParseBool(getEnv("RATE_LIMITING", "true"))
 	entry_point     = getEnv("ENTRY_POINT", "nginx-web-server")
 	profiling, _    = strconv.ParseBool(getEnv("PROFILING", "true"))
+
+	debug, _ = strconv.ParseBool(getEnv("DEBUG_INFO", "false"))
 )
 
 func getHostname() string {
@@ -122,7 +124,7 @@ func main() {
 	charonOptions := map[string]interface{}{
 		// "rateLimitWaiting": true,
 		"rateLimiting": rateLimiting,
-		"debug":        false,
+		"debug":        debug,
 		"debugFreq":    int64(1000),
 		"tokensLeft":   int64(0),
 		"initprice":    int64(10),
@@ -147,6 +149,7 @@ func main() {
 	fmt.Printf("Charon options: %v\n", charonOptions)
 
 	fmt.Printf("Profiling: %v\n", profiling)
+	fmt.Printf("Debug Enabled: %v\n", debug)
 
 	var err error
 	var report *runner.Report
@@ -175,6 +178,9 @@ func main() {
 		}()
 	}
 
+	breakwaterOptions := bw.BWParametersDefault
+	breakwaterOptions.Verbose = debug
+
 	if constantLoad {
 		report, err = runner.Run(
 			"greeting.v3.GreetingService/Greeting",
@@ -192,7 +198,7 @@ func main() {
 			runner.WithInterceptor(interceptor),
 			runner.WithInterceptorEntry(entry_point),
 			runner.WithCharonOptions(charonOptions),
-			runner.WithBreakwaterOptions(bw.BWParametersDefault),
+			runner.WithBreakwaterOptions(breakwaterOptions),
 			runner.WithEnableCompression(false),
 		)
 	} else {
@@ -218,7 +224,7 @@ func main() {
 			runner.WithInterceptor(interceptor),
 			runner.WithInterceptorEntry(entry_point),
 			runner.WithCharonOptions(charonOptions),
-			runner.WithBreakwaterOptions(bw.BWParametersDefault),
+			runner.WithBreakwaterOptions(breakwaterOptions),
 			runner.WithEnableCompression(false),
 		)
 	}
