@@ -166,15 +166,15 @@ func main() {
 			log.Fatalf("Could not start CPU profile: %v", err)
 			return
 		} else {
-			log.Println("Started CPU profiling")
+			log.Println("Started CPU profiling at", time.Now().Local().String())
 		}
 
-		// stop the CPU profile and write the profiling data to the file after 5 seconds
+		// stop the CPU profile and write the profiling data to the file after 9 seconds
 		go func() {
-			time.Sleep(6 * time.Second)
+			time.Sleep(9 * time.Second)
 			pprof.StopCPUProfile()
 			f.Close()
-			log.Println("Stopped CPU profiling")
+			log.Println("Stopped CPU profiling at", time.Now().Local().String())
 		}()
 	}
 
