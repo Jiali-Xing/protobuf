@@ -330,13 +330,19 @@ copy_deathstar_pprof() {
         # # local_file="${namespace_name}-${pod_name}-$(date +%s)-$file"
         # local_file="$file"
 
-        # echo "Copying $file to $local_file"
         # kubectl cp "$namespace_name/$pod_name:/go/service-app/services/protobuf-grpc/$file" ~/"$local_file"
         if [[ ! $file =~ ^grpc-service ]]; then
           # local_file="${namespace_name}-${pod_name}-$(date +%s)-$file"
           local_file="$file"
 
-          kubectl exec -n "$namespace_name" "$pod_name" -- /bin/sh -c "go tool pprof -list $INTERCEPT $file > ~/$file.txt"
+          echo "Profiling $file"
+          # # if INTERCEPT is `plain` then use `go tool pprof -list` without focus on the intercept function
+          if [ "$INTERCEPT" = "plain" ]; then
+            kubectl exec -n "$namespace_name" "$pod_name" -- /bin/sh -c "go tool pprof -list greeting $file > ~/$file.txt"
+          # otherwise, use `go tool pprof -list` with corresponding interceptor as focus
+          else
+            kubectl exec -n "$namespace_name" "$pod_name" -- /bin/sh -c "go tool pprof -list $INTERCEPT $file > ~/$file.txt"
+          fi
 
           echo "Copying $file to $local_file"
           kubectl cp "$namespace_name/$pod_name:/go/service-app/services/protobuf-grpc/$file" ~/"$local_file"
@@ -353,4 +359,7 @@ copy_deathstar_pprof() {
   /usr/local/go/bin/go tool pprof -list $INTERCEPT ~/Client.pprof > ~/Client.pprof.txt 
 }
 
-copy_deathstar_pprof
+# if env var PROFILING is true, copy pprof files from server pods
+if [ "$PROFILING" = true ]; then
+  copy_deathstar_pprof
+fi

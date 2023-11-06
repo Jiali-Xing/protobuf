@@ -92,6 +92,7 @@ func main() {
 	md["request-id"] = "{{.RequestNumber}}"
 	md["timestamp"] = "{{.TimestampUnix}}"
 	md["method"] = method
+	// md["reqid"]
 	// print the metadata used
 	for k, v := range md {
 		fmt.Printf("Metadata: %s=%s\n", k, v)
