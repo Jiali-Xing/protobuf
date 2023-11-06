@@ -201,6 +201,7 @@ func main() {
 			runner.WithCharonOptions(charonOptions),
 			runner.WithBreakwaterOptions(breakwaterOptions),
 			runner.WithEnableCompression(false),
+			runner.WithTimeout(100*time.Millisecond),
 		)
 	} else {
 		report, err = runner.Run(
@@ -227,6 +228,7 @@ func main() {
 			runner.WithCharonOptions(charonOptions),
 			runner.WithBreakwaterOptions(breakwaterOptions),
 			runner.WithEnableCompression(false),
+			runner.WithTimeout(100*time.Millisecond),
 		)
 	}
 
