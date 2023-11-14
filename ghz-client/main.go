@@ -8,6 +8,8 @@ import (
 	"time"
 
 	bw "github.com/Jiali-Xing/breakwater-grpc/breakwater"
+	dagor "github.com/Jiali-Xing/dagor-grpc/dagor"
+
 	"github.com/Jiali-Xing/ghz/printer"
 	"github.com/Jiali-Xing/ghz/runner"
 	pb "github.com/Jiali-Xing/protobuf"
@@ -68,6 +70,8 @@ var (
 	rateLimiting, _ = strconv.ParseBool(getEnv("RATE_LIMITING", "true"))
 	entry_point     = getEnv("ENTRY_POINT", "nginx-web-server")
 	profiling, _    = strconv.ParseBool(getEnv("PROFILING", "true"))
+	// latencyThreshold = getEnv("LATENCY_THRESHOLD", "10ms") convert to time.Duration
+	latencyThreshold, _ = time.ParseDuration(getEnv("LATENCY_THRESHOLD", "10ms"))
 
 	debug, _ = strconv.ParseBool(getEnv("DEBUG_INFO", "false"))
 )
@@ -181,6 +185,23 @@ func main() {
 
 	breakwaterOptions := bw.BWParametersDefault
 	breakwaterOptions.Verbose = debug
+	breakwaterOptions.SLO = int64(float64(latencyThreshold.Microseconds()) / 0.4)
+
+	dagorParams := dagor.DagorParam{
+		// Set the parameters accordingly
+		NodeName: serviceName,
+		BusinessMap: map[string]int{
+			"compose": 1,
+		},
+		QueuingThresh:                2 * time.Millisecond,
+		EntryService:                 false,
+		IsEnduser:                    true,
+		AdmissionLevelUpdateInterval: 10 * time.Millisecond,
+		Alpha:                        0.05,
+		Beta:                         0.01,
+		Umax:                         128,
+		Bmax:                         10,
+	}
 
 	if constantLoad {
 		report, err = runner.Run(
@@ -200,8 +221,10 @@ func main() {
 			runner.WithInterceptorEntry(entry_point),
 			runner.WithCharonOptions(charonOptions),
 			runner.WithBreakwaterOptions(breakwaterOptions),
+			runner.WithDagorOptions(dagorParams),
+			runner.WithAsync(true),
 			runner.WithEnableCompression(false),
-			runner.WithTimeout(100*time.Millisecond),
+			runner.WithTimeout(time.Second),
 		)
 	} else {
 		report, err = runner.Run(
@@ -215,7 +238,6 @@ func main() {
 			runner.WithInsecure(true),
 			// runner.WithTotalRequests(3),
 			// runner.WithRPS(2000),
-			// runner.WithAsync(true),
 			runner.WithRunDuration(runDuration),
 			runner.WithLoadSchedule(loadSchedule),
 			runner.WithLoadStart(loadStart),
@@ -227,8 +249,10 @@ func main() {
 			runner.WithInterceptorEntry(entry_point),
 			runner.WithCharonOptions(charonOptions),
 			runner.WithBreakwaterOptions(breakwaterOptions),
+			runner.WithDagorOptions(dagorParams),
+			runner.WithAsync(true),
 			runner.WithEnableCompression(false),
-			runner.WithTimeout(100*time.Millisecond),
+			runner.WithTimeout(time.Second),
 		)
 	}
 
