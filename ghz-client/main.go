@@ -96,7 +96,6 @@ func main() {
 	md["request-id"] = "{{.RequestNumber}}"
 	md["timestamp"] = "{{.TimestampUnix}}"
 	md["method"] = method
-	// md["reqid"]
 	// print the metadata used
 	for k, v := range md {
 		fmt.Printf("Metadata: %s=%s\n", k, v)
@@ -110,21 +109,7 @@ func main() {
 		Hostname: getHostname(),
 	}
 
-	// Get the concurrency number from the second input argument
-	// concurrencyStr := os.Args[1]
-	// concurrency, err := strconv.Atoi(concurrencyStr)
-	// if err != nil {
-	// 	fmt.Println("Invalid concurrency value:", concurrencyStr)
-	// 	os.Exit(1)
-	// }
 	concurrency := 1000
-
-	// arg, err := strconv.ParseInt(os.Args[1], 10, 64)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// read the environment
 
 	charonOptions := map[string]interface{}{
 		// "rateLimitWaiting": true,
