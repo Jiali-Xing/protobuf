@@ -1,0 +1,1082 @@
+applications:
+- callgraph:
+    compose-post-service:
+    - post-storage-service
+    - home-timeline-service
+    - user-timeline-service
+    - user-service
+    - text-service
+    - media-service
+    - unique-id-service
+    home-timeline-redis: []
+    home-timeline-service:
+    - post-storage-service
+    - home-timeline-redis
+    - social-graph-service
+    media-service: []
+    nginx-web-server:
+    - compose-post-service
+    post-storage-mongo: []
+    post-storage-service:
+    - post-storage-mongo
+    social-graph-redis: []
+    social-graph-service:
+    - social-graph-redis
+    text-service:
+    - url-shorten-service
+    - user-mention-service
+    unique-id-service: []
+    url-shorten-mongo: []
+    url-shorten-service:
+    - url-shorten-mongo
+    user-mention-memcached: []
+    user-mention-service:
+    - user-mention-memcached
+    user-service:
+    - social-graph-service
+    user-timeline-mongo: []
+    user-timeline-redis: []
+    user-timeline-service:
+    - post-storage-service
+    - user-timeline-redis
+    - user-timeline-mongo
+  entrypoint: nginx-web-server
+  interface: compose
+- callgraph:
+    home-timeline-redis: []
+    home-timeline-service:
+    - post-storage-service
+    - home-timeline-redis
+    nginx-web-server:
+    - home-timeline-service
+    post-storage-mongo: []
+    post-storage-service:
+    - post-storage-mongo
+  entrypoint: nginx-web-server
+  interface: home-timeline
+- callgraph:
+    nginx-web-server:
+    - user-timeline-service
+    post-storage-mongo: []
+    post-storage-service:
+    - post-storage-mongo
+    user-timeline-mongo: []
+    user-timeline-redis: []
+    user-timeline-service:
+    - post-storage-service
+    - user-timeline-redis
+    - user-timeline-mongo
+  entrypoint: nginx-web-server
+  interface: user-timeline
+nodes:
+- URL: nginx-web-server:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream:
+  - home-timeline-service
+  - user-timeline-service
+  - compose-post-service
+  id: 0
+  name: nginx-web-server
+  nodeAffinity:
+  - node-1
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 7ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: compose-post-service:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream:
+  - user-timeline-service
+  - user-service
+  - home-timeline-service
+  - text-service
+  - unique-id-service
+  - post-storage-service
+  - media-service
+  id: 1
+  name: compose-post-service
+  nodeAffinity:
+  - node-2
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 2ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: user-mention-memcached:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream: []
+  id: 2
+  name: user-mention-memcached
+  nodeAffinity:
+  - node-6
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: user-timeline-redis:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream: []
+  id: 3
+  name: user-timeline-redis
+  nodeAffinity:
+  - node-2
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: user-timeline-service:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream:
+  - user-timeline-mongo
+  - user-timeline-redis
+  - post-storage-service
+  id: 4
+  name: user-timeline-service
+  nodeAffinity:
+  - node-1
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: user-service:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream:
+  - social-graph-service
+  id: 5
+  name: user-service
+  nodeAffinity:
+  - node-3
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: social-graph-service:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream:
+  - social-graph-redis
+  id: 6
+  name: social-graph-service
+  nodeAffinity:
+  - node-7
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: user-timeline-mongo:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream: []
+  id: 7
+  name: user-timeline-mongo
+  nodeAffinity:
+  - node-2
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: user-mention-service:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream:
+  - user-mention-memcached
+  id: 8
+  name: user-mention-service
+  nodeAffinity:
+  - node-5
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: home-timeline-redis:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream: []
+  id: 9
+  name: home-timeline-redis
+  nodeAffinity:
+  - node-4
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: url-shorten-mongo:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream: []
+  id: 10
+  name: url-shorten-mongo
+  nodeAffinity:
+  - node-6
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: home-timeline-service:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream:
+  - home-timeline-redis
+  - social-graph-service
+  - post-storage-service
+  id: 11
+  name: home-timeline-service
+  nodeAffinity:
+  - node-1
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: text-service:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream:
+  - url-shorten-service
+  - user-mention-service
+  id: 12
+  name: text-service
+  nodeAffinity:
+  - node-3
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: unique-id-service:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream: []
+  id: 13
+  name: unique-id-service
+  nodeAffinity:
+  - node-3
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: url-shorten-service:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream:
+  - url-shorten-mongo
+  id: 14
+  name: url-shorten-service
+  nodeAffinity:
+  - node-5
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: social-graph-redis:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream: []
+  id: 15
+  name: social-graph-redis
+  nodeAffinity:
+  - node-6
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: media-service:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream: []
+  id: 16
+  name: media-service
+  nodeAffinity:
+  - node-4
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: post-storage-mongo:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream: []
+  id: 17
+  name: post-storage-mongo
+  nodeAffinity:
+  - node-5
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 2ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: post-storage-service:50051
+  charon:
+  - name: PRICE_UPDATE_RATE
+    value: 5ms
+  - name: LATENCY_THRESHOLD
+    value: 5000us
+  - name: PRICE_STEP
+    value: '10'
+  - name: PRICE_STRATEGY
+    value: proportional
+  - name: INTERCEPT
+    value: dagor
+  - name: LAZY_UPDATE
+    value: 'true'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  downstream:
+  - post-storage-mongo
+  id: 18
+  name: post-storage-service
+  nodeAffinity:
+  - node-4
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 1ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
