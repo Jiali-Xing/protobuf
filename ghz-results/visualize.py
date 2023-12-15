@@ -6,12 +6,13 @@ import pytz
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.dates as md
 
 # import the function calculate_average_goodput from /home/ying/Sync/Git/protobuf/baysian-opt/bayesian_opt.py
 
-throughput_time_interval = '50ms'
-latency_window_size = '100ms'  # Define the window size as 100 milliseconds
-offset = 0  # Define the offset as 50 milliseconds
+throughput_time_interval = '100ms'
+latency_window_size = '200ms'  # Define the window size as 100 milliseconds
+offset = 1.05  # Define the offset as 50 milliseconds
 oneNode = False
 # remote = True
 cloudlab = True
@@ -19,8 +20,12 @@ cloudlab = True
 # SLO = 20 if oneNode else 80
 capacity = 24000 if oneNode else 5000
 # computationTime = 10 if oneNode else 70
-computationTime = 27
-SLO = 50 + computationTime
+
+computationTime = 0
+# alibaba = False
+# SLO = 2 * 111 if alibaba else 25 * 2
+
+INTERCEPTOR = os.environ.get('INTERCEPT', 'plain').lower()
 
 # cloudlabOutput = r"grpc-(service-\d+)"
 # match `deathstar_social-graph-service.output` with regex 
@@ -152,7 +157,8 @@ def calculate_goodput_ave_var(df, slo):
     goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
     df['goodput'] = goodput_requests_per_second.reindex(df.index, method='bfill')
     # take out the goodput during the last 3 seconds by index
-    goodput = df[df.index > df.index[-1] - pd.Timedelta(seconds=3)]['goodput']
+    # goodput = df[df.index > df.index[-1] - pd.Timedelta(seconds=3)]['goodput']
+    goodput = df['goodput']
     # return the goodput, but round it to 2 decimal places
     goodputAve = goodput.mean()
     # also calculate the standard deviation of the goodput
@@ -208,7 +214,7 @@ def calculate_tail_latency(df):
 
 
 def plot_timeseries(df, filename):
-    fig, ax1 = plt.subplots(figsize=(12, 4))
+    fig, ax1 = plt.subplots(figsize=(10, 4))
     ax1.set_xlabel('Time')
     ax1.set_ylabel('Latencies (ms)', color='tab:red')
     ax1.tick_params(axis='y', labelcolor='tab:red')
@@ -347,7 +353,7 @@ def extract_ownPrices(file_pattern):
     data_dict = {}
    
     # Provide the full path to the directory containing the files
-    directory_path = '/home/ying/Sync/Git/protobuf/ghz-results/'
+    directory_path = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
 
     # Get a list of files that match the given pattern
     files = [f for f in os.listdir(directory_path) if re.match(file_pattern, f)]
@@ -409,8 +415,7 @@ def extract_waiting_times_all(file_pattern):
     data_dict = {}
    
     # Provide the full path to the directory containing the files
-    directory_path = '/home/ying/Sync/Git/protobuf/ghz-results/'
-
+    directory_path = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
     # Get a list of files that match the given pattern
     files = [f for f in os.listdir(directory_path) if re.match(file_pattern, f)]
 
@@ -456,9 +461,9 @@ def plot_timeseries_ok(df, filename):
 
     ax2.plot(df.index, df['throughput'], 'r-.', )
     ax2.plot(df.index, df['goodput'], color='green', linestyle='--')
-    ax2.plot(df.index, df['dropped'].fillna(0)+df['throughput'], color='tab:blue', linestyle='-', label='Total Req')
+    ax2.plot(df.index, df['dropped'].fillna(0)+df['throughput'], color='tab:blue', linestyle='-', label='Throughput')
     ax2.fill_between(df.index, 0, df['goodput'], color='green', alpha=0.1, label='Goodput')
-    ax2.fill_between(df.index, df['goodput'], df['throughput'], color='red', alpha=0.1, label='SLO Violated Req')
+    ax2.fill_between(df.index, df['goodput'], df['throughput'], color='red', alpha=0.1, label='SLO Violation')
     ax2.fill_between(df.index, df['throughput'], df['throughput'] + df['dropped'], color='c', alpha=0.1, label='Dropped Req')
 
     ax2.tick_params(axis='y', labelcolor='tab:blue')
@@ -509,7 +514,7 @@ def plot_timeseries_lat(df, filename, computation_time=0):
     # ax2.fill_between(df.index, df['goodput'], df['throughput'], color='red', alpha=0.3, label='SLO Violated Req')
     # ax2.fill_between(df.index, df['throughput'], df['throughput'] + df['dropped'], color='c', alpha=0.3, label='Dropped Req')
 
-    df_queuing_delay = extract_waiting_times("/home/ying/Sync/Git/service-app/services/protobuf-grpc/server.output")
+    df_queuing_delay = extract_waiting_times("~/Sync/Git/service-app/services/protobuf-grpc/server.output")
     # plot the four waiting time patterns above in ax2, with for loop over the column of df_queuing_delay
     for waiting_time in df_queuing_delay.columns:
         # before plotting, we need to calculate the moving average of the waiting time
@@ -538,14 +543,21 @@ def plot_timeseries_lat(df, filename, computation_time=0):
 
 
 def plot_timeseries_split(df, filename, computation_time=0):
-    start_index = filename.rfind("/") + 1 if "/" in filename else 0
-    end_index = filename.index("_") if "_" in filename else len(filename)
-    mechanism = filename[start_index:end_index]
+    # mechanism is the word after `control-` in the filename
+    # e.g., breakwater in social-compose-control-breakwater-parallel-capacity-8000-1209_1620.json
+    mechanism = re.findall(r"control-(\w+)-", filename)[0]
+    
+    servicePrice = False
+    if servicePrice:
+        fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, figsize=(12, 10), sharex=True)
+    else:
+        fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, figsize=(6, 4), sharex=True, height_ratios=[1, 3])
 
-    fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, figsize=(12, 10), sharex=True)
-
+    # make ax1 shorter
+    
+    
     # add to all 3 axes vertical x grid lines for each second, x axis are datetime objects
-    for ax in [ax1, ax2, ax3]:
+    for ax in [ax1, ax2]:
         # x axis are datetime objects, so we want to add vertical grid lines for each second
         ax.xaxis.grid(True)
         ax.yaxis.grid(True)
@@ -561,7 +573,10 @@ def plot_timeseries_split(df, filename, computation_time=0):
              label='Average Latency (e2e)' if computation_time == 0 else 'Average Latency (e2e) \nminus computation time')
     ax1.plot(df.index, np.maximum(0.001, df['tail_latency']-computation_time), linestyle='-.',
              label='99% Tail Latency (e2e)' if computation_time == 0 else '99% Tail Latency (e2e) \nminus computation time')
-    ax1.set_ylim(0.01, np.max(df['tail_latency'])*1.1)
+    if alibaba:
+        ax1.set_ylim(100, 500)
+    else:
+        ax1.set_ylim(20, 100)
     ax1.set_yscale('log')
 
     # add .fillna(0) to all the columns of df, so that we can plot the throughput and goodput
@@ -570,7 +585,7 @@ def plot_timeseries_split(df, filename, computation_time=0):
     ax2.set_ylabel('Throughput (req/s)', color='tab:blue')
     ax2.plot(df.index, df['throughput'], 'r-.', )
     ax2.plot(df.index, df['goodput'], color='green', linestyle='--')
-    ax2.plot(df.index, df['dropped']+df['throughput'], color='tab:blue', linestyle='-', label='Total Req')
+    ax2.plot(df.index, df['dropped']+df['throughput'], color='tab:blue', linestyle='-', label='Req Sent')
     # plot dropped requests + rate limit requests + throughput = total demand
     # if df['limited'].sum() > 0, then plot the rate limited requests
     if df['limited'].sum() > 0:
@@ -588,26 +603,31 @@ def plot_timeseries_split(df, filename, computation_time=0):
         mid_end_time = pd.Timestamp('2000-01-01 00:00:04')
 
         # Create a new column 'new_column' and fill it with 100 for rows within the time range
-        df.loc[mid_start_time:mid_end_time, 'total_demand'] = capacity  # Set the value to 100 for the specified time range
+        df.loc[mid_start_time:, 'total_demand'] = capacity  # Set the value to 100 for the specified time range
 
         # from 2nd second to 4th second, total demand is 100% capacity
-        df.loc[mid_end_time:, 'total_demand'] = capacity *3/2
+        # df.loc[mid_end_time:, 'total_demand'] = capacity *3/2
     
 
     if mechanism != 'baseline':
-        ax2.plot(df.index, df['total_demand'], color='c', linestyle='-', label='Total Demand')
+        ax2.plot(df.index, df['total_demand'], color='c', linestyle='-', label='Demand')
 
 
     ax2.fill_between(df.index, 0, df['goodput'], color='green', alpha=0.2, label='Goodput')
-    ax2.fill_between(df.index, df['goodput'], df['throughput'], color='red', alpha=0.3, label='SLO Violated Req')
+    ax2.fill_between(df.index, df['goodput'], df['throughput'], color='red', alpha=0.3, label='SLO Violation')
     ax2.fill_between(df.index, df['throughput'], df['throughput'] + df['dropped'], color='c', alpha=0.3, label='Dropped Req')
-    
-    # ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], color='tab:blue', alpha=0.3, label='Rate Limited Req')
+    # if mechanism in ['charon', 'breakwater', 'breakwaterd']:
+    #     ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], color='tab:blue', alpha=0.3, label='Rate Limited Req')
     ax2.tick_params(axis='y', labelcolor='tab:blue')
-    # ax2.set_ylim(0, 3000)
+    ax2.set_ylim(0, 12000)
+
+    # Apply the custom formatter to the x-axis
+    # use second locator to show grid lines for each second, not `09` but `9`
+    plt.gca().xaxis.set_major_formatter(md.DateFormatter('%S'))
+    plt.xlabel('Time (second)')
 
     if not cloudlab:
-        df_queuing_delay = extract_waiting_times("/home/ying/Sync/Git/service-app/services/protobuf-grpc/server.output")
+        df_queuing_delay = extract_waiting_times("~/Sync/Git/service-app/services/protobuf-grpc/server.output")
         # assert that df_queuing_delay.index is not empty
         assert len(df_queuing_delay.index) > 0
         # only keep the data when the index is smaller than the last timestamp of the df.index
@@ -644,13 +664,15 @@ def plot_timeseries_split(df, filename, computation_time=0):
                     mean_queuing_delay = df_queuing_delay[waiting_time]
                 ax1.plot(mean_queuing_delay.index, mean_queuing_delay, label=service_name)
     # add a horizontal line at y=SLO
-    ax1.axhline(y=SLO - computation_time, color='c', linestyle='-.', label='SLO minus computation')
+    ax1.axhline(y=SLO - computation_time, color='c', linestyle='-.', label='SLO')
     # find the line `export LATENCY_THRESHOLD=???us` in `/home/ying/Sync/Git/service-app/cloudlab/scripts/cloudlab_run_and_fetch.sh`
     # and add a horizontal line at y=???us
     latency_threshold = os.environ.get('LATENCY_THRESHOLD')
     latency_ms = pd.Timedelta(latency_threshold).total_seconds() * 1000
+    
     # convert the latency_threshold from 5000us to 5ms
-    ax1.axhline(y=latency_ms, color='g', linestyle='-.', label='Latency Threshold')
+    # ax1.axhline(y=latency_ms, color='g', linestyle='-.', label='Latency Threshold')
+
     # with open ("/home/ying/Sync/Git/service-app/cloudlab/scripts/cloudlab_run_and_fetch.sh", "r") as file:
     #     for line in file:
     #         if "export LATENCY_THRESHOLD=" in line:
@@ -663,7 +685,7 @@ def plot_timeseries_split(df, filename, computation_time=0):
 
     # put legend on the top left corner
     # for ax1, don't show the box border of the legend
-    ax1.legend(loc='lower left', bbox_to_anchor=(0, 1.0), ncol=3, frameon=False)
+    ax1.legend(loc='lower left', bbox_to_anchor=(0, 1.1), ncol=2, frameon=False)
 
     if cloudlab:
         max_price = 0
@@ -672,31 +694,34 @@ def plot_timeseries_split(df, filename, computation_time=0):
             # only keep the data when the index is smaller than the last timestamp of the df.index
             df_price = df_price[df_price.index < df.index[-1]]
             moving_average_price = df_price[service_name].rolling(latency_window_size).mean()
-            ax3.plot(df_price.index, moving_average_price, label=service_name)
-            ax3.legend(loc='upper left', ncol=2, frameon=False)
+            if servicePrice:
+                ax3.plot(df_price.index, moving_average_price, label=service_name)
+                ax3.legend(loc='upper left', ncol=2, frameon=False)
             max_price = max(moving_average_price.max(), max_price)
     else:
-        df_price = extract_ownPrice_update("/home/ying/Sync/Git/service-app/services/protobuf-grpc/server.output")
+        df_price = extract_ownPrice_update("~/Sync/Git/service-app/services/protobuf-grpc/server.output")
         # only keep the data when the index is smaller than the last timestamp of the df.index
         df_price = df_price[df_price.index < df.index[-1]]
         moving_average_price = df_price['ownPrice'].rolling(latency_window_size).mean()
-        ax3.plot(df_price.index, moving_average_price, label='Service Price')
+        if servicePrice:
+            ax3.plot(df_price.index, moving_average_price, label='Service Price')
         max_price = moving_average_price.max()
-    ax3.set_ylabel('Service Price')
-    ax3.set_xlabel('Time')
+    if servicePrice:
+        ax3.set_ylabel('Service Price')
+        ax3.set_xlabel('Time')
 
  
     # fill between total demand and throughput + dropped requests, only if total demand is larger than throughput + dropped requests
-    if mechanism != 'baseline' and max_price > 0:
+    if mechanism != 'baseline' and mechanism != 'dagor':
         ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], where=df['total_demand'] > df['throughput'] + df['dropped'], color='tab:blue', alpha=0.3, label='Rate Limited Req')
     
-    ax2.legend(loc='upper left', bbox_to_anchor=(0, 1), ncol=2)
+    ax2.legend(loc='upper left', bbox_to_anchor=(0, 1), ncol=3, frameon=True)
     # concurrent_clients = re.findall(r"\d+", filename)[0]
     # plt.suptitle(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
 
     # add the ax2 a title, saying that `The Average Goodput Under Overload is: ` + calculate_average_goodput(filename)
     goodputAve, goodputStd = calculate_average_goodput(filename)
-    ax2.set_title(f"The Goodput after 00:02 has Mean: {goodputAve} and Std: {goodputStd}")
+    ax2.set_title(f"The Goodput has Mean: {goodputAve} and Std: {goodputStd}")
 
     latency_99th = read_tail_latency(filename)
     # print("99th percentile latency:", latency_99th)
@@ -705,7 +730,7 @@ def plot_timeseries_split(df, filename, computation_time=0):
     # round the latency_99th to 2 decimal places
     ax1.set_title(f"99-tile Latency: {round(latency_99th, 2)} ms")
 
-    filetosave = mechanism + '.deathstar.1000c.' + str(capacity) + 'c.png' 
+    filetosave = mechanism + '-' + method + '-' + str(capacity) + timestamp + '.png' 
     plt.savefig(filetosave, format='png', dpi=300, bbox_inches='tight')
     # plt.show()
     if not noPlot:
@@ -725,7 +750,7 @@ def plot_latencies(df, filename, computation_time=0):
              label='Average Latency (e2e)' if computation_time == 0 else 'Average Latency (e2e) \nminus computation time')
     ax1.plot(df.index, np.maximum(0.001, df['tail_latency']-computation_time), linestyle='-.',
              label='99% Tail Latency (e2e)' if computation_time == 0 else '99% Tail Latency (e2e) \nminus computation time')
-    ax1.set_ylim(0.01, np.max(df['tail_latency'])*1.1)
+    # ax1.set_ylim(0.01, np.max(df['tail_latency'])*1.1)
     ax1.set_yscale('log')
     ax1.set_xlabel('Time')
     # add a vertical grind line per second on x-axis
@@ -751,7 +776,7 @@ def plot_latencies(df, filename, computation_time=0):
     ax1.axhline(y=latency_ms, color='g', linestyle='-.', label='Latency Threshold')
 
     if not cloudlab:
-        df_queuing_delay = extract_waiting_times("/home/ying/Sync/Git/service-app/services/protobuf-grpc/server.output")
+        df_queuing_delay = extract_waiting_times("~/Sync/Git/service-app/services/protobuf-grpc/server.output")
         # assert that df_queuing_delay.index is not empty
         assert len(df_queuing_delay.index) > 0
         # only keep the data when the index is smaller than the last timestamp of the df.index
@@ -801,9 +826,8 @@ def plot_latencies(df, filename, computation_time=0):
             print("average queuing delay of service", service_name, ":", mean_queuing_delay.mean())    
         
         # if the charon is turned on, plot the sum of the queuing delay of all services
-        INTERCPTOR = os.environ.get('INTERCEPT').lower()
         # if INTERCPTOR is true 
-        if INTERCPTOR == 'true':
+        if INTERCEPTOR == 'true':
             # Sum the queuing delay of all services, fill the NaN with 0
             df_queuing_delay_sum = df_queuing_delay_sum.sum(axis=1).fillna(method='bfill')
             # Plot the sum of mean_queuing_delay for all services
@@ -835,7 +859,7 @@ def plot_latencies(df, filename, computation_time=0):
     # ax1.legend(loc='lower left', bbox_to_anchor=(0, 1), ncol=1, frameon=False)
 
     goodputAve, goodputStd = calculate_average_goodput(filename)
-    ax1.set_title(f"The Goodput after 00:02 has Mean: {goodputAve} and Std: {goodputStd}")
+    ax1.set_title(f"The Goodput has Mean: {goodputAve} and Std: {goodputStd}")
 
     latency_99th = read_tail_latency(filename)
     latency_99th = pd.Timedelta(latency_99th).total_seconds() * 1000
@@ -853,6 +877,23 @@ def plot_latencies(df, filename, computation_time=0):
 
 
 def analyze_data(filename):
+    # ./social-compose-control-charon-parallel-capacity-7000-1023_1521.json
+    # if filename contains control, read the string after it as INTERCEPTOR
+    global INTERCEPTOR, capacity 
+    if "control" in filename:
+        match = re.search(r'control-(\w+)-', filename)
+        if match:
+            INTERCEPTOR =  match.group(1)
+            print("Interceptor:", INTERCEPTOR)
+    
+    if "capacity" in filename:
+        match = re.search(r'capacity-(\w+)-', filename)
+        if match:
+            capacity =  match.group(1)
+            # convert the capacity from string to int
+            capacity = int(capacity)
+            print("Capacity:", capacity)
+
     data = read_data(filename)
     df = convert_to_dataframe(data, init=True)
     # print(df.head())
@@ -872,9 +913,21 @@ def analyze_data(filename):
 
 if __name__ == '__main__':
     filename = sys.argv[1]
+
+    # read from the filename, if `S_` is in the filename, then alibaba is true, otherwise, alibaba is false
+    alibaba = "S_" in filename
+    # the method is the word between `social-` and `-control` in the filename
+    # e.g., home-timeline in social-home-timeline-control-charon-parallel-capacity-8000-1209_1620.json
+    # or `./social-S_149998854-charon-parallel-capacity-5000.json`
+    method = re.findall(r"social-(.*?)-control", filename)[0]
+    timestamp = re.findall(r"-\d+_\d+", filename)[0]
+    SLO = 2 * 111 if alibaba else 20 * 2
+
     # if there is a second argument, it is the handle of showing the plot
     if len(sys.argv) > 2:
         noPlot = sys.argv[2]
         # convert it to boolean
         noPlot = noPlot.lower() == 'no-plot'
+    else:
+        noPlot = False
     analyze_data(filename)

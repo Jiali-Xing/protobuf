@@ -1,10 +1,12 @@
 import glob
 import json, csv
+import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 import seaborn as sns
+from datetime import datetime
 
 
 latency_window_size = '100ms'  # Define the window size as 100 milliseconds
@@ -64,7 +66,8 @@ def plot_combined(dfs, labels):
     ax1.set_ylabel('Frequency')
     ax1.set_title('Histogram of Latencies (ms)')
     ax1.legend(loc='upper right')
-    ax1.set_xlim([0, global_max])
+    ax1.set_xlim([0, 200])
+    ax1.set_yscale('log')
 
     # Throughput on ax2
     for df, label in zip(dfs, labels):
@@ -103,10 +106,14 @@ def plot_combined(dfs, labels):
     # for 3 and 4, use log scale
     ax3.set_yscale('log')
     ax4.set_yscale('log')
+
+    # set y limit for 3 and 4 to be 10 to 100
+    ax3.set_ylim([10, 100])
+    ax4.set_ylim([10, 100])
     
     # Adjust spacing
     plt.tight_layout(h_pad=4)
-    plt.savefig('Overhead_Study_when_no_control.png')
+    plt.savefig('overload_comparison.png')
     plt.show()
 
     # # Quantitative comparisons
@@ -217,19 +224,34 @@ def plot_combined(df1, df2, df3, labels):
         print(f"Throughput of {label}: {df['throughput'].mean()}")
 '''
 
-def main():
-    capacity = 5000
-    directory = '/home/ying/Sync/Git/protobuf/ghz-results/'
+
+def find_latest_files(capacity, directory):
+    latencyThreshold = '8000'
+    if latencyThreshold == 'inf':
+        start_time_str = "1108_1000"
+        end_time_str = "1108_2210"
+    elif latencyThreshold == '8000':
+        start_time_str = "1108_2210"
+        # end_time_str = "1109_0008"
+        end_time_str = "1110_0000"
+    elif latencyThreshold == '12000':
+        start_time_str = "1109_0008"
+        end_time_str = "1109_2300"
 
     # List of all charon files for the given capacity
-    charon_files = glob.glob(f"{directory}social-compose-charon-parallel-capacity-{capacity}-*.json")
-
-    # List of all plain files for the given capacity
-    plain_files = glob.glob(f"{directory}social-compose-plain-parallel-capacity-{capacity}-*.json")
+    charon_files = glob.glob(f"{directory}social-compose-control-charon-parallel-capacity-{capacity}-*.json")
+    plain_files = glob.glob(f"{directory}social-compose-control-plain-parallel-capacity-{capacity}-*.json")
+    breakwater_files = glob.glob(f"{directory}social-compose-control-breakwater-parallel-capacity-{capacity}-*.json")
+    
+    # Now filter the files using the is_within_duration function
+    charon_files = [f for f in charon_files if is_within_duration(f.split('-')[-1].rstrip('.json'), start_time_str, end_time_str)]
+    plain_files = [f for f in plain_files if is_within_duration(f.split('-')[-1].rstrip('.json'), start_time_str, end_time_str)]
+    breakwater_files = [f for f in breakwater_files if is_within_duration(f.split('-')[-1].rstrip('.json'), start_time_str, end_time_str)]
 
     # Sort the files by their modification time to get the latest file
     charon_files.sort(key=os.path.getmtime, reverse=True)
     plain_files.sort(key=os.path.getmtime, reverse=True)
+    breakwater_files.sort(key=os.path.getmtime, reverse=True)
 
     # Now you can read the latest files (if they exist)
     if charon_files:
@@ -242,19 +264,56 @@ def main():
     else:
         print("No plain files found for the given capacity!")
 
-    files = [charon_file, plain_file] if charon_files and plain_files else []
+    if breakwater_files:
+        breakwater_file = breakwater_files[0]
+    else:
+        print("No breakwater files found for the given capacity!")
+
+    files = [charon_file, plain_file, breakwater_file] if charon_files and plain_files and breakwater_files else []
 
     print(files)
+    return files
+
+
+# Function to check if a file's timestamp is within the given duration
+def is_within_duration(file_timestamp_str, start_time_str, end_time_str):
+    # Convert the time strings to datetime objects
+    start_time = datetime.strptime(start_time_str, "%m%d_%H%M")
+    end_time = datetime.strptime(end_time_str, "%m%d_%H%M")
+    file_time = datetime.strptime(file_timestamp_str, "%m%d_%H%M")
+
+    # Check if the file's time is within the start and end times
+    return start_time <= file_time <= end_time
+
+
+def main():
+    capacity = 8500
+    directory = '/home/ying/Sync/Git/protobuf/ghz-results/'
+
+    # If two arguments are provided, use them as the file names
+    if len(sys.argv) == 3:
+        charon_file = sys.argv[1]
+        plain_file = sys.argv[2]
+        files = [charon_file, plain_file]
+        print(files)
+    else:
+        # Otherwise, find the latest files for the given capacity
+        files = find_latest_files(capacity, directory)
+
 
     # files = [f'/home/ying/Sync/Git/protobuf/ghz-results/social-compose-charon-parallel-capacity-{capacity}.json',
-    # # files = ['/home/ying/Sync/Git/protobuf/ghz-results/lazy-price-social-compose-charon-parallel-capacity-7000.json',
-    #         #  '/home/ying/Sync/Git/protobuf/ghz-results/nolazy-social-compose-charon-parallel-capacity-6000.json',
-    #         #  '/home/ying/Sync/Git/protobuf/ghz-results/nolog-charon-parallel-capacity-6000.json',
-    #          f'/home/ying/Sync/Git/protobuf/ghz-results/social-compose-plain-parallel-capacity-{capacity}.json'
-    # ]
-    colors = ['red', 'blue', 'green']
+    files = [
+        '/home/ying/Sync/Git/protobuf/ghz-results/social-compose-control-plain-parallel-capacity-8000-1209_1522.json',
+        '/home/ying/Sync/Git/protobuf/ghz-results/social-compose-control-charon-parallel-capacity-8000-1209_1907.json',
+        '/home/ying/Sync/Git/protobuf/ghz-results/social-compose-control-breakwater-parallel-capacity-8000-1209_1329.json',
+        '/home/ying/Sync/Git/protobuf/ghz-results/social-compose-control-breakwaterd-parallel-capacity-8000-1209_1439.json',
+        '/home/ying/Sync/Git/protobuf/ghz-results/social-compose-control-dagor-parallel-capacity-8000-1209_2106.json'
+    ]
+    # colors = [ a list of 4 material colors ]
+    colors = ['red', 'blue', 'green', 'orange', 'purple']
+    labels = ['Plain', 'Charon', 'Breakwater', 'Breakwaterd', 'Dagor']
     # labels = ['Charon Lazy', 'Charon Full', 'Charon w/o Log', 'Plain']
-    labels = ['Charon Lazy', 'Plain']
+    # labels = ['Charon Lazy', 'Plain', 'Breakwater']
     dfs = []
 
     for i, filename in enumerate(files):
