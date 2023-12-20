@@ -16,12 +16,12 @@ method = 'compose'
 
 if method == 'compose':
     SLO = 20 * 2 # 20ms * 2 = 40ms
-    capacity = 8000
+    # capacity = 8000
 elif method == 'S_149998854':
     SLO = 111 * 2 # 111ms * 2 = 222ms
-    capacity = 6000
+    # capacity = 6000
 
-offset = 2  # Define the offset as 50 milliseconds
+offset = 1  # Define the offset as 50 milliseconds
 
 
 def read_tail_latency(filename, percentile=99):
@@ -191,6 +191,16 @@ def load_data():
         random_experiment = ("1213_2021", "1213_2144")
         # random_experiment_avegoodput5000 = ("1214_1822", "1214_2010")
         random_experiment_avegoodput7000 = ("1215_0016", "1215_0150")
+        death_gpt0_7000 = ("1215_1433", "1215_1600")
+        # death_gpt1_8000 = ("1216_0021", "1216_0450")
+        # death_gpt1_8000 = ("1216_1938", "1216_2130")
+        # death_gpt1_8000 = ("1216_2304", "1217_0210")
+        # death_gpt1_8000 = ("1217_0330", "1217_0900")
+        # death_gpt1_8000_charon = ("1217_2121", "1217_2138")
+        # # death_gpt1_8000_bw = ("1217_2307", "1217_2324")
+        # death_gpt1_8000_bwd = ("1218_0056", "1218_0115")
+        # death_gpt1_9000_charon = ("1218_1904", "1218_1921")
+        death_gpt1_10000_charon = ("1219_2100", "1219_2117")
 
         # Now you can call this function with a list of ranges
         time_ranges_compose = [
@@ -201,19 +211,30 @@ def load_data():
             # fiveth_compose_experiment,
             # tail_goodput_experiment
             # random_experiment
-            random_experiment_avegoodput7000
+            # random_experiment_avegoodput7000
+            death_gpt1_10000_charon,
+            # death_gpt1_8000_bw,
+            # death_gpt1_8000_bwd,
         ]
 
         first_alibaba_experiment = ("1207_0404", "1207_0600")
         second_alibaba_experiment = ("1207_1458", "1207_1519")
         third_alibaba_experiment = ("1207_1953", "1207_2039")
         fourth_alibaba_experiment = ("1210_1956", "1210_2131")
+        fiveth_alibaba_experiment = ("1215_0016", "1215_0150")
+        alib_gpt2_7000 = ("1215_0838", "1215_1350")
+        alib_gpt0_7000 = ("1215_1538", "1215_1600")
+        alib_gpt1_7000 = ("1215_1818", "1215_1900")
+        alib_gpt1_8000 = ("1217_0409", "1217_1140")
 
         time_ranges_alibaba = [
             # first_alibaba_experiment,
             # second_alibaba_experiment,
             # third_alibaba_experiment,
             # fourth_alibaba_experiment
+            # fiveth_alibaba_experiment
+            # alib_gpt2_7000
+            alib_gpt1_8000
         ]
 
         if method == 'compose':

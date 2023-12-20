@@ -182,7 +182,7 @@ def calculate_loadshedded(df):
     dropped_requests_per_second = dropped['status'].resample(throughput_time_interval).count()
     # scale the throughput to requests per second
     dropped_requests_per_second = dropped_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
-    df['dropped'] = dropped_requests_per_second.reindex(df.index, method='bfill')
+    df['dropped'] = dropped_requests_per_second.reindex(df.index, method='ffill')
     return df
 
 # when the rate is limited, item looks like this:
@@ -210,6 +210,11 @@ def calculate_tail_latency(df):
     df['tail_latency'] = tail_latency
     # Calculate moving average of latency
     df['latency_ma'] = df['latency'].rolling(latency_window_size).mean()
+
+    # calculate the average tail latency of each second 
+    # df['tail_latency_ave'] = df['tail_latency'].resample('1s').mean()
+    # print('[Average Tail Latency] ', df['tail_latency'].mean())
+    
     return df
 
 
@@ -583,9 +588,9 @@ def plot_timeseries_split(df, filename, computation_time=0):
     df = df.fillna(0)
 
     ax2.set_ylabel('Throughput (req/s)', color='tab:blue')
-    ax2.plot(df.index, df['throughput'], 'r-.', )
-    ax2.plot(df.index, df['goodput'], color='green', linestyle='--')
-    ax2.plot(df.index, df['dropped']+df['throughput'], color='tab:blue', linestyle='-', label='Req Sent')
+    ax2.plot(df.index, df['throughput'], 'r-.', alpha=0.2)
+    ax2.plot(df.index, df['goodput'], color='green', linestyle='--', alpha=0.2)
+    ax2.plot(df.index, df['dropped']+df['throughput'], color='tab:blue', linestyle='-', label='Req Sent', alpha=0.2)
     # plot dropped requests + rate limit requests + throughput = total demand
     # if df['limited'].sum() > 0, then plot the rate limited requests
     if df['limited'].sum() > 0:
@@ -728,7 +733,8 @@ def plot_timeseries_split(df, filename, computation_time=0):
     # convert the latency_99th from string to milliseconds
     latency_99th = pd.Timedelta(latency_99th).total_seconds() * 1000
     # round the latency_99th to 2 decimal places
-    ax1.set_title(f"99-tile Latency: {round(latency_99th, 2)} ms")
+    average_99th = df['tail_latency'].mean()
+    ax1.set_title(f"99-tile Latency over Time: {round(average_99th, 2)} ms")
 
     filetosave = mechanism + '-' + method + '-' + str(capacity) + timestamp + '.png' 
     plt.savefig(filetosave, format='png', dpi=300, bbox_inches='tight')
