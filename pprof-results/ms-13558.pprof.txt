@@ -1,0 +1,149 @@
+Total: 200ms
+ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).UnaryInterceptor in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231218004508-02fcb62b050a/charon.go
+         0       10ms (flat, cum)  5.00% of Total
+         .          .    347:func (pt *PriceTable) UnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+         .          .    348:	// This is the server side interceptor, it should check tokens, update price, do overload handling and attach price to response
+         .          .    349:	startTime := time.Now()
+         .          .    350:
+         .          .    351:	md, ok := metadata.FromIncomingContext(ctx)
+         .          .    352:	if !ok {
+         .          .    353:		return nil, errMissingMetadata
+         .          .    354:	}
+         .          .    355:
+         .          .    356:	// print all the k-v pairs in the metadata md
+         .          .    357:	// for k, v := range md {
+         .          .    358:	// 	logger("[Received Req]:	The metadata for request is %s: %s\n", k, v)
+         .          .    359:	// }
+         .          .    360:	if debug {
+         .          .    361:		var metadataLog string
+         .          .    362:		for k, v := range md {
+         .          .    363:			metadataLog += fmt.Sprintf("%s: %s, ", k, v)
+         .          .    364:		}
+         .          .    365:		if metadataLog != "" {
+         .          .    366:			logger("[Received Req]: The metadata for request is %s\n", metadataLog)
+         .          .    367:		}
+         .          .    368:	}
+         .          .    369:
+         .          .    370:	// Jiali: overload handler, do AQM, deduct the tokens on the request, update price info
+         .          .    371:	var tok int64
+         .          .    372:	var err error
+         .          .    373:	// if the price are additive, then the tokens are stored in the "tokens" or tokens-nodeName field of the metadata
+         .          .    374:	if pt.priceAggregation == "additive" {
+         .          .    375:		if val, ok := md["tokens-"+pt.nodeName]; ok {
+         .          .    376:			// logger("[Received Req]:	tokens for %s are %s\n", pt.nodeName, val)
+         .          .    377:			// raise error if the val length is not 1
+         .          .    378:			if len(val) > 1 {
+         .          .    379:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
+         .          .    380:			} else if len(val) == 0 {
+         .          .    381:				return nil, errMissingMetadata
+         .          .    382:			}
+         .          .    383:			tok, _ = strconv.ParseInt(val[0], 10, 64)
+         .          .    384:		} else {
+         .          .    385:			logger("[Received Req]:	tokens are %s\n", md["tokens"])
+         .          .    386:			// raise error if the tokens length is not 1
+         .          .    387:			if len(md["tokens"]) > 1 {
+         .          .    388:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
+         .          .    389:			} else if len(md["tokens"]) == 0 {
+         .          .    390:				return nil, errMissingMetadata
+         .          .    391:			}
+         .          .    392:			tok, _ = strconv.ParseInt(md["tokens"][0], 10, 64)
+         .          .    393:		}
+         .          .    394:	} else if pt.priceAggregation == "maximal" {
+         .          .    395:		// if the price are maximal, then the tokens are stored in the "tokens" field of the metadata
+         .          .    396:		if val, ok := md["tokens"]; ok {
+         .          .    397:			// logger("[Received Req]:	tokens for %s are %s\n", pt.nodeName, val)
+         .          .    398:			// raise error if the val length is not 1
+         .          .    399:			if len(val) > 1 {
+         .          .    400:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
+         .          .    401:			} else if len(val) == 0 {
+         .          .    402:				return nil, errMissingMetadata
+         .          .    403:			}
+         .          .    404:			tok, _ = strconv.ParseInt(val[0], 10, 64)
+         .          .    405:		}
+         .          .    406:	}
+         .          .    407:
+         .          .    408:	// overload handler:
+         .          .    409:	methodName := md["method"][0]
+         .          .    410:	tokenleft, err := pt.LoadShedding(ctx, tok, methodName)
+         .          .    411:	if err == InsufficientTokens && pt.loadShedding {
+         .          .    412:		price_string, _ := pt.RetrieveTotalPrice(ctx, methodName)
+         .          .    413:		header := metadata.Pairs("price", price_string, "name", pt.nodeName)
+         .          .    414:		logger("[Sending Error Resp]:	Total price is %s\n", price_string)
+         .          .    415:		grpc.SendHeader(ctx, header)
+         .          .    416:
+         .          .    417:		// totalLatency := time.Since(startTime)
+         .          .    418:		// logger("[Server-side Timer] Processing Duration is: %.2d milliseconds\n", totalLatency.Milliseconds())
+         .          .    419:
+         .          .    420:		// if pt.pinpointLatency {
+         .          .    421:		// 	if totalLatency > pt.observedDelay {
+         .          .    422:		// 		pt.observedDelay = totalLatency // update the observed delay
+         .          .    423:		// 	}
+         .          .    424:		// }
+         .          .    425:		// return nil, status.Errorf(codes.ResourceExhausted, "req dropped, try again later")
+         .          .    426:		return nil, status.Errorf(codes.ResourceExhausted, "%s req dropped by %s. Try again later.", methodName, pt.nodeName)
+         .          .    427:	}
+         .          .    428:	if err != nil && err != InsufficientTokens {
+         .          .    429:		// The limiter failed. This error should be logged and examined.
+         .          .    430:		log.Println(err)
+         .          .    431:		return nil, status.Error(codes.Internal, "internal error")
+         .          .    432:	}
+         .          .    433:
+         .          .    434:	// tok_string := strconv.FormatInt(tokenleft, 10)
+         .          .    435:	// logger("[Preparing Sub Req]:	Token left is %s\n", tok_string)
+         .          .    436:
+         .          .    437:	if pt.priceAggregation == "additive" {
+         .          .    438:		// [critical] Jiali: Being outgoing seems to be critical for us.
+         .          .    439:		// Jiali: we need to attach the token info to the context, so that the downstream can retrieve it.
+         .          .    440:		// ctx = metadata.AppendToOutgoingContext(ctx, "tokens", tok_string)
+         .          .    441:		// Jiali: we actually need multiple kv pairs for the token information, because one context is sent to multiple downstreams.
+         .          .    442:		downstreamTokens, _ := pt.SplitTokens(ctx, tokenleft, methodName)
+         .          .    443:
+         .          .    444:		ctx = metadata.AppendToOutgoingContext(ctx, downstreamTokens...)
+         .          .    445:
+         .          .    446:	}
+         .          .    447:	// queuingDelay := time.Since(startTime)
+         .          .    448:	// logger("[Server-side Timer] Queuing delay is: %.2d milliseconds\n", queuingDelay.Milliseconds())
+         .          .    449:
+         .          .    450:	// if pt.pinpointQueuing {
+         .          .    451:	// 	// increment the counter and add the queuing delay to the observed delay
+         .          .    452:	// 	pt.Increment()
+         .          .    453:	// 	pt.observedDelay += queuingDelay
+         .          .    454:	// }
+         .          .    455:
+         .          .    456:	if pt.pinpointLatency {
+         .          .    457:		totalLatency := time.Since(startTime)
+         .          .    458:		// log the total latency in unit of millisecond, decimal precision 2
+         .          .    459:		logger("[Server-side Interceptor] Overhead is: %.2f milliseconds\n", float64(totalLatency.Microseconds())/1000)
+         .          .    460:
+         .          .    461:		// if totalLatency > pt.observedDelay {
+         .          .    462:		// 	pt.observedDelay = totalLatency // update the observed delay
+         .          .    463:		// }
+         .          .    464:
+         .          .    465:		// change the observed delay to the average latency, first, sum the latency and increment the counter
+         .          .    466:		pt.Increment()
+         .          .    467:		pt.observedDelay += totalLatency
+         .          .    468:	}
+         .       10ms    469:	m, err := handler(ctx, req)
+         .          .    470:
+         .          .    471:	// Attach the price info to response before sending
+         .          .    472:	// right now let's just propagate the corresponding price of the RPC method rather than a whole pricetable.
+         .          .    473:	// if not pt.lazyResponse
+         .          .    474:	if !pt.lazyResponse {
+ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).UnaryInterceptorClient in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231218004508-02fcb62b050a/charon.go
+         0       60ms (flat, cum) 30.00% of Total
+         .          .    144:func (pt *PriceTable) UnaryInterceptorClient(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+         .          .    145:	// Jiali: the following line print the method name of the req/response, will be used to update the
+         .          .    146:	// logger("[Before Sub Req]:	Node %s calling Downstream\n", pt.nodeName)
+         .          .    147:	// Jiali: before sending. check the price, calculate the #tokens to add to request, update the total tokens
+         .          .    148:	// overwrite rather than append to the header with the node name of this client
+         .          .    149:	// ctx = metadata.AppendToOutgoingContext(ctx, "name", pt.nodeName)
+         .          .    150:	var header metadata.MD // variable to store header and trailer
+         .       50ms    151:	err := invoker(ctx, method, req, reply, cc, grpc.Header(&header))
+         .          .    152:
+         .          .    153:	// run the following code asynchorously, without blocking the main thread.
+         .       10ms    154:	go func() {
+         .          .    155:		// Jiali: after replied. update and store the price info for future
+         .          .    156:		if len(header["price"]) > 0 {
+         .          .    157:			priceDownstream, _ := strconv.ParseInt(header["price"][0], 10, 64)
+         .          .    158:			md, _ := metadata.FromOutgoingContext(ctx)
+         .          .    159:			methodName := md["method"][0]

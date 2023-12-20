@@ -1,0 +1,145 @@
+Total: 6.70s
+ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).LoadShedding in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231217230903-722ee062371e/charon.go
+         0       20ms (flat, cum)   0.3% of Total
+         .          .     97:func (pt *PriceTable) LoadShedding(ctx context.Context, tokens int64, methodName string) (int64, error) {
+         .          .     98:	// if pt.loadShedding is false, then return tokens and nil error
+         .          .     99:	if !pt.loadShedding {
+         .          .    100:		return tokens, nil
+         .          .    101:	}
+         .          .    102:
+         .       20ms    103:	ownPrice_string, _ := pt.priceTableMap.Load("ownprice")
+         .          .    104:	ownPrice := ownPrice_string.(int64)
+         .          .    105:	downstreamPrice, _ := pt.RetrieveDSPrice(ctx, methodName)
+         .          .    106:
+         .          .    107:	if pt.priceAggregation == "maximal" {
+         .          .    108:		if tokens > ownPrice && tokens > downstreamPrice {
+ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).UnaryInterceptor in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231217230903-722ee062371e/charon.go
+      10ms      740ms (flat, cum) 11.04% of Total
+         .          .    348:func (pt *PriceTable) UnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+         .          .    349:	// This is the server side interceptor, it should check tokens, update price, do overload handling and attach price to response
+         .          .    350:	startTime := time.Now()
+         .          .    351:
+         .      130ms    352:	md, ok := metadata.FromIncomingContext(ctx)
+         .          .    353:	if !ok {
+         .          .    354:		return nil, errMissingMetadata
+         .          .    355:	}
+         .          .    356:
+         .          .    357:	// print all the k-v pairs in the metadata md
+         .          .    358:	// for k, v := range md {
+         .          .    359:	// 	logger("[Received Req]:	The metadata for request is %s: %s\n", k, v)
+         .          .    360:	// }
+         .          .    361:	if debug {
+         .          .    362:		var metadataLog string
+         .          .    363:		for k, v := range md {
+         .          .    364:			metadataLog += fmt.Sprintf("%s: %s, ", k, v)
+         .          .    365:		}
+         .          .    366:		if metadataLog != "" {
+         .          .    367:			logger("[Received Req]: The metadata for request is %s\n", metadataLog)
+         .          .    368:		}
+         .          .    369:	}
+         .          .    370:
+         .          .    371:	// Jiali: overload handler, do AQM, deduct the tokens on the request, update price info
+         .          .    372:	var tok int64
+         .          .    373:	var err error
+         .          .    374:	// if the price are additive, then the tokens are stored in the "tokens" or tokens-nodeName field of the metadata
+         .          .    375:	if pt.priceAggregation == "additive" {
+         .          .    376:		if val, ok := md["tokens-"+pt.nodeName]; ok {
+         .          .    377:			// logger("[Received Req]:	tokens for %s are %s\n", pt.nodeName, val)
+         .          .    378:			// raise error if the val length is not 1
+         .          .    379:			if len(val) > 1 {
+         .          .    380:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
+         .          .    381:			} else if len(val) == 0 {
+         .          .    382:				return nil, errMissingMetadata
+         .          .    383:			}
+         .          .    384:			tok, _ = strconv.ParseInt(val[0], 10, 64)
+         .          .    385:		} else {
+         .          .    386:			logger("[Received Req]:	tokens are %s\n", md["tokens"])
+         .          .    387:			// raise error if the tokens length is not 1
+         .          .    388:			if len(md["tokens"]) > 1 {
+         .          .    389:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
+         .          .    390:			} else if len(md["tokens"]) == 0 {
+         .          .    391:				return nil, errMissingMetadata
+         .          .    392:			}
+         .          .    393:			tok, _ = strconv.ParseInt(md["tokens"][0], 10, 64)
+         .          .    394:		}
+         .          .    395:	} else if pt.priceAggregation == "maximal" {
+         .          .    396:		// if the price are maximal, then the tokens are stored in the "tokens" field of the metadata
+         .          .    397:		if val, ok := md["tokens"]; ok {
+         .          .    398:			// logger("[Received Req]:	tokens for %s are %s\n", pt.nodeName, val)
+         .          .    399:			// raise error if the val length is not 1
+         .          .    400:			if len(val) > 1 {
+         .          .    401:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
+         .          .    402:			} else if len(val) == 0 {
+         .          .    403:				return nil, errMissingMetadata
+         .          .    404:			}
+         .       10ms    405:			tok, _ = strconv.ParseInt(val[0], 10, 64)
+         .          .    406:		}
+         .          .    407:	}
+         .          .    408:
+         .          .    409:	// overload handler:
+         .          .    410:	methodName := md["method"][0]
+      10ms       30ms    411:	tokenleft, err := pt.LoadShedding(ctx, tok, methodName)
+         .          .    412:	if err == InsufficientTokens && pt.loadShedding {
+         .          .    413:		price_string, _ := pt.RetrieveTotalPrice(ctx, methodName)
+         .          .    414:		header := metadata.Pairs("price", price_string, "name", pt.nodeName)
+         .          .    415:		logger("[Sending Error Resp]:	Total price is %s\n", price_string)
+         .          .    416:		grpc.SendHeader(ctx, header)
+         .          .    417:
+         .          .    418:		// totalLatency := time.Since(startTime)
+         .          .    419:		// logger("[Server-side Timer] Processing Duration is: %.2d milliseconds\n", totalLatency.Milliseconds())
+         .          .    420:
+         .          .    421:		// if pt.pinpointLatency {
+         .          .    422:		// 	if totalLatency > pt.observedDelay {
+         .          .    423:		// 		pt.observedDelay = totalLatency // update the observed delay
+         .          .    424:		// 	}
+         .          .    425:		// }
+         .          .    426:		// return nil, status.Errorf(codes.ResourceExhausted, "req dropped, try again later")
+         .          .    427:		return nil, status.Errorf(codes.ResourceExhausted, "%s req dropped by %s. %d token for %s price. Try again later.", methodName, pt.nodeName, tok, price_string)
+         .          .    428:	}
+         .          .    429:	if err != nil && err != InsufficientTokens {
+         .          .    430:		// The limiter failed. This error should be logged and examined.
+         .          .    431:		log.Println(err)
+         .          .    432:		return nil, status.Error(codes.Internal, "internal error")
+         .          .    433:	}
+         .          .    434:
+         .          .    435:	// tok_string := strconv.FormatInt(tokenleft, 10)
+         .          .    436:	// logger("[Preparing Sub Req]:	Token left is %s\n", tok_string)
+         .          .    437:
+         .          .    438:	if pt.priceAggregation == "additive" {
+         .          .    439:		// [critical] Jiali: Being outgoing seems to be critical for us.
+         .          .    440:		// Jiali: we need to attach the token info to the context, so that the downstream can retrieve it.
+         .          .    441:		// ctx = metadata.AppendToOutgoingContext(ctx, "tokens", tok_string)
+         .          .    442:		// Jiali: we actually need multiple kv pairs for the token information, because one context is sent to multiple downstreams.
+         .          .    443:		downstreamTokens, _ := pt.SplitTokens(ctx, tokenleft, methodName)
+         .          .    444:
+         .          .    445:		ctx = metadata.AppendToOutgoingContext(ctx, downstreamTokens...)
+         .          .    446:
+         .          .    447:	}
+         .          .    448:	// queuingDelay := time.Since(startTime)
+         .          .    449:	// logger("[Server-side Timer] Queuing delay is: %.2d milliseconds\n", queuingDelay.Milliseconds())
+         .          .    450:
+         .          .    451:	// if pt.pinpointQueuing {
+         .          .    452:	// 	// increment the counter and add the queuing delay to the observed delay
+         .          .    453:	// 	pt.Increment()
+         .          .    454:	// 	pt.observedDelay += queuingDelay
+         .          .    455:	// }
+         .          .    456:
+         .          .    457:	if pt.pinpointLatency {
+         .          .    458:		totalLatency := time.Since(startTime)
+         .          .    459:		// log the total latency in unit of millisecond, decimal precision 2
+         .          .    460:		logger("[Server-side Interceptor] Overhead is: %.2f milliseconds\n", float64(totalLatency.Microseconds())/1000)
+         .          .    461:
+         .          .    462:		// if totalLatency > pt.observedDelay {
+         .          .    463:		// 	pt.observedDelay = totalLatency // update the observed delay
+         .          .    464:		// }
+         .          .    465:
+         .          .    466:		// change the observed delay to the average latency, first, sum the latency and increment the counter
+         .          .    467:		pt.Increment()
+         .          .    468:		pt.observedDelay += totalLatency
+         .          .    469:	}
+         .      570ms    470:	m, err := handler(ctx, req)
+         .          .    471:
+         .          .    472:	// Attach the price info to response before sending
+         .          .    473:	// right now let's just propagate the corresponding price of the RPC method rather than a whole pricetable.
+         .          .    474:	// if not pt.lazyResponse
+         .          .    475:	if !pt.lazyResponse {

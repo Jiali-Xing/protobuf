@@ -201,6 +201,7 @@ def load_data():
         # death_gpt1_8000_bwd = ("1218_0056", "1218_0115")
         # death_gpt1_9000_charon = ("1218_1904", "1218_1921")
         death_gpt1_10000_charon = ("1219_2100", "1219_2117")
+        death_tgpt_8000_charon = ("1220_0008", "1220_0030")
 
         # Now you can call this function with a list of ranges
         time_ranges_compose = [
@@ -212,7 +213,7 @@ def load_data():
             # tail_goodput_experiment
             # random_experiment
             # random_experiment_avegoodput7000
-            death_gpt1_10000_charon,
+            death_tgpt_8000_charon,
             # death_gpt1_8000_bw,
             # death_gpt1_8000_bwd,
         ]
@@ -256,7 +257,7 @@ def load_data():
         overload_control, method_subcall, _, capacity_str, timestamp = os.path.basename(filename).split('-')[3:8]
         capacity = int(capacity_str)
         # let's skip if the capacity is not factor of 1000
-        if capacity % 1000 != 0:
+        if capacity % 500 != 0:
             continue
 
         # if there's no `OK` in the file, remove the file

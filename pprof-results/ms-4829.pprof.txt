@@ -1,0 +1,58 @@
+Total: 20ms
+ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).UnaryInterceptor in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231218004508-02fcb62b050a/charon.go
+         0       10ms (flat, cum) 50.00% of Total
+         .          .    347:func (pt *PriceTable) UnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+         .          .    348:	// This is the server side interceptor, it should check tokens, update price, do overload handling and attach price to response
+         .          .    349:	startTime := time.Now()
+         .          .    350:
+         .          .    351:	md, ok := metadata.FromIncomingContext(ctx)
+         .          .    352:	if !ok {
+         .          .    353:		return nil, errMissingMetadata
+         .          .    354:	}
+         .          .    355:
+         .          .    356:	// print all the k-v pairs in the metadata md
+         .          .    357:	// for k, v := range md {
+         .          .    358:	// 	logger("[Received Req]:	The metadata for request is %s: %s\n", k, v)
+         .          .    359:	// }
+         .          .    360:	if debug {
+         .          .    361:		var metadataLog string
+         .          .    362:		for k, v := range md {
+         .          .    363:			metadataLog += fmt.Sprintf("%s: %s, ", k, v)
+         .          .    364:		}
+         .          .    365:		if metadataLog != "" {
+         .          .    366:			logger("[Received Req]: The metadata for request is %s\n", metadataLog)
+         .          .    367:		}
+         .          .    368:	}
+         .          .    369:
+         .          .    370:	// Jiali: overload handler, do AQM, deduct the tokens on the request, update price info
+         .          .    371:	var tok int64
+         .          .    372:	var err error
+         .          .    373:	// if the price are additive, then the tokens are stored in the "tokens" or tokens-nodeName field of the metadata
+         .          .    374:	if pt.priceAggregation == "additive" {
+         .          .    375:		if val, ok := md["tokens-"+pt.nodeName]; ok {
+         .          .    376:			// logger("[Received Req]:	tokens for %s are %s\n", pt.nodeName, val)
+         .          .    377:			// raise error if the val length is not 1
+         .          .    378:			if len(val) > 1 {
+         .          .    379:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
+         .          .    380:			} else if len(val) == 0 {
+         .          .    381:				return nil, errMissingMetadata
+         .          .    382:			}
+         .          .    383:			tok, _ = strconv.ParseInt(val[0], 10, 64)
+         .          .    384:		} else {
+         .          .    385:			logger("[Received Req]:	tokens are %s\n", md["tokens"])
+         .          .    386:			// raise error if the tokens length is not 1
+         .          .    387:			if len(md["tokens"]) > 1 {
+         .          .    388:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
+         .          .    389:			} else if len(md["tokens"]) == 0 {
+         .          .    390:				return nil, errMissingMetadata
+         .          .    391:			}
+         .          .    392:			tok, _ = strconv.ParseInt(md["tokens"][0], 10, 64)
+         .          .    393:		}
+         .          .    394:	} else if pt.priceAggregation == "maximal" {
+         .          .    395:		// if the price are maximal, then the tokens are stored in the "tokens" field of the metadata
+         .       10ms    396:		if val, ok := md["tokens"]; ok {
+         .          .    397:			// logger("[Received Req]:	tokens for %s are %s\n", pt.nodeName, val)
+         .          .    398:			// raise error if the val length is not 1
+         .          .    399:			if len(val) > 1 {
+         .          .    400:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
+         .          .    401:			} else if len(val) == 0 {

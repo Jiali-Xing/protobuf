@@ -2,6 +2,7 @@
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    // use conda env `conda activate charon`
     "version": "0.2.0",
     "configurations": [
         {
@@ -9,7 +10,7 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "args": ["/home/ying/Sync/Git/protobuf/ghz-results/charon_stepup_nclients_1000.json"],
+            "args": [],
             "console": "integratedTerminal",
             "justMyCode": true
         },

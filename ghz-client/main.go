@@ -47,8 +47,9 @@ var (
 	constantLoadStr = getEnv("CONSTANT_LOAD", "false")
 	// make it a boolean
 	constantLoad, _ = strconv.ParseBool(constantLoadStr)
-	runDuration     = time.Second * 10
-	capacity        = func() int {
+	// runDuration     = time.Second * 10 unless specified in the environment variable
+	runDuration, _ = time.ParseDuration(getEnv("RUN_DURATION", "10s"))
+	capacity       = func() int {
 		capacityStr := getEnv("CAPACITY", "4000")
 		parsedCapacity, err := strconv.Atoi(capacityStr)
 		if err != nil {
@@ -60,6 +61,7 @@ var (
 
 	// loadReduction is true or false
 	loadReduction, _ = strconv.ParseBool(getEnv("LOAD_REDUCTION", "false"))
+	loadIncrease, _  = strconv.ParseBool(getEnv("LOAD_INCREASE", "false"))
 
 	loadStart        = uint(capacity / 2)
 	loadEnd          = uint(capacity)
@@ -78,6 +80,7 @@ var (
 	// latencyThreshold, _ = time.ParseDuration(getEnv("LATENCY_THRESHOLD", "10ms"))
 
 	priceUpdateRate  time.Duration
+	tokenUpdateRate  time.Duration
 	latencyThreshold time.Duration
 	priceStep        int64
 	priceStrategy    string
@@ -170,6 +173,8 @@ func main() {
 			interceptor = config.Value
 		case "PRICE_UPDATE_RATE":
 			priceUpdateRate, _ = time.ParseDuration(config.Value)
+		case "TOKEN_UPDATE_RATE":
+			tokenUpdateRate, _ = time.ParseDuration(config.Value)
 		case "LATENCY_THRESHOLD":
 			latencyThreshold, _ = time.ParseDuration(config.Value)
 		case "PRICE_STEP":
@@ -220,7 +225,7 @@ func main() {
 		"tokensLeft":         int64(0),
 		"initprice":          int64(10),
 		"tokenUpdateStep":    int64(10),
-		"tokenUpdateRate":    time.Millisecond * 10,
+		"tokenUpdateRate":    tokenUpdateRate,
 		"tokenRefillDist":    "poisson",
 		"tokenStrategy":      "uniform",
 	}
@@ -261,14 +266,29 @@ func main() {
 		Debug:                        debug,
 	}
 
+	// var concurrencyStart, concurrencyEnd uint
+	// var concurrencyStep int
+	var connections uint
+
 	if loadReduction {
-		// capacity = capacity / 4
-		// constantLoad = true
-		// runDuration = time.Second * 3
-		loadStart = uint(capacity * 3 / 4)
-		loadEnd = uint(capacity / 2)
-		loadStep = -capacity / 2
-		// loadStepDuration = time.Second * 3
+		loadStart = uint(capacity * 30 / 100)
+		loadEnd = uint(capacity * 10 / 100)
+		loadStep = -capacity * 20 / 100
+		// also change the concurrency steps in proportion to the load steps
+		// concurrencyStart = uint(concurrency * 30 / 100)
+		// concurrencyEnd = uint(concurrency * 10 / 100)
+		// concurrencyStep = -(concurrency * 20 / 100)
+		connections = uint(concurrency * 10 / 100)
+	}
+	if loadIncrease {
+		loadStart = uint(capacity * 40 / 100)
+		loadEnd = uint(capacity * 80 / 100)
+		loadStep = capacity * 40 / 100
+		// also change the concurrency steps in proportion to the load steps
+		// concurrencyStart = uint(concurrency * 40 / 100)
+		// concurrencyEnd = uint(concurrency * 80 / 100)
+		// concurrencyStep = concurrency * 40 / 100
+		connections = uint(concurrency * 80 / 100)
 	}
 
 	if constantLoad {
@@ -293,6 +313,37 @@ func main() {
 			runner.WithAsync(true),
 			runner.WithEnableCompression(false),
 			runner.WithTimeout(time.Second),
+		)
+	} else if loadReduction || loadIncrease {
+		report, err = runner.Run(
+			"greeting.v3.GreetingService/Greeting",
+			URLServiceA,
+			runner.WithProtoFile("../greeting.proto", []string{}),
+			runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
+			runner.WithMetadata(md),
+			runner.WithConcurrency(connections),
+			runner.WithConnections(connections),
+			runner.WithInsecure(true),
+			runner.WithRunDuration(runDuration),
+			runner.WithLoadSchedule("step"),
+			runner.WithLoadStart(loadStart),
+			runner.WithLoadEnd(loadEnd),
+			runner.WithLoadStep(loadStep),
+			runner.WithLoadStepDuration(loadStepDuration),
+			runner.WithMethod(method),
+			runner.WithInterceptor(interceptor),
+			runner.WithInterceptorEntry(entry_point),
+			runner.WithCharonOptions(charonOptions),
+			runner.WithBreakwaterOptions(breakwaterOptions),
+			runner.WithDagorOptions(dagorParams),
+			runner.WithAsync(true),
+			runner.WithEnableCompression(false),
+			runner.WithTimeout(time.Second),
+			// runner.WithConcurrencySchedule("step"),
+			// runner.WithConcurrencyStart(concurrencyStart),
+			// runner.WithConcurrencyEnd(concurrencyEnd),
+			// runner.WithConcurrencyStep(concurrencyStep),
+			// runner.WithConcurrencyStepDuration(loadStepDuration),
 		)
 	} else {
 		report, err = runner.Run(
