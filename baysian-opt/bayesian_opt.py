@@ -148,7 +148,7 @@ def objective(priceUpdateRate, clientTimeout, delayTarget, guidePrice, priceStep
 
     # Perform the calculations for average goodput
     # Insert your code for calculating average goodput here
-    average_goodput = calculate_average_goodput(filename)  # Replace with your actual function
+    average_goodput = calculate_average_goodput(filename)  
 
     return average_goodput  # Minimize the negative average goodput
 

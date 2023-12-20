@@ -1,0 +1,10 @@
+{
+    "target": 4568.219610361866,
+    "parameters": {
+        "BREAKWATER_A": 0.3461998386881035,
+        "BREAKWATER_B": 0.48374620752558833,
+        "BREAKWATER_CLIENT_EXPIRATION": "3070us",
+        "BREAKWATER_INITIAL_CREDIT": 275,
+        "BREAKWATER_SLO": "6271us"
+    }
+}

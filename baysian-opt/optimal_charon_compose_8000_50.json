@@ -1,0 +1,8 @@
+{
+    "target": 4043.25,
+    "parameters": {
+        "latency_threshold": "5261us",
+        "price_step": 5,
+        "price_update_rate": "5264us"
+    }
+}

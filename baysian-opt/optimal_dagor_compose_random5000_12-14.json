@@ -1,0 +1,10 @@
+{
+    "target": 3550.014529817202,
+    "parameters": {
+        "DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL": "284015us",
+        "DAGOR_ALPHA": 0.22596779713708848,
+        "DAGOR_BETA": 0.37341052411931147,
+        "DAGOR_QUEUING_THRESHOLD": "242204us",
+        "DAGOR_UMAX": 2
+    }
+}

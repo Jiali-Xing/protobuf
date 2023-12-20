@@ -1,0 +1,10 @@
+{
+    "target": 0.0,
+    "parameters": {
+        "breakwater_a": 0.041760498269787144,
+        "breakwater_b": 0.02440648986884316,
+        "breakwater_client_expiration": "5001us",
+        "breakwater_initial_credit": 320,
+        "breakwater_slo": "11467us"
+    }
+}

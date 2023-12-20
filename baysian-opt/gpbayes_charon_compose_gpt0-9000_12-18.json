@@ -1,0 +1,9 @@
+{
+    "target": 0.7933431746131199,
+    "parameters": {
+        "LATENCY_THRESHOLD": "6148us",
+        "PRICE_STEP": 293,
+        "PRICE_UPDATE_RATE": "147736us",
+        "TOKEN_UPDATE_RATE": "78978us"
+    }
+}
