@@ -1,0 +1,14 @@
+{
+    "target": 0.308,
+    "parameters": {
+        "LATENCY_THRESHOLD": "5064us",
+        "PRICE_STEP": 350,
+        "PRICE_UPDATE_RATE": "1877us",
+        "TOKEN_UPDATE_RATE": "53950us"
+    },
+    "method": "compose",
+    "capacity": "tgpt-8000",
+    "load": 8000,
+    "timestamp": "12-20",
+    "quantile": 0.1
+}

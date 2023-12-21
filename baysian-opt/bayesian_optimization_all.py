@@ -189,6 +189,55 @@ configDict = {
     }
 }
 
+def generate_output_filename(interceptor_type, method, capacity):
+    directory = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
+    outputFile = f"social-{method}-control-{interceptor_type}-parallel-capacity-{capacity}-*.json.output"
+    return os.path.join(directory, outputFile)
+
+def parse_configurations(config_str):
+    # Remove potential \n[ 
+    config_str = config_str.replace('\n[', '[')
+    # Remove surrounding brackets and split by '} {'
+    config_items = config_str.strip('[]').split('} {')
+    config_dict = {}
+
+    for item in config_items:
+        # Remove potential curly braces and split by space
+        key_value = item.replace('{', '').replace('}', '').split(' ', 1)
+        if len(key_value) == 2:
+            config_dict[key_value[0]] = key_value[1]
+
+    return config_dict
+
+def check_previous_run_exists(interceptor_type, method, capacity, combined_params):
+    # Generate the expected output filename
+    output_filename_pattern = generate_output_filename(interceptor_type, method, capacity)
+    
+    # Search for files that match the pattern
+    matching_files = glob.glob(output_filename_pattern)
+
+    # Iterate through matching files and check contents
+    for filename in matching_files:
+        try:
+            with open(filename, 'r') as file:
+                content = file.read()
+
+                if 'Charon Configurations:' in content:
+                    # Extract the configurations string from the file
+                    start = content.find('Charon Configurations:') + len('Charon Configurations:')
+                    end = content.find(']', start) + 1
+                    file_config_str = content[start:end]
+                    file_config_dict = parse_configurations(file_config_str)
+                    combined_params_dict = {key: str(value) for key, value in combined_params.items()}
+
+                    # if file_config_dict is a subset or superset of combined_params_dict
+                    common_keys = set(file_config_dict.keys()) & set(combined_params_dict.keys())
+                    if all(file_config_dict[key] == combined_params_dict[key] for key in common_keys):
+                        return filename
+
+        except Exception as e:
+            print(f"Error reading file {filename}: {e}")
+    return None
 
 # Define the function that runs the service and client as experiments, takes the interceptor type and the parameters as arguments,
 # the params are dictionary of the parameters. and the load is the capacity of the service, with a default value of load = int(capacity.split('-')[1])
@@ -209,6 +258,15 @@ def run_experiments(interceptor_type, load, **params):
     # Prepare the environment variable command string
     # env_vars_command = ' '.join(f'export {key}="{value}";' for key, value in combined_params.items())
     
+
+    # Check if a previous run exists with the same parameters
+    preRun = check_previous_run_exists(interceptor_type, method, load, combined_params) 
+    if preRun is not None:
+        print("A previous run with the same parameters exists.")
+        return preRun.split('.output')[0]
+    else:
+        print("No previous run with the same parameters found. Proceed with the experiment.")
+
     # capacity is a random number between 1000 and 10000
     # load = np.random.randint(int(capacity.split('-')[1]), 10000)
     # Full command to source envs.sh and run the experiment
@@ -230,7 +288,7 @@ def run_experiments(interceptor_type, load, **params):
     # if `ssh` is found in the stderr, raise an exception
     if 'ssh' in stderr.decode() or 'publickey' in stderr.decode():
         raise Exception("ssh error found in stderr, please check the stderr")
-    return get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/ghz-results/'))
+    return get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/ghz-results/'), pattern=f"social-{method}-control-{interceptor_type}-parallel-capacity-{load}-*.json")
 
 
 def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodToRun):
@@ -385,8 +443,8 @@ pbounds_charon = {
     # the range above is too large... I will use the following range based on the empirical results
     'price_update_rate': (1000, 30000), 
     'token_update_rate': (1000, 30000), 
-    'price_step': (10, 50),
-    'latency_threshold': (1000, 3000),
+    'price_step': (10, 100),
+    'latency_threshold': (100, 3000),
 }
 
 def objective_breakwater(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration):
@@ -404,7 +462,7 @@ pbounds_breakwater = {
     # 'breakwater_initial_credit': (10, 3000),      # Example range
     # 'breakwater_client_expiration': (1, 100000) # Example range
     # the range above is too large... I will use the following range based on the empirical results {BREAKWATER_SLO 749158us} {BREAKWATER_A 11.692336257688945} {BREAKWATER_B 0.004983989475762508} {B    REAKWATER_CLIENT_EXPIRATION 13317us} {BREAKWATER_INITIAL_CREDIT 59} 
-    'breakwater_slo': (1000, 1000000),
+    'breakwater_slo': (10000, 2000000),
     'breakwater_a': (0.0001, 10),
     'breakwater_b': (0.001, 0.03),
     'breakwater_initial_credit': (10, 1000),
@@ -412,27 +470,26 @@ pbounds_breakwater = {
 }
 
 pbounds_breakwaterd = {
-    'breakwaterd_slo': (1000, 1000000),
-    'breakwaterd_a': (0.0001, 50),
+    'breakwater_slo': (10000, 2000000),
+    'breakwater_a': (0.0001, 20),
+    'breakwater_b': (0.001, 0.03),
+    'breakwater_initial_credit': (100, 5000),
+    'breakwater_client_expiration': (100, 5000),
+    'breakwaterd_slo': (10000, 1000000),
+    'breakwaterd_a': (0.00001, 10),
     'breakwaterd_b': (0.001, 0.03),
-    'breakwaterd_initial_credit': (10, 20000),
-    'breakwaterd_client_expiration': (500, 25000),
+    'breakwaterd_initial_credit': (1, 200),
+    'breakwaterd_client_expiration': (500, 50000),
 }
-
-pbounds_breakwaterd = {
-    **pbounds_breakwater,
-    **pbounds_breakwaterd,
-}
-
 
 def objective_dagor(dagor_queuing_threshold, dagor_alpha, dagor_beta, dagor_admission_level_update_interval, dagor_umax):
     return objective_dual('dagor', dagor_queuing_threshold=dagor_queuing_threshold, dagor_alpha=dagor_alpha, dagor_beta=dagor_beta, dagor_admission_level_update_interval=dagor_admission_level_update_interval, dagor_umax=dagor_umax)
 
 pbounds_dagor = {
-    'dagor_queuing_threshold': (1000, 1000000),  # Example range
+    'dagor_queuing_threshold': (10000, 1000000),  # Example range
     'dagor_alpha': (0.1, 0.95),              # Example range
     'dagor_beta': (0.001, 0.5),             # Example range
-    'dagor_admission_level_update_interval': (1000, 1000000),  # Example range
+    'dagor_admission_level_update_interval': (10000, 2000000),  # Example range
     'dagor_umax': (2, 20)  # Example range
 }
 
