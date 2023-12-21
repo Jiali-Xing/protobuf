@@ -64,6 +64,8 @@ github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+Ce
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
 github.com/bytedance/gopkg v0.0.0-20230728082804-614d0af6619b h1:R6PWoQtxEMpWJPHnpci+9LgFxCS7iJCfOGBvCgZeTKI=
 github.com/bytedance/gopkg v0.0.0-20230728082804-614d0af6619b/go.mod h1:FtQG3YbQG9L/91pbKSw787yBQPutC+457AvDW77fgUQ=
+github.com/bytedance/gopkg v0.0.0-20231219111115-a5eedbe96960 h1:t2xAuIlnhWJDIpcHZEbpoVsQH1hOk9eGGaKU2dXl1PE=
+github.com/bytedance/gopkg v0.0.0-20231219111115-a5eedbe96960/go.mod h1:FtQG3YbQG9L/91pbKSw787yBQPutC+457AvDW77fgUQ=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/census-instrumentation/opencensus-proto v0.4.1 h1:iKLQ0xPNFxR/2hzXZMrBo8f1j86j5WHzznCCQxV/b8g=
 github.com/census-instrumentation/opencensus-proto v0.4.1/go.mod h1:4T9NM4+4Vw91VeyqjLS6ao50K5bOcLKN6Q42XnYaRYw=
@@ -272,6 +274,10 @@ github.com/tgiannoukos/charon v0.0.0-20231217230903-722ee062371e h1:D3eBJtNVEKGA
 github.com/tgiannoukos/charon v0.0.0-20231217230903-722ee062371e/go.mod h1:MC/avsTJB018mQSHp2FgbpFyds/6USP7+wbPd7n6Z5s=
 github.com/tgiannoukos/charon v0.0.0-20231218004508-02fcb62b050a h1:9R9bD2sEt6AbrvIlMfnZl2yQf8nFKJ+AcSPtDaSKX5A=
 github.com/tgiannoukos/charon v0.0.0-20231218004508-02fcb62b050a/go.mod h1:F2iC5VuZGwGGI7w+b79ZCf1C/ZNi+oZtmo1Odnil3WQ=
+github.com/tgiannoukos/charon v0.0.0-20231221065411-03b36d3c81d3 h1:SYbBarJFU1Kp04RAfHAqj/E2DyShXI5zW0WDRJvVVbk=
+github.com/tgiannoukos/charon v0.0.0-20231221065411-03b36d3c81d3/go.mod h1:F2iC5VuZGwGGI7w+b79ZCf1C/ZNi+oZtmo1Odnil3WQ=
+github.com/tgiannoukos/charon v0.0.0-20231221071202-0347470ae6a2 h1:0mkGShcflYLRKj/8FjgeEvRCFkHzwUgLAYdTAy/BS0o=
+github.com/tgiannoukos/charon v0.0.0-20231221071202-0347470ae6a2/go.mod h1:F2iC5VuZGwGGI7w+b79ZCf1C/ZNi+oZtmo1Odnil3WQ=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
@@ -574,6 +580,8 @@ google.golang.org/grpc v1.31.0/go.mod h1:N36X2cJ7JwdamYAgDz+s+rVMFjt3numwzf/HckM
 google.golang.org/grpc v1.33.2/go.mod h1:JMHMWHQWaTccqQQlmk3MJZS+GWXOdAesneDmEnv2fbc=
 google.golang.org/grpc v1.60.0 h1:6FQAR0kM31P6MRdeluor2w2gPaS4SVNrD/DNTxrQ15k=
 google.golang.org/grpc v1.60.0/go.mod h1:OlCHIeLYqSSsLi6i49B5QGdzaMZK9+M7LXN2FKz4eGM=
+google.golang.org/grpc v1.60.1 h1:26+wFr+cNqSGFcOXcabYC0lUVJVRa2Sb2ortSK7VrEU=
+google.golang.org/grpc v1.60.1/go.mod h1:OlCHIeLYqSSsLi6i49B5QGdzaMZK9+M7LXN2FKz4eGM=
 google.golang.org/protobuf v0.0.0-20200109180630-ec00e32a8dfd/go.mod h1:DFci5gLYBciE7Vtevhsrf46CRTquxDuWsQurQQe4oz8=
 google.golang.org/protobuf v0.0.0-20200221191635-4d8936d0db64/go.mod h1:kwYJMbMJ01Woi6D6+Kah6886xMZcty6N08ah7+eCXa0=
 google.golang.org/protobuf v0.0.0-20200228230310-ab0ca4ff8a60/go.mod h1:cfTl7dwQJ+fmap5saPgwCLgHXTUD7jkjRqWcaiX5VyM=

@@ -162,6 +162,22 @@ def is_within_any_duration(file_timestamp_str, time_ranges):
     return False
 
 
+def find_latest_files(selected_files):
+    # Dictionary to store the latest file for each unique configuration
+    latest_files = {}
+
+    for filename in selected_files:
+        # Extract configuration components from the filename
+        parts = os.path.basename(filename).split('-')
+        if len(parts) >= 8:  # Ensure there are enough parts in the filename
+            config_key = tuple(parts[3:7])  # Create a tuple of configuration parts
+            # If this config is not in latest_files or the current file is newer, update it
+            if config_key not in latest_files or os.path.getmtime(filename) > os.path.getmtime(latest_files[config_key]):
+                latest_files[config_key] = filename
+
+    return list(latest_files.values())
+
+
 def load_data():
     # A dictionary to hold intermediate results, indexed by (overload_control, method_subcall, capacity)
     results = {}
@@ -202,6 +218,8 @@ def load_data():
         # death_gpt1_9000_charon = ("1218_1904", "1218_1921")
         death_gpt1_10000_charon = ("1219_2100", "1219_2117")
         death_tgpt_8000_charon = ("1220_0008", "1220_0030")
+        death_tgpt_8000 = ("1220_0314", "1220_0855")
+        death_gpt1_8000 = ("1221_0016", "1221_0609")
 
         # Now you can call this function with a list of ranges
         time_ranges_compose = [
@@ -213,7 +231,7 @@ def load_data():
             # tail_goodput_experiment
             # random_experiment
             # random_experiment_avegoodput7000
-            death_tgpt_8000_charon,
+            death_gpt1_8000,
             # death_gpt1_8000_bw,
             # death_gpt1_8000_bwd,
         ]
@@ -252,7 +270,8 @@ def load_data():
             if is_within_any_duration(timestamp_str, time_ranges_alibaba):
                 selected_files.append(filename)
 
-    for filename in selected_files:
+    for filename in find_latest_files(selected_files):
+    # for filename in selected_files:
         # Extract the metadata from the filename
         overload_control, method_subcall, _, capacity_str, timestamp = os.path.basename(filename).split('-')[3:8]
         capacity = int(capacity_str)
