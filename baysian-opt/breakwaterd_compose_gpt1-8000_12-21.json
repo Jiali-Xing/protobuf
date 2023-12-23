@@ -1,0 +1,21 @@
+{
+    "target": -0.020035301525825548,
+    "parameters": {
+        "BREAKWATER_SLO": "1313890us",
+        "BREAKWATER_A": 0.0001,
+        "BREAKWATER_B": 0.014451348792198053,
+        "BREAKWATER_INITIAL_CREDIT": 1829,
+        "BREAKWATER_CLIENT_EXPIRATION": "2167us",
+        "ONLY_FRONTEND": "false",
+        "BREAKWATERD_SLO": "347915us",
+        "BREAKWATERD_A": 1e-05,
+        "BREAKWATERD_B": 0.022953746674361074,
+        "BREAKWATERD_INITIAL_CREDIT": 200,
+        "BREAKWATERD_CLIENT_EXPIRATION": "27865us"
+    },
+    "method": "compose",
+    "capacity": "gpt1-8000",
+    "load": 8000,
+    "timestamp": "12-21",
+    "quantile": 0.1
+}

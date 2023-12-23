@@ -308,7 +308,7 @@ def run_experiments(interceptor_type, load, previous_run, **params):
     return get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/ghz-results/'), pattern=f"social-{method}-control-{interceptor_type}-parallel-capacity-{load}-*.json")
 
 
-def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodToRun):
+def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodToRun, aqmEnabled):
     # Map the interceptor_type to its specific parameters
     # specific_params = configDict[interceptor_type]
 
@@ -322,7 +322,7 @@ def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodTo
     combined_params = roundDownParams(combined_params)
 
     # print with 2 decimal places
-    print("[Bayesian Opt] Combined params:", {key: round(float(value), 2) if isinstance(value, float) else value for key, value in combined_params.items()})
+    print("[Run Experiments] Combined params:", {key: round(float(value), 2) if isinstance(value, float) else value for key, value in combined_params.items()})
     # Prepare the environment variable command string
     # env_vars_command = ' '.join(f'export {key}="{value}";' for key, value in combined_params.items())
 
@@ -336,6 +336,7 @@ def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodTo
         env[key] = str(value)
     # add the method to env
     env['METHOD'] = methodToRun
+    env['AQM_ENABLED'] = aqmEnabled
 
     # Run the experiment script
     experiment_process = subprocess.Popen(full_command, shell=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -480,22 +481,22 @@ pbounds_breakwater = {
     # 'breakwater_initial_credit': (10, 3000),      # Example range
     # 'breakwater_client_expiration': (1, 100000) # Example range
     # the range above is too large... I will use the following range based on the empirical results {BREAKWATER_SLO 749158us} {BREAKWATER_A 11.692336257688945} {BREAKWATER_B 0.004983989475762508} {B    REAKWATER_CLIENT_EXPIRATION 13317us} {BREAKWATER_INITIAL_CREDIT 59} 
-    'breakwater_slo': (1000, 4000),
-    'breakwater_a': (0, 10),
-    'breakwater_b': (0, 0.1),
+    'breakwater_slo': (1000, 5000),
+    'breakwater_a': (0.0001, 10),
+    'breakwater_b': (0.001, 0.1),
     'breakwater_initial_credit': (10, 2000),
-    'breakwater_client_expiration': (1000, 10000),
+    'breakwater_client_expiration': (1000, 30000),
 }
 
 pbounds_breakwaterd = {
-    'breakwater_slo': (1000, 50000),
+    'breakwater_slo': (10000, 50000),
     'breakwater_a': (0, 5),
-    'breakwater_b': (0, 0.5),
+    'breakwater_b': (0.001, 0.1),
     'breakwater_initial_credit': (10, 1000),
     'breakwater_client_expiration': (10, 5000),
-    'breakwaterd_slo': (1000, 50000),
+    'breakwaterd_slo': (10000, 500000),
     'breakwaterd_a': (0.00001, 10),
-    'breakwaterd_b': (0, 1),
+    'breakwaterd_b': (0.001, 0.1),
     'breakwaterd_initial_credit': (1, 500),
     'breakwaterd_client_expiration': (500, 50000),
 }
@@ -598,70 +599,20 @@ def save_iteration_details(optimizer, file_path):
 
 
 def main():
-    optimizeCharon = True
-    optimizeBreakwater = True
-    optimizeBreakwaterD = True
-    optimizeDagor = True
-
-    capacity_range = range(4000, 10500, 500)
+    capacity_range = range(10000, 16000, 1000)
 
     timestamp = datetime.datetime.now().strftime("%m-%d")
     print("Timestamp:", timestamp)
     print("method:", method)
     
-    skipOptimize = False
+    motivation = 'AQM' if 'aqm' in method else 'RL'
 
-    if skipOptimize:
-        # set all the optimize to False
-        optimizeCharon = optimizeBreakwater = optimizeBreakwaterD = optimizeDagor = False
-
-
-    optimization_config = {
-        'charon': (optimizeCharon, objective_charon, pbounds_charon, 'charon'),
-        'breakwater': (optimizeBreakwater, objective_breakwater, pbounds_breakwater, 'breakwater'),
-        'breakwaterd': (optimizeBreakwaterD, objective_breakwaterd, pbounds_breakwaterd, 'breakwaterd'),
-        'dagor': (optimizeDagor, objective_dagor, pbounds_dagor, 'dagor')
-    }
-
-    for opt_key, (optimize, objective_func, pbounds, opt_name) in optimization_config.items():
-        if optimize:
-            optimizer = BayesianOptimization(
-                f=objective_func,
-                pbounds=pbounds,
-                random_state=0,
-                allow_duplicate_points=True
-            )
-            try:
-                optimizer.maximize(init_points=10, n_iter=55)
-            except Exception as e:
-                print(f"[Bayesian Opt] Error Optimization encountered an error for {opt_name}:", e)
-                # continue
-
-            if 'params' in optimizer.max:
-                best_params = optimizer.max['params']
-                # combine the best_params with the specific params
-                best_params = {**configDict[opt_name], **best_params}
-                print(f"[Bayesian Opt] Best parameters found for {opt_name}:", best_params)
-                results = {
-                    'target': optimizer.max['target'],
-                    'parameters': roundDownParams(best_params),
-                    'method': method,
-                    'capacity': capacity,
-                    'load': int(capacity.split('-')[1]),
-                    'timestamp': timestamp,
-                    'quantile': quantile,
-                }
-                record_optimal_parameters(f'bopt_{opt_name}_{method}_{capacity}_{timestamp}.json', results)
-                # Save the iteration details at the end of each optimization
-                save_iteration_details(optimizer, f'iterations_{opt_name}_{method}_{capacity}_{timestamp}.json')
-            else:
-                print(f"[Bayesian Opt] No successful optimization results available for {opt_name}.")
-
-    for opt_key, (optimize, objective_func, pbounds, opt_name) in optimization_config.items():
-        bayesian_result = read_optimal_parameters(f'bopt_{opt_name}_{method}_{capacity}_{timestamp}.json')
-        for capact in capacity_range:
-            print(f"[Post Opt] Analyzing file and run experiments in loop for {opt_name}:", bayesian_result)
-            run_experiments_loop(opt_name, bayesian_result['parameters'], capact, method)
+    if motivation == 'AQM':
+        bayesian_result = read_optimal_parameters('motivationAQM.json')
+        for aqmEnabled in ['nginx-web-server', 'service-6', 'all']:
+            for capact in capacity_range:
+                print(f"[Motivate AQM] Analyzing file and run experiments in loop for {aqmEnabled}:", bayesian_result)
+                run_experiments_loop('charon', bayesian_result['parameters'], capact, method, aqmEnabled)
 
     # if optimizeCharon:
     #     # Optimize for Charon
@@ -844,14 +795,10 @@ if __name__ == '__main__':
         method = sys.argv[1]
     else:
         raise Exception("Please specify the method")
-    if method == 'compose':
-        SLO = 20 * 2 # 20ms * 2 = 40ms
-    elif method == 'S_149998854':
-        SLO = 111 * 2 # 111ms * 2 = 222ms
-    elif method == 'S_102000854':
-        SLO = 102 * 2
-    maximum_goodput = 5000
-    capacity = 'gpt1-8000'
+    # if method == 'motivation-aqm':
+    #     SLO = 100
+    # maximum_goodput = 5000
+    # capacity = 'gpt1-8000'
     main()
     # for capacity in range(4000, 10000, 500), get latest file and run the check below
     # check_goodput('social-compose-control-breakwater-parallel-capacity-6807-1213_2351.json')
