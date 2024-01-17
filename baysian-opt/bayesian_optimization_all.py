@@ -29,12 +29,14 @@ import sklearn
 # with the optimal results from the Bayesian Optimization
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'ghz-results'))
 from visualize import analyze_data
+from slo import get_slo
 
 throughput_time_interval = '50ms'
 latency_window_size = '200ms'  # Define the window size as 100 milliseconds
 # filename = '/home/ying/Sync/Git/protobuf/ghz-results/charon_stepup_nclients_1000.json'
 rerun = True
-offset = 1
+# offset = 1
+offset = 2 # for the all-methods-social and all-methods-hotel
 
 quantile = 0.1
 
@@ -78,6 +80,14 @@ def calculate_goodput(filename, average=True):
     # Insert your code for calculating average goodput here
     # Read the ghz.output file and calculate the average goodput
     # Return the average goodput
+    # if filename is a list, average the goodput of all the files
+    if isinstance(filename, list):
+        goodput = 0
+        for f in filename:
+            goodput += calculate_goodput(f, average=average)
+        goodput = goodput / len(filename)
+        return goodput
+
     data = read_data(filename)
     df = convert_to_dataframe(data)
     if average:
@@ -92,12 +102,11 @@ def calculate_goodput_mean(df, slo):
     # scale the throughput to requests per second
     goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
     df['goodput'] = goodput_requests_per_second.reindex(df.index, method='bfill').replace(np.nan, 0)
-    # take out the goodput during the last 3 seconds by index
-    goodput = df['goodput']
-    # goodput = df[df.index > df.index[0] + pd.Timedelta(seconds=offset)]['goodput']
-    # return the goodput, but round it to 2 decimal places
-    goodput = goodput.mean()
-    # goodput = round(goodput, -2)
+ 
+    # calculate goodput by counting the number of requests that are ok and have latency less than slo, and then divide by the time interval
+    # time_interval is the time interval for calculating the goodput, last request time - first request time
+    time_interval = (df.index.max() - df.index.min()).total_seconds()
+    goodput = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].count() / time_interval   # take out the goodput during the last 3 seconds by index
     return goodput
 
 
@@ -115,20 +124,31 @@ def goodput_quantile(df, slo, quantile=0.1):
 
 
 def read_tail_latency(filename, percentile=99):
-    with open(filename, 'r') as f:
-        data = json.load(f)
-        
-    latency_distribution = data["latencyDistribution"]
-    if latency_distribution is None:
-        print("[Error Lat] No latency found for file:", filename)
-        return None
-    for item in latency_distribution:
-        if item["percentage"] == percentile:
-            latency_xxth = item["latency"]
-            # convert the latency_99th from string to milliseconds
-            latency_xxth = pd.Timedelta(latency_xxth).total_seconds() * 1000
-            return latency_xxth
-    return None  # Return None if the 99th percentile latency is not found
+    if isinstance(filename, list):
+        latency = 0
+        for f in filename:
+            latency += read_tail_latency(f, percentile=percentile)
+        latency = latency / len(filename)
+        return latency
+
+    # with open(filename, 'r') as f:
+    #     data = json.load(f)
+    data = read_data(filename)        
+    df = convert_to_dataframe(data)
+    percentile_latency = df[(df['status'] == 'OK')]['latency'].quantile(percentile / 100)
+
+    return percentile_latency  # Replace with your actual function
+    # latency_distribution = data["latencyDistribution"]
+    # if latency_distribution is None:
+    #     print("[Error Lat] No latency found for file:", filename)
+    #     return None
+    # for item in latency_distribution:
+    #     if item["percentage"] == percentile:
+    #         latency_xxth = item["latency"]
+    #         # convert the latency_99th from string to milliseconds
+    #         latency_xxth = pd.Timedelta(latency_xxth).total_seconds() * 1000
+    #         return latency_xxth
+    # return None  # Return None if the 99th percentile latency is not found
 
 
 # similarly to read_tail_latency, read_mean_latency returns the mean latency
@@ -192,6 +212,8 @@ configDict = {
 def generate_output_filename(interceptor_type, method, capacity):
     directory = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
     outputFile = f"social-{method}-control-{interceptor_type}-parallel-capacity-{capacity}-*.json.output"
+    if method == "all-methods-social" or method == "compose" or method == "home-timeline" or method == "user-timeline" or method == "all-methods-hotel":
+        outputFile = f"social-{method}-control-{interceptor_type}-parallel-capacity-{capacity}-011*.json.output"
     return os.path.join(directory, outputFile)
 
 def parse_configurations(config_str):
@@ -265,6 +287,9 @@ def run_experiments(interceptor_type, load, previous_run, **params):
     # Prepare the environment variable command string
     # env_vars_command = ' '.join(f'export {key}="{value}";' for key, value in combined_params.items())
 
+    if 'all' in method:
+        previous_run = 'skip'
+
     # Check if a previous run exists with the same parameters
     if previous_run == '' or previous_run is None:
         preRun = check_previous_run_exists(interceptor_type, method, load, combined_params)
@@ -305,7 +330,21 @@ def run_experiments(interceptor_type, load, previous_run, **params):
     # if `ssh` is found in the stderr, raise an exception
     if 'ssh' in stderr.decode() or 'publickey' in stderr.decode():
         raise Exception("ssh error found in stderr, please check the stderr")
-    return get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/ghz-results/'), pattern=f"social-{method}-control-{interceptor_type}-parallel-capacity-{load}-*.json")
+    resultf = get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/ghz-results/'), pattern=f"social-{method}-control-{interceptor_type}-parallel-capacity-{load}-*.json")
+
+    if method == "all-methods-social":
+        resultf = []
+        # append all 3 files one by one
+        for interface in ['compose', 'user-timeline', 'home-timeline']:
+            resultf.append(get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/ghz-results/'), pattern=f"social-{interface}-control-{interceptor_type}-parallel-capacity-{load}-*.json"))
+    elif method == "all-methods-hotel":
+        # same for hotel, with interface in ["hotels-http" "reservation-http" "user-http" "recommendations-http"]
+        resultf = []
+        # append all 3 files one by one
+        for interface in ["hotels-http", "reservation-http", "user-http", "recommendations-http"]:
+            resultf.append(get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/ghz-results/'), pattern=f"social-{interface}-control-{interceptor_type}-parallel-capacity-{load}-*.json"))
+
+    return resultf
 
 
 def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodToRun):
@@ -328,7 +367,7 @@ def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodTo
 
     # Full command to source envs.sh and run the experiment
     # full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && {env_vars_command} ~/Sync/Git/service-app/cloudlab/scripts/bayesian_experiments.sh -c {capacity} -s parallel --{interceptor_type}'"
-    full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c {capact} -s parallel --{interceptor_type}'"
+    full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c {capact} -s parallel --{interceptor_type}'" if interceptor_type != 'plain' else f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c {capact} -s parallel'"
 
     # Set environment variables in Python
     env = os.environ.copy()
@@ -453,17 +492,6 @@ def objective_charon(price_update_rate, token_update_rate, latency_threshold, pr
     # return objective('charon', price_update_rate, latency_threshold, price_step)
     return objective_dual('charon', price_update_rate=price_update_rate, token_update_rate=token_update_rate, latency_threshold=latency_threshold, price_step=price_step)
 
-pbounds_charon = {
-    # 'price_update_rate': (100, 500000),  # Example range
-    # 'token_update_rate': (100, 500000),  # Example range
-    # 'latency_threshold': (10, 50000),  # Example range
-    # 'price_step': (1, 500)  # Example range
-    # the range above is too large... I will use the following range based on the empirical results
-    'price_update_rate': (1000, 30000), 
-    'token_update_rate': (1000, 30000), 
-    'price_step': (10, 100),
-    'latency_threshold': (100, 3000),
-}
 
 def objective_breakwater(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration):
     return objective_dual('breakwater', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b, breakwater_initial_credit=breakwater_initial_credit, breakwater_client_expiration=breakwater_client_expiration)
@@ -473,43 +501,9 @@ def objective_breakwaterd(breakwater_slo, breakwater_a, breakwater_b, breakwater
     return objective_dual('breakwaterd', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b, breakwater_initial_credit=breakwater_initial_credit, breakwater_client_expiration=breakwater_client_expiration,
                         breakwaterd_slo=breakwaterd_slo, breakwaterd_a=breakwaterd_a, breakwaterd_b=breakwaterd_b, breakwaterd_initial_credit=breakwaterd_initial_credit, breakwaterd_client_expiration=breakwaterd_client_expiration)
 
-pbounds_breakwater = {
-    # 'breakwater_slo': (100, 100000),  # Example range
-    # 'breakwater_a': (0.0001, 0.9),    # Example range
-    # 'breakwater_b': (0.01, 0.9),      # Example range
-    # 'breakwater_initial_credit': (10, 3000),      # Example range
-    # 'breakwater_client_expiration': (1, 100000) # Example range
-    # the range above is too large... I will use the following range based on the empirical results {BREAKWATER_SLO 749158us} {BREAKWATER_A 11.692336257688945} {BREAKWATER_B 0.004983989475762508} {B    REAKWATER_CLIENT_EXPIRATION 13317us} {BREAKWATER_INITIAL_CREDIT 59} 
-    'breakwater_slo': (1000, 4000),
-    'breakwater_a': (0, 10),
-    'breakwater_b': (0, 0.1),
-    'breakwater_initial_credit': (10, 2000),
-    'breakwater_client_expiration': (1000, 10000),
-}
-
-pbounds_breakwaterd = {
-    'breakwater_slo': (1000, 50000),
-    'breakwater_a': (0, 5),
-    'breakwater_b': (0, 0.5),
-    'breakwater_initial_credit': (10, 1000),
-    'breakwater_client_expiration': (10, 5000),
-    'breakwaterd_slo': (1000, 50000),
-    'breakwaterd_a': (0.00001, 10),
-    'breakwaterd_b': (0, 1),
-    'breakwaterd_initial_credit': (1, 500),
-    'breakwaterd_client_expiration': (500, 50000),
-}
 
 def objective_dagor(dagor_queuing_threshold, dagor_alpha, dagor_beta, dagor_admission_level_update_interval, dagor_umax):
     return objective_dual('dagor', dagor_queuing_threshold=dagor_queuing_threshold, dagor_alpha=dagor_alpha, dagor_beta=dagor_beta, dagor_admission_level_update_interval=dagor_admission_level_update_interval, dagor_umax=dagor_umax)
-
-pbounds_dagor = {
-    'dagor_queuing_threshold': (10000, 100000),  # Example range
-    'dagor_alpha': (0.1, 0.95),              # Example range
-    'dagor_beta': (0.001, 0.5),             # Example range
-    'dagor_admission_level_update_interval': (5000, 20000),  # Example range
-    'dagor_umax': (2, 20)  # Example range
-}
 
 
 # Define a function to read and parse the JSON file
@@ -598,12 +592,108 @@ def save_iteration_details(optimizer, file_path):
 
 
 def main():
+    
+    pbounds_charon = {
+        # 'price_update_rate': (100, 500000),  # Example range
+        # 'token_update_rate': (100, 500000),  # Example range
+        # 'latency_threshold': (10, 50000),  # Example range
+        # 'price_step': (1, 500)  # Example range
+        # the range above is too large... I will use the following range based on the empirical results
+        'price_update_rate': (1000, 30000), 
+        'token_update_rate': (1000, 30000), 
+        'price_step': (10, 150),
+        'latency_threshold': (100, 3000),
+    }
+    pbounds_breakwater = {
+        # 'breakwater_slo': (100, 100000),  # Example range
+        # 'breakwater_a': (0.0001, 0.9),    # Example range
+        # 'breakwater_b': (0.01, 0.9),      # Example range
+        # 'breakwater_initial_credit': (10, 3000),      # Example range
+        # 'breakwater_client_expiration': (1, 100000) # Example range
+        # the range above is too large... I will use the following range based on the empirical results {BREAKWATER_SLO 749158us} {BREAKWATER_A 11.692336257688945} {BREAKWATER_B 0.004983989475762508} {B    REAKWATER_CLIENT_EXPIRATION 13317us} {BREAKWATER_INITIAL_CREDIT 59} 
+        'breakwater_slo': (100, 5000),
+        'breakwater_a': (0, 20),
+        'breakwater_b': (0, 1),
+        'breakwater_initial_credit': (1, 2000),
+        'breakwater_client_expiration': (0, 5000),
+    }
+
+    pbounds_breakwaterd = {
+        'breakwater_slo': (10000, 40000),
+        'breakwater_a': (0, 2),
+        'breakwater_b': (0, 2),
+        'breakwater_initial_credit': (1, 400),
+        'breakwater_client_expiration': (1, 3000),
+        'breakwaterd_slo': (30000, 80000),
+        'breakwaterd_a': (0, 10),
+        'breakwaterd_b': (0, 30),
+        'breakwaterd_initial_credit': (1, 1000),
+        'breakwaterd_client_expiration': (10000, 40000),
+    }
+
+    pbounds_dagor = {
+        'dagor_queuing_threshold': (100000, 250000),  # Example range
+        'dagor_alpha': (0, 1.5),              # Example range
+        'dagor_beta': (0, 0.5),             # Example range
+        'dagor_admission_level_update_interval': (10000, 20000),  # Example range
+        'dagor_umax': (2, 20)  # Example range
+    }
+
+    if not tightSLO:
+        # loosen the control target for charon and breakwater.
+        pbounds_charon['latency_threshold'] = (100, 10000)
+        pbounds_breakwater['breakwater_slo'] = (100, 20000)
+        # pbounds_breakwaterd['breakwater_slo'] = (10000, 50000)
+        # pbounds_breakwaterd['breakwaterd_slo'] = (20000, 50000)
+        # pbounds_dagor['dagor_queuing_threshold'] = (100000, 500000)
+
+    if 'all' in method:
+        # change the pbounds for 4 mechanisms
+        pbounds_charon = {
+            'price_update_rate': (1000, 30000), 
+            'token_update_rate': (5000, 25000), 
+            'price_step': (10, 80),
+            'latency_threshold': (100, 2500),
+        }
+        pbounds_breakwater = {
+            'breakwater_slo': (1000, 50000),
+            'breakwater_a': (0, 2),
+            'breakwater_b': (0, 1),
+            'breakwater_initial_credit': (1, 1000),
+            'breakwater_client_expiration': (10, 10000),
+        }
+        pbounds_breakwaterd = {
+            'breakwater_slo': (20000, 50000),
+            'breakwater_a': (0, 2),
+            'breakwater_b': (0, 1),
+            'breakwater_initial_credit': (1, 500),
+            'breakwater_client_expiration': (1, 5000),
+            'breakwaterd_slo': (30000, 80000),
+            'breakwaterd_a': (0, 10),
+            'breakwaterd_b': (0, 20),
+            'breakwaterd_initial_credit': (10, 500),
+            'breakwaterd_client_expiration': (10000, 40000),
+        }
+        pbounds_dagor = {
+            'dagor_queuing_threshold': (100000, 500000),  # Example range
+            'dagor_alpha': (0, 1.5),              # Example range
+            'dagor_beta': (0, 2),             # Example range
+            'dagor_admission_level_update_interval': (10000, 20000),  # Example range
+            'dagor_umax': (2, 20)  # Example range
+        }
     optimizeCharon = True
     optimizeBreakwater = True
     optimizeBreakwaterD = True
     optimizeDagor = True
 
-    capacity_range = range(4000, 10500, 500)
+    # run the experiments with the interceptors for all capacities
+    if '8000' in capacity:
+        capacity_range = range(5000, 13500, 500) if not tightSLO else range(4000, 10500, 500)
+    else:
+        capacity_range = range(6000, 12500, 500)
+
+    if 'all' in method:
+        capacity_range = range(2000, 9000, 500)
 
     timestamp = datetime.datetime.now().strftime("%m-%d")
     print("Timestamp:", timestamp)
@@ -611,9 +701,9 @@ def main():
     
     skipOptimize = False
 
-    if skipOptimize:
-        # set all the optimize to False
-        optimizeCharon = optimizeBreakwater = optimizeBreakwaterD = optimizeDagor = False
+    # if skipOptimize:
+    #     # set all the optimize to False
+    #     optimizeCharon = optimizeBreakwater = optimizeBreakwaterD = optimizeDagor = False
 
 
     optimization_config = {
@@ -624,11 +714,11 @@ def main():
     }
 
     for opt_key, (optimize, objective_func, pbounds, opt_name) in optimization_config.items():
-        if optimize:
+        if optimize and not skipOptimize:
             optimizer = BayesianOptimization(
                 f=objective_func,
                 pbounds=pbounds,
-                random_state=0,
+                random_state=1,
                 allow_duplicate_points=True
             )
             try:
@@ -650,164 +740,27 @@ def main():
                     'load': int(capacity.split('-')[1]),
                     'timestamp': timestamp,
                     'quantile': quantile,
+                    'SLO': SLO,
                 }
-                record_optimal_parameters(f'bopt_{opt_name}_{method}_{capacity}_{timestamp}.json', results)
+                record_optimal_parameters(f'bopt_{tightSLO}_{opt_name}_{method}_{capacity}_{timestamp}.json', results)
                 # Save the iteration details at the end of each optimization
                 save_iteration_details(optimizer, f'iterations_{opt_name}_{method}_{capacity}_{timestamp}.json')
             else:
                 print(f"[Bayesian Opt] No successful optimization results available for {opt_name}.")
 
     for opt_key, (optimize, objective_func, pbounds, opt_name) in optimization_config.items():
-        bayesian_result = read_optimal_parameters(f'bopt_{opt_name}_{method}_{capacity}_{timestamp}.json')
-        for capact in capacity_range:
-            print(f"[Post Opt] Analyzing file and run experiments in loop for {opt_name}:", bayesian_result)
-            run_experiments_loop(opt_name, bayesian_result['parameters'], capact, method)
-
-    # if optimizeCharon:
-    #     # Optimize for Charon
-    #     optimizer_charon = BayesianOptimization(
-    #         f=objective_charon,
-    #         pbounds=pbounds_charon,
-    #         random_state=1,
-    #         allow_duplicate_points=True,
-    #     )
-    #     # optimizer_charon.set_gp_params(alpha=1e-1,
-    #     #                                normalize_y=True, kernel=sklearn.gaussian_process.kernels.Matern(length_scale=10),
-    #     #                                n_restarts_optimizer=5)
-    #     try:
-    #         optimizer_charon.maximize(init_points=10, n_iter=55)
-    #     except Exception as e:
-    #         print("Optimization encountered an error:", e)
-
-    #     # Attempt to access the best parameters found
-    #     if 'params' in optimizer_charon.max:
-    #         best_params_charon = optimizer_charon.max['params']
-    #         print("Best parameters found:", best_params_charon)
-    #     else:
-    #         print("No successful optimization results available.")
+        if optimize:
+            # find the latest file with `bopt_{opt_name}_{method}_{capacity}_{timestamp}.json` in the name based on the timestamp
+            latest_bopt = get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/baysian-opt/'), pattern=f"bopt_{tightSLO}_{opt_name}_{method}_{capacity}_*.json")
+            bayesian_result = read_optimal_parameters(latest_bopt)
+            for capact in capacity_range:
+                print(f"[Post Opt] Analyzing file and run experiments in loop for {opt_name}:", bayesian_result)
+                run_experiments_loop(opt_name, bayesian_result['parameters'], capact, method)
     
-    #     # optimizer_charon.maximize(init_points=15, n_iter=35)
-    #     # best_params_charon = optimizer_charon.max['params']
-    #     # print("Best for Charon has Target:", optimizer_charon.max['target'], "with parameters:", best_params_charon)
-    #     # ... after running optimizer_charon.maximize(...)
-    #     results_charon = {
-    #         'target': optimizer_charon.max['target'],
-    #         'parameters': roundDownParams(best_params_charon),
-    #     }
-    #     record_optimal_parameters(f'gpbayes_charon_{method}_{capacity}_{timestamp}.json', results_charon)
-
-    # bayesian_result = read_optimal_parameters(f'gpbayes_charon_{method}_{capacity}_{timestamp}.json') 
-    # for capact in capacity_range:
-    #     print("Analyzing file and run experiments in loop:", bayesian_result)
-    #     run_experiments_loop('charon', bayesian_result['parameters'], capact, method)
-
-        
-    # if optimizeBreakwater:
-    #     # Optimize for Breakwater
-    #     optimizer_breakwater = BayesianOptimization(
-    #         f=objective_breakwater,
-    #         pbounds=pbounds_breakwater,
-    #         random_state=1,
-    #         allow_duplicate_points=True
-    #     )
-    #     # optimizer_breakwater.set_gp_params(alpha=1e-3,
-    #     #                                    normalize_y=True, # kernel=sklearn.gaussian_process.kernels.Matern(length_scale=10),
-    #     #                                    n_restarts_optimizer=5)
-    #     # optimizer_breakwater.maximize(init_points=10, n_iter=55)
-    #     # best_params_breakwater = optimizer_breakwater.max['params']
-    #     try :
-    #         optimizer_breakwater.maximize(init_points=10, n_iter=55)
-    #     except Exception as e:
-    #         print("Optimization encountered an error:", e)
-    #     if 'params' in optimizer_breakwater.max:
-    #         best_params_breakwater = optimizer_breakwater.max['params']
-    #         print("Best parameters found:", best_params_breakwater)
-    #     else:
-    #         print("No successful optimization results available.")
-    #     # print("Best for Breakwater has Target:", optimizer_breakwater.max['target'], "with parameters:", best_params_breakwater)
-
-    #     results_breakwater = {
-    #         'target': optimizer_breakwater.max['target'],
-    #         'parameters': roundDownParams(best_params_breakwater),
-    #     }
-    #     record_optimal_parameters(f'gpbayes_breakwater_{method}_{capacity}_{timestamp}.json', results_breakwater)
-    
-    # bayesian_result = read_optimal_parameters(f'gpbayes_breakwater_{method}_{capacity}_{timestamp}.json')
-    # for capact in capacity_range:
-    #     print("Analyzing file and run experiments in loop:", bayesian_result)
-    #     run_experiments_loop('breakwater', bayesian_result['parameters'], capact, method)
-
-
-    # if optimizeBreakwaterD:
-    #     # Optimize for Breakwater
-    #     optimizer_breakwaterd = BayesianOptimization(
-    #         f=objective_breakwaterd,
-    #         pbounds=pbounds_breakwaterd,
-    #         random_state=1,
-    #         allow_duplicate_points=True
-    #     )
-    #     # optimizer_breakwaterd.set_gp_params(alpha=1e-3,
-    #     #                                     normalize_y=True, # kernel=sklearn.gaussian_process.kernels.Matern(length_scale=10),
-    #     #                                     n_restarts_optimizer=5)
-    #     # optimizer_breakwaterd.maximize(init_points=10, n_iter=35)
-    #     # best_params_breakwaterd = optimizer_breakwaterd.max['params']
-    #     # print("Best for BreakwaterD has target:", optimizer_breakwaterd.max['target'], "with parameters:", best_params_breakwaterd)
-    #     try:
-    #         optimizer_breakwaterd.maximize(init_points=10, n_iter=55)
-    #     except Exception as e:
-    #         print("Optimization encountered an error:", e)
-    #     if 'params' in optimizer_breakwaterd.max:
-    #         best_params_breakwaterd = optimizer_breakwaterd.max['params']
-    #         print("Best parameters found:", best_params_breakwaterd)
-    #     else:
-    #         print("No successful optimization results available.")
-
-    #     results_breakwaterd = {
-    #         'target': optimizer_breakwaterd.max['target'],
-    #         'parameters': roundDownParams(best_params_breakwaterd),
-    #     }
-    #     record_optimal_parameters(f'gpbayes_breakwaterd_{method}_{capacity}_{timestamp}.json', results_breakwaterd)
-
-    # bayesian_result = read_optimal_parameters(f'gpbayes_breakwaterd_{method}_{capacity}_{timestamp}.json')
-    # for capact in capacity_range:
-    #     print("Analyzing file and run experiments in loop:", bayesian_result)
-    #     run_experiments_loop('breakwaterd', bayesian_result['parameters'], capact, method)
-
-
-    # if optimizeDagor:
-    #     # Optimize for Dagor
-    #     optimizer_dagor = BayesianOptimization(
-    #         f=objective_dagor,
-    #         pbounds=pbounds_dagor,
-    #         random_state=1,
-    #         allow_duplicate_points=True
-    #     )
-    #     # optimizer_dagor.set_gp_params(alpha=1e-3,
-    #     #                               normalize_y=True, # kernel=sklearn.gaussian_process.kernels.Matern(length_scale=10),
-    #     #                               n_restarts_optimizer=5)
-    #     # optimizer_dagor.maximize(init_points=10, n_iter=35)
-    #     # best_params_dagor = optimizer_dagor.max['params']
-    #     # print("Best for Dagor has target:", optimizer_dagor.max['target'], "with parameters:", best_params_dagor)
-    #     try:
-    #         optimizer_dagor.maximize(init_points=10, n_iter=55)
-    #     except Exception as e:
-    #         print("Optimization encountered an error:", e)
-    #     if 'params' in optimizer_dagor.max:
-    #         best_params_dagor = optimizer_dagor.max['params']
-    #         print("Best parameters found:", best_params_dagor)
-    #     else:
-    #         print("No successful optimization results available.")
-
-    #     results_dagor = {
-    #         'target': optimizer_dagor.max['target'],
-    #         'parameters': roundDownParams(best_params_dagor),
-    #     }
-    #     record_optimal_parameters(f'gpbayes_dagor_{method}_{capacity}_{timestamp}.json', results_dagor)
-    
-    # bayesian_result = read_optimal_parameters(f'gpbayes_dagor_{method}_{capacity}_{timestamp}.json')
-    # for capact in capacity_range:
-    #     print("Analyzing file and run experiments in loop:", bayesian_result)
-    #     run_experiments_loop('dagor', bayesian_result['parameters'], capact, method)
+    # run the experiments without interceptors too for all capacities
+    for capact in capacity_range:
+        print("[Post Opt] Analyzing file and run experiments in loop for no-interceptor:")
+        run_experiments_loop('plain', {}, capact, method)
 
 
 def check_goodput(file):
@@ -840,19 +793,39 @@ def check_goodput(file):
 
 if __name__ == '__main__':
     # take an optional argument to specify the method
+    # make method and SLO global variables
+    global method
+    global SLO
+    global tightSLO 
+
     if len(sys.argv) > 1:
         method = sys.argv[1]
     else:
         raise Exception("Please specify the method")
-    if method == 'compose':
-        SLO = 20 * 2 # 20ms * 2 = 40ms
-    elif method == 'S_149998854':
-        SLO = 111 * 2 # 111ms * 2 = 222ms
-    elif method == 'S_102000854':
-        SLO = 102 * 2
+    
+    tightSLO = False
+    if len(sys.argv) > 2:
+        tightSLO = sys.argv[2] == 'tightSLO'
+    
+    capacity = 'gpt2-8000'
     maximum_goodput = 5000
-    capacity = 'gpt1-8000'
+    if method == 'S_102000854':
+        capacity = 'gpt1-10000'
+    if method == 'hotels-http':
+        capacity = 'gpt1-2000'
+
+    if method == 'all-methods-social':
+        capacity = 'gpt1-6000'
+    if method == 'all-methods-hotel':
+        capacity = 'gpt1-6000'
+
+    # set the SLO based on the method
+    SLO = get_slo(method, tight=tightSLO)
+
+    
+
     main()
+
     # for capacity in range(4000, 10000, 500), get latest file and run the check below
     # check_goodput('social-compose-control-breakwater-parallel-capacity-6807-1213_2351.json')
     # check_goodput('social-compose-control-breakwaterd-parallel-capacity-6601-1214_0006.json')

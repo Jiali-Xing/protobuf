@@ -1,1 +1,0 @@
-/home/ying/Sync/Git/service-app/services/protobuf-grpc/kill_services.sh

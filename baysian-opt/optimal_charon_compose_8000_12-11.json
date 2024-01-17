@@ -1,8 +1,0 @@
-{
-    "target": 2924.1578518340925,
-    "parameters": {
-        "LATENCY_THRESHOLD": "3912us",
-        "PRICE_STEP": 26,
-        "PRICE_UPDATE_RATE": "77629us"
-    }
-}
