@@ -1,0 +1,16 @@
+{
+    "target": 0.42981381666907365,
+    "parameters": {
+        "DAGOR_QUEUING_THRESHOLD": "279599us",
+        "DAGOR_ALPHA": 0.40025846416922173,
+        "DAGOR_BETA": 1.7013022203015549,
+        "DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL": "11408us",
+        "DAGOR_UMAX": 14
+    },
+    "method": "all-methods-hotel",
+    "capacity": "gpt1-6000",
+    "load": 6000,
+    "timestamp": "01-22",
+    "quantile": 0.1,
+    "SLO": 68
+}

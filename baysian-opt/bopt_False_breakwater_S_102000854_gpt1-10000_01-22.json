@@ -1,0 +1,17 @@
+{
+    "target": 1.178046035788496,
+    "parameters": {
+        "BREAKWATER_SLO": "2158us",
+        "BREAKWATER_A": 17.06510140617514,
+        "BREAKWATER_B": 0.4529315534576226,
+        "BREAKWATER_INITIAL_CREDIT": 1635,
+        "BREAKWATER_CLIENT_EXPIRATION": "1201us",
+        "ONLY_FRONTEND": "true"
+    },
+    "method": "S_102000854",
+    "capacity": "gpt1-10000",
+    "load": 10000,
+    "timestamp": "01-22",
+    "quantile": 0.1,
+    "SLO": 200
+}

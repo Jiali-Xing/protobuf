@@ -5,17 +5,15 @@ go 1.21.2
 toolchain go1.21.3
 
 require (
-	github.com/Jiali-Xing/breakwater-grpc v0.0.0-20231110170810-804c3aef38d4
+	github.com/Jiali-Xing/breakwater-grpc v0.0.0-20231208000730-826effe87dd4
 	github.com/Jiali-Xing/dagor-grpc v0.0.0-20231203061458-e8a10f01b52d
-	github.com/Jiali-Xing/ghz v0.0.0-20231211222314-f8cf92509c69
-	github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20190729070250-5ae5475bae5e
+	github.com/Jiali-Xing/ghz v0.0.0-20231227040730-7fcdf5b7492b
 	github.com/google/uuid v1.4.0
 	github.com/sirupsen/logrus v1.9.0
-	github.com/tgiannoukos/charon v0.0.0-20231221071202-0347470ae6a2
 	google.golang.org/api v0.149.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20231120223509-83a465c0220f
 	google.golang.org/grpc v1.60.1
-	google.golang.org/protobuf v1.31.0
+	google.golang.org/protobuf v1.32.0
 	gopkg.in/yaml.v2 v2.4.0
 )
 
@@ -23,6 +21,7 @@ require (
 	cloud.google.com/go/compute v1.23.3 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	github.com/BurntSushi/toml v1.1.0 // indirect
+	github.com/Jiali-Xing/plain v0.0.0-20231227034046-b79fd58cb753 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.2.0 // indirect
 	github.com/Masterminds/sprig/v3 v3.2.3 // indirect
@@ -53,6 +52,7 @@ require (
 	github.com/prometheus/common v0.32.1 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
+	github.com/tgiannoukos/charon v0.0.0-20231227021556-535094a53db9 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect

@@ -1,0 +1,100 @@
+Deployments: geo-nearby
+nginx-web-server
+profile-getprofiles
+rate-getrates
+recommendation-getrecommendations
+reservation-checkavailability
+reservation-makereservation
+search-nearby
+user-checkuser
+deployment "geo-nearby" successfully rolled out
+deployment "nginx-web-server" successfully rolled out
+deployment "profile-getprofiles" successfully rolled out
+deployment "rate-getrates" successfully rolled out
+deployment "recommendation-getrecommendations" successfully rolled out
+deployment "reservation-checkavailability" successfully rolled out
+deployment "reservation-makereservation" successfully rolled out
+deployment "search-nearby" successfully rolled out
+deployment "user-checkuser" successfully rolled out
+ENTRY_POINT: nginx-web-server
+SERVICE_A_URL: 10.108.56.216:50051
+Capacity: 40
+Metadata: request-id={{.RequestNumber}}
+Metadata: timestamp={{.TimestampUnix}}
+Metadata: method=user-http
+Charon Configurations:
+[{INTERCEPT plain} {PRICE_UPDATE_RATE 10ms} {TOKEN_UPDATE_RATE 10ms} {LATENCY_THRESHOLD 100us} {PRICE_STEP 0} {PRICE_STRATEGY step} {LAZY_UPDATE false} {RATE_LIMITING true} {LOAD_SHEDDING true} {BREAKWATER_SLO 12500us} {BREAKWATER_A 0.001} {BREAKWATER_B 0.02} {BREAKWATER_CLIENT_EXPIRATION 10ms} {BREAKWATER_INITIAL_CREDIT 400} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATERD_SLO 12500us} {BREAKWATERD_A 0.001} {BREAKWATERD_B 0.02} {BREAKWATERD_CLIENT_EXPIRATION 10ms} {BREAKWATERD_INITIAL_CREDIT 400} {BREAKWATERD_LOAD_SHEDDING true} {DAGOR_QUEUING_THRESHOLD 2ms} {DAGOR_ALPHA 0.05} {DAGOR_BETA 0.01} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 10ms} {DAGOR_UMAX 20}]
+
+Summary:
+  Count:	208
+  Total:	6.75 s
+  Slowest:	669.04 ms
+  Fastest:	4.23 ms
+  Average:	28.66 ms
+  Requests/sec:	30.80
+
+Response time histogram:
+  4.233   [1]   |
+  70.713  [198] |∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎
+  137.194 [0]   |
+  203.674 [0]   |
+  270.155 [1]   |
+  336.635 [1]   |
+  403.116 [0]   |
+  469.596 [1]   |
+  536.076 [2]   |
+  602.557 [1]   |
+  669.037 [2]   |
+
+Latency distribution:
+  10 % in 5.06 ms 
+  25 % in 5.25 ms 
+  50 % in 5.39 ms 
+  75 % in 5.48 ms 
+  90 % in 5.56 ms 
+  95 % in 7.02 ms 
+  99 % in 564.58 ms 
+
+Status code distribution:
+  [OK]                 207 responses   
+  [DeadlineExceeded]   1 responses     
+
+Error distribution:
+  [1]   rpc error: code = DeadlineExceeded desc = context deadline exceeded   
+
+Debug: Checking Namespace=default, Pod=geo-nearby-59cf5cf6cf-7kq6g for Target File=deathstar_*.output
+Namespace: default, Pod: geo-nearby-59cf5cf6cf-7kq6g has the target files.
+Copying deathstar_geo-nearby.output to deathstar_geo-nearby.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=nginx-web-server-56557f7cb7-j9hg4 for Target File=deathstar_*.output
+Namespace: default, Pod: nginx-web-server-56557f7cb7-j9hg4 has the target files.
+Copying deathstar_nginx-web-server.output to deathstar_nginx-web-server.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=profile-getprofiles-6f69d7b4bd-b65f2 for Target File=deathstar_*.output
+Namespace: default, Pod: profile-getprofiles-6f69d7b4bd-b65f2 has the target files.
+Copying deathstar_profile-getprofiles.output to deathstar_profile-getprofiles.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=rate-getrates-cb57ddc9b-jqhcn for Target File=deathstar_*.output
+Namespace: default, Pod: rate-getrates-cb57ddc9b-jqhcn has the target files.
+Copying deathstar_rate-getrates.output to deathstar_rate-getrates.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=recommendation-getrecommendations-d4844d4bc-4jlnd for Target File=deathstar_*.output
+Namespace: default, Pod: recommendation-getrecommendations-d4844d4bc-4jlnd has the target files.
+Copying deathstar_recommendation-getrecommendations.output to deathstar_recommendation-getrecommendations.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=reservation-checkavailability-d887d979d-btgkv for Target File=deathstar_*.output
+Namespace: default, Pod: reservation-checkavailability-d887d979d-btgkv has the target files.
+Copying deathstar_reservation-checkavailability.output to deathstar_reservation-checkavailability.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=reservation-makereservation-7cff779cfc-rfjtk for Target File=deathstar_*.output
+Namespace: default, Pod: reservation-makereservation-7cff779cfc-rfjtk has the target files.
+Copying deathstar_reservation-makereservation.output to deathstar_reservation-makereservation.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=search-nearby-797d68557-4mxm8 for Target File=deathstar_*.output
+Namespace: default, Pod: search-nearby-797d68557-4mxm8 has the target files.
+Copying deathstar_search-nearby.output to deathstar_search-nearby.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-checkuser-7ff8c9c5bd-gkvbl for Target File=deathstar_*.output
+Namespace: default, Pod: user-checkuser-7ff8c9c5bd-gkvbl has the target files.
+Copying deathstar_user-checkuser.output to deathstar_user-checkuser.output
+tar: removing leading '/' from member names

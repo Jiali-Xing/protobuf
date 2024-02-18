@@ -7,6 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.dates as md
+from slo import get_slo
 
 # import the function calculate_average_goodput from /home/ying/Sync/Git/protobuf/baysian-opt/bayesian_opt.py
 
@@ -28,11 +29,8 @@ computationTime = 0
 INTERCEPTOR = os.environ.get('INTERCEPT', 'plain').lower()
 
 # cloudlabOutput = r"grpc-(service-\d+)"
-# match `deathstar_social-graph-service.output` with regex 
+# match `deathstar_xxx.output` where xxx is the deathstar social network service names
 cloudlabOutput = r"deathstar_([\w-]+)\.output"
-# if remote:
-#     # SLO = 200
-#     capacity = 4000
 
 # read CONSTANT_LOAD as bool from env
 CONSTANT_LOAD = False
@@ -178,7 +176,7 @@ def calculate_goodput_ave_var(df, slo):
 
 def calculate_loadshedded(df):
     # extract the dropped requests by status == 'ResourceExhausted' and error message contains 'req dropped'
-    dropped = df[(df['status'] == 'ResourceExhausted') & (df['error'].str.contains('req dropped'))]
+    dropped = df[(df['status'] == 'ResourceExhausted')]
     dropped_requests_per_second = dropped['status'].resample(throughput_time_interval).count()
     # scale the throughput to requests per second
     dropped_requests_per_second = dropped_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
@@ -358,7 +356,7 @@ def extract_ownPrices(file_pattern):
     data_dict = {}
    
     # Provide the full path to the directory containing the files
-    directory_path = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
+    directory_path = os.path.expanduser('~/Sync/Git/protobuf/priceOutput/')
 
     # Get a list of files that match the given pattern
     files = [f for f in os.listdir(directory_path) if re.match(file_pattern, f)]
@@ -545,6 +543,126 @@ def plot_timeseries_lat(df, filename, computation_time=0):
     plt.savefig(mechanism + '.queuing-delay.png')
     plt.show()
 
+# plot 2 charon experiments in the same plot with function similar to plot_timeseries_split
+def plot_timeseries_split_2(df1, df2, filename):
+    # similar to plot_timeseries_split, only difference is that we have 2 dataframes and 2 columns each row.
+    fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(6, 4), sharex=True, gridspec_kw={'height_ratios': [1, 2]})
+
+    # Define colors that are clearly readible in grayscale
+    colors = ['#34a853', '#ea4335', '#4285f4', '#fbbc05']
+    # plot the ax1 and ax2 for df1 first in the first column
+    ax1, ax2 = axes[:, 0]
+    df = df1
+    ax1.set_ylabel('Latencies (ms)', color='tab:red')
+    ax1.tick_params(axis='y', labelcolor='tab:red')
+    ax1.plot(df.index, np.maximum(0.001, df['latency_ma']), linestyle='--',
+             label='Average Latency (e2e)')
+    ax1.plot(df.index, np.maximum(0.001, df['tail_latency']), linestyle='-.',
+             label='99% Tail Latency (e2e)')
+    ax1.set_ylim(10, 200)
+    ax1.set_yscale('log')
+    # ax1 add legend on top of the plot 
+
+    SLO = get_slo(method, tight=True, all_methods=False)
+    ax1.axhline(y=SLO, color='c', linestyle='-.', label='SLO')
+    ax1.legend(loc='lower left', bbox_to_anchor=(0, 1.1), ncol=2, frameon=False)
+    
+    # add .fillna(0) to all the columns of df, so that we can plot the throughput and goodput
+    df = df.fillna(0)
+    # create a list of 4 colors clearly readible in grayscale
+
+    ax2.set_ylabel('Throughput (req/s)', color='tab:blue')
+    ax2.plot(df.index, df['throughput'], 'r-.', alpha=0.2)
+    ax2.plot(df.index, df['goodput'], color='green', linestyle='--', alpha=0.2)
+    ax2.plot(df.index, df['dropped']+df['throughput'], color='tab:blue', linestyle='-', label='Req Sent', alpha=0.2)
+    # plot dropped requests + rate limit requests + throughput = total demand
+    capacity = 8000
+    df['total_demand'] = capacity/2
+    # Define the time range from 2nd to 4th second
+    mid_start_time = pd.Timestamp('2000-01-01 00:00:02')
+    # Create a new column 'new_column' and fill it with 100 for rows within the time range
+    df.loc[mid_start_time:, 'total_demand'] = capacity  # Set the value to 100 for the specified time range
+
+    ax2.fill_between(df.index, 0, df['goodput'], color=colors[0], alpha=0.8, label='Goodput')
+    ax2.fill_between(df.index, df['goodput'], df['throughput'], color=colors[1], alpha=0.8, label='SLO\nViolation')
+    ax2.fill_between(df.index, df['throughput'], df['throughput'] + df['dropped'], color=colors[2], alpha=0.8, label='Dropped')
+    ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], where=df['total_demand'] > df['throughput'] + df['dropped'], color=colors[3], alpha=0.8, label='Rate\nLimited')
+
+    ax2.tick_params(axis='y', labelcolor='tab:blue')
+    ax2.set_ylim(0, 12000)
+    ax2.set_yticklabels(['{:,}'.format(int(x)) + 'k' for x in ax2.get_yticks()/1000])
+    # add legend to ax2 inside the plot upper left
+
+
+    # plot the ax3 and ax4 for df2 in the second column
+    ax3, ax4 = axes[:, 1]
+    # legend for ax3 and ax4 above the plot
+    df = df2
+    ax3.set_ylabel('Latencies (ms)', color='tab:red')
+    ax3.tick_params(axis='y', labelcolor='tab:red')
+    ax3.plot(df.index, np.maximum(0.001, df['latency_ma']), linestyle='--',
+             label='Average Latency (e2e)')
+    ax3.plot(df.index, np.maximum(0.001, df['tail_latency']), linestyle='-.',
+             label='99% Tail Latency (e2e)')
+    ax3.set_ylim(10, 200)
+    ax3.set_yscale('log')
+    SLO = get_slo(method, tight=False, all_methods=False)
+    ax3.axhline(y=SLO, color='c', linestyle='-.', label='SLO')
+
+    # add .fillna(0) to all the columns of df, so that we can plot the throughput and goodput
+    df = df.fillna(0)
+    # create a list of 4 colors clearly readible in grayscale
+
+    ax4.set_ylabel('Throughput (req/s)', color='tab:blue')
+    ax4.plot(df.index, df['throughput'], 'r-.', alpha=0.2)
+    ax4.plot(df.index, df['goodput'], color='green', linestyle='--', alpha=0.2)
+    ax4.plot(df.index, df['dropped']+df['throughput'], color='tab:blue', linestyle='-', label='Req Sent', alpha=0.2)
+    # plot dropped requests + rate limit requests + throughput = total demand
+    # if df['limited'].sum() > 0, then plot the rate limited requests
+    capacity = 10000
+    df['total_demand'] = capacity/2
+    # Define the time range from 2nd to 4th second
+    mid_start_time = pd.Timestamp('2000-01-01 00:00:02')
+    # Create a new column 'new_column' and fill it with 100 for rows within the time range
+    df.loc[mid_start_time:, 'total_demand'] = capacity  # Set the value to 100 for the specified time range
+    ax4.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], where=df['total_demand'] > df['throughput'] + df['dropped'], color=colors[3], alpha=0.8, label='Rate\nLimited')
+    ax4.fill_between(df.index, 0, df['goodput'], color=colors[0], alpha=0.8, label='Goodput')
+    ax4.fill_between(df.index, df['goodput'], df['throughput'], color=colors[1], alpha=0.8, label='SLO\nViolation')
+    ax4.fill_between(df.index, df['throughput'], df['throughput'] + df['dropped'], color=colors[2], alpha=0.8, label='Dropped')
+
+    ax4.tick_params(axis='y', labelcolor='tab:blue')
+    ax4.set_ylim(0, 12000)
+
+
+    concurrent_clients = re.findall(r"\d+", filename)[0]
+    start_index = filename.rfind("/") + 1 if "/" in filename else 0
+    end_index = filename.index("_") if "_" in filename else len(filename)
+    mechanism = filename[start_index:end_index]
+    # move the title to be above the plot and above the legend
+    # for 2nd column, remove the y label and y ticks but keep the grid
+    ax3.set_ylabel('')
+    ax4.set_ylabel('')
+    ax3.tick_params(axis='y', labelcolor='tab:red', labelleft=False)
+    ax4.tick_params(axis='y', labelcolor='tab:blue', labelleft=False)
+
+    # add grid to all 4 axes
+    for ax in [ax1, ax2, ax3, ax4]:
+        # ax.grid for both x and y axis
+        ax.grid(True)
+
+
+    # make the legend for ax3 outside the plot on the right
+    ax4.legend(loc='upper left', bbox_to_anchor=(1, 1), ncol=1, frameon=False)
+    # compact the layout
+    plt.tight_layout()
+    # remove space between the subplots
+    plt.subplots_adjust(wspace=0.1)
+
+
+    plt.gca().xaxis.set_major_formatter(md.DateFormatter('%S'))
+    plt.xlabel('Time (second)')
+    plt.savefig(mechanism + '.latency-throughput2.pdf')
+    plt.show()
 
 
 def plot_timeseries_split(df, filename, computation_time=0):
@@ -553,13 +671,17 @@ def plot_timeseries_split(df, filename, computation_time=0):
     mechanism = re.findall(r"control-(\w+)-", filename)[0]
     
     servicePrice = False
+    narrow = False
+    width = 3 if narrow else 6
     if servicePrice:
         fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, figsize=(12, 10), sharex=True)
     else:
-        fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, figsize=(6, 4), sharex=True, height_ratios=[1, 3])
+        fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, figsize=(width, 4), sharex=True, height_ratios=[1, 3])
 
     # make ax1 shorter
     
+    # Define colors that are clearly readible in grayscale
+    colors = ['#34a853', '#ea4335', '#4285f4', '#fbbc05']
     
     # add to all 3 axes vertical x grid lines for each second, x axis are datetime objects
     for ax in [ax1, ax2]:
@@ -578,14 +700,15 @@ def plot_timeseries_split(df, filename, computation_time=0):
              label='Average Latency (e2e)' if computation_time == 0 else 'Average Latency (e2e) \nminus computation time')
     ax1.plot(df.index, np.maximum(0.001, df['tail_latency']-computation_time), linestyle='-.',
              label='99% Tail Latency (e2e)' if computation_time == 0 else '99% Tail Latency (e2e) \nminus computation time')
-    if alibaba:
-        ax1.set_ylim(100, 500)
-    else:
-        ax1.set_ylim(20, 100)
+    # if alibaba:
+        # ax1.set_ylim(100, 500)
+    if not alibaba:
+        ax1.set_ylim(10, 200)
     ax1.set_yscale('log')
 
     # add .fillna(0) to all the columns of df, so that we can plot the throughput and goodput
     df = df.fillna(0)
+    # create a list of 4 colors clearly readible in grayscale
 
     ax2.set_ylabel('Throughput (req/s)', color='tab:blue')
     ax2.plot(df.index, df['throughput'], 'r-.', alpha=0.2)
@@ -615,16 +738,16 @@ def plot_timeseries_split(df, filename, computation_time=0):
     
 
     if mechanism != 'baseline':
-        ax2.plot(df.index, df['total_demand'], color='c', linestyle='-', label='Demand')
+        ax2.plot(df.index, df['total_demand'], color='c', linestyle='-.', label='Demand')
 
 
-    ax2.fill_between(df.index, 0, df['goodput'], color='green', alpha=0.2, label='Goodput')
-    ax2.fill_between(df.index, df['goodput'], df['throughput'], color='red', alpha=0.3, label='SLO Violation')
-    ax2.fill_between(df.index, df['throughput'], df['throughput'] + df['dropped'], color='c', alpha=0.3, label='Dropped Req')
+    ax2.fill_between(df.index, 0, df['goodput'], color=colors[0], alpha=0.8, label='Goodput')
+    ax2.fill_between(df.index, df['goodput'], df['throughput'], color=colors[1], alpha=0.8, label='SLO Violation')
+    ax2.fill_between(df.index, df['throughput'], df['throughput'] + df['dropped'], color=colors[2], alpha=0.8, label='Dropped')
     # if mechanism in ['charon', 'breakwater', 'breakwaterd']:
     #     ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], color='tab:blue', alpha=0.3, label='Rate Limited Req')
     ax2.tick_params(axis='y', labelcolor='tab:blue')
-    ax2.set_ylim(0, 12000)
+    ax2.set_ylim(0, 15000)
 
     # Apply the custom formatter to the x-axis
     # use second locator to show grid lines for each second, not `09` but `9`
@@ -690,7 +813,7 @@ def plot_timeseries_split(df, filename, computation_time=0):
 
     # put legend on the top left corner
     # for ax1, don't show the box border of the legend
-    ax1.legend(loc='lower left', bbox_to_anchor=(0, 1.1), ncol=2, frameon=False)
+    ax1.legend(loc='lower left', bbox_to_anchor=(0, 1.1), ncol=1 if narrow else 2, frameon=False)
 
     if cloudlab:
         max_price = 0
@@ -718,15 +841,16 @@ def plot_timeseries_split(df, filename, computation_time=0):
  
     # fill between total demand and throughput + dropped requests, only if total demand is larger than throughput + dropped requests
     if mechanism != 'baseline' and mechanism != 'dagor':
-        ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], where=df['total_demand'] > df['throughput'] + df['dropped'], color='tab:blue', alpha=0.3, label='Rate Limited Req')
+        ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], where=df['total_demand'] > df['throughput'] + df['dropped'], color='tab:blue', alpha=0.3, label='Rate Limited')
     
-    ax2.legend(loc='upper left', bbox_to_anchor=(0, 1), ncol=3, frameon=True)
+    ax2.legend(loc='upper left', bbox_to_anchor=(0, 1), ncol=2 if narrow else 3, frameon=True)
     # concurrent_clients = re.findall(r"\d+", filename)[0]
     # plt.suptitle(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
 
     # add the ax2 a title, saying that `The Average Goodput Under Overload is: ` + calculate_average_goodput(filename)
     goodputAve, goodputStd = calculate_average_goodput(filename)
-    ax2.set_title(f"The Goodput has Mean: {goodputAve} and Std: {goodputStd}")
+    if not narrow:
+        ax2.set_title(f"The Goodput has Mean: {goodputAve} and Std: {goodputStd}")
 
     latency_99th = read_tail_latency(filename)
     # print("99th percentile latency:", latency_99th)
@@ -734,10 +858,12 @@ def plot_timeseries_split(df, filename, computation_time=0):
     latency_99th = pd.Timedelta(latency_99th).total_seconds() * 1000
     # round the latency_99th to 2 decimal places
     average_99th = df['tail_latency'].mean()
-    ax1.set_title(f"99-tile Latency over Time: {round(average_99th, 2)} ms")
+    lat95 = df[(df['status'] == 'OK')]['latency'].quantile(95 / 100)
+    if not narrow:
+        ax1.set_title(f"95-tile Latency over Time: {round(lat95, 2)} ms")
 
-    filetosave = mechanism + '-' + method + '-' + str(capacity) + timestamp + '.png' 
-    plt.savefig(filetosave, format='png', dpi=300, bbox_inches='tight')
+    filetosave = mechanism + '-' + method + '-' + str(capacity) + timestamp + '.pdf' 
+    plt.savefig(filetosave, dpi=300, bbox_inches='tight')
     # plt.show()
     if not noPlot:
         plt.show()
@@ -916,18 +1042,78 @@ def analyze_data(filename):
     # summary = df.groupby('error')['error'].count().reset_index(name='count')
     # print(summary)
 
+# function below generalize the analyze_data function to 2 dataframes from 2 files
+def analyze_data_2(filename1, filename2):
+    global INTERCEPTOR, capacity 
+    if "control" in filename1:
+        match = re.search(r'control-(\w+)-', filename1)
+        if match:
+            INTERCEPTOR =  match.group(1)
+            print("Interceptor:", INTERCEPTOR)
+    
+    if "capacity" in filename1:
+        match = re.search(r'capacity-(\w+)-', filename1)
+        if match:
+            capacity =  match.group(1)
+            # convert the capacity from string to int
+            capacity = int(capacity)
+            print("Capacity:", capacity)
+
+    data1 = read_data(filename1)
+    df1 = convert_to_dataframe(data1, init=True)
+    # print(df.head())
+    # plot_latency_pdf_cdf(df, filename)
+    df1 = calculate_throughput(df1)
+    SLO = get_slo(method, tight=True, all_methods=False)
+    df1 = calculate_goodput(df1, SLO)
+    df1 = calculate_loadshedded(df1)
+    df1 = calculate_ratelimited(df1)
+    df1 = calculate_tail_latency(df1)
+
+    if "control" in filename2:
+        match = re.search(r'control-(\w+)-', filename2)
+        if match:
+            INTERCEPTOR =  match.group(1)
+            print("Interceptor:", INTERCEPTOR)
+    
+    if "capacity" in filename2:
+        match = re.search(r'capacity-(\w+)-', filename2)
+        if match:
+            capacity =  match.group(1)
+            # convert the capacity from string to int
+            capacity = int(capacity)
+            print("Capacity:", capacity)
+
+    data2 = read_data(filename2)
+    df2 = convert_to_dataframe(data2, init=True)
+    # print(df.head())
+    # plot_latency_pdf_cdf(df, filename)
+    df2 = calculate_throughput(df2)
+    SLO = get_slo(method, tight=False, all_methods=False)
+    df2 = calculate_goodput(df2, SLO)
+    df2 = calculate_loadshedded(df2)
+    df2 = calculate_ratelimited(df2)
+    df2 = calculate_tail_latency(df2)
+    plot_timeseries_split_2(df1, df2, filename1)
 
 if __name__ == '__main__':
+    # handle multiple files
+    if len(sys.argv) > 2:
+        alibaba = False
+        method = "compose"
+        filename1 = sys.argv[1]
+        filename2 = sys.argv[2]
+        analyze_data_2(filename1, filename2)
+        sys.exit(0)
+
     filename = sys.argv[1]
 
     # read from the filename, if `S_` is in the filename, then alibaba is true, otherwise, alibaba is false
     alibaba = "S_" in filename
     # the method is the word between `social-` and `-control` in the filename
-    # e.g., home-timeline in social-home-timeline-control-charon-parallel-capacity-8000-1209_1620.json
-    # or `./social-S_149998854-charon-parallel-capacity-5000.json`
     method = re.findall(r"social-(.*?)-control", filename)[0]
     timestamp = re.findall(r"-\d+_\d+", filename)[0]
-    SLO = 2 * 111 if alibaba else 20 * 2
+    SLO = get_slo(method, tight=False, all_methods=('S_' not in method))
 
     # if there is a second argument, it is the handle of showing the plot
     if len(sys.argv) > 2:

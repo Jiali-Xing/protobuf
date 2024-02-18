@@ -15,7 +15,7 @@ echo "Deployments: $deployments"
 # Loop through each deployment and wait for it to complete
 for deployment in $deployments; do
   kubectl rollout status deployment/$deployment
-  echo "Deployment $deployment is ready."
+  # echo "Deployment $deployment is ready."
 done
 
 # sleep 20
@@ -66,6 +66,14 @@ export SERVICE_A_URL
 # Display the URL
 echo "SERVICE_A_URL: $SERVICE_A_URL"
 
+# if RL_TIERS env is set, then echo it
+if [ -n "$RL_TIERS" ]; then
+  echo "RL_TIERS: $RL_TIERS"
+fi
+# if AQM_ENABLED env is set, then echo it
+if [ -n "$AQM_ENABLED" ]; then
+  echo "AQM_ENABLED: $AQM_ENABLED"
+fi
 # # Get the namespace_name and pod_name based on the prefix "grpc-service-1"
 # namespace_name=$(kubectl get pods --all-namespaces -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.metadata.namespace}{"\n"}{end}' | grep -m 1 'grpc-service-1' | awk '{print $2}')
 # pod_name=$(kubectl get pods -n "$namespace_name" -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep -m 1 'grpc-service-1')

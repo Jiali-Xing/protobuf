@@ -167,7 +167,8 @@ configDict = {
         'breakwater_initial_credit': 400,
         'breakwater_client_expiration': 10000,
         'only_frontend': 'true',
-    },    
+        'breakwater_rtt': '100us',
+    },
     'breakwaterd': {
         'breakwater_slo': 12500,
         'breakwater_a': 0.001,
@@ -226,6 +227,9 @@ def check_previous_run_exists(interceptor_type, method, capacity, combined_param
             # Skip this file if the timestamp is in the existing_files
             if timestamp in existing_files:
                 continue
+            # skip this file if the timestamp is earlier than 0130,
+            if timestamp < '0130_0000':
+                continue
         try:
             with open(filename, 'r') as file:
                 content = file.read()
@@ -266,12 +270,12 @@ def run_experiments(interceptor_type, load, previous_run, **params):
     # Prepare the environment variable command string
     # env_vars_command = ' '.join(f'export {key}="{value}";' for key, value in combined_params.items())
 
-    previous_run = 'skip'
+    # previous_run = 'skip'
     # Check if a previous run exists with the same parameters
     if previous_run == '' or previous_run is None:
         preRun = check_previous_run_exists(interceptor_type, method, load, combined_params)
         if preRun is not None:
-            print("[PrevRan] A previous run with the same parameters exists.")
+            print("[PrevRan] A previous run with the same parameters exists.", preRun)
             return preRun.split('.output')[0]
         else:
             print("[PrevRan] No previous run with the same parameters found. Proceed with the experiment.")
@@ -281,7 +285,7 @@ def run_experiments(interceptor_type, load, previous_run, **params):
         print("[PrevRan] found a previous run file:", previous_run, ". Now try to find another file with the same parameters.")
         preRun = check_previous_run_exists(interceptor_type, method, load, combined_params, previous_run)
         if preRun is not None:
-            print("A previous run with the same parameters exists.")
+            print("A previous run with the same parameters exists:", preRun)
             return preRun.split('.output')[0]
         else:
             print("[PrevRan] No previous run with the same parameters found. Proceed with the experiment.")
@@ -476,13 +480,23 @@ pbounds_charon = {
     'latency_threshold': (100, 3000),
 }
 
-def objective_breakwater(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration):
-    return objective_dual('breakwater', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b, breakwater_initial_credit=breakwater_initial_credit, breakwater_client_expiration=breakwater_client_expiration)
+def objective_breakwater(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration, breakwater_rtt):
+    return objective_dual('breakwater', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b,
+                          breakwater_initial_credit=breakwater_initial_credit, breakwater_client_expiration=breakwater_client_expiration, breakwater_rtt=breakwater_rtt)
 
-def objective_breakwaterd(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration, \
-                          breakwaterd_slo, breakwaterd_a, breakwaterd_b, breakwaterd_initial_credit, breakwaterd_client_expiration):
-    return objective_dual('breakwaterd', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b, breakwater_initial_credit=breakwater_initial_credit, breakwater_client_expiration=breakwater_client_expiration,
-                        breakwaterd_slo=breakwaterd_slo, breakwaterd_a=breakwaterd_a, breakwaterd_b=breakwaterd_b, breakwaterd_initial_credit=breakwaterd_initial_credit, breakwaterd_client_expiration=breakwaterd_client_expiration)
+def objective_breakwaterd(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration, breakwater_rtt,
+                          breakwaterd_slo, breakwaterd_a, breakwaterd_b, breakwaterd_initial_credit, breakwaterd_client_expiration, breakwaterd_rtt):
+    return objective_dual('breakwaterd', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b, breakwater_initial_credit=breakwater_initial_credit, 
+                          breakwater_client_expiration=breakwater_client_expiration, breakwaterd_slo=breakwaterd_slo, breakwaterd_a=breakwaterd_a, 
+                          breakwaterd_b=breakwaterd_b, breakwaterd_initial_credit=breakwaterd_initial_credit, breakwaterd_client_expiration=breakwaterd_client_expiration,
+                          breakwater_rtt=breakwater_rtt, breakwaterd_rtt=breakwaterd_rtt)
+# def objective_breakwater(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration):
+#     return objective_dual('breakwater', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b, breakwater_initial_credit=breakwater_initial_credit, breakwater_client_expiration=breakwater_client_expiration)
+
+# def objective_breakwaterd(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration, \
+#                           breakwaterd_slo, breakwaterd_a, breakwaterd_b, breakwaterd_initial_credit, breakwaterd_client_expiration):
+#     return objective_dual('breakwaterd', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b, breakwater_initial_credit=breakwater_initial_credit, breakwater_client_expiration=breakwater_client_expiration,
+#                         breakwaterd_slo=breakwaterd_slo, breakwaterd_a=breakwaterd_a, breakwaterd_b=breakwaterd_b, breakwaterd_initial_credit=breakwaterd_initial_credit, breakwaterd_client_expiration=breakwaterd_client_expiration)
 
 pbounds_breakwater = {
     # 'breakwater_slo': (100, 100000),  # Example range
@@ -492,23 +506,39 @@ pbounds_breakwater = {
     # 'breakwater_client_expiration': (1, 100000) # Example range
     # the range above is too large... I will use the following range based on the empirical results {BREAKWATER_SLO 749158us} {BREAKWATER_A 11.692336257688945} {BREAKWATER_B 0.004983989475762508} {B    REAKWATER_CLIENT_EXPIRATION 13317us} {BREAKWATER_INITIAL_CREDIT 59} 
     'breakwater_slo': (1000, 5000),
-    'breakwater_a': (0.0001, 10),
-    'breakwater_b': (0.001, 0.1),
-    'breakwater_initial_credit': (10, 2000),
-    'breakwater_client_expiration': (1000, 30000),
+    'breakwater_a': (0, 20),
+    'breakwater_b': (0, 2),
+    'breakwater_initial_credit': (1, 2000),
+    'breakwater_client_expiration': (0, 5000),
+    'breakwater_rtt': (0, 20000),    'breakwater_a': (0.0001, 10),
+    # 'breakwater_b': (0.001, 0.1),
+    # 'breakwater_initial_credit': (10, 2000),
+    # 'breakwater_client_expiration': (1000, 30000),
 }
 
 pbounds_breakwaterd = {
-    'breakwater_slo': (1000, 5000),
-    'breakwater_a': (0, 10),
-    'breakwater_b': (0, 0.1),
-    'breakwater_initial_credit': (10, 2000),
-    'breakwater_client_expiration': (10, 50000),
-    'breakwaterd_slo': (10000, 500000),
+    'breakwater_slo': (10000, 40000),
+    'breakwater_a': (0, 2),
+    'breakwater_b': (0, 2),
+    'breakwater_initial_credit': (1, 400),
+    'breakwater_client_expiration': (1, 3000),
+    'breakwaterd_slo': (30000, 80000),
     'breakwaterd_a': (0, 10),
-    'breakwaterd_b': (0, 0.1),
-    'breakwaterd_initial_credit': (1, 5000),
-    'breakwaterd_client_expiration': (500, 50000),
+    'breakwaterd_b': (0, 30),
+    'breakwaterd_initial_credit': (1, 1000),
+    'breakwaterd_client_expiration': (10000, 40000),
+    'breakwater_rtt': (1000, 20000),
+    'breakwaterd_rtt': (1000, 20000),
+    # 'breakwater_slo': (1000, 5000),
+    # 'breakwater_a': (0, 10),
+    # 'breakwater_b': (0, 0.1),
+    # 'breakwater_initial_credit': (10, 2000),
+    # 'breakwater_client_expiration': (10, 50000),
+    # 'breakwaterd_slo': (10000, 500000),
+    # 'breakwaterd_a': (0, 10),
+    # 'breakwaterd_b': (0, 0.1),
+    # 'breakwaterd_initial_credit': (1, 5000),
+    # 'breakwaterd_client_expiration': (500, 50000),
 }
 
 def objective_dagor(dagor_queuing_threshold, dagor_alpha, dagor_beta, dagor_admission_level_update_interval, dagor_umax):
@@ -579,6 +609,7 @@ def roundDownParams(params):
         if key in ['PRICE_UPDATE_RATE', 'TOKEN_UPDATE_RATE', 'LATENCY_THRESHOLD', \
                    'BREAKWATER_SLO', 'BREAKWATER_CLIENT_EXPIRATION', \
                    'BREAKWATERD_SLO', 'BREAKWATERD_CLIENT_EXPIRATION', \
+                   'BREAKWATER_RTT', 'BREAKWATERD_RTT', \
                    'DAGOR_QUEUING_THRESHOLD', 'DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL']:
             # if there is already a `us` or `ms` at the end of the value, don't add another `us`
             # if it is a string
@@ -730,24 +761,24 @@ def main():
 
     if motivation == 'RL':
         # run the bayesian optimization
-        # bayesian_optimization(20, 'RL-breakwaterd')
-        # bayesian_optimization(20, 'RL')
-        bwd_result = read_optimal_parameters('motivation_rl_bwd_bopt_01-08.json')
-        bw_result = read_optimal_parameters('motivation_rl_bw_bopt_01-08.json')
+        bayesian_optimization(30, 'RL-breakwaterd')
+        bayesian_optimization(30, 'RL')
+        bwd_result = read_optimal_parameters('motivation_rl_bwd_bopt_01-31.json')
+        bw_result = read_optimal_parameters('motivation_rl_bw_bopt_01-31.json')
         # bwd_result = read_optimal_parameters('motivation_rl_bwd_bopt_12-27.json')
         # bw_result = read_optimal_parameters('motivation_rl_bopt_12-27.json')
         # bayesian_result = read_optimal_parameters('bopt_breakwater_compose_gpt1-8000_12-23.json')
         # bayesian_result = read_optimal_parameters('bopt_breakwaterd_compose_gpt1-8000_12-25.json')
         for n_tiers in list(range(1, 6)):
-            for capact in [35000]:
+            for capact in [25000]:
                 print(f"[Motivate RL] Analyzing file and run experiments in loop for {n_tiers}:", bwd_result)
                 run_experiments_loop('breakwaterd', bwd_result['parameters'], capact, method, None, n_tiers=n_tiers)
         for n_tiers in list(range(1, 6)):
-            for capact in [35000]:
+            for capact in [25000]:
                 print(f"[Motivate RL] Analyzing file and run experiments in loop for {n_tiers}:", bw_result)
                 run_experiments_loop('breakwater', bw_result['parameters'], capact, method, None, n_tiers=n_tiers)
         for n_tiers in list(range(1, 6)):
-            for capact in [35000]:
+            for capact in [25000]:
                 run_experiments_loop('plain', {}, capact, method, None, n_tiers=n_tiers)
 
 def check_goodput(file):
