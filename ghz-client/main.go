@@ -298,6 +298,13 @@ func main() {
 		connections = uint(concurrency * 80 / 100)
 	}
 
+	var defactoInterceptor string
+	// the de facto interceptor is dagor when interceptor is set to "dagorf"
+	if interceptor == "dagorf" {
+		defactoInterceptor = "dagor"
+	} else {
+		defactoInterceptor = interceptor
+	}
 	if constantLoad {
 		report, err = runner.Run(
 			"greeting.v3.GreetingService/Greeting",
@@ -312,7 +319,7 @@ func main() {
 			runner.WithRunDuration(runDuration),
 			runner.WithLoadSchedule("const"),
 			runner.WithMethod(method),
-			runner.WithInterceptor(interceptor),
+			runner.WithInterceptor(defactoInterceptor),
 			runner.WithInterceptorEntry(entry_point),
 			runner.WithCharonOptions(charonOptions),
 			runner.WithBreakwaterOptions(breakwaterOptions),
@@ -338,7 +345,7 @@ func main() {
 			runner.WithLoadStep(loadStep),
 			runner.WithLoadStepDuration(loadStepDuration),
 			runner.WithMethod(method),
-			runner.WithInterceptor(interceptor),
+			runner.WithInterceptor(defactoInterceptor),
 			runner.WithInterceptorEntry(entry_point),
 			runner.WithCharonOptions(charonOptions),
 			runner.WithBreakwaterOptions(breakwaterOptions),
@@ -371,7 +378,7 @@ func main() {
 			runner.WithLoadStep(loadStep),
 			runner.WithLoadStepDuration(loadStepDuration),
 			runner.WithMethod(method),
-			runner.WithInterceptor(interceptor),
+			runner.WithInterceptor(defactoInterceptor),
 			runner.WithInterceptorEntry(entry_point),
 			runner.WithCharonOptions(charonOptions),
 			runner.WithBreakwaterOptions(breakwaterOptions),
