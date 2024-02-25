@@ -1,0 +1,16 @@
+{
+    "target": 0.22501586186359082,
+    "parameters": {
+        "DAGOR_QUEUING_THRESHOLD": "218391us",
+        "DAGOR_ALPHA": 1.122248481569759,
+        "DAGOR_BETA": 0.1402219960322026,
+        "DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL": "19888us",
+        "DAGOR_UMAX": 3
+    },
+    "method": "all-methods-social",
+    "capacity": "gpt1-6000",
+    "load": 6000,
+    "timestamp": "01-25",
+    "quantile": 0.1,
+    "SLO": 120
+}

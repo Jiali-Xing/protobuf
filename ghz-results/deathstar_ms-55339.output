@@ -1,0 +1,668 @@
+Service Name:  ms-55339
+Call Graph of the Service:
+map[]
+Downstreams of the Service:
+[]
+Server Configurations:
+[{COMPUTATION_DISTRIBUTION constant} {PROCESS_TIME 1.0526315789473684ms} {APP_PORT 50051} {LOG_LEVEL Info} {GREETING Hi Malaka!} {SUBCALL parallel} {PROFILING false}]
+Charon Configurations:
+[{INTERCEPT charon} {PRICE_UPDATE_RATE 19266us} {TOKEN_UPDATE_RATE 27431us} {LATENCY_THRESHOLD 14351us} {PRICE_STEP 124} {PRICE_STRATEGY proportional} {LAZY_UPDATE true} {RATE_LIMITING true} {LOAD_SHEDDING true} {CHARON_TRACK_PRICE true} {BREAKWATER_SLO 12500us} {BREAKWATER_A 0.001} {BREAKWATER_B 0.02} {BREAKWATER_CLIENT_EXPIRATION 10ms} {BREAKWATER_INITIAL_CREDIT 400} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATER_RTT 1000us} {BREAKWATERD_SLO 12500us} {BREAKWATERD_A 0.001} {BREAKWATERD_B 0.02} {BREAKWATERD_CLIENT_EXPIRATION 10ms} {BREAKWATERD_INITIAL_CREDIT 400} {BREAKWATERD_LOAD_SHEDDING true} {BREAKWATERD_RTT 1000us} {DAGOR_QUEUING_THRESHOLD 2ms} {DAGOR_ALPHA 0.05} {DAGOR_BETA 0.01} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 10ms} {DAGOR_UMAX 20}]
+Price Update Rate: 19.266ms
+Latency Threshold: 14.351ms
+Price Step: 124
+Price Strategy: proportional
+Intercept: charon
+Lazy Update: true
+Rate Limiting: true
+Load Shedding: true
+Charon Track Price: true
+Breakwater SLO: 12.5ms
+Breakwater Client Timeout: 10ms
+Breakwater Initial Credit: 400
+Breakwater A: 0.001
+Breakwater B: 0.02
+Breakwater Load Shedding: true
+Breakwater RTT: 1ms
+BreakwaterD SLO: 12.5ms
+BreakwaterD Client Timeout: 10ms
+BreakwaterD Initial Credit: 400
+BreakwaterD A: 0.001
+BreakwaterD B: 0.02
+BreakwaterD Load Shedding: true
+BreakwaterD RTT: 1ms
+Dagor Queuing Threshold: 2ms
+Dagor Alpha: 0.05
+Dagor Beta: 0.01
+Dagor Admission Level Update Interval: 10ms
+Dagor Umax: 20
+Computation Distribution: constant
+Process Time: 1.052631ms
+Address Listening on: 0.0.0.0:50051
+Greeting Message: Hi Malaka!
+Log Level: Info
+Subcall Pattern: parallel
+{"function":"run","level":"info","line":"652","msg":"Charon Config: map[debug:false guidePrice:-1 initprice:0 latencyThreshold:14.351ms lazyResponse:true loadShedding:true pinpointLatency:false pinpointQueuing:true pinpointThroughput:false priceAggregation:maximal priceStep:124 priceStrategy:proportional priceUpdateRate:19.266ms rateLimiting:true recordPrice:true]","time":"2024-01-31T04:47:52Z"}
+LOG: 2024-01-31T04:47:53.16658657+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:53.166645892+00:00|	[Incremental Waiting Time Maximum]:	0.010240 ms.
+
+LOG: 2024-01-31T04:47:53.378520103+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:53.378578228+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:53.590522686+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:53.590570296+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:53.803457613+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:53.803500347+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:54.014422694+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:54.014460676+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:54.226282025+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:54.226327104+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:54.438182968+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:54.438238111+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:54.650162187+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:54.650220286+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:54.862901883+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:54.862956619+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:55.073980806+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:55.074100343+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:55.285923496+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:55.285965688+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:55.49782951+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:55.49787243+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:55.709695543+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:55.709741268+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:55.921643394+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:55.921689676+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:56.133574963+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:56.133621395+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:56.345794311+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:56.345833181+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:56.557444264+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:56.557511169+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:56.769370521+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:56.769424235+00:00|	[Incremental Waiting Time Maximum]:	0.014336 ms.
+
+LOG: 2024-01-31T04:47:56.982197984+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:56.982244632+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:57.193185782+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:57.193217977+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:57.40613834+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:57.406181194+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:57.618076509+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:57.618119423+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:57.828965068+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:57.829011259+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:58.041185023+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:58.041230748+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:58.25373693+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:58.253775514+00:00|	[Incremental Waiting Time Maximum]:	0.010240 ms.
+
+LOG: 2024-01-31T04:47:58.465880663+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:58.465921849+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:58.677761199+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:58.677799533+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:58.889654795+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:58.889693936+00:00|	[Incremental Waiting Time Maximum]:	0.010240 ms.
+
+LOG: 2024-01-31T04:47:59.101637146+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:59.101682426+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:59.313556687+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:59.313599416+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:59.524422899+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:59.524466179+00:00|	[Incremental Waiting Time Maximum]:	0.010240 ms.
+
+LOG: 2024-01-31T04:47:59.736300779+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:59.736384768+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:47:59.948277582+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:47:59.948321002+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:00.160176686+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:00.160234404+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:00.373125419+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:00.373166991+00:00|	[Incremental Waiting Time Maximum]:	0.010240 ms.
+
+LOG: 2024-01-31T04:48:00.584096103+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:00.584134948+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:00.795948559+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:00.795993994+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:01.0089309+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:01.008974366+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:01.220907518+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:01.22094718+00:00|	[Incremental Waiting Time Maximum]:	0.010240 ms.
+
+LOG: 2024-01-31T04:48:01.432717822+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:01.433203935+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:01.64415569+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:01.644202107+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:01.856641789+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:01.856687084+00:00|	[Incremental Waiting Time Maximum]:	0.010240 ms.
+
+LOG: 2024-01-31T04:48:02.067558373+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:02.067608369+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:02.280519425+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:02.280562294+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:02.492425696+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:02.492465016+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:02.703562708+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:02.703601929+00:00|	[Incremental Waiting Time Maximum]:	0.010240 ms.
+
+LOG: 2024-01-31T04:48:02.916261099+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:02.916299623+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:03.128192071+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:03.128229924+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:03.340131017+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:03.340169686+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:03.551946422+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:03.551983508+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:03.763708108+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:03.763745124+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:03.975814315+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:03.975852965+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:04.187832188+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:04.187870597+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:04.398667083+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:04.398713511+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:04.610666489+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:04.610706611+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:04.822554251+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:04.822602202+00:00|	[Incremental Waiting Time Maximum]:	0.012288 ms.
+
+LOG: 2024-01-31T04:48:05.03547485+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:05.035512522+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:05.247007487+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:05.247044768+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:05.459335446+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:05.45937391+00:00|	[Incremental Waiting Time Maximum]:	0.010240 ms.
+
+LOG: 2024-01-31T04:48:05.671120041+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:05.671157267+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:05.883018498+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:05.883057563+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:06.094348832+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:06.094387893+00:00|	[Incremental Waiting Time Maximum]:	0.012288 ms.
+
+LOG: 2024-01-31T04:48:06.306075252+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:06.306114924+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:06.518766962+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:06.518810026+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:06.730636858+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:06.730674615+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:06.94279367+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:06.942845466+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:07.153732923+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:07.15378132+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:07.365680023+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:07.365737651+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:07.577584444+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:07.577630866+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:07.790600663+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:07.790639598+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:08.001403299+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:08.001450187+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:08.214450846+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:08.214489415+00:00|	[Incremental Waiting Time Maximum]:	0.012288 ms.
+
+LOG: 2024-01-31T04:48:08.425347789+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:08.425404034+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:08.637258289+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:08.637313887+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:08.850171035+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:08.850208682+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:09.061166636+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:09.061213815+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:09.273735437+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:09.273777845+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:09.485916767+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:09.485959015+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:09.697939291+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:09.697977214+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:09.908794273+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:09.908838409+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:10.12074459+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:10.120816731+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:10.33368559+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:10.333724601+00:00|	[Incremental Waiting Time Maximum]:	0.010240 ms.
+
+LOG: 2024-01-31T04:48:10.544534984+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:10.544581647+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:10.757537091+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:10.757586831+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:10.969421295+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:10.969461398+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:11.181353846+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:11.181391588+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:11.392267027+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:11.392314501+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:11.60424154+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:11.604306364+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:11.816915834+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:11.816954098+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:12.028018032+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:12.028084626+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:12.239954286+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:12.240006001+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:12.451898845+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:12.451951928+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:12.664902145+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:12.664941426+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:12.875830395+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:12.875869+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:13.087676505+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:13.087728958+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-01-31T04:48:13.299546786+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:13.299604602+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-01-31T04:48:13.511786735+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:13.511905905+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-01-31T04:48:13.72343234+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:13.723481133+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-01-31T04:48:13.935344326+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:13.935431668+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-01-31T04:48:14.147334101+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:14.147400803+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-01-31T04:48:14.359163353+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:14.359209536+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-01-31T04:48:14.571628295+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:14.571678952+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-01-31T04:48:14.78344458+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:14.783493806+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-01-31T04:48:14.995537965+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:14.995593157+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-01-31T04:48:15.207496032+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:15.20757519+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-01-31T04:48:15.418837735+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:15.418902106+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-01-31T04:48:15.630953214+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:15.631002518+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-01-31T04:48:15.842689354+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:15.842728234+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-01-31T04:48:16.054662571+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:16.0547237+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-01-31T04:48:16.266871466+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:16.266917503+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-01-31T04:48:16.478948303+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:16.479024669+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-01-31T04:48:16.691054685+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:16.691110809+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-01-31T04:48:16.902777056+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:16.902849107+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-01-31T04:48:17.114736711+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:17.114783999+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-01-31T04:48:17.326155162+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:17.326222142+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-01-31T04:48:17.538182148+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:17.538268211+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-01-31T04:48:17.75023948+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:17.750274571+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-01-31T04:48:17.9619252+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:17.961985961+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-01-31T04:48:18.174568432+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:18.174627026+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-01-31T04:48:18.385761679+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:18.385821969+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-01-31T04:48:18.597775007+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:18.597828609+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-01-31T04:48:18.809779837+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:18.809841407+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-01-31T04:48:19.021565854+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:19.021610559+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-01-31T04:48:19.233620984+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:19.233659631+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-01-31T04:48:19.446343244+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:19.446399294+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-01-31T04:48:19.657799019+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:19.658209281+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-01-31T04:48:19.870388773+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:19.87043708+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:20.082158458+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:20.082207797+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:20.2940916+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:20.29413041+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:20.506070964+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:20.506107804+00:00|	[Incremental Waiting Time Maximum]:	0.008192 ms.
+
+LOG: 2024-01-31T04:48:20.717655997+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:20.717693965+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:20.92897491+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:20.929023062+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:21.141929392+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:21.141968773+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:21.353787627+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:21.35382781+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:21.564695701+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:21.564742749+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:21.776637668+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:21.776688837+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:21.988525416+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:21.988572008+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:22.201623996+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:22.201670293+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:22.41240657+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:22.41245634+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:22.624391677+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:22.624451555+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:22.836269472+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:22.836317487+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:23.048214371+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:23.048258162+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:23.261049763+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:23.261088427+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:23.472016522+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:23.47206287+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:23.684011097+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:23.684049806+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:23.895927906+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:23.895988637+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:24.107842466+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:24.107884523+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:24.320805558+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:24.320844051+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:24.531869782+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:24.531908442+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:24.743934504+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:24.743974877+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:24.956195984+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:24.956242758+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:25.167506929+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:25.167572786+00:00|	[Incremental Waiting Time Maximum]:	0.010240 ms.
+
+LOG: 2024-01-31T04:48:25.37938729+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:25.379448967+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:25.591274035+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:25.591344147+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:25.804254597+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:25.80430349+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-01-31T04:48:26.015946251+00:00|	[Update Price by Queue Delay]: Own price updated to 0
+
+LOG: 2024-01-31T04:48:26.015997725+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+

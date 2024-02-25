@@ -24,6 +24,7 @@ import pickle
 import datetime
 
 import sklearn
+from collections import defaultdict
 
 # import the ~/Sync/Git/protobuf/ghz-results/visualize.py file and run its function `analyze_data` 
 # with the optimal results from the Bayesian Optimization
@@ -186,6 +187,7 @@ configDict = {
         'breakwater_initial_credit': 400,
         'breakwater_client_expiration': 10000,
         'only_frontend': 'true',
+        'breakwater_rtt': '100us',
     },    
     'breakwaterd': {
         'breakwater_slo': 12500,
@@ -213,8 +215,32 @@ def generate_output_filename(interceptor_type, method, capacity):
     directory = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
     outputFile = f"social-{method}-control-{interceptor_type}-parallel-capacity-{capacity}-*.json.output"
     if method == "all-methods-social" or method == "compose" or method == "home-timeline" or method == "user-timeline" or method == "all-methods-hotel":
-        outputFile = f"social-{method}-control-{interceptor_type}-parallel-capacity-{capacity}-011*.json.output"
+        outputFile = f"social-{method}-control-{interceptor_type}-parallel-capacity-{capacity}-01*.json.output"
     return os.path.join(directory, outputFile)
+
+
+def find_method_file_sets(directory, methods, capacity):
+    # Regex pattern modified to include the capacity
+    regex_pattern = rf"social-(?P<method>.+)-control-.+-parallel-capacity-{capacity}-(?P<identifier>.+)\.json\.output"
+
+    # Find all files in the directory
+    all_files = glob.glob(os.path.join(directory, f"social-*.json.output"))
+
+    # Group files by their common identifier
+    file_groups = defaultdict(lambda: {method: None for method in methods})
+    for file in all_files:
+        match = re.match(regex_pattern, os.path.basename(file))
+        if match:
+            method = match.group('method')
+            identifier = match.group('identifier')
+            if method in methods:
+                file_groups[identifier][method] = file
+
+    # Filter groups to only include complete sets (one file for each method)
+    complete_sets = [list(group.values()) for group in file_groups.values() if all(group.values())]
+
+    return complete_sets
+
 
 def parse_configurations(config_str):
     # Remove potential \n[ 
@@ -232,6 +258,41 @@ def parse_configurations(config_str):
     return config_dict
 
 def check_previous_run_exists(interceptor_type, method, capacity, combined_params, existing_files=None):
+    if method == "all-methods-social":
+        sub_methods = ["user-timeline", "home-timeline", "compose"]
+    if method == "all-methods-hotel":
+        sub_methods = ["hotels-http", "reservation-http", "user-http", "recommendations-http"]
+    if method == "all-methods-social" or method == "all-methods-hotel":
+        # return a list of files that match the parameters
+        filesets = find_method_file_sets(os.path.expanduser('~/Sync/Git/protobuf/ghz-results/'), sub_methods, capacity)
+        # append the file to the list only when all sub-methods have the same timestamp
+        # if all sub-methods have the same timestamp, return the list of files
+        for files in filesets:
+            if existing_files is not None:
+                # Extract the timestamp from the filename
+                timestamp = files[0].split('-')[-1].split('.')[0]
+                # Skip this file if the timestamp is in the existing_files
+                if timestamp in existing_files[0]:
+                    continue
+            try:
+                with open(files[0], 'r') as file:
+                    content = file.read()
+
+                    if 'Charon Configurations:' in content:
+                        # Extract the configurations string from the file
+                        start = content.find('Charon Configurations:') + len('Charon Configurations:')
+                        end = content.find(']', start) + 1
+                        file_config_str = content[start:end]
+                        file_config_dict = parse_configurations(file_config_str)
+                        combined_params_dict = {key: str(value) for key, value in combined_params.items()}
+
+                        # if file_config_dict is a subset or superset of combined_params_dict
+                        common_keys = set(file_config_dict.keys()) & set(combined_params_dict.keys())
+                        if all(file_config_dict[key] == combined_params_dict[key] for key in common_keys):
+                            return list(files)
+            except Exception as e:
+                print(f"Error reading file {files[0]}: {e}")
+
     # Generate the expected output filename
     output_filename_pattern = generate_output_filename(interceptor_type, method, capacity)
     
@@ -287,14 +348,15 @@ def run_experiments(interceptor_type, load, previous_run, **params):
     # Prepare the environment variable command string
     # env_vars_command = ' '.join(f'export {key}="{value}";' for key, value in combined_params.items())
 
-    if 'all' in method:
-        previous_run = 'skip'
-
+    # previous_run = 'skip'
     # Check if a previous run exists with the same parameters
     if previous_run == '' or previous_run is None:
         preRun = check_previous_run_exists(interceptor_type, method, load, combined_params)
         if preRun is not None:
-            print("[PrevRan] A previous run with the same parameters exists.")
+            print(f"[PrevRan] A previous run with the same parameters exists: {preRun}")
+            if 'all' in method:
+                # preRun is a list of files, return the list of files without the .output
+                return [f.split('.output')[0] for f in preRun]
             return preRun.split('.output')[0]
         else:
             print("[PrevRan] No previous run with the same parameters found. Proceed with the experiment.")
@@ -304,7 +366,11 @@ def run_experiments(interceptor_type, load, previous_run, **params):
         print("[PrevRan] found a previous run file:", previous_run, ". Now try to find another file with the same parameters.")
         preRun = check_previous_run_exists(interceptor_type, method, load, combined_params, previous_run)
         if preRun is not None:
-            print("A previous run with the same parameters exists.")
+            print(f"[2nd PrevRan] A previous run with the same parameters exists: {preRun}")
+            if 'all' in method:
+                # preRun is a list of files, return the list of files without the .output
+                # print([f.split('.output')[0] for f in preRun])
+                return [f.split('.output')[0] for f in preRun]
             return preRun.split('.output')[0]
         else:
             print("[PrevRan] No previous run with the same parameters found. Proceed with the experiment.")
@@ -493,13 +559,16 @@ def objective_charon(price_update_rate, token_update_rate, latency_threshold, pr
     return objective_dual('charon', price_update_rate=price_update_rate, token_update_rate=token_update_rate, latency_threshold=latency_threshold, price_step=price_step)
 
 
-def objective_breakwater(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration):
-    return objective_dual('breakwater', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b, breakwater_initial_credit=breakwater_initial_credit, breakwater_client_expiration=breakwater_client_expiration)
+def objective_breakwater(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration, breakwater_rtt):
+    return objective_dual('breakwater', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b,
+                          breakwater_initial_credit=breakwater_initial_credit, breakwater_client_expiration=breakwater_client_expiration, breakwater_rtt=breakwater_rtt)
 
-def objective_breakwaterd(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration, \
-                          breakwaterd_slo, breakwaterd_a, breakwaterd_b, breakwaterd_initial_credit, breakwaterd_client_expiration):
-    return objective_dual('breakwaterd', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b, breakwater_initial_credit=breakwater_initial_credit, breakwater_client_expiration=breakwater_client_expiration,
-                        breakwaterd_slo=breakwaterd_slo, breakwaterd_a=breakwaterd_a, breakwaterd_b=breakwaterd_b, breakwaterd_initial_credit=breakwaterd_initial_credit, breakwaterd_client_expiration=breakwaterd_client_expiration)
+def objective_breakwaterd(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration, breakwater_rtt,
+                          breakwaterd_slo, breakwaterd_a, breakwaterd_b, breakwaterd_initial_credit, breakwaterd_client_expiration, breakwaterd_rtt):
+    return objective_dual('breakwaterd', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b, breakwater_initial_credit=breakwater_initial_credit, 
+                          breakwater_client_expiration=breakwater_client_expiration, breakwaterd_slo=breakwaterd_slo, breakwaterd_a=breakwaterd_a, 
+                          breakwaterd_b=breakwaterd_b, breakwaterd_initial_credit=breakwaterd_initial_credit, breakwaterd_client_expiration=breakwaterd_client_expiration,
+                          breakwater_rtt=breakwater_rtt, breakwaterd_rtt=breakwaterd_rtt)
 
 
 def objective_dagor(dagor_queuing_threshold, dagor_alpha, dagor_beta, dagor_admission_level_update_interval, dagor_umax):
@@ -562,6 +631,7 @@ def roundDownParams(params):
         if key in ['PRICE_UPDATE_RATE', 'TOKEN_UPDATE_RATE', 'LATENCY_THRESHOLD', \
                    'BREAKWATER_SLO', 'BREAKWATER_CLIENT_EXPIRATION', \
                    'BREAKWATERD_SLO', 'BREAKWATERD_CLIENT_EXPIRATION', \
+                   'BREAKWATER_RTT', 'BREAKWATERD_RTT', \
                    'DAGOR_QUEUING_THRESHOLD', 'DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL']:
             # if there is already a `us` or `ms` at the end of the value, don't add another `us`
             # if it is a string
@@ -613,9 +683,10 @@ def main():
         # the range above is too large... I will use the following range based on the empirical results {BREAKWATER_SLO 749158us} {BREAKWATER_A 11.692336257688945} {BREAKWATER_B 0.004983989475762508} {B    REAKWATER_CLIENT_EXPIRATION 13317us} {BREAKWATER_INITIAL_CREDIT 59} 
         'breakwater_slo': (100, 5000),
         'breakwater_a': (0, 20),
-        'breakwater_b': (0, 1),
+        'breakwater_b': (0, 2),
         'breakwater_initial_credit': (1, 2000),
         'breakwater_client_expiration': (0, 5000),
+        'breakwater_rtt': (0, 20000),
     }
 
     pbounds_breakwaterd = {
@@ -629,6 +700,8 @@ def main():
         'breakwaterd_b': (0, 30),
         'breakwaterd_initial_credit': (1, 1000),
         'breakwaterd_client_expiration': (10000, 40000),
+        'breakwater_rtt': (1000, 20000),
+        'breakwaterd_rtt': (1000, 20000),
     }
 
     pbounds_dagor = {
@@ -643,48 +716,54 @@ def main():
         # loosen the control target for charon and breakwater.
         pbounds_charon['latency_threshold'] = (100, 10000)
         pbounds_breakwater['breakwater_slo'] = (100, 20000)
-        # pbounds_breakwaterd['breakwater_slo'] = (10000, 50000)
-        # pbounds_breakwaterd['breakwaterd_slo'] = (20000, 50000)
-        # pbounds_dagor['dagor_queuing_threshold'] = (100000, 500000)
+        pbounds_breakwaterd['breakwater_a'] = (0, 30)
+        pbounds_dagor['dagor_queuing_threshold'] = (100000, 500000)  # Example range
+        pbounds_dagor['dagor_alpha'] = (0, 2)              # Example range
+        pbounds_dagor['dagor_admission_level_update_interval'] = (100, 20000)
 
-    if 'all' in method:
+        
+        if 'S_16' in method:
+            pbounds_charon['latency_threshold'] = (100, 30000)
+        if 'S_14' in method:
+            # pbounds_breakwater['breakwater_a'] = (0, 30)
+            pbounds_charon['price_update_rate'] = (1000, 40000)
+            pbounds_charon['token_update_rate'] = (1000, 40000)
+        # if 'S_10' in method:
+        #     pbounds_breakwater['breakwater_a'] = (0, 30)
+
+    # if 'all' in method:
         # change the pbounds for 4 mechanisms
-        pbounds_charon = {
-            'price_update_rate': (1000, 30000), 
-            'token_update_rate': (5000, 25000), 
-            'price_step': (10, 80),
-            'latency_threshold': (100, 2500),
-        }
-        pbounds_breakwater = {
-            'breakwater_slo': (1000, 50000),
-            'breakwater_a': (0, 2),
-            'breakwater_b': (0, 1),
-            'breakwater_initial_credit': (1, 1000),
-            'breakwater_client_expiration': (10, 10000),
-        }
-        pbounds_breakwaterd = {
-            'breakwater_slo': (20000, 50000),
-            'breakwater_a': (0, 2),
-            'breakwater_b': (0, 1),
-            'breakwater_initial_credit': (1, 500),
-            'breakwater_client_expiration': (1, 5000),
-            'breakwaterd_slo': (30000, 80000),
-            'breakwaterd_a': (0, 10),
-            'breakwaterd_b': (0, 20),
-            'breakwaterd_initial_credit': (10, 500),
-            'breakwaterd_client_expiration': (10000, 40000),
-        }
-        pbounds_dagor = {
-            'dagor_queuing_threshold': (100000, 500000),  # Example range
-            'dagor_alpha': (0, 1.5),              # Example range
-            'dagor_beta': (0, 2),             # Example range
-            'dagor_admission_level_update_interval': (10000, 20000),  # Example range
-            'dagor_umax': (2, 20)  # Example range
-        }
-    optimizeCharon = True
+        # pbounds_charon['price_step'] = (10, 80)
+        # pbounds_breakwater = {
+        #     'breakwater_slo': (100, 20000),
+        #     'breakwater_a': (0, 2),
+        #     'breakwater_b': (0, 1),
+        #     'breakwater_initial_credit': (1, 1000),
+        #     'breakwater_client_expiration': (10, 10000),
+        # }
+        # pbounds_breakwaterd = {
+        #     'breakwater_slo': (20000, 50000),
+        #     'breakwater_a': (0, 2),
+        #     'breakwater_b': (0, 1),
+        #     'breakwater_initial_credit': (1, 500),
+        #     'breakwater_client_expiration': (1, 5000),
+        #     'breakwaterd_slo': (30000, 80000),
+        #     'breakwaterd_a': (0, 10),
+        #     'breakwaterd_b': (0, 20),
+        #     'breakwaterd_initial_credit': (10, 500),
+        #     'breakwaterd_client_expiration': (10000, 40000),
+        # }
+        # pbounds_dagor = {
+        #     'dagor_queuing_threshold': (100000, 500000),  # Example range
+        #     'dagor_alpha': (0, 1.5),              # Example range
+        #     'dagor_beta': (0, 2),             # Example range
+        #     'dagor_admission_level_update_interval': (10000, 20000),  # Example range
+        #     'dagor_umax': (2, 20)  # Example range
+        # }
+    optimizeCharon = False
     optimizeBreakwater = True
-    optimizeBreakwaterD = True
-    optimizeDagor = True
+    optimizeBreakwaterD = False
+    optimizeDagor = False
 
     # run the experiments with the interceptors for all capacities
     if '8000' in capacity:
@@ -693,7 +772,7 @@ def main():
         capacity_range = range(6000, 12500, 500)
 
     if 'all' in method:
-        capacity_range = range(2000, 9000, 500)
+        capacity_range = range(2000, 9500, 500)
 
     timestamp = datetime.datetime.now().strftime("%m-%d")
     print("Timestamp:", timestamp)
@@ -757,10 +836,10 @@ def main():
                 print(f"[Post Opt] Analyzing file and run experiments in loop for {opt_name}:", bayesian_result)
                 run_experiments_loop(opt_name, bayesian_result['parameters'], capact, method)
     
-    # run the experiments without interceptors too for all capacities
-    for capact in capacity_range:
-        print("[Post Opt] Analyzing file and run experiments in loop for no-interceptor:")
-        run_experiments_loop('plain', {}, capact, method)
+    # # run the experiments without interceptors too for all capacities
+    # for capact in capacity_range:
+    #     print("[Post Opt] Analyzing file and run experiments in loop for no-interceptor:")
+    #     run_experiments_loop('plain', {}, capact, method)
 
 
 def check_goodput(file):
@@ -807,7 +886,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 2:
         tightSLO = sys.argv[2] == 'tightSLO'
     
-    capacity = 'gpt2-8000'
+    capacity = 'gpt1-8000' if 'S_' in method else 'gpt2-8000'
     maximum_goodput = 5000
     if method == 'S_102000854':
         capacity = 'gpt1-10000'
@@ -817,12 +896,12 @@ if __name__ == '__main__':
     if method == 'all-methods-social':
         capacity = 'gpt1-6000'
     if method == 'all-methods-hotel':
-        capacity = 'gpt1-6000'
+        capacity = 'gpt1-8000'
 
     # set the SLO based on the method
     SLO = get_slo(method, tight=tightSLO)
 
-    
+
 
     main()
 

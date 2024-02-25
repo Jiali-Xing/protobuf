@@ -1,11 +1,11 @@
 {
-    "target": 0.7207618477985801,
+    "target": 0.9360361139918848,
     "parameters": {
-        "DAGOR_QUEUING_THRESHOLD": "164008us",
-        "DAGOR_ALPHA": 0.04292670500595219,
-        "DAGOR_BETA": 0.10926301132512634,
-        "DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL": "15491us",
-        "DAGOR_UMAX": 4
+        "DAGOR_QUEUING_THRESHOLD": "203590us",
+        "DAGOR_ALPHA": 0.8627866233202599,
+        "DAGOR_BETA": 0.10524778698458942,
+        "DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL": "18380us",
+        "DAGOR_UMAX": 3
     },
     "method": "compose",
     "capacity": "gpt2-8000",

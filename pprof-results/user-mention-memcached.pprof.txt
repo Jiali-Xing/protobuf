@@ -1,145 +1,294 @@
-Total: 9.77s
-ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).LoadShedding in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231218004508-02fcb62b050a/charon.go
-         0       20ms (flat, cum)   0.2% of Total
-         .          .     97:func (pt *PriceTable) LoadShedding(ctx context.Context, tokens int64, methodName string) (int64, error) {
-         .          .     98:	// if pt.loadShedding is false, then return tokens and nil error
-         .          .     99:	if !pt.loadShedding {
-         .          .    100:		return tokens, nil
-         .          .    101:	}
-         .          .    102:
-         .       20ms    103:	ownPrice_string, _ := pt.priceTableMap.Load("ownprice")
-         .          .    104:	ownPrice := ownPrice_string.(int64)
-         .          .    105:	downstreamPrice, _ := pt.RetrieveDSPrice(ctx, methodName)
-         .          .    106:
-         .          .    107:	if pt.priceAggregation == "maximal" {
-         .          .    108:		if tokens > ownPrice && tokens > downstreamPrice {
-ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).UnaryInterceptor in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231218004508-02fcb62b050a/charon.go
-      10ms      1.05s (flat, cum) 10.75% of Total
-         .          .    347:func (pt *PriceTable) UnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-         .          .    348:	// This is the server side interceptor, it should check tokens, update price, do overload handling and attach price to response
-         .          .    349:	startTime := time.Now()
-         .          .    350:
-         .      190ms    351:	md, ok := metadata.FromIncomingContext(ctx)
-         .          .    352:	if !ok {
-         .          .    353:		return nil, errMissingMetadata
-         .          .    354:	}
-         .          .    355:
-         .          .    356:	// print all the k-v pairs in the metadata md
-         .          .    357:	// for k, v := range md {
-         .          .    358:	// 	logger("[Received Req]:	The metadata for request is %s: %s\n", k, v)
-         .          .    359:	// }
-         .          .    360:	if debug {
-         .          .    361:		var metadataLog string
-         .          .    362:		for k, v := range md {
-         .          .    363:			metadataLog += fmt.Sprintf("%s: %s, ", k, v)
-         .          .    364:		}
-         .          .    365:		if metadataLog != "" {
-         .          .    366:			logger("[Received Req]: The metadata for request is %s\n", metadataLog)
-         .          .    367:		}
-         .          .    368:	}
-         .          .    369:
-         .          .    370:	// Jiali: overload handler, do AQM, deduct the tokens on the request, update price info
-         .          .    371:	var tok int64
-         .          .    372:	var err error
-         .          .    373:	// if the price are additive, then the tokens are stored in the "tokens" or tokens-nodeName field of the metadata
-      10ms       10ms    374:	if pt.priceAggregation == "additive" {
-         .          .    375:		if val, ok := md["tokens-"+pt.nodeName]; ok {
-         .          .    376:			// logger("[Received Req]:	tokens for %s are %s\n", pt.nodeName, val)
-         .          .    377:			// raise error if the val length is not 1
-         .          .    378:			if len(val) > 1 {
-         .          .    379:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
-         .          .    380:			} else if len(val) == 0 {
-         .          .    381:				return nil, errMissingMetadata
-         .          .    382:			}
-         .          .    383:			tok, _ = strconv.ParseInt(val[0], 10, 64)
-         .          .    384:		} else {
-         .          .    385:			logger("[Received Req]:	tokens are %s\n", md["tokens"])
-         .          .    386:			// raise error if the tokens length is not 1
-         .          .    387:			if len(md["tokens"]) > 1 {
-         .          .    388:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
-         .          .    389:			} else if len(md["tokens"]) == 0 {
-         .          .    390:				return nil, errMissingMetadata
-         .          .    391:			}
-         .          .    392:			tok, _ = strconv.ParseInt(md["tokens"][0], 10, 64)
-         .          .    393:		}
-         .          .    394:	} else if pt.priceAggregation == "maximal" {
-         .          .    395:		// if the price are maximal, then the tokens are stored in the "tokens" field of the metadata
-         .       10ms    396:		if val, ok := md["tokens"]; ok {
-         .          .    397:			// logger("[Received Req]:	tokens for %s are %s\n", pt.nodeName, val)
-         .          .    398:			// raise error if the val length is not 1
-         .          .    399:			if len(val) > 1 {
-         .          .    400:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
-         .          .    401:			} else if len(val) == 0 {
-         .          .    402:				return nil, errMissingMetadata
-         .          .    403:			}
-         .       10ms    404:			tok, _ = strconv.ParseInt(val[0], 10, 64)
-         .          .    405:		}
-         .          .    406:	}
-         .          .    407:
-         .          .    408:	// overload handler:
-         .          .    409:	methodName := md["method"][0]
-         .       20ms    410:	tokenleft, err := pt.LoadShedding(ctx, tok, methodName)
-         .          .    411:	if err == InsufficientTokens && pt.loadShedding {
-         .          .    412:		price_string, _ := pt.RetrieveTotalPrice(ctx, methodName)
-         .          .    413:		header := metadata.Pairs("price", price_string, "name", pt.nodeName)
-         .          .    414:		logger("[Sending Error Resp]:	Total price is %s\n", price_string)
-         .          .    415:		grpc.SendHeader(ctx, header)
-         .          .    416:
-         .          .    417:		// totalLatency := time.Since(startTime)
-         .          .    418:		// logger("[Server-side Timer] Processing Duration is: %.2d milliseconds\n", totalLatency.Milliseconds())
-         .          .    419:
-         .          .    420:		// if pt.pinpointLatency {
-         .          .    421:		// 	if totalLatency > pt.observedDelay {
-         .          .    422:		// 		pt.observedDelay = totalLatency // update the observed delay
-         .          .    423:		// 	}
-         .          .    424:		// }
-         .          .    425:		// return nil, status.Errorf(codes.ResourceExhausted, "req dropped, try again later")
-         .          .    426:		return nil, status.Errorf(codes.ResourceExhausted, "%s req dropped by %s. Try again later.", methodName, pt.nodeName)
-         .          .    427:	}
-         .          .    428:	if err != nil && err != InsufficientTokens {
-         .          .    429:		// The limiter failed. This error should be logged and examined.
-         .          .    430:		log.Println(err)
-         .          .    431:		return nil, status.Error(codes.Internal, "internal error")
-         .          .    432:	}
-         .          .    433:
-         .          .    434:	// tok_string := strconv.FormatInt(tokenleft, 10)
-         .          .    435:	// logger("[Preparing Sub Req]:	Token left is %s\n", tok_string)
-         .          .    436:
-         .          .    437:	if pt.priceAggregation == "additive" {
-         .          .    438:		// [critical] Jiali: Being outgoing seems to be critical for us.
-         .          .    439:		// Jiali: we need to attach the token info to the context, so that the downstream can retrieve it.
-         .          .    440:		// ctx = metadata.AppendToOutgoingContext(ctx, "tokens", tok_string)
-         .          .    441:		// Jiali: we actually need multiple kv pairs for the token information, because one context is sent to multiple downstreams.
-         .          .    442:		downstreamTokens, _ := pt.SplitTokens(ctx, tokenleft, methodName)
-         .          .    443:
-         .          .    444:		ctx = metadata.AppendToOutgoingContext(ctx, downstreamTokens...)
-         .          .    445:
-         .          .    446:	}
-         .          .    447:	// queuingDelay := time.Since(startTime)
-         .          .    448:	// logger("[Server-side Timer] Queuing delay is: %.2d milliseconds\n", queuingDelay.Milliseconds())
-         .          .    449:
-         .          .    450:	// if pt.pinpointQueuing {
-         .          .    451:	// 	// increment the counter and add the queuing delay to the observed delay
-         .          .    452:	// 	pt.Increment()
-         .          .    453:	// 	pt.observedDelay += queuingDelay
-         .          .    454:	// }
-         .          .    455:
-         .          .    456:	if pt.pinpointLatency {
-         .          .    457:		totalLatency := time.Since(startTime)
-         .          .    458:		// log the total latency in unit of millisecond, decimal precision 2
-         .          .    459:		logger("[Server-side Interceptor] Overhead is: %.2f milliseconds\n", float64(totalLatency.Microseconds())/1000)
-         .          .    460:
-         .          .    461:		// if totalLatency > pt.observedDelay {
-         .          .    462:		// 	pt.observedDelay = totalLatency // update the observed delay
-         .          .    463:		// }
-         .          .    464:
-         .          .    465:		// change the observed delay to the average latency, first, sum the latency and increment the counter
-         .          .    466:		pt.Increment()
-         .          .    467:		pt.observedDelay += totalLatency
-         .          .    468:	}
-         .      810ms    469:	m, err := handler(ctx, req)
-         .          .    470:
-         .          .    471:	// Attach the price info to response before sending
-         .          .    472:	// right now let's just propagate the corresponding price of the RPC method rather than a whole pricetable.
-         .          .    473:	// if not pt.lazyResponse
-         .          .    474:	if !pt.lazyResponse {
+Total: 1.49s
+ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).LoadShedding in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/charon.go
+         0       10ms (flat, cum)  0.67% of Total
+         .          .     98:func (pt *PriceTable) LoadShedding(ctx context.Context, tokens int64, methodName string) (int64, string, error) {
+         .          .     99:	// if pt.loadShedding is false, then return tokens and nil error
+         .          .    100:	if !pt.loadShedding {
+         .          .    101:		totalPrice, _ := pt.RetrieveTotalPrice(ctx, methodName)
+         .          .    102:		return tokens, totalPrice, nil
+         .          .    103:	}
+         .          .    104:
+         .          .    105:	ownPrice_string, _ := pt.priceTableMap.Load("ownprice")
+         .          .    106:	ownPrice := ownPrice_string.(int64)
+         .       10ms    107:	downstreamPrice, _ := pt.RetrieveDSPrice(ctx, methodName)
+         .          .    108:
+         .          .    109:	if pt.priceAggregation == "maximal" {
+         .          .    110:		// take the max of ownPrice and downstreamPrice
+         .          .    111:		if ownPrice < downstreamPrice {
+         .          .    112:			ownPrice = downstreamPrice
+ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).RetrieveDSPrice in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/tokenAndPrice.go
+         0       10ms (flat, cum)  0.67% of Total
+         .          .     42:func (pt *PriceTable) RetrieveDSPrice(ctx context.Context, methodName string) (int64, error) {
+         .          .     43:	// load the downstream price from the price table with method name as key.
+         .       10ms     44:	downstreamPrice_string, ok := pt.priceTableMap.Load(methodName)
+         .          .     45:	if !ok || downstreamPrice_string == nil {
+         .          .     46:		return 0, errors.New("price not found")
+         .          .     47:	}
+         .          .     48:
+         .          .     49:	downstreamPrice, ok := downstreamPrice_string.(int64)
+ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).UnaryInterceptor in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/charon.go
+      10ms      470ms (flat, cum) 31.54% of Total
+         .          .    346:func (pt *PriceTable) UnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+         .          .    347:	// This is the server side interceptor, it should check tokens, update price, do overload handling and attach price to response
+         .          .    348:	startTime := time.Now()
+         .          .    349:
+         .       10ms    350:	md, ok := metadata.FromIncomingContext(ctx)
+         .          .    351:	if !ok {
+         .          .    352:		return nil, errMissingMetadata
+         .          .    353:	}
+         .          .    354:
+         .          .    355:	// print all the k-v pairs in the metadata md
+         .          .    356:	// for k, v := range md {
+         .          .    357:	// 	logger("[Received Req]:	The metadata for request is %s: %s\n", k, v)
+         .          .    358:	// }
+         .          .    359:	if debug {
+         .          .    360:		var metadataLog string
+         .          .    361:		for k, v := range md {
+      10ms       20ms    362:			metadataLog += fmt.Sprintf("%s: %s, ", k, v)
+         .          .    363:		}
+         .          .    364:		if metadataLog != "" {
+         .       20ms    365:			logger("[Received Req]: The metadata for request is %s\n", metadataLog)
+         .          .    366:		}
+         .          .    367:	}
+         .          .    368:
+         .          .    369:	// Jiali: overload handler, do AQM, deduct the tokens on the request, update price info
+         .          .    370:	var tok int64
+         .          .    371:	var err error
+         .          .    372:	// if the price are additive, then the tokens are stored in the "tokens" or tokens-nodeName field of the metadata
+         .          .    373:	if pt.priceAggregation == "additive" {
+         .          .    374:		if val, ok := md["tokens-"+pt.nodeName]; ok {
+         .          .    375:			// logger("[Received Req]:	tokens for %s are %s\n", pt.nodeName, val)
+         .          .    376:			// raise error if the val length is not 1
+         .          .    377:			if len(val) > 1 {
+         .          .    378:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
+         .          .    379:			} else if len(val) == 0 {
+         .          .    380:				return nil, errMissingMetadata
+         .          .    381:			}
+         .          .    382:			tok, _ = strconv.ParseInt(val[0], 10, 64)
+         .          .    383:		} else {
+         .          .    384:			logger("[Received Req]:	tokens are %s\n", md["tokens"])
+         .          .    385:			// raise error if the tokens length is not 1
+         .          .    386:			if len(md["tokens"]) > 1 {
+         .          .    387:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
+         .          .    388:			} else if len(md["tokens"]) == 0 {
+         .          .    389:				return nil, errMissingMetadata
+         .          .    390:			}
+         .          .    391:			tok, _ = strconv.ParseInt(md["tokens"][0], 10, 64)
+         .          .    392:		}
+         .          .    393:	} else if pt.priceAggregation == "maximal" {
+         .          .    394:		// if the price are maximal, then the tokens are stored in the "tokens" field of the metadata
+         .          .    395:		if val, ok := md["tokens"]; ok {
+         .          .    396:			// logger("[Received Req]:	tokens for %s are %s\n", pt.nodeName, val)
+         .          .    397:			// raise error if the val length is not 1
+         .          .    398:			if len(val) > 1 {
+         .          .    399:				return nil, status.Errorf(codes.InvalidArgument, "duplicated tokens")
+         .          .    400:			} else if len(val) == 0 {
+         .          .    401:				return nil, errMissingMetadata
+         .          .    402:			}
+         .          .    403:			tok, _ = strconv.ParseInt(val[0], 10, 64)
+         .          .    404:		}
+         .          .    405:	}
+         .          .    406:
+         .          .    407:	// overload handler:
+         .          .    408:	methodName := md["method"][0]
+         .       10ms    409:	tokenleft, price_string, err := pt.LoadShedding(ctx, tok, methodName)
+         .          .    410:	if err == InsufficientTokens && pt.loadShedding {
+         .          .    411:		// price_string, _ := pt.RetrieveTotalPrice(ctx, methodName)
+         .          .    412:		header := metadata.Pairs("price", price_string, "name", pt.nodeName)
+         .          .    413:		logger("[Sending Error Resp]:	Total price is %s\n", price_string)
+         .          .    414:		grpc.SendHeader(ctx, header)
+         .          .    415:
+         .          .    416:		// totalLatency := time.Since(startTime)
+         .          .    417:		// logger("[Server-side Timer] Processing Duration is: %.2d milliseconds\n", totalLatency.Milliseconds())
+         .          .    418:
+         .          .    419:		// if pt.pinpointLatency {
+         .          .    420:		// 	if totalLatency > pt.observedDelay {
+         .          .    421:		// 		pt.observedDelay = totalLatency // update the observed delay
+         .          .    422:		// 	}
+         .          .    423:		// }
+         .          .    424:		// return nil, status.Errorf(codes.ResourceExhausted, "req dropped, try again later")
+         .          .    425:		return nil, status.Errorf(codes.ResourceExhausted, "%s req dropped by %s. Try again later.", methodName, pt.nodeName)
+         .          .    426:	}
+         .          .    427:	if err != nil && err != InsufficientTokens {
+         .          .    428:		// The limiter failed. This error should be logged and examined.
+         .          .    429:		log.Println(err)
+         .          .    430:		return nil, status.Error(codes.Internal, "internal error")
+         .          .    431:	}
+         .          .    432:
+         .          .    433:	// tok_string := strconv.FormatInt(tokenleft, 10)
+         .          .    434:	// logger("[Preparing Sub Req]:	Token left is %s\n", tok_string)
+         .          .    435:
+         .          .    436:	if pt.priceAggregation == "additive" {
+         .          .    437:		// [critical] Jiali: Being outgoing seems to be critical for us.
+         .          .    438:		// Jiali: we need to attach the token info to the context, so that the downstream can retrieve it.
+         .          .    439:		// ctx = metadata.AppendToOutgoingContext(ctx, "tokens", tok_string)
+         .          .    440:		// Jiali: we actually need multiple kv pairs for the token information, because one context is sent to multiple downstreams.
+         .          .    441:		downstreamTokens, _ := pt.SplitTokens(ctx, tokenleft, methodName)
+         .          .    442:
+         .          .    443:		ctx = metadata.AppendToOutgoingContext(ctx, downstreamTokens...)
+         .          .    444:
+         .          .    445:	}
+         .          .    446:	// queuingDelay := time.Since(startTime)
+         .          .    447:	// logger("[Server-side Timer] Queuing delay is: %.2d milliseconds\n", queuingDelay.Milliseconds())
+         .          .    448:
+         .          .    449:	// if pt.pinpointQueuing {
+         .          .    450:	// 	// increment the counter and add the queuing delay to the observed delay
+         .          .    451:	// 	pt.Increment()
+         .          .    452:	// 	pt.observedDelay += queuingDelay
+         .          .    453:	// }
+         .          .    454:
+         .          .    455:	if pt.pinpointLatency {
+         .          .    456:		totalLatency := time.Since(startTime)
+         .          .    457:		// log the total latency in unit of millisecond, decimal precision 2
+         .          .    458:		logger("[Server-side Interceptor] Overhead is: %.2f milliseconds\n", float64(totalLatency.Microseconds())/1000)
+         .          .    459:
+         .          .    460:		// if totalLatency > pt.observedDelay {
+         .          .    461:		// 	pt.observedDelay = totalLatency // update the observed delay
+         .          .    462:		// }
+         .          .    463:
+         .          .    464:		// change the observed delay to the average latency, first, sum the latency and increment the counter
+         .          .    465:		pt.Increment()
+         .          .    466:		pt.observedDelay += totalLatency
+         .          .    467:	}
+         .      380ms    468:	m, err := handler(ctx, req)
+         .          .    469:
+         .          .    470:	// Attach the price info to response before sending
+         .          .    471:	// right now let's just propagate the corresponding price of the RPC method rather than a whole pricetable.
+         .          .    472:	// if not pt.lazyResponse or if pt.lazyResponse is true but the tokenleft is smaller than
+         .          .    473:	if !pt.lazyResponse || tokenleft*10 < tok {
+         .          .    474:		// price_string, _ := pt.RetrieveTotalPrice(ctx, methodName)
+         .          .    475:		header := metadata.Pairs("price", price_string, "name", pt.nodeName)
+         .          .    476:		logger("[Preparing Resp]:	Total price of %s is %s\n", methodName, price_string)
+         .          .    477:		grpc.SendHeader(ctx, header)
+         .          .    478:	} else {
+         .       30ms    479:		logger("[Preparing Resp]:	Lazy response is enabled, no price attached to response.\n")
+         .          .    480:	}
+         .          .    481:
+         .          .    482:	if err != nil {
+         .          .    483:		logger("RPC failed with error %v", err)
+         .          .    484:	}
+ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).UpdatePricebyQueueDelay in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/tokenAndPrice.go
+         0       20ms (flat, cum)  1.34% of Total
+         .          .    131:func (pt *PriceTable) UpdatePricebyQueueDelay(ctx context.Context) error {
+         .          .    132:	ownPrice_string, _ := pt.priceTableMap.Load("ownprice")
+         .          .    133:	ownPrice := ownPrice_string.(int64)
+         .          .    134:
+         .          .    135:	// read the gapLatency from context ctx
+         .          .    136:	gapLatency := ctx.Value("gapLatency").(float64)
+         .          .    137:	// Calculate the priceStep as a fraction of the difference between gapLatency and latencyThreshold
+         .          .    138:
+         .          .    139:	diff := int64(gapLatency*1000) - pt.latencyThreshold.Microseconds()
+         .          .    140:	adjustment := pt.calculatePriceAdjustment(diff)
+         .          .    141:
+         .          .    142:	logger("[Update Price by Queue Delay]: Own price %d, step %d\n", ownPrice, adjustment)
+         .          .    143:
+         .          .    144:	ownPrice += adjustment
+         .          .    145:	// Set reservePrice to the larger of pt.guidePrice and 0
+         .          .    146:	reservePrice := int64(math.Max(float64(pt.guidePrice), 0))
+         .          .    147:
+         .          .    148:	if ownPrice <= reservePrice {
+         .          .    149:		ownPrice = reservePrice
+         .          .    150:	}
+         .          .    151:
+         .          .    152:	pt.priceTableMap.Store("ownprice", ownPrice)
+         .       20ms    153:	logger("[Update Price by Queue Delay]: Own price updated to %d\n", ownPrice)
+         .          .    154:
+         .          .    155:	return nil
+         .          .    156:}
+         .          .    157:
+         .          .    158:// UpdatePricebyQueueDelayExp uses exponential function to adjust the price step.
+ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).queuingCheck in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/overloadDetection.go
+         0       70ms (flat, cum)  4.70% of Total
+         .          .     35:func (pt *PriceTable) queuingCheck() {
+         .          .     36:	// init a null histogram
+         .          .     37:	var prevHist *metrics.Float64Histogram
+         .          .     38:	for range time.Tick(pt.priceUpdateRate) {
+         .          .     39:		// start a timer to measure the query latency
+         .          .     40:		start := time.Now()
+         .          .     41:		// get the current histogram
+         .       20ms     42:		currHist := readHistogram()
+         .          .     43:		/*
+         .          .     44:			// calculate the differernce between the two histograms prevHist and currHist
+         .          .     45:			diff := metrics.Float64Histogram{}
+         .          .     46:			// if preHist is empty pointer, return currHist
+         .          .     47:			if prevHist == nil {
+         .          .     48:				diff = *currHist
+         .          .     49:			} else {
+         .          .     50:				diff = GetHistogramDifference(*prevHist, *currHist)
+         .          .     51:			}
+         .          .     52:			// maxLatency is the max of the histogram in milliseconds.
+         .          .     53:			gapLatency := maximumBucket(&diff)
+         .          .     54:		*/
+         .          .     55:		if prevHist == nil {
+         .          .     56:			// directly go to next iteration
+         .          .     57:			prevHist = currHist
+         .          .     58:			continue
+         .          .     59:		}
+         .          .     60:		gapLatency := maximumQueuingDelayms(prevHist, currHist)
+         .          .     61:		// medianLatency := medianBucket(&diff)
+         .          .     62:		// gapLatency := percentileBucket(&diff, 90)
+         .          .     63:
+         .          .     64:		ctx := context.Background()
+         .          .     65:
+         .          .     66:		// ToDo: move the print of the histogram to a file
+         .          .     67:		/*
+         .          .     68:			cumulativeLat := medianBucket(currHist)
+         .          .     69:			// printHistogram(currHist)
+         .          .     70:			logger("[Cumulative Waiting Time Median]:	%f ms.\n", cumulativeLat)
+         .          .     71:			// printHistogram(&diff)
+         .          .     72:			logger("[Incremental Waiting Time 90-tile]:	%f ms.\n", percentileBucket(&diff, 90))
+         .          .     73:			logger("[Incremental Waiting Time Median]:	%f ms.\n", medianBucket(&diff))
+         .          .     74:			logger("[Incremental Waiting Time Maximum]:	%f ms.\n", maximumBucket(&diff))
+         .          .     75:		*/
+         .       20ms     76:		logger("[Incremental Waiting Time Maximum]:	%f ms.\n", gapLatency)
+         .          .     77:		// store the gapLatency in the context ctx
+         .          .     78:		ctx = context.WithValue(ctx, "gapLatency", gapLatency)
+         .          .     79:
+         .          .     80:		if pt.priceStrategy == "step" {
+         .          .     81:			pt.UpdateOwnPrice(pt.overloadDetection(ctx))
+         .          .     82:		} else if pt.priceStrategy == "proportional" {
+         .       20ms     83:			pt.UpdatePricebyQueueDelay(ctx)
+         .          .     84:		} else if pt.priceStrategy == "exponential" {
+         .          .     85:			pt.UpdatePricebyQueueDelayExp(ctx)
+         .          .     86:		} else if pt.priceStrategy == "log" {
+         .          .     87:			pt.UpdatePricebyQueueDelayLog(ctx)
+         .          .     88:		}
+         .          .     89:		// copy the content of current histogram to the previous histogram
+         .          .     90:		prevHist = currHist
+         .          .     91:		// log the time elapsed for the query
+         .       10ms     92:		logger("[Query Latency]:	Overhead is %.2f milliseconds\n", float64(time.Since(start).Microseconds())/1000)
+         .          .     93:	}
+         .          .     94:}
+         .          .     95:
+         .          .     96:// throughputCheck decrements the counter by 2x every x milliseconds.
+         .          .     97:func (pt *PriceTable) throughputCheck() {
+ROUTINE ======================== github.com/tgiannoukos/charon.logger in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/logger.go
+      10ms      100ms (flat, cum)  6.71% of Total
+      10ms       10ms      9:func logger(format string, a ...interface{}) {
+         .          .     10:	if debug {
+         .       40ms     11:		timestamp := time.Now().Format("2006-01-02T15:04:05.999999999-07:00")
+         .       50ms     12:		fmt.Printf("LOG: "+timestamp+"|\t"+format+"\n", a...)
+         .          .     13:	}
+         .          .     14:}
+ROUTINE ======================== github.com/tgiannoukos/charon.readHistogram in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/queuingDelay.go
+         0       20ms (flat, cum)  1.34% of Total
+         .          .    133:func readHistogram() *metrics.Float64Histogram {
+         .          .    134:	// Create a sample for metric /sched/latencies:seconds and /sync/mutex/wait/total:seconds
+         .          .    135:	const queueingDelay = "/sched/latencies:seconds"
+         .          .    136:	measureMutexWait := false
+         .          .    137:
+         .          .    138:	// Create a sample for the metric.
+         .       10ms    139:	sample := make([]metrics.Sample, 1)
+         .          .    140:	sample[0].Name = queueingDelay
+         .          .    141:	if measureMutexWait {
+         .          .    142:		const mutexWait = "/sync/mutex/wait/total:seconds"
+         .          .    143:		sample[1].Name = mutexWait
+         .          .    144:	}
+         .          .    145:
+         .          .    146:	// Sample the metric.
+         .       10ms    147:	metrics.Read(sample)
+         .          .    148:
+         .          .    149:	// Check if the metric is actually supported.
+         .          .    150:	// If it's not, the resulting value will always have
+         .          .    151:	// kind KindBad.
+         .          .    152:	if sample[0].Value.Kind() == metrics.KindBad {

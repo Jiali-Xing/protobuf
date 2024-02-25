@@ -59,13 +59,14 @@ var (
 		return parsedCapacity
 	}()
 
+	concurrency, _ = strconv.Atoi(getEnv("CONCURRENCY", "1000"))
 	// loadReduction is true or false
 	loadReduction, _ = strconv.ParseBool(getEnv("LOAD_REDUCTION", "false"))
 	loadIncrease, _  = strconv.ParseBool(getEnv("LOAD_INCREASE", "false"))
 
-	loadStart        = uint(capacity / 2)
+	loadStart        = uint(float64(capacity) / 2)
 	loadEnd          = uint(capacity)
-	loadStep         = capacity / 2
+	loadStep         = int(loadEnd - loadStart)
 	loadStepDuration = time.Second * 3
 
 	// read the inferface/method from the environment variable
@@ -133,7 +134,7 @@ func main() {
 		Hostname: getHostname(),
 	}
 
-	concurrency := 1000
+	// concurrency := 1000
 
 	interceptorConfigs := GetCharonConfigs()
 	fmt.Println("Charon Configurations:")
@@ -183,6 +184,8 @@ func main() {
 			priceStrategy = config.Value
 		case "LAZY_UPDATE":
 			lazyUpdate, _ = strconv.ParseBool(config.Value)
+		case "RATE_LIMITING":
+			rateLimiting, _ = strconv.ParseBool(config.Value)
 		// and one optional field: 'SIDE': 'server_only'
 		case "BREAKWATER_SLO":
 			breakwaterSLO, _ = time.ParseDuration(config.Value)
@@ -210,8 +213,8 @@ func main() {
 
 	charonOptions := map[string]interface{}{
 		"rateLimiting":       rateLimiting,
-		"loadShedding":       true,
-		"pinpointQueuing":    true,
+		"loadShedding":       false,
+		"pinpointQueuing":    false,
 		"pinpointThroughput": false,
 		"pinpointLatency":    false,
 		"debug":              debug,
@@ -248,12 +251,16 @@ func main() {
 		// Set the parameters accordingly
 		NodeName: serviceName,
 		BusinessMap: map[string]int{
-			"compose":       1,
-			"home-timeline": 2,
-			"user-timeline": 2,
-			"S_149998854":   1,
-			"S_161142529":   2,
-			"S_102000854":   2,
+			"compose":              1,
+			"home-timeline":        2,
+			"user-timeline":        3,
+			"S_149998854":          1,
+			"S_161142529":          2,
+			"S_102000854":          2,
+			"hotels-http":          3,
+			"reservation-http":     1,
+			"user-http":            2,
+			"recommendations-http": 4,
 		},
 		EntryService:                 false,
 		IsEnduser:                    true,
@@ -262,7 +269,7 @@ func main() {
 		Alpha:                        dagorAlpha,
 		Beta:                         dagorBeta,
 		Umax:                         dagorUmax,
-		Bmax:                         9,
+		Bmax:                         4,
 		Debug:                        debug,
 	}
 
