@@ -393,6 +393,7 @@ def run_experiments(interceptor_type, load, previous_run, **params):
         env[key] = str(value)
     # add the method to env
     env['METHOD'] = method
+    env['MOTIVATION_BOTH'] = 'true'
 
     # Run the experiment script
     experiment_process = subprocess.Popen(full_command, shell=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -457,6 +458,7 @@ def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodTo
         env[key] = str(value)
     # add the method to env
     env['METHOD'] = method
+    env['MOTIVATION_BOTH'] = 'true'
 
     # Run the experiment script
     experiment_process = subprocess.Popen(full_command, shell=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -676,10 +678,10 @@ def save_iteration_details(optimizer, file_path):
 
 def main():
     pbounds_dagorf = {
-        'dagor_queuing_threshold': (10000, 2000000),  # Example range
+        'dagor_queuing_threshold': (10000, 1000000),  # Example range
         'dagor_alpha': (0, 2),              # Example range
         'dagor_beta': (0, 1),             # Example range
-        'dagor_admission_level_update_interval': (100, 50000),  # Example range
+        'dagor_admission_level_update_interval': (100, 100000),  # Example range
         'dagor_umax': (2, 20)  # Example range
     }
 
@@ -693,25 +695,25 @@ def main():
     }
 
     pbounds_breakwaterd = {
-        'breakwater_slo': (10000, 40000),
-        'breakwater_a': (0, 2),
-        'breakwater_b': (0, 2),
+        'breakwater_slo': (10000, 50000),
+        'breakwater_a': (0, 20),
+        'breakwater_b': (0, 10),
         'breakwater_initial_credit': (1, 400),
-        'breakwater_client_expiration': (1, 3000),
-        'breakwaterd_slo': (30000, 80000),
+        'breakwater_client_expiration': (1, 5000),
+        'breakwaterd_slo': (10000, 80000),
         'breakwaterd_a': (0, 10),
-        'breakwaterd_b': (0, 30),
-        'breakwaterd_initial_credit': (1, 1000),
-        'breakwaterd_client_expiration': (10000, 40000),
-        'breakwater_rtt': (1000, 20000),
+        'breakwaterd_b': (0, 10),
+        'breakwaterd_initial_credit': (1, 5000),
+        'breakwaterd_client_expiration': (10000, 100000),
+        'breakwater_rtt': (0, 20000),
         'breakwaterd_rtt': (1000, 20000),
     }
 
     pbounds_dagor = {
-        'dagor_queuing_threshold': (100000, 250000),  # Example range
+        'dagor_queuing_threshold': (100000, 1000000),  # Example range
         'dagor_alpha': (0, 1.5),              # Example range
-        'dagor_beta': (0, 0.5),             # Example range
-        'dagor_admission_level_update_interval': (10000, 20000),  # Example range
+        'dagor_beta': (0, 1),             # Example range
+        'dagor_admission_level_update_interval': (10000, 100000),  # Example range
         'dagor_umax': (2, 20)  # Example range
     }
 
@@ -719,16 +721,15 @@ def main():
     if not tightSLO:
         # loosen the control target for charon and breakwater.
         pbounds_breakwater['breakwater_slo'] = (100, 20000)
-        pbounds_breakwaterd['breakwater_a'] = (0, 30)
         pbounds_dagor['dagor_queuing_threshold'] = (100000, 500000)  # Example range
         pbounds_dagor['dagor_alpha'] = (0, 2)              # Example range
         pbounds_dagor['dagor_admission_level_update_interval'] = (100, 20000)
 
 
-    optimizeDagorf = True
-    optimizeBreakwater = True
+    optimizeDagorf = False
+    optimizeBreakwater = False
     optimizeBreakwaterD = True
-    optimizeDagor = True
+    optimizeDagor = False
 
     # run the experiments with the interceptors for all capacities
     if '8000' in capacity:
@@ -752,9 +753,9 @@ def main():
 
     optimization_config = {
         # 'charon': (optimizeCharon, objective_charon, pbounds_charon, 'charon'),
+        'breakwaterd': (optimizeBreakwaterD, objective_breakwaterd, pbounds_breakwaterd, 'breakwaterd'),
         'dagorf': (optimizeDagorf, objective_dagorf, pbounds_dagorf, 'dagorf'),
         'breakwater': (optimizeBreakwater, objective_breakwater, pbounds_breakwater, 'breakwater'),
-        'breakwaterd': (optimizeBreakwaterD, objective_breakwaterd, pbounds_breakwaterd, 'breakwaterd'),
         'dagor': (optimizeDagor, objective_dagor, pbounds_dagor, 'dagor')
     }
 
@@ -842,16 +843,14 @@ if __name__ == '__main__':
     global SLO
     global tightSLO 
     
-    method = 'motivation-both'
+    method = 'S_149998854'
     tightSLO = False
     
     capacity = 'gpt1-8000'
     maximum_goodput = 5000
 
     # set the SLO based on the method
-    SLO = get_slo('S_149998854', tightSLO)
-
-
+    SLO = get_slo(method, tightSLO)
 
     main()
 

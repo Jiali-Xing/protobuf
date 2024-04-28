@@ -114,7 +114,9 @@ def calculate_throughput(filename):
         print("DataFrame is empty for ", filename)
         return None
     # Compute the throughput
-    throughput = df['latency'].count() / (df.index.max() - df.index.min()).total_seconds()
+    # throughput = df['latency'].count() / (df.index.max() - df.index.min()).total_seconds()
+    # throughput should be the status of OK requests 
+    throughput = df['status'][df['status'] == 'OK'].count() / (df.index.max() - df.index.min()).total_seconds()
     return throughput
 
 
@@ -597,8 +599,16 @@ def load_motivation_data():
                 
             if is_within_any_duration(timestamp_str, rl_experiment):
                 selected_files.append(filename)
+        else:
+            new_experiment = [
+                ("0227_0451", "0228_0324"),
+                ("0302_1912", "0302_1953"), # this is the new experiment for breakwaterd
+                ("0302_2333", "0303_0015"), # this is the new experiment for breakwaterd
+            ]
+            if is_within_any_duration(timestamp_str, new_experiment):
+                selected_files.append(filename)
 
-
+    '''
     if 'aqm' in method:
         scenarios = ['nginx-web-server', 'service-6', 'all']
         capacity_pattern = r"capacity-(\d+)-\d{4}_\d{4}"
@@ -616,26 +626,32 @@ def load_motivation_data():
 
     scenarioDict = file_categories
     print(f"[Scenario count] {scenarioDict}")
+    '''
 
     for filename in selected_files:
         # Extract the metadata from the filename
-        overload_control, _, interceptor, method_subcall, _, capacity_str, timestamp = os.path.basename(filename).split('-')[2:9]
+        interceptor, method_subcall, _, capacity_str, timestamp = os.path.basename(filename).split('-')[3:9]
         
         capacity = int(capacity_str)
         # let's skip if the capacity is not factor of 1000
-        # if capacity % 500 != 0:
-        #     continue
+        if capacity > 10000:
+            continue
         # if there's no `OK` in the file, remove the file
         if 'OK' not in open(filename).read():
             print("File ", filename, " is not valid, no OK")
             os.remove(filename)
             continue
 
+        # skip breakwaterd with timestamp earlier than 0302_1912
+        if 'breakwaterd' in interceptor and timestamp < '0302_1912':
+            continue
+
         # if the Count: xxx is less than 20000, remove the file
         with open(filename, 'r') as f:
             data = json.load(f)
-            if data['count'] < 10:
-                print("File ", filename, " is not valid, count is less than 10")
+            countCut = 2000
+            if data['count'] < countCut:
+                print("File ", filename, " is not valid, count is less than", countCut)
                 continue
 
         # Calculate latencies and throughput
@@ -646,12 +662,14 @@ def load_motivation_data():
         goodput = calculate_average_goodput(filename)
         
         # Categorize files
-        scenario = scenarioDict[filename]
+        # scenario = scenarioDict[filename]
+        scenario = interceptor
+
         print(f"File {filename} is categorized as {scenario}")
         # If valid latency data
         if latency_99 is not None:
             # if the 99th percentile is greater than 900ms
-            if latency_99 > 900 and 'rl' not in method:
+            if latency_95 > 900 and 'rl' not in method:
                 print("File ", filename, " is not valid, 99th percentile is greater than 900ms")
                 continue
 
@@ -1025,7 +1043,7 @@ def main():
     SLO = get_slo(method=method, tight=tightSLO, all_methods=False)
 
     motivation = multipleFiles = sensitivity = alibaba_combined = False
-    alibaba_combined = True
+    alibaba_combined = False
     if alibaba_combined:
         # init a dataframe to merge the 3 alibaba interfaces
         alibaba_df = pd.DataFrame()
@@ -1040,8 +1058,9 @@ def main():
         df = alibaba_df
     elif sensitivity:
         df = load_sensitivity_data()
-    elif method == 'motivation-aqm' or method == 'motivation-rl':
+    elif os.getenv('MOTIVATION_BOTH', 'False').lower() == 'true':
         motivation = True
+        multipleFiles = False
         df = load_motivation_data()
     elif method == 'all-methods-social':
         multipleFiles = True
@@ -1065,7 +1084,9 @@ def main():
         control_mechanisms = ['breakwaterd', 'breakwater', 'charon', 'dagor', ]
     elif method == 'motivation-aqm':
         control_mechanisms = ['nginx-web-server', 'service-6', 'all', 'plain']
-    # elif method == 'motivation-rl':
+    else:
+        control_mechanisms = ['breakwater', 'breakwaterd', 'dagorf', 'dagor']
+
 
     # Define markers for each method
     # markers = ['o', 's', 'x']
@@ -1080,6 +1101,7 @@ def main():
         # 'breakwaterd': a darker version of breakwater
         'breakwaterd': '#0D47A1',
         'dagor': '#4CAF50',
+        'dagorf': '#1B5E20',
         'charon': '#FF9800',
         'nginx-web-server': '#9C27B0',  # Example color for nginx-web-server
         'service-6': '#3F51B5',  # Example color for service-6
@@ -1098,6 +1120,7 @@ def main():
         'breakwater': '--',
         'breakwaterd': '-.',
         'dagor': ':',
+        'dagorf': '-',
         'charon': '-',
         'nginx-web-server': '--',  # Example line style for nginx-web-server
         'service-6': ':',  # Example line style for service-6
@@ -1109,10 +1132,18 @@ def main():
         'breakwater': 'breakwater',
         'breakwaterd': 'breakwaterd',
         'dagor': 'dagor',
+        'dagorf': 'dagor frontend',
         'charon': 'our model',
         'nginx-web-server': 'Frontend',
         'service-6': 'Backend',
         'all': 'Coordinated',
+    } if not motivation else {
+        'plain': 'No Control',
+        'breakwater': 'Rate\nLimiting\nFrontend',
+        'dagorf': 'AQM\nFrontend',
+        'breakwaterd': 'Rate\nLimiting',
+        'dagor': 'AQM',
+        'charon': 'our model',
     }
 
     if multipleFiles:
@@ -1390,6 +1421,7 @@ def main():
         window_size = 3  # You can adjust this to change the amount of smoothing
         mask = (df['overload_control'] == control)
         df.loc[mask, 'Smoothed_Goodput'] = df.loc[mask, 'Goodput'].rolling(window=window_size, min_periods=1).mean()
+        df.loc[mask, 'Smoothed_Throughput'] = df.loc[mask, 'Throughput'].rolling(window=window_size, min_periods=1).mean()
         # Apply rolling window for '95th_percentile' and assign in place
         df.loc[mask, '95th_percentile'] = df.loc[mask, '95th_percentile'].rolling(window=window_size, min_periods=1).mean()
         subset = df[df['overload_control'] == control]
@@ -1408,7 +1440,7 @@ def main():
                      linewidth=2,
                      marker=markers[latency] if latency == '99th_percentile' else None,
                      )  
-        plotGoodput = True
+        plotGoodput = True if not motivation else False
 
         if plotGoodput:
             ax2.plot(subset['Load'], subset['Smoothed_Goodput'],
@@ -1416,7 +1448,7 @@ def main():
                     # marker=markers[next(iter(markers))])
         else:
             # Plot throughput on ax2 using the same color for each control mechanism
-            ax2.plot(subset['Load'], subset['Throughput'],
+            ax2.plot(subset['Load'], subset['Smoothed_Throughput'],
                     label=labelDict[control], color=colors[control], linestyle=lineStyles[control], linewidth=2) # marker=markers[next(iter(markers))])  # Use any marker for throughput
 
     # Configure ax1 (latencies)
@@ -1443,8 +1475,10 @@ def main():
     ax2.set_xlabel('Load (RPS)')
     ax2.grid(True)
 
-    # add legend to the first row outside the plot, on the top
-    plt.legend(frameon=False, loc='upper center', bbox_to_anchor=(0.5, 1.5), ncol=4)
+    # add legend outside the plot, on the top legend(frameon=False, loc='upper center', bbox_to_anchor=(1, 1.5), ncol=2)
+    # for both ax1 and ax2, they share the same legend
+    # ax1.legend(frameon=False, loc='upper center', ncol=2)
+    ax2.legend(frameon=False, bbox_to_anchor=(1.05, 1), loc='upper left')
 
     # Save and display the plot
     plt.tight_layout()

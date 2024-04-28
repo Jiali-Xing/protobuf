@@ -689,21 +689,35 @@ def main():
         'breakwater_rtt': (0, 20000),
     }
 
+    # pbounds_breakwaterd = {
+    #     'breakwater_slo': (10000, 40000),
+    #     'breakwater_a': (0, 2),
+    #     'breakwater_b': (0, 2),
+    #     'breakwater_initial_credit': (1, 400),
+    #     'breakwater_client_expiration': (1, 3000),
+    #     'breakwaterd_slo': (30000, 80000),
+    #     'breakwaterd_a': (0, 10),
+    #     'breakwaterd_b': (0, 30),
+    #     'breakwaterd_initial_credit': (1, 1000),
+    #     'breakwaterd_client_expiration': (10000, 40000),
+    #     'breakwater_rtt': (1000, 20000),
+    #     'breakwaterd_rtt': (1000, 20000),
+    # }
+
     pbounds_breakwaterd = {
-        'breakwater_slo': (10000, 40000),
-        'breakwater_a': (0, 2),
-        'breakwater_b': (0, 2),
+        'breakwater_slo': (10000, 50000),
+        'breakwater_a': (0, 20),
+        'breakwater_b': (0, 10),
         'breakwater_initial_credit': (1, 400),
-        'breakwater_client_expiration': (1, 3000),
-        'breakwaterd_slo': (30000, 80000),
+        'breakwater_client_expiration': (1, 5000),
+        'breakwaterd_slo': (10000, 80000),
         'breakwaterd_a': (0, 10),
-        'breakwaterd_b': (0, 30),
-        'breakwaterd_initial_credit': (1, 1000),
-        'breakwaterd_client_expiration': (10000, 40000),
-        'breakwater_rtt': (1000, 20000),
+        'breakwaterd_b': (0, 10),
+        'breakwaterd_initial_credit': (1, 5000),
+        'breakwaterd_client_expiration': (10000, 100000),
+        'breakwater_rtt': (0, 20000),
         'breakwaterd_rtt': (1000, 20000),
     }
-
     pbounds_dagor = {
         'dagor_queuing_threshold': (100000, 250000),  # Example range
         'dagor_alpha': (0, 1.5),              # Example range
@@ -760,10 +774,10 @@ def main():
         #     'dagor_admission_level_update_interval': (10000, 20000),  # Example range
         #     'dagor_umax': (2, 20)  # Example range
         # }
-    optimizeCharon = False
+    optimizeCharon = True
     optimizeBreakwater = True
-    optimizeBreakwaterD = False
-    optimizeDagor = False
+    optimizeBreakwaterD = True
+    optimizeDagor = True
 
     # run the experiments with the interceptors for all capacities
     if '8000' in capacity:

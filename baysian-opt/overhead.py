@@ -21,7 +21,7 @@ import os
 # # make it an int
 # df['Count'] = df['Count'].astype(int)
 
-folder = os.path.expanduser("~/Sync/Git/protobuf/ghz-results")
+folder = os.path.expanduser("~/Sync/Git/charon-experiments-results")
 # Define the patterns to search for
 patterns = [
     "social-S*-control-*-parallel-capacity-4000-01*put",
@@ -236,5 +236,6 @@ plt.xticks(rotation=10)
 # put legend outside the plot on the right
 plt.legend(title='Interfaces', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.tight_layout()
-plt.savefig('overhead.pdf', format='pdf', bbox_inches='tight')
+plt.savefig('overhead2024.pdf', format='pdf', bbox_inches='tight')
 plt.show()
+print(f"Figure saved to {os.getcwd()}/overhead2024.pdf")
