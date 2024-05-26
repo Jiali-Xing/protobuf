@@ -16,6 +16,8 @@ import os
 import glob
 import json
 import sys
+
+import argparse
 import re
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -31,6 +33,14 @@ from collections import defaultdict
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'ghz-results'))
 from visualize import analyze_data
 from slo import get_slo
+
+
+# Define global variables
+global method
+global SLO
+global tightSLO
+global skipOptimize
+
 
 throughput_time_interval = '50ms'
 latency_window_size = '200ms'  # Define the window size as 100 milliseconds
@@ -609,6 +619,9 @@ def record_optimal_parameters(filename, data):
 
 def read_optimal_parameters(filename):
     path = os.path.expanduser('~/Sync/Git/protobuf/baysian-opt/')
+    # if the file does not exist, raise an exception
+    if not filename or not os.path.exists(os.path.join(path, filename)):
+        raise Exception(f"File {filename} does not exist in the directory {path}")
     with open(os.path.join(path, filename), 'r') as f:
         data = json.load(f)
     return data
@@ -780,19 +793,23 @@ def main():
     optimizeDagor = True
 
     # run the experiments with the interceptors for all capacities
-    if '8000' in capacity:
-        capacity_range = range(5000, 13500, 500) if not tightSLO else range(4000, 10500, 500)
-    else:
-        capacity_range = range(6000, 12500, 500)
+    capacity_step = 1000
+    capacity_start = 1000
+    capacity_end = 17000
+    # if '8000' in capacity:
+    #     capacity_range = range(5000, 13500, 500) if not tightSLO else range(4000, 10500, 500)
+    # else:
+    #     capacity_range = range(6000, 12500, 500)
 
-    if 'all' in method:
-        capacity_range = range(2000, 9500, 500)
+    # if 'all' in method:
+    #     capacity_range = range(2000, 9500, 500)
+    capacity_range = range(capacity_start, capacity_end, capacity_step)
 
     timestamp = datetime.datetime.now().strftime("%m-%d")
     print("Timestamp:", timestamp)
     print("method:", method)
     
-    skipOptimize = False
+    # skipOptimize = False
 
     # if skipOptimize:
     #     # set all the optimize to False
@@ -843,7 +860,7 @@ def main():
 
     for opt_key, (optimize, objective_func, pbounds, opt_name) in optimization_config.items():
         if optimize:
-            # find the latest file with `bopt_{opt_name}_{method}_{capacity}_{timestamp}.json` in the name based on the timestamp
+            # find the latest file with `bopt_{tightSLO}_{opt_name}_{method}_{capacity}_*.json`
             latest_bopt = get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/baysian-opt/'), pattern=f"bopt_{tightSLO}_{opt_name}_{method}_{capacity}_*.json")
             bayesian_result = read_optimal_parameters(latest_bopt)
             for capact in capacity_range:
@@ -887,23 +904,30 @@ def check_goodput(file):
 if __name__ == '__main__':
     # take an optional argument to specify the method
     # make method and SLO global variables
-    global method
-    global SLO
-    global tightSLO 
 
-    if len(sys.argv) > 1:
-        method = sys.argv[1]
-    else:
-        raise Exception("Please specify the method")
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('method', type=str, help='Specify the method')
+    parser.add_argument('--tight-slo', action='store_true', default=False, help='Enable tight SLO')
+    parser.add_argument('--skip-opt', action='store_true', default=False, help='Skip optimization')
+    args = parser.parse_args()
+
+    method = args.method
+    tightSLO = args.tight_slo
+    skipOptimize = args.skip_opt
+
+    # if len(sys.argv) > 1:
+    #     method = sys.argv[1]
+    # else:
+    #     raise Exception("Please specify the method")
     
-    tightSLO = False
-    if len(sys.argv) > 2:
-        tightSLO = sys.argv[2] == 'tightSLO'
+    # tightSLO = False
+    # if len(sys.argv) > 2:
+    #     tightSLO = sys.argv[2] == 'tightSLO'
     
-    capacity = 'gpt1-8000' if 'S_' in method else 'gpt2-8000'
-    maximum_goodput = 5000
-    if method == 'S_102000854':
-        capacity = 'gpt1-10000'
+    capacity = 'gpt2-10000' if 'S_' in method else 'gpt2-8000'
+    maximum_goodput = 10000
+    # if method == 'S_102000854':
+    #     capacity = 'gpt1-10000'
     if method == 'hotels-http':
         capacity = 'gpt1-2000'
 
@@ -912,6 +936,8 @@ if __name__ == '__main__':
     if method == 'all-methods-hotel':
         capacity = 'gpt1-8000'
 
+    # if 'S_' in method:
+    #     capacity = 'gpt0-10000'
     # set the SLO based on the method
     SLO = get_slo(method, tight=tightSLO)
 

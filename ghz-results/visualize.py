@@ -365,7 +365,7 @@ def extract_ownPrices(file_pattern):
     files = [directory_path + f for f in files]
 
     for file_path in files:
-        print(file_path)
+        # print(file_path)
         data = []
         timestamps = []
 
@@ -426,7 +426,7 @@ def extract_waiting_times_all(file_pattern):
     files = [directory_path + f for f in files]
 
     for file_path in files:
-        print(file_path)
+        # print(file_path)
         # data = []
         # timestamps = []
 
@@ -864,7 +864,7 @@ def plot_timeseries_split(df, filename, computation_time=0):
 
     filetosave = mechanism + '-' + method + '-' + str(capacity) + timestamp + '.pdf' 
     plt.savefig(filetosave, dpi=300, bbox_inches='tight')
-    # plt.show()
+    print(f"Saved the plot to {filetosave}")
     if not noPlot:
         plt.show()
     plt.close()

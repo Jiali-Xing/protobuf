@@ -14,8 +14,11 @@ from slo import get_slo
 throughput_time_interval = '50ms'
 latency_window_size = '200ms'  # Define the window size as 100 milliseconds
 
+# window_size = 3  # You can adjust this to change the amount of smoothing
+window_size = 1  # Set window size to 1 for no smoothing
 
-offset = 2.5  # Define the offset as 50 milliseconds
+offset = 2.5  # Define the offset as 2.5 seconds to remove the initial warm-up period
+
 # if 'rl' in method:
 #     offset = 2
 
@@ -55,7 +58,7 @@ def read_data(filename):
             data = json.load(f)
             return data["details"]
         except:
-            print("File ", filename, " is not valid")
+            print(f"Error reading file {filename}")
             return None
 
 
@@ -193,7 +196,7 @@ def load_data():
     selected_files = []
     # For every file in the directory and another directory `~/Sync/Git/charon-experiments/json`
     for filename in glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/protobuf/ghz-results'), f'social-{method}-control-*-parallel-capacity-*.json')) \
-        + glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/charon-experiments/json'), f'social-{method}-control-*-parallel-capacity-*.json')):
+        + glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/charon-experiments-results/'), f'social-{method}-control-*-parallel-capacity-*.json')):
         # Extract the date and time part from the filename
         timestamp_str = os.path.basename(filename).split('-')[-1].rstrip('.json')
         # check if the file's timestamp is given format
@@ -356,6 +359,7 @@ def load_data():
 
 
         if method == 'compose':
+            # print(f"Timestamp: {timestamp_str}")
             if is_within_any_duration(timestamp_str, new_compose):
             # if is_within_any_duration(timestamp_str, new_compose_tightSLO):
                 selected_files.append(filename)
@@ -450,7 +454,7 @@ def load_data():
  
     # check if the results is empty
     if not results:
-        print("[ERROR] No results extracted from the files")
+        print(f"[ERROR] No results extracted from the files for {method}")
         return None
     rows = []
     for (overload_control, method_subcall, capacity), data in results.items():
@@ -463,6 +467,7 @@ def load_data():
             'Median Latency': np.nanmean(data['Median Latency']),
             'method_subcall': method_subcall,
             'overload_control': overload_control,
+            'file_count': len(data['File'])
         }
 
         # row = {
@@ -1072,6 +1077,7 @@ def main():
         df = load_more_data(interfaces)
     else:
         df = load_data()
+    print(f"Method: {method}, Tight SLO: {tightSLO}, Motivation: {motivation}, Multiple Files: {multipleFiles}, Sensitivity: {sensitivity}, Alibaba Combined: {alibaba_combined}")
     print(df)
     if df is None:
         return
@@ -1158,7 +1164,6 @@ def main():
         for i, interface in enumerate(interfaces):
             ax1, ax2 = axs[i] if not rotate else axs[:, i]
             for control in control_mechanisms:
-                window_size = 3  # You can adjust this to change the amount of smoothing
                 # apply moving average on the Goodput of subset
                 mask = (df['overload_control'] == control) & (df['Request'] == interface)
                 # Apply rolling window for 'Goodput' and assign to 'Smoothed_Goodput' in place
@@ -1275,7 +1280,6 @@ def main():
         for i, interface in enumerate(interfaces):
             ax1, ax2 = axs[i] if not rotate else axs[:, i]
             for control in control_mechanisms:
-                window_size = 3  # You can adjust this to change the amount of smoothing
                 # apply moving average on the Goodput of subset
                 mask = (df['overload_control'] == control) & (df['Request'] == interface)
                 # Apply rolling window for 'Goodput' and assign to 'Smoothed_Goodput' in place
@@ -1418,7 +1422,6 @@ def main():
 
     for control in control_mechanisms:
         # Apply rolling window for 'Goodput' and assign to 'Smoothed_Goodput' in place
-        window_size = 3  # You can adjust this to change the amount of smoothing
         mask = (df['overload_control'] == control)
         df.loc[mask, 'Smoothed_Goodput'] = df.loc[mask, 'Goodput'].rolling(window=window_size, min_periods=1).mean()
         df.loc[mask, 'Smoothed_Throughput'] = df.loc[mask, 'Throughput'].rolling(window=window_size, min_periods=1).mean()

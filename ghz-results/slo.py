@@ -19,13 +19,27 @@ def get_slo(method, tight=False, all_methods=False):
         "all-methods-social": 20,
         "all-methods-hotel": 9,
     }
+    ave_lat = {
+        # "compose": 25,
+        # "user-timeline": 20,
+        # "home-timeline": 20,
+        "S_102000854": 45,
+        "S_149998854": 120,
+        "S_161142529": 70,
+        # "hotels-http": 10,
+        # "reservation-http": 10,
+        # "user-http": 6,
+        # "recommendations-http": 8,
+        # "all-methods-social": 25,
+        # "all-methods-hotel": 10,
+    }
     tail95_lat = {
         "compose": 30, # under 4k req/s
         "user-timeline": 20, # under 6k req/s
         "home-timeline": 20, # under 6k req/s
-        "S_149998854": 140,
-        "S_102000854": 50,
-        "S_161142529": 80,
+        "S_102000854": 43,
+        "S_149998854": 116,
+        "S_161142529": 71,
         "hotels-http": 17, # under 8k req/s
         "reservation-http": 12, # under 8k req/s 
         "user-http": 7, # under 8k req/s
@@ -36,10 +50,11 @@ def get_slo(method, tight=False, all_methods=False):
         "all-methods-hotel": 17,
     }
     # upper_bound = 250
-    upper_bound_buffer = 100
+    # upper_bound_buffer = 100
     if all_methods:
         method = "all-methods-hotel" if "http" in method else "all-methods-social"
-    slo = tail95_lat.get(method, None) * 4 if not tight else min_lat.get(method, None) + slo_buffer
-    if slo > tail95_lat.get(method, None) + upper_bound_buffer:
-        slo = tail95_lat.get(method, None) + upper_bound_buffer
+    # slo = tail95_lat.get(method, None) * 4 if not tight else min_lat.get(method, None) + slo_buffer
+    slo = tail95_lat.get(method, None) * 5 if not tight else tail95_lat.get(method, None) * 2
+    # if slo > tail95_lat.get(method, None) + upper_bound_buffer:
+    #     slo = tail95_lat.get(method, None) + upper_bound_buffer
     return slo
