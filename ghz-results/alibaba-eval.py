@@ -27,8 +27,8 @@ throughput_time_interval = '50ms'
 latency_window_size = '200ms' 
 offset = 2.5
 
-# Example usage of functions from utils.py
-# Add your code logic here to use the functions imported from utils.py
+
+
 
 def plot_alibaba_eval(df, interfaces):
     # if interfaces is of size 1, then plot the individual interface
@@ -40,7 +40,7 @@ def plot_alibaba_eval(df, interfaces):
         return
 
     # Define control mechanisms based on the `motivation` flag
-    control_mechanisms = ['breakwaterd', 'breakwater', 'charon', 'dagor']
+    control_mechanisms = ['dagor', 'breakwater', 'breakwaterd', 'charon']
 
     # Define latency metrics to plot
     whatLatency = ['95th_percentile']
@@ -84,10 +84,10 @@ def plot_alibaba_eval(df, interfaces):
     # Map control mechanisms to labels
     labelDict = {
         'plain': 'No Control',
-        'breakwater': 'breakwater',
-        'breakwaterd': 'breakwaterd',
-        'dagor': 'dagor',
-        'charon': 'our model',
+        'breakwater': 'Breakwater',
+        'breakwaterd': 'Breakwaterd',
+        'dagor': 'Dagor',
+        'charon': 'Rajomon',
     }
 
     if alibaba_combined:
@@ -98,7 +98,7 @@ def plot_alibaba_eval(df, interfaces):
             "S_149998854": "S2",
             "S_161142529": "S3",
         }
-        fig, axs = plt.subplots(2, len(interfaces), figsize=(6, 3.5))
+        fig, axs = plt.subplots(2, len(interfaces), figsize=(12, 5))
 
         for i, interface in enumerate(interfaces):
             ax1, ax2 = axs[:, i]
@@ -115,14 +115,14 @@ def plot_alibaba_eval(df, interfaces):
                     #         marker=markers[latency] if latency == '99th_percentile' else None,
                     #         )
 
-                    ax1.errorbar(subset_filtered['Load'], subset_filtered[latency], yerr=subset_filtered[latency + ' std'], fmt=markers[latency],
+                    ax1.errorbar(subset_filtered['Load'], subset_filtered[latency], yerr=subset_filtered[latency + ' std'], fmt=control_markers[control],
                                 color=colors[control], linestyle=lineStyles[control], label=labelDict[control],
                                 linewidth=2, capsize=5)
 
                 # ax2.plot(subset['Load'], subset['Goodput'],
                 #         label=labelDict[control], color=colors[control], linestyle=lineStyles[control], linewidth=2)
 
-                ax2.errorbar(subset['Load'], subset['Goodput'], yerr=subset['Goodput std'], fmt='o',
+                ax2.errorbar(subset['Load'], subset['Goodput'], yerr=subset['Goodput std'], fmt=control_markers[control],
                             label=labelDict[control], color=colors[control], linestyle=lineStyles[control], linewidth=2, capsize=5)
 
 
@@ -139,12 +139,12 @@ def plot_alibaba_eval(df, interfaces):
         maximum_goodput = max(df['Goodput'])
         for ax in axs.flatten()[0:len(interfaces)]:
             ax.grid(True)
-            ax.set_ylim(40, max_latency + 20)
+            # ax.set_ylim(40, max_latency + 20)
         for ax in axs.flatten()[len(interfaces):]:
             ax.grid(True)
-            ax.set_ylim(0, maximum_goodput + 100)
+            # ax.set_ylim(0, maximum_goodput + 100)
         axs.flatten()[len(interfaces)].set_yticklabels(['0', '1k', '2k', '3k', '4k'])
-        axs[0][1].legend(frameon=False, loc='upper center', bbox_to_anchor=(0.5, 1.45), ncol=4)
+        axs[0][1].legend(frameon=False, loc='upper center', bbox_to_anchor=(0.5, 1.3), ncol=4)
         for i in range(len(interfaces)):
             axs[0][i].get_shared_x_axes().join(axs[0][i], axs[1][i])
 
@@ -201,6 +201,8 @@ def main():
     global method
     global tightSLO
     global SLO
+    
+    old_data_sigcomm = False
 
     method = os.getenv('METHOD', 'ALL')
     alibaba_combined = method == 'ALL'
@@ -211,11 +213,41 @@ def main():
 
     # experiment time ranges
     time_ranges = {
-        'S_102000854': [('0525_1000', '0525_2150')],
+        # 'S_102000854': [('0525_1000', '0525_2150')], these are tuned with goodput - 10x tail latency
+        'S_102000854': [
+            ('0526_0409', '0526_0627'), # run from bento
+            ('0526_1634', '0526_1832'), # run from laptop
+            ], # these are tuned with goodput - squared tail latency
         'S_149998854': [('0501_0000', '0520_0000')],
         'S_161142529': [('0501_0000', '0520_0000')],
     }
 
+    old_time_ranges = {
+        'S_102000854': [
+            ("1229_0301", "1229_0448"), # this includes plain no overload control. 4000-10000
+            ("1231_2055", "1231_2241"), # this is for 6000-12000 load 
+            ("1231_1747", "1231_1950"), # this is also for 6000-12000 load
+            ("0129_0049", "0129_0138")
+            ],
+        'S_149998854': [
+            ("1228_1702", "1228_1844"),
+            ("1228_2356", "1229_0203"),
+            ("1229_0141", "1229_0203"), # this is plain no overload control.
+            ("1230_2124", "1230_2333"),
+            ("1231_2244", "0101_0027"),  # newest result
+            ("0128_0842", "0128_0902"),
+            ("0128_1543", "0128_1640"),            
+            ],
+        'S_161142529': [
+            ("1230_0611", "1230_0754"),
+            ("1231_0042", "1231_0225"),  # this is new
+            # ("0101_0127", "0101_0251"),
+            ("0129_1654", "0129_1742"),
+        ],
+    }
+
+    time_ranges = old_time_ranges if old_data_sigcomm else time_ranges
+    tightSLO = True if old_data_sigcomm else tightSLO
 
     # Load data
     if alibaba_combined:

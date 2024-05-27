@@ -265,6 +265,11 @@ def load_data(method, list_of_tuples_of_experiment_timestamps, slo, request_coun
         if is_within_any_duration(timestamp_str, list_of_tuples_of_experiment_timestamps):
             selected_files.append(filename)
 
+            # # debug:
+            # # if load is 8000 and app is `S_161142529` and method is `breakwater`, print the filename
+            # if '8000' in filename and 'S_161142529' in filename and 'breakwater' in filename:
+            #     print(filename) 
+
     for filename in selected_files:
         # Extract the metadata from the filename
         overload_control, method_subcall, _, capacity_str, timestamp = os.path.basename(filename).split('-')[3:8]

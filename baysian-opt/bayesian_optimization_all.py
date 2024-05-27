@@ -732,11 +732,11 @@ def main():
         'breakwaterd_rtt': (1000, 20000),
     }
     pbounds_dagor = {
-        'dagor_queuing_threshold': (100000, 250000),  # Example range
+        'dagor_queuing_threshold': (100, 50000),  # Example range
         'dagor_alpha': (0, 1.5),              # Example range
         'dagor_beta': (0, 0.5),             # Example range
         'dagor_admission_level_update_interval': (10000, 20000),  # Example range
-        'dagor_umax': (2, 20)  # Example range
+        'dagor_umax': (5, 20)  # Example range
     }
 
     if not tightSLO:

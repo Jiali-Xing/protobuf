@@ -54,7 +54,7 @@ def get_slo(method, tight=False, all_methods=False):
     if all_methods:
         method = "all-methods-hotel" if "http" in method else "all-methods-social"
     # slo = tail95_lat.get(method, None) * 4 if not tight else min_lat.get(method, None) + slo_buffer
-    slo = tail95_lat.get(method, None) * 5 if not tight else tail95_lat.get(method, None) * 2
+    slo = tail95_lat.get(method, None) * 5 if not tight else min_lat.get(method, None) + slo_buffer
     # if slo > tail95_lat.get(method, None) + upper_bound_buffer:
     #     slo = tail95_lat.get(method, None) + upper_bound_buffer
     return slo
