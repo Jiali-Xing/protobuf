@@ -32,150 +32,20 @@ from collections import defaultdict
 # with the optimal results from the Bayesian Optimization
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'ghz-results'))
 from visualize import analyze_data
-from slo import get_slo
+from slo import get_slo, get_sustainable_load
+from utils import convert_to_dataframe, calculate_goodput_mean, calculate_goodput_from_file, read_tail_latency_from_file, roundDownParams
 
-
-# Define global variables
-global method
-global SLO
-global tightSLO
-global skipOptimize
-
-
-throughput_time_interval = '50ms'
-latency_window_size = '200ms'  # Define the window size as 100 milliseconds
+# throughput_time_interval = '50ms'
+# latency_window_size = '200ms'  # Define the window size as 100 milliseconds
 # filename = '/home/ying/Sync/Git/protobuf/ghz-results/charon_stepup_nclients_1000.json'
 rerun = True
-# offset = 1
-offset = 2 # for the all-methods-social and all-methods-hotel
-
 quantile = 0.1
 
-# method = 'compose'
-# method = 'S_149998854'
-
-# if method == 'compose':
-#     SLO = 20 * 2 # 20ms * 2 = 40ms
-#     capacity = 'random-7000'
-#     maximum_goodput = 5000
-# elif method == 'S_149998854':
-#     SLO = 111 * 2 # 111ms * 2 = 222ms
-#     maximum_goodput = 5000
-#     capacity = 'random-7000'
-
-
-def read_data(filename):
-    with open(filename, 'r') as f:
-        data = json.load(f)
-    return data["details"]
-
-
-def convert_to_dataframe(data):
-    df = pd.DataFrame(data)
-    df['timestamp'] = pd.to_datetime(df['timestamp'])
-
-    # in unit of milliseconds
-    df.set_index('timestamp', inplace=True)
-    df['latency'] = df['latency'] / 1000000
-    # drop the rows if the `status` is Unavailable
-    df = df[df['status'] != 'Unavailable']
-    # remove the data within first second of df
-    df = df[df.index > df.index[0] + pd.Timedelta(seconds=offset)]
-
-    min_timestamp = df.index.min()
-    df.index = df.index - min_timestamp + pd.Timestamp('2000-01-01')
-    return df
-
-
-def calculate_goodput(filename, average=True):
-    # Insert your code for calculating average goodput here
-    # Read the ghz.output file and calculate the average goodput
-    # Return the average goodput
-    # if filename is a list, average the goodput of all the files
-    if isinstance(filename, list):
-        goodput = 0
-        for f in filename:
-            goodput += calculate_goodput(f, average=average)
-        goodput = goodput / len(filename)
-        return goodput
-
-    data = read_data(filename)
-    df = convert_to_dataframe(data)
-    if average:
-        goodput = calculate_goodput_mean(df, slo=SLO)
-    else:
-        goodput = goodput_quantile(df, slo=SLO, quantile=quantile)
-    return goodput  # Replace with your actual function
-
-
-def calculate_goodput_mean(df, slo):
-    goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample(throughput_time_interval).count()
-    # scale the throughput to requests per second
-    goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
-    df['goodput'] = goodput_requests_per_second.reindex(df.index, method='bfill').replace(np.nan, 0)
- 
-    # calculate goodput by counting the number of requests that are ok and have latency less than slo, and then divide by the time interval
-    # time_interval is the time interval for calculating the goodput, last request time - first request time
-    time_interval = (df.index.max() - df.index.min()).total_seconds()
-    goodput = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].count() / time_interval   # take out the goodput during the last 3 seconds by index
-    return goodput
-
-
-def goodput_quantile(df, slo, quantile=0.1):
-    goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample(throughput_time_interval).count()
-    # scale the throughput to requests per second
-    goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
-    df['goodput'] = goodput_requests_per_second.reindex(df.index, method='bfill').replace(np.nan, 0)
-    # take out the goodput during the last 3 seconds by index
-    goodput = df['goodput']
-    # goodput = df[df.index > df.index[0] + pd.Timedelta(seconds=offset)]['goodput']
-    # return the goodput, but round it to 2 decimal places
-    goodput = goodput.quantile(quantile)
-    return goodput
-
-
-def read_tail_latency(filename, percentile=99):
-    if isinstance(filename, list):
-        latency = 0
-        for f in filename:
-            latency += read_tail_latency(f, percentile=percentile)
-        latency = latency / len(filename)
-        return latency
-
-    # with open(filename, 'r') as f:
-    #     data = json.load(f)
-    data = read_data(filename)        
-    df = convert_to_dataframe(data)
-    percentile_latency = df[(df['status'] == 'OK')]['latency'].quantile(percentile / 100)
-
-    return percentile_latency  # Replace with your actual function
-    # latency_distribution = data["latencyDistribution"]
-    # if latency_distribution is None:
-    #     print("[Error Lat] No latency found for file:", filename)
-    #     return None
-    # for item in latency_distribution:
-    #     if item["percentage"] == percentile:
-    #         latency_xxth = item["latency"]
-    #         # convert the latency_99th from string to milliseconds
-    #         latency_xxth = pd.Timedelta(latency_xxth).total_seconds() * 1000
-    #         return latency_xxth
-    # return None  # Return None if the 99th percentile latency is not found
-
-
-# similarly to read_tail_latency, read_mean_latency returns the mean latency
-def read_mean_latency(filename):
-    with open(filename, 'r') as f:
-        data = json.load(f)
-    return data["average"]  
-
-
-def calculate_throughput(df):
-    # sample throughput every time_interval
-    ok_requests_per_second = df[df['status'] == 'OK']['status'].resample(throughput_time_interval).count()
-    # scale the throughput to requests per second
-    ok_requests_per_second = ok_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
-    df['throughput'] = ok_requests_per_second.reindex(df.index, method='bfill')
-    return df
+# # Define global variables at the module level
+# method = None
+# SLO = None
+# tightSLO = False
+# skipOptimize = False
 
 param_ranges = [(50, 500), (1000, 10000), (1, 20), ]  # (priceUpdateRate, delayTarget) 
   
@@ -398,6 +268,9 @@ def run_experiments(interceptor_type, load, previous_run, **params):
     # add the method to env
     env['METHOD'] = method
 
+    load_value = get_sustainable_load(method)
+    warmup_load = int(load_value * 0.8)
+    env['WARMUP_LOAD'] = str(warmup_load)
     # Run the experiment script
     experiment_process = subprocess.Popen(full_command, shell=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = experiment_process.communicate()
@@ -451,6 +324,9 @@ def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodTo
         env[key] = str(value)
     # add the method to env
     env['METHOD'] = methodToRun
+    load_value = get_sustainable_load(methodToRun)
+    warmup_load = int(load_value * 0.8)
+    env['WARMUP_LOAD'] = str(warmup_load)
 
     # Run the experiment script
     experiment_process = subprocess.Popen(full_command, shell=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -466,14 +342,15 @@ def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodTo
 
 # Define the objective function to optimize
 def objective(interceptor_type, **params):
+    global SLO, quantile
     hugePenalty = -999999999
     load = int(capacity.split('-')[1])
     latest_file = run_experiments(interceptor_type, load, '', **params)
     if latest_file is None:
         print("No file found for objective function")
         return hugePenalty
-    goodput = calculate_goodput(latest_file, average=True)
-    tail_latency = read_tail_latency(latest_file, percentile=99)
+    goodput = calculate_goodput_from_file(latest_file, slo=SLO, quantile=quantile, average=True)
+    tail_latency = read_tail_latency_from_file(latest_file, percentile=99)
     print("[Experiment Ran] average goodput:", goodput, "and tail latency:", tail_latency, "\nfrom file:", latest_file)
     # if average_goodput == nan, return 0
     if np.isnan(goodput):
@@ -492,11 +369,12 @@ def objective(interceptor_type, **params):
     elif 'gpt2' in capacity:
         obj = goodput - (tail_latency - SLO) ** 2 if tail_latency > SLO else goodput
     elif 'tgpt' in capacity:
-        obj = calculate_goodput(latest_file, average=False)
+        obj = calculate_goodput_from_file(latest_file, slo=SLO, quantile=quantile, average=False)
     return obj / maximum_goodput
 
 
 def objective_dual(interceptor_type, **params):
+    global SLO, quantile
     obj = []
     # same as objective, but run twice with different loads, and return the lower goodput
     latest_file = ''
@@ -505,9 +383,9 @@ def objective_dual(interceptor_type, **params):
         if latest_file is None:
             print("No file found for objective function")
             return -999999999
-        goodput = calculate_goodput(latest_file, average=True)
-        tail_goodput = calculate_goodput(latest_file, average=False)
-        tail_latency = read_tail_latency(latest_file, percentile=99)
+        goodput = calculate_goodput_from_file(latest_file, slo=SLO, quantile=quantile, average=True)
+        tail_goodput = calculate_goodput_from_file(latest_file, slo=SLO, quantile=quantile, average=False)
+        tail_latency = read_tail_latency_from_file(latest_file, percentile=99)
         print(f"[Experiment Ran] average goodput: {goodput}, {100*quantile}th percentile goodput: {tail_goodput}, and tail latency: {tail_latency} \nfrom file: {latest_file}")
         # if average_goodput == nan, return 0
         if np.isnan(goodput):
@@ -627,35 +505,6 @@ def read_optimal_parameters(filename):
     return data
 
 
-def roundDownParams(params):
-    # capitalize the params
-    params = {key.upper(): value for key, value in params.items()}
-    # round the parameters to int unless the key is in the following list
-    for key in params:
-        # for numerical values only, skip the string values
-        if isinstance(params[key], str):
-            continue
-        if key not in ['BREAKWATER_A', 'BREAKWATER_B', 'DAGOR_ALPHA', 'DAGOR_BETA', 'BREAKWATERD_A', 'BREAKWATERD_B']:
-            params[key] = int(params[key])
-
-    # add `us` to the end of the values in combined_params if the key is in the following list
-    # ['PRICE_UPDATE_RATE', 'LATENCY_THRESHOLD', 'BREAKWATER_SLO', 'BREAKWATER_CLIENT_EXPIRATION', 'DAGOR_QUEUING_THRESHOLD', 'DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL']
-    for key in params:
-        if key in ['PRICE_UPDATE_RATE', 'TOKEN_UPDATE_RATE', 'LATENCY_THRESHOLD', \
-                   'BREAKWATER_SLO', 'BREAKWATER_CLIENT_EXPIRATION', \
-                   'BREAKWATERD_SLO', 'BREAKWATERD_CLIENT_EXPIRATION', \
-                   'BREAKWATER_RTT', 'BREAKWATERD_RTT', \
-                   'DAGOR_QUEUING_THRESHOLD', 'DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL']:
-            # if there is already a `us` or `ms` at the end of the value, don't add another `us`
-            # if it is a string
-            if isinstance(params[key], str):
-                if params[key][-2:] not in ['us', 'ms']:
-                    params[key] = str(params[key]) + 'us'
-            if isinstance(params[key], int):
-                params[key] = str(params[key]) + 'us'
-    return params
-
-
 def save_iteration_details(optimizer, file_path):
     try:
         # Convert the iteration details to a JSON-compatible format
@@ -732,10 +581,10 @@ def main():
         'breakwaterd_rtt': (1000, 20000),
     }
     pbounds_dagor = {
-        'dagor_queuing_threshold': (100, 50000),  # Example range
+        'dagor_queuing_threshold': (1000, 50000),  # Example range
         'dagor_alpha': (0, 1.5),              # Example range
         'dagor_beta': (0, 0.5),             # Example range
-        'dagor_admission_level_update_interval': (10000, 20000),  # Example range
+        'dagor_admission_level_update_interval': (1000, 20000),  # Example range
         'dagor_umax': (5, 20)  # Example range
     }
 
@@ -787,10 +636,6 @@ def main():
         #     'dagor_admission_level_update_interval': (10000, 20000),  # Example range
         #     'dagor_umax': (2, 20)  # Example range
         # }
-    optimizeCharon = True
-    optimizeBreakwater = True
-    optimizeBreakwaterD = True
-    optimizeDagor = True
 
     # run the experiments with the interceptors for all capacities
     capacity_step = 1000
@@ -838,6 +683,7 @@ def main():
                 # continue
 
             if 'params' in optimizer.max:
+                global SLO
                 best_params = optimizer.max['params']
                 # combine the best_params with the specific params
                 best_params = {**configDict[opt_name], **best_params}
@@ -878,8 +724,8 @@ def check_goodput(file):
     dir = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
     filename = os.path.join(dir, file)
 
-    goodput = calculate_goodput(filename, average=True)
-    tail_latency = read_tail_latency(filename, percentile=99)
+    goodput = calculate_goodput_from_file(filename, average=True)
+    tail_latency = read_tail_latency_from_file(filename, percentile=99)
   
     data = read_data(filename)
     df = convert_to_dataframe(data)
@@ -909,9 +755,37 @@ if __name__ == '__main__':
     parser.add_argument('method', type=str, help='Specify the method')
     parser.add_argument('--tight-slo', action='store_true', default=False, help='Enable tight SLO')
     parser.add_argument('--skip-opt', action='store_true', default=False, help='Skip optimization')
+    # add a new argument to specify the scheme to use for optimization, default is True for all optimization schemes
+    parser.add_argument('--breakwater', action='store_true', default=False, help='Optimize Breakwater')
+    parser.add_argument('--breakwaterd', action='store_true', default=False, help='Optimize BreakwaterD')
+    parser.add_argument('--charon', action='store_true', default=False, help='Optimize Charon')
+    parser.add_argument('--dagor', action='store_true', default=False, help='Optimize Dagor')
+
     args = parser.parse_args()
 
+    global method, SLO, tightSLO, skipOptimize
+
+    global optimizeBreakwater, optimizeBreakwaterD, optimizeCharon, optimizeDagor
+    
+    # if specified, only optimize the specified scheme. If none is specified, optimize all
+    optimizeBreakwater = args.breakwater
+    optimizeBreakwaterD = args.breakwaterd
+    optimizeCharon = args.charon
+    optimizeDagor = args.dagor
+
+    if not optimizeBreakwater and not optimizeBreakwaterD and not optimizeCharon and not optimizeDagor:
+        optimizeCharon = optimizeBreakwater = optimizeBreakwaterD = True
+        optimizeDagor = False
+
+
     method = args.method
+    # map s1 s2 s3 to the actual method S_102000854 S_149998854 S_161142529
+    map = {
+        's1': 'S_102000854',
+        's2': 'S_149998854',
+        's3': 'S_161142529',
+    }
+    method = map[method] if method in map else method
     tightSLO = args.tight_slo
     skipOptimize = args.skip_opt
 
@@ -924,7 +798,7 @@ if __name__ == '__main__':
     # if len(sys.argv) > 2:
     #     tightSLO = sys.argv[2] == 'tightSLO'
     
-    capacity = 'gpt2-10000' if 'S_' in method else 'gpt2-8000'
+    capacity = 'gpt1-10000' if 'S_' in method else 'gpt2-8000'
     maximum_goodput = 10000
     # if method == 'S_102000854':
     #     capacity = 'gpt1-10000'

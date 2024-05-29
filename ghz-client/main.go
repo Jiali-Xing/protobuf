@@ -59,15 +59,18 @@ var (
 		return parsedCapacity
 	}()
 
+	warmup_load, _ = strconv.Atoi(getEnv("WARMUP_LOAD", "4000"))
+
 	concurrency, _ = strconv.Atoi(getEnv("CONCURRENCY", "1000"))
 	// loadReduction is true or false
 	loadReduction, _ = strconv.ParseBool(getEnv("LOAD_REDUCTION", "false"))
 	loadIncrease, _  = strconv.ParseBool(getEnv("LOAD_INCREASE", "false"))
 
-	loadStart        = uint(float64(capacity) / 2)
+	// loadStart        is from environment variable
+	loadStart        = uint(warmup_load)
 	loadEnd          = uint(capacity)
 	loadStep         = int(loadEnd - loadStart)
-	loadStepDuration = time.Second * 3
+	loadStepDuration = time.Second * 5 // 5 seconds to warm up before the load spikes
 
 	// read the inferface/method from the environment variable
 	method  = getEnv("METHOD", "echo")
@@ -90,7 +93,7 @@ var (
 	breakwaterSLO           time.Duration
 	breakwaterClientTimeout time.Duration
 	breakwaterInitialCredit int64
-	serverSideInterceptOnly = false
+	// serverSideInterceptOnly = false
 
 	dagorQueuingThresh                time.Duration
 	dagorAlpha                        float64
@@ -193,11 +196,11 @@ func main() {
 			breakwaterClientTimeout, _ = time.ParseDuration(config.Value)
 		case "BREAKWATER_INITIAL_CREDIT":
 			breakwaterInitialCredit, _ = strconv.ParseInt(config.Value, 10, 64)
-		case "SIDE":
-			// if the side is server_only, then set the serverSideInterceptOnly to true
-			if config.Value == "server_only" {
-				serverSideInterceptOnly = true
-			}
+		// case "SIDE":
+		// 	// if the side is server_only, then set the serverSideInterceptOnly to true
+		// 	if config.Value == "server_only" {
+		// 		serverSideInterceptOnly = true
+		// 	}
 		case "DAGOR_QUEUING_THRESHOLD":
 			dagorQueuingThresh, _ = time.ParseDuration(config.Value)
 		case "DAGOR_ALPHA":
@@ -305,6 +308,7 @@ func main() {
 	} else {
 		defactoInterceptor = interceptor
 	}
+	log.Printf("De facto interceptor: %s", defactoInterceptor)
 	if constantLoad {
 		report, err = runner.Run(
 			"greeting.v3.GreetingService/Greeting",

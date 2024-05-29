@@ -1,3 +1,29 @@
+# This file contains the SLOs for each method of the services.
+# And the sustainable request load for each method.
+
+
+def get_sustainable_load(method):
+    # The sustainable load is the maximum request rate that the service can handle without violating the SLO.
+    # The sustainable load is determined by the stabliity of the throughput. 
+    # Results here are measured under 8 nodes.  
+    sustainable_load = {
+        # "compose": 4000,
+        # "user-timeline": 6000,
+        # "home-timeline": 6000,
+        "S_149998854": 3000,
+        "S_102000854": 4000,
+        "S_161142529": 4000,
+        # "hotels-http": 8000,
+        # "reservation-http": 8000,
+        # "user-http": 8000,
+        # "recommendations-http": 8000,
+        # "motivation-aqm": 8000,
+        # "motivation-rl": 8000,
+        # "all-methods-social": 8000,
+        # "all-methods-hotel": 8000,
+    }
+    return sustainable_load.get(method, None)
+
 def get_slo(method, tight=False, all_methods=False):
     if 'motivation' in method:
         slo = 100

@@ -13,7 +13,7 @@ from utils import (
     read_mean_latency,
     read_data,
     convert_to_dataframe,
-    calculate_tail_latency,
+    calculate_tail_latency_dynamic,
     calculate_throughput,
     calculate_average_goodput,
     calculate_goodput,
@@ -25,27 +25,72 @@ from utils import (
 
 throughput_time_interval = '50ms'
 latency_window_size = '200ms' 
-offset = 2.5
+# offset = 3  # an offset of 3 seconds to omit pre-spike metrics
 
 
+
+def plot_error_bars(ax, subset, metric, control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=False):
+    ax.errorbar(subset['Load'], subset[metric], yerr=subset[metric + ' std'], fmt=control_markers[control],
+                color=colors[control], linestyle=lineStyles[control], label=labelDict[control],
+                linewidth=2, capsize=5, alpha=0.6)
+    if add_hline:
+        ax.axhline(y=SLO, color='c', linestyle='-.', label='SLO')
+
+def setup_axes(axs, interfaces, ali_dict, alibaba_combined):
+    if alibaba_combined:
+        for i, interface in enumerate(interfaces):
+            iname = ali_dict[interface]
+            ax1, ax2 = axs[:, i]
+            ax1.set_title(f'{iname}')
+            if i == 0:
+                ax1.set_ylabel('95th Tail\nLatency (ms)')
+                ax2.set_ylabel('Goodput (RPS)')
+            else:
+                ax1.set_yticklabels([])
+                ax2.set_yticklabels([])
+        axs[0][1].legend(frameon=False, loc='upper center', bbox_to_anchor=(0.5, 1.3), ncol=4)
+    else:
+        ax1, ax2 = axs
+        ax1.set_xlabel('Load (RPS)')
+        ax1.set_ylabel('95th Tail Latency (ms)')
+        ax1.set_title('Load vs Tail Latency')
+        ax1.grid(True)
+        ax2.set_ylabel('Goodput (RPS)')
+        ax2.set_title('Load vs Goodput')
+        ax2.set_xlabel('Load (RPS)')
+        ax2.grid(True)
+        # ax2.legend(frameon=False, loc='upper center', bbox_to_anchor=(0.5, 1.3), ncol=4)
+        ax2.legend(frameon=False, bbox_to_anchor=(1.05, 1), loc='upper left')
+
+def plot_individual_interface(axs, df, control_mechanisms, colors, lineStyles, labelDict, control_markers, whatLatency):
+    ax1, ax2 = axs
+    for control in control_mechanisms:
+        subset = df[df['overload_control'] == control]
+        SLO = get_slo(method=method, tight=tightSLO, all_methods=False)
+        for latency in whatLatency:
+            plot_error_bars(ax1, subset, latency, control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=True)
+        plot_error_bars(ax2, subset, 'Goodput', control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=False)
+
+def plot_combined_interfaces(axs, df, interfaces, control_mechanisms, colors, lineStyles, labelDict, control_markers, whatLatency, ali_dict):
+    for i, interface in enumerate(interfaces):
+        ax1, ax2 = axs[:, i]
+        SLO = get_slo(method=interface, tight=tightSLO, all_methods=False)
+        for control in control_mechanisms:
+            subset = df[(df['overload_control'] == control) & (df['Request'] == interface)]
+            for latency in whatLatency:
+                plot_error_bars(ax1, subset, latency, control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=True)
+            plot_error_bars(ax2, subset, 'Goodput', control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=False)
 
 
 def plot_alibaba_eval(df, interfaces):
-    # if interfaces is of size 1, then plot the individual interface
-    # if interfaces is of size 3, then plot the combined alibaba interfaces
-    alibaba_combined = len(interfaces) > 1
-    method = interfaces[0]
-
     if df is None:
         return
 
-    # Define control mechanisms based on the `motivation` flag
-    control_mechanisms = ['dagor', 'breakwater', 'breakwaterd', 'charon']
+    alibaba_combined = len(interfaces) > 1
 
-    # Define latency metrics to plot
+    control_mechanisms = ['dagor', 'breakwater', 'breakwaterd', 'charon']
     whatLatency = ['95th_percentile']
 
-    # Map control mechanisms to colors
     colors = {
         'plain': '#F44336',
         'breakwater': '#2196F3',
@@ -54,14 +99,14 @@ def plot_alibaba_eval(df, interfaces):
         'charon': '#FF9800',
     }
 
-    # Map latency metrics to markers
-    markers = {
-        '99th_percentile': 'o',
-        'Median Latency': 's',
-        '95th_percentile': 'x',
+    control_markers = {
+        'plain': 'o',
+        'breakwater': 's',
+        'breakwaterd': '^',
+        'dagor': 'v',
+        'charon': 'x',
     }
 
-    # Map control mechanisms to line styles
     lineStyles = {
         'plain': '-',
         'breakwater': '--',
@@ -70,18 +115,6 @@ def plot_alibaba_eval(df, interfaces):
         'charon': '-',
     }
 
-    # Define markers for each control mechanism
-    control_markers = {
-        'plain': 'o',
-        'breakwater': 's',
-        'breakwaterd': '^',
-        'dagor': 'v',
-        'charon': 'x',
-        # Add more mappings if necessary
-    }
-
-
-    # Map control mechanisms to labels
     labelDict = {
         'plain': 'No Control',
         'breakwater': 'Breakwater',
@@ -90,117 +123,32 @@ def plot_alibaba_eval(df, interfaces):
         'charon': 'Rajomon',
     }
 
+    ali_dict = {
+        "S_102000854": "S1",
+        "S_149998854": "S2",
+        "S_161142529": "S3",
+    }
+
     if alibaba_combined:
-        # interfaces = ['S_102000854', 'S_149998854', 'S_161142529']
-        # Plotting logic for combined Alibaba interfaces
-        ali_dict = {
-            "S_102000854": "S1",
-            "S_149998854": "S2",
-            "S_161142529": "S3",
-        }
-        fig, axs = plt.subplots(2, len(interfaces), figsize=(12, 5))
-
-        for i, interface in enumerate(interfaces):
-            ax1, ax2 = axs[:, i]
-            for control in control_mechanisms:
-                mask = (df['overload_control'] == control) & (df['Request'] == interface)
-                subset = df[(df['overload_control'] == control) & (df['Request'] == interface)]
-
-                for latency in whatLatency:
-                    subset_filtered = subset
-                    # ax1.plot(subset_filtered['Load'], subset_filtered[latency],
-                    #         color=colors[control], linestyle=lineStyles[control],
-                    #         label=labelDict[control] if latency == '95th_percentile' else None,
-                    #         linewidth=2,
-                    #         marker=markers[latency] if latency == '99th_percentile' else None,
-                    #         )
-
-                    ax1.errorbar(subset_filtered['Load'], subset_filtered[latency], yerr=subset_filtered[latency + ' std'], fmt=control_markers[control],
-                                color=colors[control], linestyle=lineStyles[control], label=labelDict[control],
-                                linewidth=2, capsize=5)
-
-                # ax2.plot(subset['Load'], subset['Goodput'],
-                #         label=labelDict[control], color=colors[control], linestyle=lineStyles[control], linewidth=2)
-
-                ax2.errorbar(subset['Load'], subset['Goodput'], yerr=subset['Goodput std'], fmt=control_markers[control],
-                            label=labelDict[control], color=colors[control], linestyle=lineStyles[control], linewidth=2, capsize=5)
-
-
-            iname = ali_dict[interface]
-            ax1.set_title(f'{iname}')
-            if i == 0:
-                ax1.set_ylabel('95th Tail\nLatency (ms)')
-                ax2.set_ylabel('Goodput (RPS)')
-            else:
-                ax1.set_yticklabels([])
-                ax2.set_yticklabels([])
-
-        max_latency = max(df['95th_percentile'])
-        maximum_goodput = max(df['Goodput'])
-        for ax in axs.flatten()[0:len(interfaces)]:
-            ax.grid(True)
-            # ax.set_ylim(40, max_latency + 20)
-        for ax in axs.flatten()[len(interfaces):]:
-            ax.grid(True)
-            # ax.set_ylim(0, maximum_goodput + 100)
-        axs.flatten()[len(interfaces)].set_yticklabels(['0', '1k', '2k', '3k', '4k'])
-        axs[0][1].legend(frameon=False, loc='upper center', bbox_to_anchor=(0.5, 1.3), ncol=4)
-        for i in range(len(interfaces)):
-            axs[0][i].get_shared_x_axes().join(axs[0][i], axs[1][i])
-
-        plt.savefig(os.path.expanduser(f'~/Sync/Git/protobuf/ghz-results/all-alibaba-{datetime.now().strftime("%m%d")}.pdf'))
-        plt.show()
-        print(f"Saved plot to ~/Sync/Git/protobuf/ghz-results/all-alibaba-{datetime.now().strftime('%m%d')}.pdf")
+        fig, axs = plt.subplots(2, len(interfaces), figsize=(12, 5), sharex=True, sharey='row')
+        plot_combined_interfaces(axs, df, interfaces, control_mechanisms, colors, lineStyles, labelDict, control_markers, whatLatency, ali_dict)
     else:
-        # Plotting logic for individual interface
-        fig, axs = plt.subplots(1, 2, figsize=(10, 5))
-        # fig, axs = plt.subplots(1, 2, figsize=(6, 2.5))
-        ax1, ax2 = axs
+        fig, axs = plt.subplots(1, 2, figsize=(10, 4))
+        plot_individual_interface(axs, df, control_mechanisms, colors, lineStyles, labelDict, control_markers, whatLatency)
 
-        for control in control_mechanisms:
-            mask = (df['overload_control'] == control)
-            subset = df[df['overload_control'] == control]
+    setup_axes(axs, interfaces, ali_dict, alibaba_combined)
 
-            for latency in whatLatency:
-                subset_filtered = subset
-                # ax1.plot(subset_filtered['Load'], subset_filtered[latency],
-                #         color=colors[control], linestyle=lineStyles[control],
-                #         label=labelDict[control] if latency == '95th_percentile' else None,
-                #         linewidth=2,
-                #         marker=markers[latency] if latency == '99th_percentile' else None,
-                #         )
-
-                ax1.errorbar(subset_filtered['Load'], subset_filtered[latency], yerr=subset_filtered[latency + ' std'], fmt=control_markers[control],
-                            color=colors[control], linestyle=lineStyles[control], label=labelDict[control],
-                            linewidth=2, capsize=5)
-
-            # ax2.plot(subset['Load'], subset['Goodput'],
-            #         label=labelDict[control], color=colors[control], linestyle=lineStyles[control], linewidth=2)
-
-            ax2.errorbar(subset['Load'], subset['Goodput'], yerr=subset['Goodput std'], fmt=control_markers[control],
-                        label=labelDict[control], color=colors[control], linestyle=lineStyles[control], linewidth=2, capsize=5)
-
-        ax1.set_xlabel('Load (RPS)')
-        ax1.set_ylabel('95th Tail Latency (ms)')
-        ax1.set_title('Load vs Tail Latency')
-        ax1.grid(True)
-
-        ax2.set_ylabel('Goodput (RPS)')
-        ax2.set_title('Load vs Goodput')
-        ax2.set_xlabel('Load (RPS)')
-        ax2.grid(True)
-        ax2.legend(frameon=False, bbox_to_anchor=(1.05, 1), loc='upper left')
-
-        plt.tight_layout()
-        plt.savefig(os.path.expanduser(f'~/Sync/Git/protobuf/ghz-results/{method}-{datetime.now().strftime("%m%d")}.pdf'))
-        plt.show()
-        print(f"Saved plot to ~/Sync/Git/protobuf/ghz-results/{method}-{datetime.now().strftime('%m%d')}.pdf")
+    save_path = os.path.expanduser(f'~/Sync/Git/protobuf/ghz-results/')
+    save_name = 'all-alibaba' if alibaba_combined else interfaces[0]
+    plt.savefig(f'{save_path}{save_name}-{datetime.now().strftime("%m%d")}.pdf')
+    plt.show()
+    print(f"Saved plot to {save_path}{save_name}-{datetime.now().strftime('%m%d')}.pdf")
 
 
 def main():
     global method
     global tightSLO
-    global SLO
+    # global SLO
     
     old_data_sigcomm = False
 
@@ -217,9 +165,20 @@ def main():
         'S_102000854': [
             ('0526_0409', '0526_0627'), # run from bento
             ('0526_1634', '0526_1832'), # run from laptop
+            ('0526_2318', '0527_0109'), # run from bento
             ], # these are tuned with goodput - squared tail latency
         'S_149998854': [('0501_0000', '0520_0000')],
         'S_161142529': [('0501_0000', '0520_0000')],
+    }
+    
+    # New time ranges are for the 15 second experiment, 5 second warmup, and fixed start load (80% of sustainable load)
+    new_time_ranges = {
+        'S_102000854': [
+        ],
+        'S_149998854': [
+            # ('0528_1009', '0528_1216'), # this is tuned with square tail latency
+            ('0528_1620', '0528_1852'), # this is tuned with square tail latency
+        ],
     }
 
     old_time_ranges = {
@@ -246,7 +205,8 @@ def main():
         ],
     }
 
-    time_ranges = old_time_ranges if old_data_sigcomm else time_ranges
+    # time_ranges = old_time_ranges if old_data_sigcomm else time_ranges
+    time_ranges = new_time_ranges 
     tightSLO = True if old_data_sigcomm else tightSLO
 
     # Load data

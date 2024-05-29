@@ -1,0 +1,43 @@
+Service Name:  ms-1278
+Call Graph of the Service:
+map[]
+Downstreams of the Service:
+[]
+Server Configurations:
+[{COMPUTATION_DISTRIBUTION constant} {PROCESS_TIME 1.0799486461251167ms} {APP_PORT 50051} {LOG_LEVEL Info} {GREETING Hi Malaka!} {SUBCALL parallel} {PROFILING false}]
+Charon Configurations:
+[{INTERCEPT plain} {PRICE_UPDATE_RATE 10ms} {TOKEN_UPDATE_RATE 10ms} {LATENCY_THRESHOLD 100us} {PRICE_STEP 0} {PRICE_STRATEGY step} {LAZY_UPDATE false} {RATE_LIMITING true} {LOAD_SHEDDING true} {CHARON_TRACK_PRICE false} {BREAKWATER_SLO 18910us} {BREAKWATER_A 0.09234388041268637} {BREAKWATER_B 1.6420264012065484} {BREAKWATER_CLIENT_EXPIRATION 2562us} {BREAKWATER_INITIAL_CREDIT 1073} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATER_RTT 14767us} {BREAKWATERD_SLO 12500us} {BREAKWATERD_A 0.001} {BREAKWATERD_B 0.02} {BREAKWATERD_CLIENT_EXPIRATION 10ms} {BREAKWATERD_INITIAL_CREDIT 400} {BREAKWATERD_LOAD_SHEDDING true} {BREAKWATERD_RTT 1000us} {DAGOR_QUEUING_THRESHOLD 2ms} {DAGOR_ALPHA 0.05} {DAGOR_BETA 0.01} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 10ms} {DAGOR_UMAX 20}]
+Price Update Rate: 10ms
+Latency Threshold: 100µs
+Price Step: 0
+Price Strategy: step
+Intercept: plain
+Lazy Update: false
+Rate Limiting: true
+Load Shedding: true
+Charon Track Price: false
+Breakwater SLO: 18.91ms
+Breakwater Client Timeout: 2.562ms
+Breakwater Initial Credit: 1073
+Breakwater A: 0.09234388041268637
+Breakwater B: 1.6420264012065484
+Breakwater Load Shedding: true
+Breakwater RTT: 14.767ms
+BreakwaterD SLO: 12.5ms
+BreakwaterD Client Timeout: 10ms
+BreakwaterD Initial Credit: 400
+BreakwaterD A: 0.001
+BreakwaterD B: 0.02
+BreakwaterD Load Shedding: true
+BreakwaterD RTT: 1ms
+Dagor Queuing Threshold: 2ms
+Dagor Alpha: 0.05
+Dagor Beta: 0.01
+Dagor Admission Level Update Interval: 10ms
+Dagor Umax: 20
+Computation Distribution: constant
+Process Time: 1.079948ms
+Address Listening on: 0.0.0.0:50051
+Greeting Message: Hi Malaka!
+Log Level: Info
+Subcall Pattern: parallel

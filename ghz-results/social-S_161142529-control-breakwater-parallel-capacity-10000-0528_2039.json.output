@@ -1,0 +1,156 @@
+Deployments: ms-25648
+ms-27283
+ms-27421
+ms-2827
+ms-34756
+ms-36144
+ms-37691
+ms-41385
+ms-41914
+ms-46825
+ms-54016
+ms-55339
+ms-58269
+ms-58845
+ms-68328
+ms-70297
+nginx-web-server
+unknown
+deployment "ms-25648" successfully rolled out
+deployment "ms-27283" successfully rolled out
+deployment "ms-27421" successfully rolled out
+deployment "ms-2827" successfully rolled out
+deployment "ms-34756" successfully rolled out
+deployment "ms-36144" successfully rolled out
+deployment "ms-37691" successfully rolled out
+deployment "ms-41385" successfully rolled out
+deployment "ms-41914" successfully rolled out
+deployment "ms-46825" successfully rolled out
+deployment "ms-54016" successfully rolled out
+deployment "ms-55339" successfully rolled out
+deployment "ms-58269" successfully rolled out
+deployment "ms-58845" successfully rolled out
+deployment "ms-68328" successfully rolled out
+deployment "ms-70297" successfully rolled out
+deployment "nginx-web-server" successfully rolled out
+deployment "unknown" successfully rolled out
+ENTRY_POINT: nginx-web-server
+SERVICE_A_URL: 10.106.150.231:50051
+Capacity: 10000
+Metadata: request-id={{.RequestNumber}}
+Metadata: timestamp={{.TimestampUnix}}
+Metadata: method=S_161142529
+Charon Configurations:
+[{INTERCEPT breakwater} {PRICE_UPDATE_RATE 10ms} {TOKEN_UPDATE_RATE 10ms} {LATENCY_THRESHOLD 100us} {PRICE_STEP 0} {PRICE_STRATEGY step} {LAZY_UPDATE false} {RATE_LIMITING true} {LOAD_SHEDDING true} {CHARON_TRACK_PRICE false} {BREAKWATER_SLO 1937us} {BREAKWATER_A 8.34044009405148} {BREAKWATER_B 1.4406489868843162} {BREAKWATER_CLIENT_EXPIRATION 0us} {BREAKWATER_INITIAL_CREDIT 605} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATER_RTT 2935us} {BREAKWATERD_SLO 12500us} {BREAKWATERD_A 0.001} {BREAKWATERD_B 0.02} {BREAKWATERD_CLIENT_EXPIRATION 10ms} {BREAKWATERD_INITIAL_CREDIT 400} {BREAKWATERD_LOAD_SHEDDING true} {BREAKWATERD_RTT 1000us} {DAGOR_QUEUING_THRESHOLD 2ms} {DAGOR_ALPHA 0.05} {DAGOR_BETA 0.01} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 10ms} {DAGOR_UMAX 20}]
+
+Summary:
+  Count:	63175
+  Total:	24.93 s
+  Slowest:	859.99 ms
+  Fastest:	65.28 ms
+  Average:	93.19 ms
+  Requests/sec:	2533.87
+
+Response time histogram:
+  65.281  [1]     |
+  144.752 [59534] |∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎
+  224.222 [1587]  |∎
+  303.693 [0]     |
+  383.163 [0]     |
+  462.633 [4]     |
+  542.104 [28]    |
+  621.574 [0]     |
+  701.045 [0]     |
+  780.515 [5]     |
+  859.986 [45]    |
+
+Latency distribution:
+  10 % in 72.30 ms 
+  25 % in 81.17 ms 
+  50 % in 91.75 ms 
+  75 % in 105.55 ms 
+  90 % in 120.80 ms 
+  95 % in 133.17 ms 
+  99 % in 160.54 ms 
+
+Status code distribution:
+  [OK]                  61204 responses   
+  [ResourceExhausted]   1702 responses    
+  [Canceled]            269 responses     
+
+Error distribution:
+  [1702]   rpc error: code = ResourceExhausted desc = Server-side queuing delay is beyond AQM threshold   
+  [269]    rpc error: code = Canceled desc = grpc: the client connection is closing                       
+
+Debug: Checking Namespace=default, Pod=ms-25648-86cc47d8bd-dhhtt for Target File=deathstar_*.output
+Namespace: default, Pod: ms-25648-86cc47d8bd-dhhtt has the target files.
+Copying deathstar_ms-25648.output to deathstar_ms-25648.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-27283-7cb76dd56d-k5wch for Target File=deathstar_*.output
+Namespace: default, Pod: ms-27283-7cb76dd56d-k5wch has the target files.
+Copying deathstar_ms-27283.output to deathstar_ms-27283.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-27421-64f549855c-f87tw for Target File=deathstar_*.output
+Namespace: default, Pod: ms-27421-64f549855c-f87tw has the target files.
+Copying deathstar_ms-27421.output to deathstar_ms-27421.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-2827-565cbcd7b-n9jfw for Target File=deathstar_*.output
+Namespace: default, Pod: ms-2827-565cbcd7b-n9jfw has the target files.
+Copying deathstar_ms-2827.output to deathstar_ms-2827.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-34756-7c45d5bcc-9dw6z for Target File=deathstar_*.output
+Namespace: default, Pod: ms-34756-7c45d5bcc-9dw6z has the target files.
+Copying deathstar_ms-34756.output to deathstar_ms-34756.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-36144-7bf7cbfff6-snmsz for Target File=deathstar_*.output
+Namespace: default, Pod: ms-36144-7bf7cbfff6-snmsz has the target files.
+Copying deathstar_ms-36144.output to deathstar_ms-36144.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-37691-6f7cbf7c5-zj7jg for Target File=deathstar_*.output
+Namespace: default, Pod: ms-37691-6f7cbf7c5-zj7jg has the target files.
+Copying deathstar_ms-37691.output to deathstar_ms-37691.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-41385-6bc4f5d4fc-qmrl9 for Target File=deathstar_*.output
+Namespace: default, Pod: ms-41385-6bc4f5d4fc-qmrl9 has the target files.
+Copying deathstar_ms-41385.output to deathstar_ms-41385.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-41914-5555dd8d48-sqqr9 for Target File=deathstar_*.output
+Namespace: default, Pod: ms-41914-5555dd8d48-sqqr9 has the target files.
+Copying deathstar_ms-41914.output to deathstar_ms-41914.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-46825-58c684559d-nwzpx for Target File=deathstar_*.output
+Namespace: default, Pod: ms-46825-58c684559d-nwzpx has the target files.
+Copying deathstar_ms-46825.output to deathstar_ms-46825.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-54016-5665fbcb8d-n6p4z for Target File=deathstar_*.output
+Namespace: default, Pod: ms-54016-5665fbcb8d-n6p4z has the target files.
+Copying deathstar_ms-54016.output to deathstar_ms-54016.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-55339-5b545b67bb-ndkj8 for Target File=deathstar_*.output
+Namespace: default, Pod: ms-55339-5b545b67bb-ndkj8 has the target files.
+Copying deathstar_ms-55339.output to deathstar_ms-55339.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-58269-8c4794c6c-nlk79 for Target File=deathstar_*.output
+Namespace: default, Pod: ms-58269-8c4794c6c-nlk79 has the target files.
+Copying deathstar_ms-58269.output to deathstar_ms-58269.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-58845-5bc6f9d8df-xgsl5 for Target File=deathstar_*.output
+Namespace: default, Pod: ms-58845-5bc6f9d8df-xgsl5 has the target files.
+Copying deathstar_ms-58845.output to deathstar_ms-58845.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-68328-5866fd45b7-s5z4l for Target File=deathstar_*.output
+Namespace: default, Pod: ms-68328-5866fd45b7-s5z4l has the target files.
+Copying deathstar_ms-68328.output to deathstar_ms-68328.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-70297-868876bcdb-bm22x for Target File=deathstar_*.output
+Namespace: default, Pod: ms-70297-868876bcdb-bm22x has the target files.
+Copying deathstar_ms-70297.output to deathstar_ms-70297.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=nginx-web-server-56557f7cb7-jws62 for Target File=deathstar_*.output
+Namespace: default, Pod: nginx-web-server-56557f7cb7-jws62 has the target files.
+Copying deathstar_nginx-web-server.output to deathstar_nginx-web-server.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=unknown-57ddd65965-z582f for Target File=deathstar_*.output
+Namespace: default, Pod: unknown-57ddd65965-z582f has the target files.
+Copying deathstar_unknown.output to deathstar_unknown.output
+tar: removing leading '/' from member names

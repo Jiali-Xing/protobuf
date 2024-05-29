@@ -10,9 +10,12 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            // 3 args: ./priceOutput/social-compose-control-charon-parallel-capacity-6000-0128_0008.json ./priceOutput/social-user-timeline-control-charon-parallel-capacity-6000-0128_0008.json ./priceOutput/social-home-timeline-control-charon-parallel-capacity-6000-0128_0008.json"],
-            "args": ["./priceOutput/social-compose-control-charon-parallel-capacity-6000-0128_0008.json", "./priceOutput/social-user-timeline-control-charon-parallel-capacity-6000-0128_0008.json", "./priceOutput/social-home-timeline-control-charon-parallel-capacity-6000-0128_0008.json"],
+            "args": [""],
             "console": "integratedTerminal",
+            // env vars
+            "env": {
+                "METHOD": "S_149998854"
+            },
             "justMyCode": true,
         },
     ]

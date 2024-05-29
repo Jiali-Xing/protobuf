@@ -8,12 +8,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.dates as md
 from slo import get_slo
+from utils import calculate_goodput_ave_var, calculate_tail_latency_dynamic, read_load_info_from_json, read_data, read_tail_latency, calculate_goodput_dynamic, calculate_goodput_ave_var, calculate_throughput_dynamic, calculate_loadshedded, calculate_ratelimited, read_mean_latency
 
 # import the function calculate_average_goodput from /home/ying/Sync/Git/protobuf/baysian-opt/bayesian_opt.py
 
 throughput_time_interval = '100ms'
 latency_window_size = '200ms'  # Define the window size as 100 milliseconds
-offset = 1.05  # Define the offset as 50 milliseconds
+offset = 0  # Define the offset as 50 milliseconds
 oneNode = False
 # remote = True
 cloudlab = True
@@ -42,29 +43,6 @@ if 'CONSTANT_LOAD' in os.environ:
 if 'CAPACITY' in os.environ:
     capacity = int(os.environ['CAPACITY'])
     print("Capacity is set to", capacity)
-
-def read_data(filename):
-    with open(filename, 'r') as f:
-        data = json.load(f)
-    return data["details"]
-
-
-def read_tail_latency(filename, percentile=99):
-    with open(filename, 'r') as f:
-        data = json.load(f)
-        
-    latency_distribution = data["latencyDistribution"]
-    for item in latency_distribution:
-        if item["percentage"] == percentile:
-            return item["latency"]
-    return None  # Return None if the 99th percentile latency is not found
-
-
-# similarly to read_tail_latency, read_mean_latency returns the mean latency
-def read_mean_latency(filename):
-    with open(filename, 'r') as f:
-        data = json.load(f)
-    return data["average"]  
 
 
 def convert_to_dataframe(data, init=False):
@@ -119,25 +97,7 @@ def plot_latency_pdf_cdf(df, filename):
     plt.show()
 
 
-def calculate_throughput(df):
-    # sample throughput every time_interval
-    ok_requests_per_second = df[df['status'] == 'OK']['status'].resample(throughput_time_interval).count()
-    # scale the throughput to requests per second
-    ok_requests_per_second = ok_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
-    df['throughput'] = ok_requests_per_second.reindex(df.index, method='bfill')
-    return df
-
-
-def calculate_goodput(df, slo):
-    goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample(throughput_time_interval).count()
-    # scale the throughput to requests per second
-    goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
-    # fill in zeros for the missing goodput
-    df['goodput'] = goodput_requests_per_second.reindex(df.index, method='bfill')
-    return df
-
-
-def calculate_average_goodput(filename):
+def calculate_average_var_goodput(filename):
     # Insert your code for calculating average goodput here
     # Read the ghz.output file and calculate the average goodput
     # Return the average goodput
@@ -147,73 +107,6 @@ def calculate_average_goodput(filename):
     # df = calculate_throughput(df)
     goodput, goodputVar = calculate_goodput_ave_var(df, SLO)
     return goodput, goodputVar
-
-
-def calculate_goodput_ave_var(df, slo):
-    goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample(throughput_time_interval).count()
-    # scale the throughput to requests per second
-    goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
-    df['goodput'] = goodput_requests_per_second.reindex(df.index, method='bfill')
-    # take out the goodput during the last 3 seconds by index
-    # goodput = df[df.index > df.index[-1] - pd.Timedelta(seconds=3)]['goodput']
-    goodput = df['goodput']
-    # return the goodput, but round it to 2 decimal places
-    goodputAve = goodput.mean()
-    # also calculate the standard deviation of the goodput
-    goodputStd = goodput.std()
-    goodputAve = round(goodputAve, 1)
-    goodputStd = round(goodputStd, 1)
-    return goodputAve, goodputStd
-
-
-# when a load is shed, item looks like this:
-    # {
-    #   "timestamp": "2023-07-03T01:24:49.080597187-04:00",
-    #   "latency": 535957,
-    #   "error": "rpc error: code = ResourceExhausted desc = 17 token for 90 price. req dropped, try again later",
-    #   "status": "ResourceExhausted"
-    # },
-
-def calculate_loadshedded(df):
-    # extract the dropped requests by status == 'ResourceExhausted' and error message contains 'req dropped'
-    dropped = df[(df['status'] == 'ResourceExhausted')]
-    dropped_requests_per_second = dropped['status'].resample(throughput_time_interval).count()
-    # scale the throughput to requests per second
-    dropped_requests_per_second = dropped_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
-    df['dropped'] = dropped_requests_per_second.reindex(df.index, method='ffill')
-    return df
-
-# when the rate is limited, item looks like this:
-    # {
-    #   "timestamp": "2023-07-03T01:24:58.847045036-04:00",
-    #   "latency": 13831,
-    #   "error": "rpc error: code = ResourceExhausted desc = trying to send message larger than max (131 vs. 0)",
-    #   "status": "ResourceExhausted"
-    # },
-def calculate_ratelimited(df):
-    # extract the dropped requests by status == 'ResourceExhausted' and error message contains 'trying to send message larger than max'
-    limited = df[(df['status'] == 'ResourceExhausted') & (df['error'].str.contains('trying to send message larger than max'))]
-    limited_requests_per_second = limited['status'].resample(throughput_time_interval).count()
-    # scale the throughput to requests per second
-    limited_requests_per_second = limited_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
-    df['limited'] = limited_requests_per_second.reindex(df.index, method='bfill')
-    return df
-
-
-def calculate_tail_latency(df):
-    # Only cound the latency of successful requests, i.e., status == 'OK'
-    df.sort_index(inplace=True)
-    # Assuming your DataFrame is named 'df' and the column to calculate the moving average is 'data'
-    tail_latency = df['latency'].rolling(latency_window_size).quantile(0.99)
-    df['tail_latency'] = tail_latency
-    # Calculate moving average of latency
-    df['latency_ma'] = df['latency'].rolling(latency_window_size).mean()
-
-    # calculate the average tail latency of each second 
-    # df['tail_latency_ave'] = df['tail_latency'].resample('1s').mean()
-    # print('[Average Tail Latency] ', df['tail_latency'].mean())
-    
-    return df
 
 
 def plot_timeseries(df, filename):
@@ -576,10 +469,12 @@ def plot_timeseries_split_2(df1, df2, filename):
     ax2.plot(df.index, df['goodput'], color='green', linestyle='--', alpha=0.2)
     ax2.plot(df.index, df['dropped']+df['throughput'], color='tab:blue', linestyle='-', label='Req Sent', alpha=0.2)
     # plot dropped requests + rate limit requests + throughput = total demand
-    capacity = 8000
-    df['total_demand'] = capacity/2
-    # Define the time range from 2nd to 4th second
-    mid_start_time = pd.Timestamp('2000-01-01 00:00:02')
+
+    load_info = read_load_info_from_json(filename)
+    capacity = load_info['load-end']
+    df['total_demand'] = load_info['load-start']
+    # Define the time as 00:00:00 + load-step-duration - offset
+    mid_start_time = pd.Timestamp('2000-01-01 00:00:00') + pd.Timedelta(load_info['load-step-duration']) - pd.Timedelta(offset, unit='s')
     # Create a new column 'new_column' and fill it with 100 for rows within the time range
     df.loc[mid_start_time:, 'total_demand'] = capacity  # Set the value to 100 for the specified time range
 
@@ -618,13 +513,16 @@ def plot_timeseries_split_2(df1, df2, filename):
     ax4.plot(df.index, df['goodput'], color='green', linestyle='--', alpha=0.2)
     ax4.plot(df.index, df['dropped']+df['throughput'], color='tab:blue', linestyle='-', label='Req Sent', alpha=0.2)
     # plot dropped requests + rate limit requests + throughput = total demand
-    # if df['limited'].sum() > 0, then plot the rate limited requests
-    capacity = 10000
-    df['total_demand'] = capacity/2
-    # Define the time range from 2nd to 4th second
-    mid_start_time = pd.Timestamp('2000-01-01 00:00:02')
+    
+    load_info = read_load_info_from_json(filename)
+    capacity = load_info['load-end']
+    df['total_demand'] = load_info['load-start']
+    # Define the time as 00:00:00 + load-step-duration - offset
+    mid_start_time = pd.Timestamp('2000-01-01 00:00:00') + pd.Timedelta(load_info['load-step-duration']) - pd.Timedelta(offset, unit='s')
     # Create a new column 'new_column' and fill it with 100 for rows within the time range
     df.loc[mid_start_time:, 'total_demand'] = capacity  # Set the value to 100 for the specified time range
+
+    # if df['limited'].sum() > 0, then plot the rate limited requests
     ax4.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], where=df['total_demand'] > df['throughput'] + df['dropped'], color=colors[3], alpha=0.8, label='Rate\nLimited')
     ax4.fill_between(df.index, 0, df['goodput'], color=colors[0], alpha=0.8, label='Goodput')
     ax4.fill_between(df.index, df['goodput'], df['throughput'], color=colors[1], alpha=0.8, label='SLO\nViolation')
@@ -716,6 +614,9 @@ def plot_timeseries_split(df, filename, computation_time=0):
     ax2.plot(df.index, df['dropped']+df['throughput'], color='tab:blue', linestyle='-', label='Req Sent', alpha=0.2)
     # plot dropped requests + rate limit requests + throughput = total demand
     # if df['limited'].sum() > 0, then plot the rate limited requests
+    load_info = read_load_info_from_json(filename)
+    capacity = load_info['load-end']
+    
     if df['limited'].sum() > 0:
         df['total_demand'] = df['dropped']+df['throughput']+df['limited']
     elif CONSTANT_LOAD:
@@ -724,18 +625,12 @@ def plot_timeseries_split(df, filename, computation_time=0):
         # otherwise, plot the a total demand that is half of capacity for the first 2 seconds, and then 100% capacity for next 2 seconds
         # and then 150% capacity for the rest of the time
         # add a new column to df, called total_demand, fill in with half of capacity for the first 2 seconds, and then 100% capacity for next 2 seconds
-        df['total_demand'] = capacity/2
 
-        # Define the time range from 2nd to 4th second
-        mid_start_time = pd.Timestamp('2000-01-01 00:00:02')
-        mid_end_time = pd.Timestamp('2000-01-01 00:00:04')
-
+        df['total_demand'] = load_info['load-start']
+        # Define the time as 00:00:00 + load-step-duration - offset
+        mid_start_time = pd.Timestamp('2000-01-01 00:00:00') + pd.Timedelta(load_info['load-step-duration']) - pd.Timedelta(offset, unit='s')
         # Create a new column 'new_column' and fill it with 100 for rows within the time range
         df.loc[mid_start_time:, 'total_demand'] = capacity  # Set the value to 100 for the specified time range
-
-        # from 2nd second to 4th second, total demand is 100% capacity
-        # df.loc[mid_end_time:, 'total_demand'] = capacity *3/2
-    
 
     if mechanism != 'baseline':
         ax2.plot(df.index, df['total_demand'], color='c', linestyle='-.', label='Demand')
@@ -848,14 +743,14 @@ def plot_timeseries_split(df, filename, computation_time=0):
     # plt.suptitle(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
 
     # add the ax2 a title, saying that `The Average Goodput Under Overload is: ` + calculate_average_goodput(filename)
-    goodputAve, goodputStd = calculate_average_goodput(filename)
+    goodputAve, goodputStd = calculate_average_var_goodput(filename)
     if not narrow:
         ax2.set_title(f"The Goodput has Mean: {goodputAve} and Std: {goodputStd}")
 
     latency_99th = read_tail_latency(filename)
     # print("99th percentile latency:", latency_99th)
     # convert the latency_99th from string to milliseconds
-    latency_99th = pd.Timedelta(latency_99th).total_seconds() * 1000
+    # latency_99th = pd.Timedelta(latency_99th).total_seconds() * 1000
     # round the latency_99th to 2 decimal places
     average_99th = df['tail_latency'].mean()
     lat95 = df[(df['status'] == 'OK')]['latency'].quantile(95 / 100)
@@ -990,15 +885,15 @@ def plot_latencies(df, filename, computation_time=0):
 
     # ax1.legend(loc='lower left', bbox_to_anchor=(0, 1), ncol=1, frameon=False)
 
-    goodputAve, goodputStd = calculate_average_goodput(filename)
+    goodputAve, goodputStd = calculate_average_var_goodput(filename)
     ax1.set_title(f"The Goodput has Mean: {goodputAve} and Std: {goodputStd}")
 
     latency_99th = read_tail_latency(filename)
-    latency_99th = pd.Timedelta(latency_99th).total_seconds() * 1000
+    # latency_99th = pd.Timedelta(latency_99th).total_seconds() * 1000
     latency_median = read_tail_latency(filename, percentile=50)
-    latency_median = pd.Timedelta(latency_median).total_seconds() * 1000
+    # latency_median = pd.Timedelta(latency_median).total_seconds() * 1000
     latency_mean = read_mean_latency(filename)
-    latency_mean = pd.Timedelta(latency_mean).total_seconds() * 1000
+    # latency_mean = pd.Timedelta(latency_mean).total_seconds() * 1000
 
     ax1.set_title(f"Mean, Median, 99-tile Latency: {round(latency_mean, 2)} ms, {round(latency_median, 2)} ms, {round(latency_99th, 2)} ms")
 
@@ -1030,11 +925,11 @@ def analyze_data(filename):
     df = convert_to_dataframe(data, init=True)
     # print(df.head())
     # plot_latency_pdf_cdf(df, filename)
-    df = calculate_throughput(df)
-    df = calculate_goodput(df, SLO)
+    df = calculate_throughput_dynamic(df)
+    df = calculate_goodput_dynamic(df, SLO)
     df = calculate_loadshedded(df)
     df = calculate_ratelimited(df)
-    df = calculate_tail_latency(df)
+    df = calculate_tail_latency_dynamic(df)
     # plot_timeseries_ok(df, filename)
     # plot_timeseries_lat(df, filename, 10)
     plot_timeseries_split(df, filename, computationTime)
@@ -1063,12 +958,12 @@ def analyze_data_2(filename1, filename2):
     df1 = convert_to_dataframe(data1, init=True)
     # print(df.head())
     # plot_latency_pdf_cdf(df, filename)
-    df1 = calculate_throughput(df1)
+    df1 = calculate_throughput_dynamic(df1)
     SLO = get_slo(method, tight=True, all_methods=False)
-    df1 = calculate_goodput(df1, SLO)
+    df1 = calculate_goodput_dynamic(df1, SLO)
     df1 = calculate_loadshedded(df1)
     df1 = calculate_ratelimited(df1)
-    df1 = calculate_tail_latency(df1)
+    df1 = calculate_tail_latency_dynamic(df1)
 
     if "control" in filename2:
         match = re.search(r'control-(\w+)-', filename2)
@@ -1088,12 +983,12 @@ def analyze_data_2(filename1, filename2):
     df2 = convert_to_dataframe(data2, init=True)
     # print(df.head())
     # plot_latency_pdf_cdf(df, filename)
-    df2 = calculate_throughput(df2)
+    df2 = calculate_throughput_dynamic(df2)
     SLO = get_slo(method, tight=False, all_methods=False)
-    df2 = calculate_goodput(df2, SLO)
+    df2 = calculate_goodput_dynamic(df2, SLO)
     df2 = calculate_loadshedded(df2)
     df2 = calculate_ratelimited(df2)
-    df2 = calculate_tail_latency(df2)
+    df2 = calculate_tail_latency_dynamic(df2)
     plot_timeseries_split_2(df1, df2, filename1)
 
 if __name__ == '__main__':

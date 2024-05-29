@@ -6,9 +6,9 @@ from datetime import datetime
 import os
 
 # Constants used throughout the module
-throughput_time_interval = '50ms'
+throughput_time_interval = '200ms'
 latency_window_size = '200ms'
-offset = 2.5
+offset = 5 # an offset of 5 seconds to omit pre-spike metrics
 
 def medianL(lst):
     """
@@ -351,3 +351,203 @@ def load_data(method, list_of_tuples_of_experiment_timestamps, slo, request_coun
     df.sort_values('Load', inplace=True)
 
     return df
+
+
+
+def roundDownParams(params):
+    # capitalize the params
+    params = {key.upper(): value for key, value in params.items()}
+    # round the parameters to int unless the key is in the following list
+    for key in params:
+        # for numerical values only, skip the string values
+        if isinstance(params[key], str):
+            continue
+        if key not in ['BREAKWATER_A', 'BREAKWATER_B', 'DAGOR_ALPHA', 'DAGOR_BETA', 'BREAKWATERD_A', 'BREAKWATERD_B']:
+            params[key] = int(params[key])
+
+    # add `us` to the end of the values in combined_params if the key is in the following list
+    # ['PRICE_UPDATE_RATE', 'LATENCY_THRESHOLD', 'BREAKWATER_SLO', 'BREAKWATER_CLIENT_EXPIRATION', 'DAGOR_QUEUING_THRESHOLD', 'DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL']
+    for key in params:
+        if key in ['PRICE_UPDATE_RATE', 'TOKEN_UPDATE_RATE', 'LATENCY_THRESHOLD', \
+                   'BREAKWATER_SLO', 'BREAKWATER_CLIENT_EXPIRATION', \
+                   'BREAKWATERD_SLO', 'BREAKWATERD_CLIENT_EXPIRATION', \
+                   'BREAKWATER_RTT', 'BREAKWATERD_RTT', \
+                   'DAGOR_QUEUING_THRESHOLD', 'DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL']:
+            # if there is already a `us` or `ms` at the end of the value, don't add another `us`
+            # if it is a string
+            if isinstance(params[key], str):
+                if params[key][-2:] not in ['us', 'ms']:
+                    params[key] = str(params[key]) + 'us'
+            if isinstance(params[key], int):
+                params[key] = str(params[key]) + 'us'
+    return params
+
+
+def calculate_goodput_from_file(filename, slo, quantile, average=True):
+    # Insert your code for calculating average goodput here
+    # Read the ghz.output file and calculate the average goodput
+    # Return the average goodput
+    # if filename is a list, average the goodput of all the files
+    if isinstance(filename, list):
+        goodput = 0
+        for f in filename:
+            goodput += calculate_goodput_from_file(f, slo, quantile, average)
+        goodput = goodput / len(filename)
+        return goodput
+
+    data = read_data(filename)
+    df = convert_to_dataframe(data)
+    if average:
+        goodput = calculate_goodput_mean(df, slo=slo)
+    else:
+        goodput = goodput_quantile(df, slo=slo, quantile=quantile)
+    return goodput  # Replace with your actual function
+
+
+def calculate_goodput_mean(df, slo):
+    goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample(throughput_time_interval).count()
+    # scale the throughput to requests per second
+    goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
+    df['goodput'] = goodput_requests_per_second.reindex(df.index, method='bfill').replace(np.nan, 0)
+ 
+    # calculate goodput by counting the number of requests that are ok and have latency less than slo, and then divide by the time interval
+    # time_interval is the time interval for calculating the goodput, last request time - first request time
+    time_interval = (df.index.max() - df.index.min()).total_seconds()
+    goodput = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].count() / time_interval   # take out the goodput during the last 3 seconds by index
+    return goodput
+
+
+def goodput_quantile(df, slo, quantile=0.1):
+    goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample(throughput_time_interval).count()
+    # scale the throughput to requests per second
+    goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
+    df['goodput'] = goodput_requests_per_second.reindex(df.index, method='bfill').replace(np.nan, 0)
+    # take out the goodput during the last 3 seconds by index
+    goodput = df['goodput']
+    # goodput = df[df.index > df.index[0] + pd.Timedelta(seconds=offset)]['goodput']
+    # return the goodput, but round it to 2 decimal places
+    goodput = goodput.quantile(quantile)
+    return goodput
+
+
+def read_tail_latency_from_file(filename, percentile=99):
+    if isinstance(filename, list):
+        latency = 0
+        for f in filename:
+            latency += read_tail_latency_from_file(f, percentile=percentile)
+        latency = latency / len(filename)
+        return latency
+
+    # with open(filename, 'r') as f:
+    #     data = json.load(f)
+    data = read_data(filename)        
+    df = convert_to_dataframe(data)
+    percentile_latency = df[(df['status'] == 'OK')]['latency'].quantile(percentile / 100)
+
+    return percentile_latency  # Replace with your actual function
+
+
+def calculate_goodput_ave_var(df, slo):
+    goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample(throughput_time_interval).count()
+    # scale the throughput to requests per second
+    goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
+    df['goodput'] = goodput_requests_per_second.reindex(df.index, method='bfill')
+    # take out the goodput during the last 3 seconds by index
+    # goodput = df[df.index > df.index[-1] - pd.Timedelta(seconds=3)]['goodput']
+    goodput = df['goodput']
+    # return the goodput, but round it to 2 decimal places
+    goodputAve = goodput.mean()
+    # also calculate the standard deviation of the goodput
+    goodputStd = goodput.std()
+    goodputAve = round(goodputAve, 1)
+    goodputStd = round(goodputStd, 1)
+    return goodputAve, goodputStd
+
+
+# when a load is shed, item looks like this:
+    # {
+    #   "timestamp": "2023-07-03T01:24:49.080597187-04:00",
+    #   "latency": 535957,
+    #   "error": "rpc error: code = ResourceExhausted desc = 17 token for 90 price. req dropped, try again later",
+    #   "status": "ResourceExhausted"
+    # },
+
+def calculate_loadshedded(df):
+    # extract the dropped requests by status == 'ResourceExhausted' and error message contains 'req dropped'
+    dropped = df[(df['status'] == 'ResourceExhausted')]
+    dropped_requests_per_second = dropped['status'].resample(throughput_time_interval).count()
+    # scale the throughput to requests per second
+    dropped_requests_per_second = dropped_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
+    df['dropped'] = dropped_requests_per_second.reindex(df.index, method='ffill')
+    return df
+
+# when the rate is limited, item looks like this:
+    # {
+    #   "timestamp": "2023-07-03T01:24:58.847045036-04:00",
+    #   "latency": 13831,
+    #   "error": "rpc error: code = ResourceExhausted desc = trying to send message larger than max (131 vs. 0)",
+    #   "status": "ResourceExhausted"
+    # },
+def calculate_ratelimited(df):
+    # extract the dropped requests by status == 'ResourceExhausted' and error message contains 'trying to send message larger than max'
+    limited = df[(df['status'] == 'ResourceExhausted') & (df['error'].str.contains('trying to send message larger than max'))]
+    limited_requests_per_second = limited['status'].resample(throughput_time_interval).count()
+    # scale the throughput to requests per second
+    limited_requests_per_second = limited_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
+    df['limited'] = limited_requests_per_second.reindex(df.index, method='bfill')
+    return df
+
+
+def calculate_tail_latency_dynamic(df):
+    # Only cound the latency of successful requests, i.e., status == 'OK'
+    df.sort_index(inplace=True)
+    # Assuming your DataFrame is named 'df' and the column to calculate the moving average is 'data'
+    tail_latency = df['latency'].rolling(latency_window_size).quantile(0.99)
+    df['tail_latency'] = tail_latency
+    # Calculate moving average of latency
+    df['latency_ma'] = df['latency'].rolling(latency_window_size).mean()
+
+    # calculate the average tail latency of each second 
+    # df['tail_latency_ave'] = df['tail_latency'].resample('1s').mean()
+    # print('[Average Tail Latency] ', df['tail_latency'].mean())
+
+    #  remove outliers of the tail latency (those super small values)
+
+    
+    return df
+
+
+
+def calculate_throughput_dynamic(df):
+    # sample throughput every time_interval
+    ok_requests_per_second = df[df['status'] == 'OK']['status'].resample(throughput_time_interval).count()
+    # scale the throughput to requests per second
+    ok_requests_per_second = ok_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
+    df['throughput'] = ok_requests_per_second.reindex(df.index, method='bfill')
+    return df
+
+
+def calculate_goodput_dynamic(df, slo):
+    goodput_requests_per_second = df[(df['status'] == 'OK') & (df['latency'] < slo)]['status'].resample(throughput_time_interval).count()
+    # scale the throughput to requests per second
+    goodput_requests_per_second = goodput_requests_per_second * (1000 / int(throughput_time_interval[:-2]))
+    # fill in zeros for the missing goodput
+    df['goodput'] = goodput_requests_per_second.reindex(df.index, method='bfill')
+    return df
+
+
+def read_load_info_from_json(file_path):
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+        
+    options = data.get('options', {})
+    
+    load_info = {
+        "load-start": options.get("load-start"),
+        "load-end": options.get("load-end"),
+        "load-step": options.get("load-step"),
+        "load-step-duration": options.get("load-step-duration")
+    }
+    
+    return load_info
+

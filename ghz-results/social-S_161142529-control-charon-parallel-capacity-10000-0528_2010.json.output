@@ -1,0 +1,159 @@
+Deployments: ms-25648
+ms-27283
+ms-27421
+ms-2827
+ms-34756
+ms-36144
+ms-37691
+ms-41385
+ms-41914
+ms-46825
+ms-54016
+ms-55339
+ms-58269
+ms-58845
+ms-68328
+ms-70297
+nginx-web-server
+unknown
+deployment "ms-25648" successfully rolled out
+deployment "ms-27283" successfully rolled out
+deployment "ms-27421" successfully rolled out
+deployment "ms-2827" successfully rolled out
+deployment "ms-34756" successfully rolled out
+deployment "ms-36144" successfully rolled out
+deployment "ms-37691" successfully rolled out
+deployment "ms-41385" successfully rolled out
+deployment "ms-41914" successfully rolled out
+deployment "ms-46825" successfully rolled out
+deployment "ms-54016" successfully rolled out
+deployment "ms-55339" successfully rolled out
+deployment "ms-58269" successfully rolled out
+deployment "ms-58845" successfully rolled out
+deployment "ms-68328" successfully rolled out
+deployment "ms-70297" successfully rolled out
+deployment "nginx-web-server" successfully rolled out
+deployment "unknown" successfully rolled out
+ENTRY_POINT: nginx-web-server
+SERVICE_A_URL: 10.109.27.108:50051
+Capacity: 10000
+Metadata: request-id={{.RequestNumber}}
+Metadata: timestamp={{.TimestampUnix}}
+Metadata: method=S_161142529
+Charon Configurations:
+[{INTERCEPT charon} {PRICE_UPDATE_RATE 26783us} {TOKEN_UPDATE_RATE 17447us} {LATENCY_THRESHOLD 4098us} {PRICE_STEP 81} {PRICE_STRATEGY proportional} {LAZY_UPDATE true} {RATE_LIMITING true} {LOAD_SHEDDING true} {CHARON_TRACK_PRICE false} {BREAKWATER_SLO 12500us} {BREAKWATER_A 0.001} {BREAKWATER_B 0.02} {BREAKWATER_CLIENT_EXPIRATION 10ms} {BREAKWATER_INITIAL_CREDIT 400} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATER_RTT 1000us} {BREAKWATERD_SLO 12500us} {BREAKWATERD_A 0.001} {BREAKWATERD_B 0.02} {BREAKWATERD_CLIENT_EXPIRATION 10ms} {BREAKWATERD_INITIAL_CREDIT 400} {BREAKWATERD_LOAD_SHEDDING true} {BREAKWATERD_RTT 1000us} {DAGOR_QUEUING_THRESHOLD 2ms} {DAGOR_ALPHA 0.05} {DAGOR_BETA 0.01} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 10ms} {DAGOR_UMAX 20}]
+
+Summary:
+  Count:	80133
+  Total:	14.81 s
+  Slowest:	962.94 ms
+  Fastest:	65.18 ms
+  Average:	88.86 ms
+  Requests/sec:	5411.98
+
+Response time histogram:
+  65.181  [1]     |
+  154.957 [70027] |∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎∎
+  244.733 [2089]  |∎
+  334.510 [1620]  |∎
+  424.286 [54]    |
+  514.062 [26]    |
+  603.839 [125]   |
+  693.615 [18]    |
+  783.391 [3]     |
+  873.168 [71]    |
+  962.944 [60]    |
+
+Latency distribution:
+  10 % in 68.19 ms 
+  25 % in 73.43 ms 
+  50 % in 82.67 ms 
+  75 % in 94.18 ms 
+  90 % in 111.93 ms 
+  95 % in 170.77 ms 
+  99 % in 295.33 ms 
+
+Status code distribution:
+  [ResourceExhausted]   5804 responses    
+  [Canceled]            235 responses     
+  [OK]                  74094 responses   
+
+Error distribution:
+  [4516]   rpc error: code = ResourceExhausted desc = S_161142529 req dropped by nginx-web-server. Try again later.   
+  [258]    rpc error: code = ResourceExhausted desc = S_161142529 req dropped by ms-27283. Try again later.           
+  [500]    rpc error: code = ResourceExhausted desc = S_161142529 req dropped by unknown. Try again later.            
+  [260]    rpc error: code = ResourceExhausted desc = S_161142529 req dropped by ms-41385. Try again later.           
+  [270]    rpc error: code = ResourceExhausted desc = S_161142529 req dropped by ms-36144. Try again later.           
+  [235]    rpc error: code = Canceled desc = grpc: the client connection is closing                                   
+
+Debug: Checking Namespace=default, Pod=ms-25648-86cc47d8bd-9ljb2 for Target File=deathstar_*.output
+Namespace: default, Pod: ms-25648-86cc47d8bd-9ljb2 has the target files.
+Copying deathstar_ms-25648.output to deathstar_ms-25648.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-27283-7cb76dd56d-8n7t4 for Target File=deathstar_*.output
+Namespace: default, Pod: ms-27283-7cb76dd56d-8n7t4 has the target files.
+Copying deathstar_ms-27283.output to deathstar_ms-27283.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-27421-64f549855c-8df79 for Target File=deathstar_*.output
+Namespace: default, Pod: ms-27421-64f549855c-8df79 has the target files.
+Copying deathstar_ms-27421.output to deathstar_ms-27421.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-2827-565cbcd7b-mg2fx for Target File=deathstar_*.output
+Namespace: default, Pod: ms-2827-565cbcd7b-mg2fx has the target files.
+Copying deathstar_ms-2827.output to deathstar_ms-2827.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-34756-7c45d5bcc-lh9k8 for Target File=deathstar_*.output
+Namespace: default, Pod: ms-34756-7c45d5bcc-lh9k8 has the target files.
+Copying deathstar_ms-34756.output to deathstar_ms-34756.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-36144-7bf7cbfff6-b4fxp for Target File=deathstar_*.output
+Namespace: default, Pod: ms-36144-7bf7cbfff6-b4fxp has the target files.
+Copying deathstar_ms-36144.output to deathstar_ms-36144.output
+Debug: Checking Namespace=default, Pod=ms-37691-6f7cbf7c5-rxs2v for Target File=deathstar_*.output
+Namespace: default, Pod: ms-37691-6f7cbf7c5-rxs2v has the target files.
+Copying deathstar_ms-37691.output to deathstar_ms-37691.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-41385-6bc4f5d4fc-9fcfz for Target File=deathstar_*.output
+Namespace: default, Pod: ms-41385-6bc4f5d4fc-9fcfz has the target files.
+Copying deathstar_ms-41385.output to deathstar_ms-41385.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-41914-5555dd8d48-tfkjh for Target File=deathstar_*.output
+Namespace: default, Pod: ms-41914-5555dd8d48-tfkjh has the target files.
+Copying deathstar_ms-41914.output to deathstar_ms-41914.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-46825-58c684559d-zw8p6 for Target File=deathstar_*.output
+Namespace: default, Pod: ms-46825-58c684559d-zw8p6 has the target files.
+Copying deathstar_ms-46825.output to deathstar_ms-46825.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-54016-5665fbcb8d-tns7z for Target File=deathstar_*.output
+Namespace: default, Pod: ms-54016-5665fbcb8d-tns7z has the target files.
+Copying deathstar_ms-54016.output to deathstar_ms-54016.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-55339-5b545b67bb-5jpsl for Target File=deathstar_*.output
+Namespace: default, Pod: ms-55339-5b545b67bb-5jpsl has the target files.
+Copying deathstar_ms-55339.output to deathstar_ms-55339.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-58269-8c4794c6c-2ltpw for Target File=deathstar_*.output
+Namespace: default, Pod: ms-58269-8c4794c6c-2ltpw has the target files.
+Copying deathstar_ms-58269.output to deathstar_ms-58269.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-58845-5bc6f9d8df-fpqsz for Target File=deathstar_*.output
+Namespace: default, Pod: ms-58845-5bc6f9d8df-fpqsz has the target files.
+Copying deathstar_ms-58845.output to deathstar_ms-58845.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-68328-5866fd45b7-ztbmv for Target File=deathstar_*.output
+Namespace: default, Pod: ms-68328-5866fd45b7-ztbmv has the target files.
+Copying deathstar_ms-68328.output to deathstar_ms-68328.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=ms-70297-868876bcdb-rh4pv for Target File=deathstar_*.output
+Namespace: default, Pod: ms-70297-868876bcdb-rh4pv has the target files.
+Copying deathstar_ms-70297.output to deathstar_ms-70297.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=nginx-web-server-56557f7cb7-t68n8 for Target File=deathstar_*.output
+Namespace: default, Pod: nginx-web-server-56557f7cb7-t68n8 has the target files.
+Copying deathstar_nginx-web-server.output to deathstar_nginx-web-server.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=unknown-57ddd65965-8sfbc for Target File=deathstar_*.output
+Namespace: default, Pod: unknown-57ddd65965-8sfbc has the target files.
+Copying deathstar_unknown.output to deathstar_unknown.output
+tar: removing leading '/' from member names
