@@ -16,3 +16,6 @@
 
 ghz-results/*.json
 ghz-results/*.output
+ghz-results/*.pdf
+ghz-results/*.png
+.stversions/*
