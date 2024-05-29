@@ -16,6 +16,9 @@
 
 ghz-results/*.json
 ghz-results/*.output
+<<<<<<< HEAD
 ghz-results/*.pdf
 ghz-results/*.png
 .stversions/*
+=======
+>>>>>>> 4627d06 (Checkpoint. Running experiments)

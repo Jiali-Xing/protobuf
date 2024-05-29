@@ -1,0 +1,44 @@
+Service Name:  ms-66473
+Call Graph of the Service:
+map[S_149998854:[ms-18330]]
+Downstreams of the Service:
+[ms-18330]
+Server Configurations:
+[{COMPUTATION_DISTRIBUTION constant} {PROCESS_TIME 0.3732534930139721ms} {APP_PORT 50051} {LOG_LEVEL Info} {GREETING Hi Malaka!} {SUBCALL parallel} {PROFILING false}]
+Charon Configurations:
+[{INTERCEPT dagor} {PRICE_UPDATE_RATE 10ms} {TOKEN_UPDATE_RATE 10ms} {LATENCY_THRESHOLD 100us} {PRICE_STEP 0} {PRICE_STRATEGY step} {LAZY_UPDATE false} {RATE_LIMITING true} {LOAD_SHEDDING true} {CHARON_TRACK_PRICE false} {BREAKWATER_SLO 12500us} {BREAKWATER_A 0.001} {BREAKWATER_B 0.02} {BREAKWATER_CLIENT_EXPIRATION 10ms} {BREAKWATER_INITIAL_CREDIT 400} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATER_RTT 1000us} {BREAKWATERD_SLO 12500us} {BREAKWATERD_A 0.001} {BREAKWATERD_B 0.02} {BREAKWATERD_CLIENT_EXPIRATION 10ms} {BREAKWATERD_INITIAL_CREDIT 400} {BREAKWATERD_LOAD_SHEDDING true} {BREAKWATERD_RTT 1000us} {DAGOR_QUEUING_THRESHOLD 79138us} {DAGOR_ALPHA 1.4963313087596788} {DAGOR_BETA 0.8413319761932155} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 19788us} {DAGOR_UMAX 6}]
+Price Update Rate: 10ms
+Latency Threshold: 100µs
+Price Step: 0
+Price Strategy: step
+Intercept: dagor
+Lazy Update: false
+Rate Limiting: true
+Load Shedding: true
+Charon Track Price: false
+Breakwater SLO: 12.5ms
+Breakwater Client Timeout: 10ms
+Breakwater Initial Credit: 400
+Breakwater A: 0.001
+Breakwater B: 0.02
+Breakwater Load Shedding: true
+Breakwater RTT: 1ms
+BreakwaterD SLO: 12.5ms
+BreakwaterD Client Timeout: 10ms
+BreakwaterD Initial Credit: 400
+BreakwaterD A: 0.001
+BreakwaterD B: 0.02
+BreakwaterD Load Shedding: true
+BreakwaterD RTT: 1ms
+Dagor Queuing Threshold: 79.138ms
+Dagor Alpha: 1.4963313087596788
+Dagor Beta: 0.8413319761932155
+Dagor Admission Level Update Interval: 19.788ms
+Dagor Umax: 6
+Computation Distribution: constant
+Process Time: 373.253µs
+Address Listening on: 0.0.0.0:50051
+Greeting Message: Hi Malaka!
+Log Level: Info
+Subcall Pattern: parallel
+{"function":"run","level":"info","line":"720","msg":"Dagor Config: {ms-66473 map[S_102000854:2 S_149998854:1 S_161142529:2 compose:1 home-timeline:2 hotels-http:3 recommendations-http:4 reservation-http:1 user-http:2 user-timeline:3] 79.138ms false false 19.788ms 1.4963313087596788 0.8413319761932155 6 4 false false}","time":"2024-05-29T20:46:30Z"}

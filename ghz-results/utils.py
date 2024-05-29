@@ -81,7 +81,7 @@ def read_data(filename):
             print(f"Error reading file {filename}")
             return None
 
-def convert_to_dataframe(data):
+def convert_to_dataframe(data, include_warmup=False):
     """
     Convert detailed data into a pandas DataFrame and preprocess it.
 
@@ -100,7 +100,10 @@ def convert_to_dataframe(data):
     df = df[df['status'] != 'Canceled']
     if len(df) == 0:
         return df
-    df = df[df.index > df.index[0] + pd.Timedelta(seconds=offset)]
+    if include_warmup:
+        df = df[df.index < df.index[-1] - pd.Timedelta(seconds=offset)]
+    else:
+        df = df[df.index > df.index[0] + pd.Timedelta(seconds=offset)]
     min_timestamp = df.index.min()
     df.index = df.index - min_timestamp + pd.Timestamp('2000-01-01')
     return df
@@ -384,10 +387,10 @@ def roundDownParams(params):
 
 
 def calculate_goodput_from_file(filename, slo, quantile, average=True):
-    # Insert your code for calculating average goodput here
     # Read the ghz.output file and calculate the average goodput
     # Return the average goodput
     # if filename is a list, average the goodput of all the files
+    # this is for bayesian optimization, thus, we will include warm up period too!
     if isinstance(filename, list):
         goodput = 0
         for f in filename:
@@ -396,7 +399,7 @@ def calculate_goodput_from_file(filename, slo, quantile, average=True):
         return goodput
 
     data = read_data(filename)
-    df = convert_to_dataframe(data)
+    df = convert_to_dataframe(data, include_warmup=True)
     if average:
         goodput = calculate_goodput_mean(df, slo=slo)
     else:
@@ -551,3 +554,20 @@ def read_load_info_from_json(file_path):
     
     return load_info
 
+
+def save_iteration_details(optimizer, file_path):
+    try:
+        # Convert the iteration details to a JSON-compatible format
+        iteration_details = optimizer.res
+        iteration_details_json = json.dumps(iteration_details, default=str, indent=4)
+
+        # Save to a file
+        with open(file_path, 'w') as file:
+            file.write(iteration_details_json)
+        print(f"Iteration details successfully saved to {file_path}")
+    except IOError as e:
+        print(f"IOError encountered while saving iteration details: {e}")
+    except TypeError as e:
+        print(f"TypeError encountered during JSON serialization: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")

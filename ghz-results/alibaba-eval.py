@@ -23,8 +23,8 @@ from utils import (
     load_data,
 )
 
-throughput_time_interval = '50ms'
-latency_window_size = '200ms' 
+# throughput_time_interval = '50ms'
+# latency_window_size = '200ms' 
 # offset = 3  # an offset of 3 seconds to omit pre-spike metrics
 
 
@@ -177,7 +177,8 @@ def main():
         ],
         'S_149998854': [
             # ('0528_1009', '0528_1216'), # this is tuned with square tail latency
-            ('0528_1620', '0528_1852'), # this is tuned with square tail latency
+            ('0528_1658', '0528_1852'), # this is tuned with 10x tail latency
+            ('0528_2304', '0528_2341'), # this is tuned with only goodput
         ],
     }
 

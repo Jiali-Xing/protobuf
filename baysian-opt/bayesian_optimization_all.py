@@ -33,7 +33,7 @@ from collections import defaultdict
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'ghz-results'))
 from visualize import analyze_data
 from slo import get_slo, get_sustainable_load
-from utils import convert_to_dataframe, calculate_goodput_mean, calculate_goodput_from_file, read_tail_latency_from_file, roundDownParams
+from utils import convert_to_dataframe, calculate_goodput_mean, calculate_goodput_from_file, read_tail_latency_from_file, roundDownParams, save_iteration_details
 
 # throughput_time_interval = '50ms'
 # latency_window_size = '200ms'  # Define the window size as 100 milliseconds
@@ -505,24 +505,6 @@ def read_optimal_parameters(filename):
     return data
 
 
-def save_iteration_details(optimizer, file_path):
-    try:
-        # Convert the iteration details to a JSON-compatible format
-        iteration_details = optimizer.res
-        iteration_details_json = json.dumps(iteration_details, default=str)
-
-        # Save to a file
-        with open(file_path, 'w') as file:
-            file.write(iteration_details_json)
-        print(f"Iteration details successfully saved to {file_path}")
-    except IOError as e:
-        print(f"IOError encountered while saving iteration details: {e}")
-    except TypeError as e:
-        print(f"TypeError encountered during JSON serialization: {e}")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
-
 def main():
     
     pbounds_charon = {
@@ -582,8 +564,8 @@ def main():
     }
     pbounds_dagor = {
         'dagor_queuing_threshold': (1000, 50000),  # Example range
-        'dagor_alpha': (0, 1.5),              # Example range
-        'dagor_beta': (0, 0.5),             # Example range
+        'dagor_alpha': (0, 2),              # Example range
+        'dagor_beta': (0, 3),             # Example range
         'dagor_admission_level_update_interval': (1000, 20000),  # Example range
         'dagor_umax': (5, 20)  # Example range
     }
@@ -593,17 +575,18 @@ def main():
         pbounds_charon['latency_threshold'] = (100, 10000)
         pbounds_breakwater['breakwater_slo'] = (100, 20000)
         pbounds_breakwaterd['breakwater_a'] = (0, 30)
-        pbounds_dagor['dagor_queuing_threshold'] = (100000, 500000)  # Example range
-        pbounds_dagor['dagor_alpha'] = (0, 2)              # Example range
-        pbounds_dagor['dagor_admission_level_update_interval'] = (100, 20000)
+        pbounds_dagor['dagor_queuing_threshold'] = (1000, 100000)  # Example range
+        # pbounds_dagor['dagor_alpha'] = (0, 3)              # Example range
+        # pbounds_dagor['dagor_admission_level_update_interval'] = (100, 20000)
 
         
         if 'S_16' in method:
             pbounds_charon['latency_threshold'] = (100, 30000)
         if 'S_14' in method:
             # pbounds_breakwater['breakwater_a'] = (0, 30)
+            pbounds_charon['latency_threshold'] = (100, 40000)
             pbounds_charon['price_update_rate'] = (1000, 40000)
-            pbounds_charon['token_update_rate'] = (1000, 40000)
+            # pbounds_charon['token_update_rate'] = (1000, 40000)
         # if 'S_10' in method:
         #     pbounds_breakwater['breakwater_a'] = (0, 30)
 
@@ -640,7 +623,7 @@ def main():
     # run the experiments with the interceptors for all capacities
     capacity_step = 1000
     capacity_start = 1000
-    capacity_end = 17000
+    capacity_end = 16000
     # if '8000' in capacity:
     #     capacity_range = range(5000, 13500, 500) if not tightSLO else range(4000, 10500, 500)
     # else:
@@ -760,6 +743,8 @@ if __name__ == '__main__':
     parser.add_argument('--breakwaterd', action='store_true', default=False, help='Optimize BreakwaterD')
     parser.add_argument('--charon', action='store_true', default=False, help='Optimize Charon')
     parser.add_argument('--dagor', action='store_true', default=False, help='Optimize Dagor')
+    # capacity is gpt1 by default, unless otherwise specified
+    parser.add_argument('--tune', type=str, default='gpt1', help='Specify the weight for tuning')
 
     args = parser.parse_args()
 
@@ -774,8 +759,8 @@ if __name__ == '__main__':
     optimizeDagor = args.dagor
 
     if not optimizeBreakwater and not optimizeBreakwaterD and not optimizeCharon and not optimizeDagor:
-        optimizeCharon = optimizeBreakwater = optimizeBreakwaterD = True
-        optimizeDagor = False
+        optimizeCharon = optimizeBreakwater = optimizeBreakwaterD = objective_dagor = True
+        # optimizeDagor = False
 
 
     method = args.method
@@ -798,17 +783,19 @@ if __name__ == '__main__':
     # if len(sys.argv) > 2:
     #     tightSLO = sys.argv[2] == 'tightSLO'
     
-    capacity = 'gpt1-10000' if 'S_' in method else 'gpt2-8000'
     maximum_goodput = 10000
-    # if method == 'S_102000854':
-    #     capacity = 'gpt1-10000'
-    if method == 'hotels-http':
-        capacity = 'gpt1-2000'
+    capacity = args.tune + '-10000'
 
-    if method == 'all-methods-social':
-        capacity = 'gpt1-6000'
-    if method == 'all-methods-hotel':
-        capacity = 'gpt1-8000'
+    # capacity = 'gpt1-10000' if 'S_' in method else 'gpt2-8000'
+    # # if method == 'S_102000854':
+    # #     capacity = 'gpt1-10000'
+    # if method == 'hotels-http':
+    #     capacity = 'gpt1-2000'
+
+    # if method == 'all-methods-social':
+    #     capacity = 'gpt1-6000'
+    # if method == 'all-methods-hotel':
+    #     capacity = 'gpt1-8000'
 
     # if 'S_' in method:
     #     capacity = 'gpt0-10000'
