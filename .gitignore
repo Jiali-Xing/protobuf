@@ -19,3 +19,4 @@ ghz-results/*.output
 ghz-results/*.pdf
 ghz-results/*.png
 .stversions/*
+ghz-results/.syncthing*
