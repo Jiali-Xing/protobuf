@@ -10,8 +10,8 @@ def get_sustainable_load(method):
         # "compose": 4000,
         # "user-timeline": 6000,
         # "home-timeline": 6000,
-        "S_149998854": 3000,
         "S_102000854": 4000,
+        "S_149998854": 3000,
         "S_161142529": 4000,
         # "hotels-http": 8000,
         # "reservation-http": 8000,
@@ -76,7 +76,7 @@ def get_slo(method, tight=False, all_methods=False):
         "all-methods-hotel": 17,
     }
     # upper_bound = 250
-    # upper_bound_buffer = 100
+    # upper_bound_buffer = 200
     if all_methods:
         method = "all-methods-hotel" if "http" in method else "all-methods-social"
     # slo = tail95_lat.get(method, None) * 4 if not tight else min_lat.get(method, None) + slo_buffer

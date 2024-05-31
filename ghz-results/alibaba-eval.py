@@ -29,12 +29,15 @@ from utils import (
 
 
 
-def plot_error_bars(ax, subset, metric, control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=False):
+def plot_error_bars(ax, subset, metric, control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=False, hline_label=True):
     ax.errorbar(subset['Load'], subset[metric], yerr=subset[metric + ' std'], fmt=control_markers[control],
                 color=colors[control], linestyle=lineStyles[control], label=labelDict[control],
                 linewidth=2, capsize=5, alpha=0.6)
     if add_hline:
-        ax.axhline(y=SLO, color='c', linestyle='-.', label='SLO')
+        if hline_label:
+            ax.axhline(y=SLO, color='c', linestyle='-.', label='SLO')
+        else:
+            ax.axhline(y=SLO, color='c', linestyle='-.')
 
 def setup_axes(axs, interfaces, ali_dict, alibaba_combined):
     if alibaba_combined:
@@ -72,13 +75,15 @@ def plot_individual_interface(axs, df, control_mechanisms, colors, lineStyles, l
         plot_error_bars(ax2, subset, 'Goodput', control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=False)
 
 def plot_combined_interfaces(axs, df, interfaces, control_mechanisms, colors, lineStyles, labelDict, control_markers, whatLatency, ali_dict):
+    slo_label = True
     for i, interface in enumerate(interfaces):
         ax1, ax2 = axs[:, i]
         SLO = get_slo(method=interface, tight=tightSLO, all_methods=False)
         for control in control_mechanisms:
             subset = df[(df['overload_control'] == control) & (df['Request'] == interface)]
             for latency in whatLatency:
-                plot_error_bars(ax1, subset, latency, control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=True)
+                plot_error_bars(ax1, subset, latency, control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=True, hline_label=slo_label)
+                slo_label = False
             plot_error_bars(ax2, subset, 'Goodput', control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=False)
 
 
@@ -159,56 +164,110 @@ def main():
 
     print(f"Method: {os.getenv('METHOD', 'ALL')}, Tight SLO: {tightSLO}, Alibaba Combined: {alibaba_combined}")
 
-    # experiment time ranges
-    time_ranges = {
-        # 'S_102000854': [('0525_1000', '0525_2150')], these are tuned with goodput - 10x tail latency
-        'S_102000854': [
-            ('0526_0409', '0526_0627'), # run from bento
-            ('0526_1634', '0526_1832'), # run from laptop
-            ('0526_2318', '0527_0109'), # run from bento
-            ], # these are tuned with goodput - squared tail latency
-        'S_149998854': [('0501_0000', '0520_0000')],
-        'S_161142529': [('0501_0000', '0520_0000')],
-    }
+    # # experiment time ranges
+    # time_ranges = {
+    #     # 'S_102000854': [('0525_1000', '0525_2150')], these are tuned with goodput - 10x tail latency
+    #     'S_102000854': [
+    #         ('0526_0409', '0526_0627'), # run from bento
+    #         ('0526_1634', '0526_1832'), # run from laptop
+    #         ('0526_2318', '0527_0109'), # run from bento
+    #         ], # these are tuned with goodput - squared tail latency
+    #     'S_149998854': [('0501_0000', '0520_0000')],
+    #     'S_161142529': [('0501_0000', '0520_0000')],
+    # }
     
     # New time ranges are for the 15 second experiment, 5 second warmup, and fixed start load (80% of sustainable load)
     new_time_ranges = {
         'S_102000854': [
+            ('0528_0000', '0531_0000'), # this is tuned with only goodput
         ],
         'S_149998854': [
-            # ('0528_1009', '0528_1216'), # this is tuned with square tail latency
-            ('0528_1658', '0528_1852'), # this is tuned with 10x tail latency
-            ('0528_2304', '0528_2341'), # this is tuned with only goodput
+            # # ('0528_1009', '0528_1216'), # this is tuned with square tail latency
+            # ('0528_1658', '0528_1852'), # this is tuned with 10x tail latency
+            # ('0528_2304', '0528_2341'), # this is tuned with only goodput
+            # above are tuned without warmup. below are tuned with warmup counted.
+            ('0528_0000', '0531_0000'), # this is tuned with only goodput
+        ],
+        'S_161142529': [
+            ('0528_0000', '0531_0000'), # this is tuned with only goodput
         ],
     }
 
-    old_time_ranges = {
-        'S_102000854': [
-            ("1229_0301", "1229_0448"), # this includes plain no overload control. 4000-10000
-            ("1231_2055", "1231_2241"), # this is for 6000-12000 load 
-            ("1231_1747", "1231_1950"), # this is also for 6000-12000 load
-            ("0129_0049", "0129_0138")
-            ],
-        'S_149998854': [
-            ("1228_1702", "1228_1844"),
-            ("1228_2356", "1229_0203"),
-            ("1229_0141", "1229_0203"), # this is plain no overload control.
-            ("1230_2124", "1230_2333"),
-            ("1231_2244", "0101_0027"),  # newest result
-            ("0128_0842", "0128_0902"),
-            ("0128_1543", "0128_1640"),            
-            ],
-        'S_161142529': [
-            ("1230_0611", "1230_0754"),
-            ("1231_0042", "1231_0225"),  # this is new
-            # ("0101_0127", "0101_0251"),
-            ("0129_1654", "0129_1742"),
-        ],
+    # parameter_files = {
+    #     'S_102000854': {
+    #         'breakwaterd': 'bopt_False_breakwaterd_S_102000854_gpt1-10000_05-29.json',  
+    #         'breakwater': 'bopt_False_breakwater_S_102000854_gpt1-10000_05-28.json',
+    #         # 'breakwater': 'bopt_False_breakwater_S_102000854_gpt1-10000_05-29.json',  
+    #         'dagor': 'bopt_False_dagor_S_102000854_gpt1-10000_05-29.json',
+    #         'charon': 'bopt_False_charon_S_102000854_gpt1-10000_05-29.json',
+    #     },
+    #     'S_149998854': {
+    #         'breakwaterd': 'bopt_False_breakwaterd_S_149998854_gpt1-10000_05-29.json',
+    #         'breakwater': 'bopt_False_breakwater_S_149998854_gpt1-10000_05-29.json',
+    #         'dagor': 'bopt_False_dagor_S_149998854_gpt1-10000_05-29.json',
+    #         'charon': 'bopt_False_charon_S_149998854_gpt1-10000_05-29.json',
+    #     },
+    #     'S_161142529': {
+    #         'breakwaterd': 'bopt_False_breakwaterd_S_161142529_gpt1-10000_05-29.json',
+    #         'breakwater': 'bopt_False_breakwater_S_161142529_gpt1-10000_05-29.json',
+    #         'dagor': 'bopt_False_dagor_S_161142529_gpt1-10000_05-29.json',
+    #         'charon': 'bopt_False_charon_S_161142529_gpt1-10000_05-29.json',
+    #     },
+    # }
+    control_mechanisms = ['breakwater', 'breakwaterd', 'charon']
+
+    parameter_files = {
+        'S_102000854': {
+            control: f'bopt_False_{control}_S_102000854_gpt1-10000_05-30.json' for control in control_mechanisms
+        },
+        'S_149998854': {
+            control: f'bopt_False_{control}_S_149998854_gpt1-10000_05-30.json' for control in control_mechanisms
+        },
+        'S_161142529': {
+            control: f'bopt_False_{control}_S_161142529_gpt1-10000_05-30.json' for control in control_mechanisms
+        },
     }
+
+    different_spike = {
+        'S_102000854': {
+            control: f'bopt_False_{control}_S_102000854_gpt1-12000_05-30.json' for control in control_mechanisms
+        },
+        'S_149998854': {
+            control: f'bopt_False_{control}_S_149998854_gpt1-9000_05-30.json' for control in control_mechanisms
+        },
+        'S_161142529': {
+            control: f'bopt_False_{control}_S_161142529_gpt1-12000_05-30.json' for control in control_mechanisms
+        },
+    }
+    # parameter_files = different_spike
+
+    # old_time_ranges = {
+    #     'S_102000854': [
+    #         ("1229_0301", "1229_0448"), # this includes plain no overload control. 4000-10000
+    #         ("1231_2055", "1231_2241"), # this is for 6000-12000 load 
+    #         ("1231_1747", "1231_1950"), # this is also for 6000-12000 load
+    #         ("0129_0049", "0129_0138")
+    #         ],
+    #     'S_149998854': [
+    #         ("1228_1702", "1228_1844"),
+    #         ("1228_2356", "1229_0203"),
+    #         ("1229_0141", "1229_0203"), # this is plain no overload control.
+    #         ("1230_2124", "1230_2333"),
+    #         ("1231_2244", "0101_0027"),  # newest result
+    #         ("0128_0842", "0128_0902"),
+    #         ("0128_1543", "0128_1640"),            
+    #         ],
+    #     'S_161142529': [
+    #         ("1230_0611", "1230_0754"),
+    #         ("1231_0042", "1231_0225"),  # this is new
+    #         # ("0101_0127", "0101_0251"),
+    #         ("0129_1654", "0129_1742"),
+    #     ],
+    # }
 
     # time_ranges = old_time_ranges if old_data_sigcomm else time_ranges
     time_ranges = new_time_ranges 
-    tightSLO = True if old_data_sigcomm else tightSLO
+    # tightSLO = True if old_data_sigcomm else tightSLO
 
     # Load data
     if alibaba_combined:
@@ -219,14 +278,15 @@ def main():
         for interface in interfaces:
             method = interface
             SLO = get_slo(method=method, tight=tightSLO, all_methods=False)
-            df = load_data(method=method, list_of_tuples_of_experiment_timestamps=time_ranges[interface], slo=SLO)
+            df = load_data(method=method, list_of_tuples_of_experiment_timestamps=time_ranges[interface], slo=SLO, given_parameter=parameter_files)
+            assert df is not None, f"Dataframe for {interface} is None"
             df['Request'] = interface
             alibaba_df = pd.concat([alibaba_df, df])
         df = alibaba_df
         # print some stats of the combined dataframe, like sizes of each interface and load 
     else:
         SLO = get_slo(method=method, tight=tightSLO, all_methods=False)
-        df = load_data(method=method, list_of_tuples_of_experiment_timestamps=time_ranges[method], slo=SLO)
+        df = load_data(method=method, list_of_tuples_of_experiment_timestamps=time_ranges[method], slo=SLO, given_parameter=parameter_files)
         interfaces = [method]
 
     plot_alibaba_eval(df, interfaces)

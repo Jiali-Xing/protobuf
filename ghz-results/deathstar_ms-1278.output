@@ -6,13 +6,13 @@ Downstreams of the Service:
 Server Configurations:
 [{COMPUTATION_DISTRIBUTION constant} {PROCESS_TIME 1.0799486461251167ms} {APP_PORT 50051} {LOG_LEVEL Info} {GREETING Hi Malaka!} {SUBCALL parallel} {PROFILING false}]
 Charon Configurations:
-[{INTERCEPT charon} {PRICE_UPDATE_RATE 5548us} {TOKEN_UPDATE_RATE 13102us} {LATENCY_THRESHOLD 4006us} {PRICE_STEP 100} {PRICE_STRATEGY proportional} {LAZY_UPDATE true} {RATE_LIMITING true} {LOAD_SHEDDING true} {CHARON_TRACK_PRICE false} {BREAKWATER_SLO 12500us} {BREAKWATER_A 0.001} {BREAKWATER_B 0.02} {BREAKWATER_CLIENT_EXPIRATION 10ms} {BREAKWATER_INITIAL_CREDIT 400} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATER_RTT 1000us} {BREAKWATERD_SLO 12500us} {BREAKWATERD_A 0.001} {BREAKWATERD_B 0.02} {BREAKWATERD_CLIENT_EXPIRATION 10ms} {BREAKWATERD_INITIAL_CREDIT 400} {BREAKWATERD_LOAD_SHEDDING true} {BREAKWATERD_RTT 1000us} {DAGOR_QUEUING_THRESHOLD 2ms} {DAGOR_ALPHA 0.05} {DAGOR_BETA 0.01} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 10ms} {DAGOR_UMAX 20}]
-Price Update Rate: 5.548ms
-Latency Threshold: 4.006ms
-Price Step: 100
-Price Strategy: proportional
-Intercept: charon
-Lazy Update: true
+[{INTERCEPT dagor} {PRICE_UPDATE_RATE 10ms} {TOKEN_UPDATE_RATE 10ms} {LATENCY_THRESHOLD 100us} {PRICE_STEP 0} {PRICE_STRATEGY step} {LAZY_UPDATE false} {RATE_LIMITING true} {LOAD_SHEDDING true} {CHARON_TRACK_PRICE false} {BREAKWATER_SLO 12500us} {BREAKWATER_A 0.001} {BREAKWATER_B 0.02} {BREAKWATER_CLIENT_EXPIRATION 10ms} {BREAKWATER_INITIAL_CREDIT 400} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATER_RTT 1000us} {BREAKWATERD_SLO 12500us} {BREAKWATERD_A 0.001} {BREAKWATERD_B 0.02} {BREAKWATERD_CLIENT_EXPIRATION 10ms} {BREAKWATERD_INITIAL_CREDIT 400} {BREAKWATERD_LOAD_SHEDDING true} {BREAKWATERD_RTT 1000us} {DAGOR_QUEUING_THRESHOLD 2810us} {DAGOR_ALPHA 1.3730018553631673} {DAGOR_BETA 2.503877015692119} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 6994us} {DAGOR_UMAX 16}]
+Price Update Rate: 10ms
+Latency Threshold: 100µs
+Price Step: 0
+Price Strategy: step
+Intercept: dagor
+Lazy Update: false
 Rate Limiting: true
 Load Shedding: true
 Charon Track Price: false
@@ -30,15 +30,15 @@ BreakwaterD A: 0.001
 BreakwaterD B: 0.02
 BreakwaterD Load Shedding: true
 BreakwaterD RTT: 1ms
-Dagor Queuing Threshold: 2ms
-Dagor Alpha: 0.05
-Dagor Beta: 0.01
-Dagor Admission Level Update Interval: 10ms
-Dagor Umax: 20
+Dagor Queuing Threshold: 2.81ms
+Dagor Alpha: 1.3730018553631673
+Dagor Beta: 2.503877015692119
+Dagor Admission Level Update Interval: 6.994ms
+Dagor Umax: 16
 Computation Distribution: constant
 Process Time: 1.079948ms
 Address Listening on: 0.0.0.0:50051
 Greeting Message: Hi Malaka!
 Log Level: Info
 Subcall Pattern: parallel
-{"function":"run","level":"info","line":"652","msg":"Charon Config: map[debug:false guidePrice:-1 initprice:0 latencyThreshold:4.006ms lazyResponse:true loadShedding:true pinpointLatency:false pinpointQueuing:true pinpointThroughput:false priceAggregation:maximal priceStep:100 priceStrategy:proportional priceUpdateRate:5.548ms rateLimiting:true recordPrice:false]","time":"2024-05-29T10:35:28Z"}
+{"function":"run","level":"info","line":"720","msg":"Dagor Config: {ms-1278 map[S_102000854:2 S_149998854:1 S_161142529:2 compose:1 home-timeline:2 hotels-http:3 recommendations-http:4 reservation-http:1 user-http:2 user-timeline:3] 2.81ms false false 6.994ms 1.3730018553631673 2.503877015692119 16 4 false false}","time":"2024-05-31T13:16:49Z"}

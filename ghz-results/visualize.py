@@ -560,6 +560,7 @@ def plot_timeseries_split_2(df1, df2, filename):
     plt.gca().xaxis.set_major_formatter(md.DateFormatter('%S'))
     plt.xlabel('Time (second)')
     plt.savefig(mechanism + '.latency-throughput2.pdf')
+    print(f'Figure saved as {mechanism}.latency-throughput2.pdf')
     plt.show()
 
 

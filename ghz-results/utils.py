@@ -1,4 +1,4 @@
-import json
+import json, re
 import glob
 import numpy as np
 import pandas as pd
@@ -9,6 +9,8 @@ import os
 throughput_time_interval = '200ms'
 latency_window_size = '200ms'
 offset = 5 # an offset of 5 seconds to omit pre-spike metrics
+from datetime import datetime
+from slo import get_slo
 
 def medianL(lst):
     """
@@ -235,12 +237,115 @@ def find_latest_files(selected_files):
     return list(latest_files.values())
 
 
-def load_data(method, list_of_tuples_of_experiment_timestamps, slo, request_count_cutoff=None, tail_latency_cutoff=None):
+def parse_configurations(config_str):
+    # Remove potential \n[ 
+    config_str = config_str.replace('\n[', '[')
+    # Remove surrounding brackets and split by '} {'
+    config_items = config_str.strip('[]').split('} {')
+    config_dict = {}
+
+    for item in config_items:
+        # Remove potential curly braces and split by space
+        key_value = item.replace('{', '').replace('}', '').split(' ', 1)
+        if len(key_value) == 2:
+            config_dict[key_value[0]] = key_value[1]
+
+    return config_dict
+
+
+def extract_configurations_from_output_file(output_file):
+    """
+    Extract configurations from the given content.
+
+    Input:
+    output_file (str): Path to the file containing the output content.
+
+    Returns:
+    dict: Configurations extracted from the content.
+    """
+    if output_file.split('.')[-1] != 'output':
+        output_file = output_file + '.output'
+    with open(output_file, 'r') as f:
+        content = f.read()
+    if 'Charon Configurations:' in content:
+        # Extract the configurations string from the file
+        start = content.find('Charon Configurations:') + len('Charon Configurations:')
+        end = content.find(']', start) + 1
+        file_config_str = content[start:end]
+        return parse_configurations(file_config_str)
+    else:
+        raise ValueError("Overload control configurations not found in the content")
+
+
+def check_parameters(params_file, filename):
+    """
+    Check if the parameters in the file match the given parameters.
+    
+    Parameters:
+    params_file (str): Path to the JSON file containing the parameters.
+    filename (str): Path to the JSON file containing the data.
+
+    Returns:
+    bool: True if the parameters match, False otherwise.
+    """
+    bayesian_folder = os.path.expanduser('~/Sync/Git/protobuf/baysian-opt')
+    with open(os.path.join(bayesian_folder, params_file), 'r') as f:
+        # f is a json of dictionary.
+        params = json.load(f).get('parameters', {})
+
+    # with open(filename+'.output', 'r') as f:
+    #     content = f.read()
+
+    #     if 'Charon Configurations:' in content:
+    #         # Extract the configurations string from the file
+    #         start = content.find('Charon Configurations:') + len('Charon Configurations:')
+    #         end = content.find(']', start) + 1
+    #         file_config_str = content[start:end]
+    #         file_config_dict = parse_configurations(file_config_str)
+    file_config_dict = extract_configurations_from_output_file(filename)
+    combined_params_dict = {key: str(value) for key, value in params.items()}
+
+    # if file_config_dict is a subset or superset of combined_params_dict
+    common_keys = set(file_config_dict.keys()) & set(combined_params_dict.keys())
+    if all(file_config_dict[key] == combined_params_dict[key] for key in common_keys):
+        return True
+    else:
+        return False 
+
+
+def extract_experiment_details_json(filename):
+    """
+    Extracts interface, overload_control, method_subcall, capacity_str, and timestamp_str from the filename.
+
+    Parameters:
+    filename (str): The filename to extract details from.
+
+    Returns:
+    dict: A dictionary containing extracted details.
+    """
+    # Define the regex pattern based on the filename structure
+    pattern = re.compile(r'social-(S_\d+)-control-(\w+)-parallel-capacity-(\d+)-(\d{4}_\d{4})\.json')
+    
+    # Search for the pattern in the filename
+    match = pattern.search(filename)
+    
+    if match:
+        return {
+            'interface': match.group(1),
+            'overload_control': match.group(2),
+            'capacity_str': match.group(3),
+            'timestamp_str': match.group(4)
+        }
+    else:
+        raise ValueError("Filename does not match the expected pattern")
+
+
+def load_data(method, list_of_tuples_of_experiment_timestamps, slo, given_parameter=None, request_count_cutoff=None, tail_latency_cutoff=None):
     """
     Load data from JSON files for a given method and list of experiment timestamps.
 
     Parameters:
-    method (str): Method name.
+    method (str): Method name. Application name for alibaba, and interface name for social network etc.
     list_of_tuples_of_experiment_timestamps (list of tuple): List of tuples containing start and end time strings.
     request_count_cutoff (int): Minimum request count for a file to be considered valid (default is None).
     tail_latency_cutoff (float): Maximum tail latency in milliseconds for a file to be considered valid (default is None).
@@ -258,7 +363,12 @@ def load_data(method, list_of_tuples_of_experiment_timestamps, slo, request_coun
     for filename in glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/protobuf/ghz-results'), f'social-{method}-control-*-parallel-capacity-*.json')) \
         + glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/charon-experiments-results/'), f'social-{method}-control-*-parallel-capacity-*.json')):
         # Extract the date and time part from the filename
-        timestamp_str = os.path.basename(filename).split('-')[-1].rstrip('.json')
+        # overload_control, method_subcall, _, capacity_str, timestamp_str = os.path.basename(filename).split('-')[3:8]
+        config = extract_experiment_details_json(filename)
+        overload_control = config['overload_control']
+        # capacity_str = config['capacity_str']
+        timestamp_str = config['timestamp_str']
+
         # check if the file's timestamp is given format
         # claim 
         if len(timestamp_str) != 9:
@@ -266,18 +376,28 @@ def load_data(method, list_of_tuples_of_experiment_timestamps, slo, request_coun
             continue
         
         if is_within_any_duration(timestamp_str, list_of_tuples_of_experiment_timestamps):
-            selected_files.append(filename)
-
-            # # debug:
-            # # if load is 8000 and app is `S_161142529` and method is `breakwater`, print the filename
-            # if '8000' in filename and 'S_161142529' in filename and 'breakwater' in filename:
-            #     print(filename) 
-
+            if given_parameter is not None:
+                # extract the str from dictionary
+                if method not in given_parameter:
+                    raise ValueError(f"Method {method} not found in the given parameter dictionary")
+                if overload_control not in given_parameter[method]:
+                    continue
+                parameter_file = given_parameter[method][overload_control]
+                if check_parameters(parameter_file, filename):
+                    selected_files.append(filename)
+                # else:
+                #     print("File ", filename, " is not for this experiment, parameters do not match")
+            else:
+                selected_files.append(filename)
+            
     for filename in selected_files:
         # Extract the metadata from the filename
-        overload_control, method_subcall, _, capacity_str, timestamp = os.path.basename(filename).split('-')[3:8]
-        capacity = int(capacity_str)
+        config = extract_experiment_details_json(filename)
+        overload_control = config['overload_control']
+        capacity_str = config['capacity_str']
+        timestamp_str = config['timestamp_str']
 
+        capacity = int(capacity_str)
 
         # if there's no `OK` in the file, remove the file
         if 'OK' not in open(filename).read():
@@ -306,7 +426,7 @@ def load_data(method, list_of_tuples_of_experiment_timestamps, slo, request_coun
                 print("File ", filename, f" is not valid, 95th percentile is greater than {tail_latency_cutoff}ms")
                 continue
 
-            key = (overload_control, method_subcall, capacity)
+            key = (overload_control, capacity)
             if key not in results:
                 results[key] = {
                     'Load': capacity,
@@ -330,7 +450,7 @@ def load_data(method, list_of_tuples_of_experiment_timestamps, slo, request_coun
         print(f"[ERROR] No results extracted from the files for {method}")
         return None
     rows = []
-    for (overload_control, method_subcall, capacity), data in results.items():
+    for (overload_control, capacity), data in results.items():
         row = {
             'Load': capacity,
             'Throughput': np.nanmean(data['Throughput']),
@@ -342,13 +462,13 @@ def load_data(method, list_of_tuples_of_experiment_timestamps, slo, request_coun
             '95th_percentile': np.nanmean(data['95th_percentile']),
             '95th_percentile std': np.nanstd(data['95th_percentile']),
             'Median Latency': np.nanmean(data['Median Latency']),
-            'method_subcall': method_subcall,
+            # 'method_subcall': method_subcall,
             'overload_control': overload_control,
             'file_count': len(data['File'])
         }
 
         rows.append(row)
-        print(f'Control: {overload_control}, \t Method: {method_subcall}, Load: {capacity}, Average 99th Lat: {row["99th_percentile"]:.2f}, 95th: {row["95th_percentile"]:.2f}, # Files: {row["file_count"]}, Throughput: {row["Throughput"]:.2f}, Goodput: {row["Goodput"]:.2f}')
+        print(f'Control: {overload_control}, \t Method: {method}, Load: {capacity}, Average 99th Lat: {row["99th_percentile"]:.2f}, 95th: {row["95th_percentile"]:.2f}, # Files: {row["file_count"]}, Throughput: {row["Throughput"]:.2f}, Goodput: {row["Goodput"]:.2f}')
 
     df = pd.DataFrame(rows)
     df.sort_values('Load', inplace=True)
@@ -491,6 +611,7 @@ def calculate_loadshedded(df):
     #   "error": "rpc error: code = ResourceExhausted desc = trying to send message larger than max (131 vs. 0)",
     #   "status": "ResourceExhausted"
     # },
+
 def calculate_ratelimited(df):
     # extract the dropped requests by status == 'ResourceExhausted' and error message contains 'trying to send message larger than max'
     limited = df[(df['status'] == 'ResourceExhausted') & (df['error'].str.contains('trying to send message larger than max'))]
@@ -571,3 +692,145 @@ def save_iteration_details(optimizer, file_path):
         print(f"TypeError encountered during JSON serialization: {e}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
+
+
+def export_all_experiments_to_csv(time_ranges):
+
+    # Create a DataFrame to store the experiment results
+    base_columns = ['timestamp', 'interface', 'control_scheme', 'capacity', 'throughput', 'goodput',
+                    'latency_99', 'latency_95', 'latency_median', 'filename']
+    
+    experiment_data = []
+    all_control_keys = set()
+    selected_files = []
+
+    # For every file in the directory and another directory `~/Sync/Git/charon-experiments/json`
+    files = glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/protobuf/ghz-results'), f'social-*-control-*-parallel-capacity-*.json')) \
+
+    for filename in files:
+        # Extract the date and time part from the filename
+        config = extract_experiment_details_json(filename)
+        timestamp_str = config['timestamp_str']
+
+        # check if the file's timestamp is given format
+        assert len(timestamp_str) == 9, f"File {filename} is not valid"
+
+        if is_within_any_duration(timestamp_str, time_ranges):
+            selected_files.append(filename)
+
+    for filename in selected_files:
+        # Extract the metadata from the filename
+        config = extract_experiment_details_json(filename)
+        overload_control = config['overload_control']
+        capacity_str = config['capacity_str']
+        timestamp_str = config['timestamp_str']
+        method = config['interface']
+
+        capacity = int(capacity_str)
+
+        # if there's no `OK` in the file, remove the file
+        if 'OK' not in open(filename).read():
+            print("File ", filename, " is not valid, no OK")
+            os.remove(filename)
+            continue
+
+        slo = get_slo(method=method)
+        # Calculate latencies and throughput
+        latency_99 = calculate_tail_latency(filename)
+        latency_95 = calculate_tail_latency(filename, 95)
+        latency_median = calculate_tail_latency(filename, 50)
+        throughput = calculate_throughput(filename)
+        goodput = calculate_average_goodput(filename, slo)
+
+        # Prepare a row with base columns
+        row = {
+            'timestamp': timestamp_str,
+            'interface': method,
+            'control_scheme': overload_control,
+            'capacity': capacity,
+            'throughput': throughput,
+            'goodput': goodput,
+            'latency_99': latency_99,
+            'latency_95': latency_95,
+            'latency_median': latency_median,
+            'filename': filename
+        }
+        
+        control_parameters = extract_configurations_from_output_file(filename)
+
+        # Add control parameters to the row
+        for key, value in control_parameters.items():
+            row[key] = value
+            all_control_keys.add(key)
+
+        experiment_data.append(row)
+
+    # Define columns based on the base columns and control keys
+    columns = base_columns + list(all_control_keys)
+
+    # Create DataFrame from the experiment_data list
+    df = pd.DataFrame(experiment_data, columns=columns)
+
+    # Export DataFrame to CSV
+    df.to_csv('experiment_results.csv', index=False)
+    print("Experiment results successfully exported to experiment_results.csv")
+
+
+def calculate_group_statistics(file_path):
+    # Load the experiment results from the CSV file
+    df = pd.read_csv(file_path)
+    
+    # Define primary and secondary index columns
+    primary_index_columns = ['interface', 'control_scheme', 'capacity']
+    secondary_index_columns = [
+        'BREAKWATERD_B', 'RATE_LIMITING', 'BREAKWATERD_SLO', 'DAGOR_QUEUING_THRESHOLD', 
+        'PRICE_UPDATE_RATE', 'LAZY_UPDATE', 'DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL', 
+        'TOKEN_UPDATE_RATE', 'LOAD_SHEDDING', 'PRICE_STEP', 'BREAKWATER_A', 
+        'BREAKWATER_LOAD_SHEDDING', 'BREAKWATERD_INITIAL_CREDIT', 'LATENCY_THRESHOLD', 
+        'BREAKWATER_CLIENT_EXPIRATION', 'DAGOR_UMAX', 'BREAKWATERD_A', 
+        'BREAKWATERD_LOAD_SHEDDING', 'PRICE_STRATEGY', 'BREAKWATERD_RTT', 
+        'BREAKWATER_INITIAL_CREDIT', 'BREAKWATER_B', 'DAGOR_ALPHA', 'INTERCEPT', 
+        'BREAKWATERD_CLIENT_EXPIRATION', 'DAGOR_BETA', 'CHARON_TRACK_PRICE', 
+        'BREAKWATER_SLO', 'BREAKWATER_RTT'
+    ]
+    
+    # Define the metric columns for which we want to calculate the mean and variance
+    metric_columns = ['throughput', 'goodput', 'latency_99', 'latency_95', 'latency_median']
+    
+    # Filter the dataframe to include only relevant columns
+    all_columns = primary_index_columns + secondary_index_columns + metric_columns
+    df = df[all_columns]
+    
+    # Group by the primary and secondary index columns
+    grouped_df = df.groupby(primary_index_columns + secondary_index_columns)
+    
+    # Calculate mean and variance for each group
+    mean_df = grouped_df[metric_columns].mean().reset_index()
+    var_df = grouped_df[metric_columns].var(ddof=0).reset_index()  # Population variance
+
+    # Rename the columns to indicate mean and variance
+    mean_df = mean_df.rename(columns={col: col + '_mean' for col in metric_columns})
+    var_df = var_df.rename(columns={col: col + '_var' for col in metric_columns})
+    
+    # Merge the mean and variance dataframes
+    result_df = pd.merge(mean_df, var_df, on=primary_index_columns + secondary_index_columns)
+    
+    # Export the result to a CSV file
+    result_df.to_csv('group_statistics.csv', index=False)
+    print("Group statistics successfully exported to group_statistics.csv")
+    
+    return result_df
+
+
+def main():
+    # Define the time ranges for the experiments
+    time_ranges = [
+        ('0527_0000', '0531_2359'),
+        # ('0529_0000', '0529_0003'),
+    ]
+
+    # Export all experiments to a CSV file
+    export_all_experiments_to_csv(time_ranges)
+
+if __name__ == '__main__':
+    main()

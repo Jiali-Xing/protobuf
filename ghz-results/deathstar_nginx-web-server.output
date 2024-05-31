@@ -6,55 +6,40 @@ Downstreams of the Service:
 Server Configurations:
 [{COMPUTATION_DISTRIBUTION constant} {PROCESS_TIME 0ms} {APP_PORT 50051} {LOG_LEVEL Info} {GREETING Hi Malaka!} {SUBCALL parallel} {PROFILING false}]
 Charon Configurations:
-<<<<<<< HEAD
-[{INTERCEPT dagor} {PRICE_UPDATE_RATE 10ms} {TOKEN_UPDATE_RATE 10ms} {LATENCY_THRESHOLD 100us} {PRICE_STEP 0} {PRICE_STRATEGY step} {LAZY_UPDATE false} {RATE_LIMITING true} {LOAD_SHEDDING true} {CHARON_TRACK_PRICE false} {BREAKWATER_SLO 12500us} {BREAKWATER_A 0.001} {BREAKWATER_B 0.02} {BREAKWATER_CLIENT_EXPIRATION 10ms} {BREAKWATER_INITIAL_CREDIT 400} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATER_RTT 1000us} {BREAKWATERD_SLO 12500us} {BREAKWATERD_A 0.001} {BREAKWATERD_B 0.02} {BREAKWATERD_CLIENT_EXPIRATION 10ms} {BREAKWATERD_INITIAL_CREDIT 400} {BREAKWATERD_LOAD_SHEDDING true} {BREAKWATERD_RTT 1000us} {DAGOR_QUEUING_THRESHOLD 1582us} {DAGOR_ALPHA 0.274757894880173} {DAGOR_BETA 2.6518845382867213} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 5443us} {DAGOR_UMAX 16}]
-=======
-[{INTERCEPT dagor} {PRICE_UPDATE_RATE 10ms} {TOKEN_UPDATE_RATE 10ms} {LATENCY_THRESHOLD 100us} {PRICE_STEP 0} {PRICE_STRATEGY step} {LAZY_UPDATE false} {RATE_LIMITING true} {LOAD_SHEDDING true} {CHARON_TRACK_PRICE false} {BREAKWATER_SLO 12500us} {BREAKWATER_A 0.001} {BREAKWATER_B 0.02} {BREAKWATER_CLIENT_EXPIRATION 10ms} {BREAKWATER_INITIAL_CREDIT 400} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATER_RTT 1000us} {BREAKWATERD_SLO 12500us} {BREAKWATERD_A 0.001} {BREAKWATERD_B 0.02} {BREAKWATERD_CLIENT_EXPIRATION 10ms} {BREAKWATERD_INITIAL_CREDIT 400} {BREAKWATERD_LOAD_SHEDDING true} {BREAKWATERD_RTT 1000us} {DAGOR_QUEUING_THRESHOLD 59066us} {DAGOR_ALPHA 1.8515044119531365} {DAGOR_BETA 2.546301540619033} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 8381us} {DAGOR_UMAX 8}]
->>>>>>> ecaec06 (trying to reolve the conflicts)
+[{INTERCEPT breakwaterd} {PRICE_UPDATE_RATE 10ms} {TOKEN_UPDATE_RATE 10ms} {LATENCY_THRESHOLD 100us} {PRICE_STEP 0} {PRICE_STRATEGY step} {LAZY_UPDATE false} {RATE_LIMITING true} {LOAD_SHEDDING true} {CHARON_TRACK_PRICE false} {BREAKWATER_SLO 34867us} {BREAKWATER_A 8.097836752950782} {BREAKWATER_B 8.958862181960669} {BREAKWATER_CLIENT_EXPIRATION 2141us} {BREAKWATER_INITIAL_CREDIT 385} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATER_RTT 13268us} {BREAKWATERD_SLO 26591us} {BREAKWATERD_A 1.1474597295337519} {BREAKWATERD_B 9.494892587070712} {BREAKWATERD_CLIENT_EXPIRATION 50492us} {BREAKWATERD_INITIAL_CREDIT 2892} {BREAKWATERD_LOAD_SHEDDING true} {BREAKWATERD_RTT 8754us} {DAGOR_QUEUING_THRESHOLD 2ms} {DAGOR_ALPHA 0.05} {DAGOR_BETA 0.01} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 10ms} {DAGOR_UMAX 20}]
 Price Update Rate: 10ms
 Latency Threshold: 100µs
 Price Step: 0
 Price Strategy: step
-Intercept: dagor
+Intercept: breakwaterd
 Lazy Update: false
 Rate Limiting: true
 Load Shedding: true
 Charon Track Price: false
-Breakwater SLO: 12.5ms
-Breakwater Client Timeout: 10ms
-Breakwater Initial Credit: 400
-Breakwater A: 0.001
-Breakwater B: 0.02
+Breakwater SLO: 34.867ms
+Breakwater Client Timeout: 2.141ms
+Breakwater Initial Credit: 385
+Breakwater A: 8.097836752950782
+Breakwater B: 8.958862181960669
 Breakwater Load Shedding: true
-Breakwater RTT: 1ms
-BreakwaterD SLO: 12.5ms
-BreakwaterD Client Timeout: 10ms
-BreakwaterD Initial Credit: 400
-BreakwaterD A: 0.001
-BreakwaterD B: 0.02
+Breakwater RTT: 13.268ms
+BreakwaterD SLO: 26.591ms
+BreakwaterD Client Timeout: 50.492ms
+BreakwaterD Initial Credit: 2892
+BreakwaterD A: 1.1474597295337519
+BreakwaterD B: 9.494892587070712
 BreakwaterD Load Shedding: true
-BreakwaterD RTT: 1ms
-<<<<<<< HEAD
-Dagor Queuing Threshold: 1.582ms
-Dagor Alpha: 0.274757894880173
-Dagor Beta: 2.6518845382867213
-Dagor Admission Level Update Interval: 5.443ms
-Dagor Umax: 16
-=======
-Dagor Queuing Threshold: 59.066ms
-Dagor Alpha: 1.8515044119531365
-Dagor Beta: 2.546301540619033
-Dagor Admission Level Update Interval: 8.381ms
-Dagor Umax: 8
->>>>>>> ecaec06 (trying to reolve the conflicts)
+BreakwaterD RTT: 8.754ms
+Dagor Queuing Threshold: 2ms
+Dagor Alpha: 0.05
+Dagor Beta: 0.01
+Dagor Admission Level Update Interval: 10ms
+Dagor Umax: 20
 Computation Distribution: constant
 Process Time: 0s
 Address Listening on: 0.0.0.0:50051
 Greeting Message: Hi Malaka!
 Log Level: Info
 Subcall Pattern: parallel
-<<<<<<< HEAD
-{"function":"run","level":"info","line":"720","msg":"Dagor Config: {nginx-web-server map[S_102000854:2 S_149998854:1 S_161142529:2 compose:1 home-timeline:2 hotels-http:3 recommendations-http:4 reservation-http:1 user-http:2 user-timeline:3] 1.582ms true false 5.443ms 0.274757894880173 2.6518845382867213 16 4 false false}","time":"2024-05-29T20:48:22Z"}
-=======
-{"function":"run","level":"info","line":"720","msg":"Dagor Config: {nginx-web-server map[S_102000854:2 S_149998854:1 S_161142529:2 compose:1 home-timeline:2 hotels-http:3 recommendations-http:4 reservation-http:1 user-http:2 user-timeline:3] 59.066ms true false 8.381ms 1.8515044119531365 2.546301540619033 8 4 false false}","time":"2024-05-29T20:41:37Z"}
->>>>>>> ecaec06 (trying to reolve the conflicts)
+{"function":"run","level":"info","line":"668","msg":"Breakwater Frontend Config: {true 8.958862181960669 8.097836752950782 34867 2141 385 false true true false 13268}","time":"2024-05-31T13:18:48Z"}
+{"function":"run","level":"info","line":"738","msg":"Initialized multiple instances of Breakwaters for downstream services of nginx-web-server: map[ms-41385:50051:0xc0001f0000]","time":"2024-05-31T13:18:48Z"}
