@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package hotelproto;
+
+option go_package = "github.com/Jiali-Xing/hotelproto;hotelproto";
+
+// Reservation service definition
+service ReservationService {
+  rpc MakeReservation(MakeReservationRequest) returns (MakeReservationResponse);
+  rpc CheckAvailability(CheckAvailabilityRequest) returns (CheckAvailabilityResponse);
+  rpc AddHotelAvailability(AddHotelAvailabilityRequest) returns (AddHotelAvailabilityResponse);
+}
+
+message MakeReservationRequest {
+  string CustomerName = 1;
+  string HotelId = 2;
+  string InDate = 3;
+  string OutDate = 4;
+  int32 RoomNumber = 5;
+}
+
+message MakeReservationResponse {
+  bool Success = 1;
+}
+
+message CheckAvailabilityRequest {
+  string CustomerName = 1;
+  repeated string HotelIds = 2;
+  string InDate = 3;
+  string OutDate = 4;
+  int32 RoomNumber = 5;
+}
+
+message CheckAvailabilityResponse {
+  repeated string HotelIds = 1;
+}
+
+message AddHotelAvailabilityRequest {
+  string HotelId = 1;
+  int32 Capacity = 2;
+}
+
+message AddHotelAvailabilityResponse {
+  string HotelId = 1;
+}
+
+message HotelAvailability {
+  int32 Capacity = 1;
+  repeated Reservation Reservations = 2;
+}
+
+message Reservation {
+  string CustomerName = 1;
+  string InDate = 2;
+  string OutDate = 3;
+  int32 RoomNumber = 4;
+}

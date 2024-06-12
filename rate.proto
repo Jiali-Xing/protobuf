@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package hotelproto;
+
+option go_package = "github.com/Jiali-Xing/hotelproto;hotelproto";
+
+// Rate service definition
+service RateService {
+  rpc GetRates(GetRatesRequest) returns (GetRatesResponse);
+  rpc StoreRate(StoreRateRequest) returns (StoreRateResponse);
+}
+
+message GetRatesRequest {
+  repeated string HotelIds = 1;
+}
+
+message GetRatesResponse {
+  repeated Rate Rates = 1;
+}
+
+message StoreRateRequest {
+  Rate Rate = 1;
+}
+
+message StoreRateResponse {
+  string HotelId = 1;
+}
+
+message Rate {
+  string HotelId = 1;
+  int32 Price = 2;
+}

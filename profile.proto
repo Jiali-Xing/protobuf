@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package hotelproto;
+
+option go_package = "github.com/Jiali-Xing/hotelproto;hotelproto";
+
+// Profile service definition
+service ProfileService {
+  rpc GetProfiles(GetProfilesRequest) returns (GetProfilesResponse);
+  rpc StoreProfile(StoreProfileRequest) returns (StoreProfileResponse);
+}
+
+message GetProfilesRequest {
+  repeated string HotelIds = 1;
+}
+
+message GetProfilesResponse {
+  repeated HotelProfile Profiles = 1;
+}
+
+message StoreProfileRequest {
+  HotelProfile Profile = 1;
+}
+
+message StoreProfileResponse {
+  string HotelId = 1;
+}
+
+message HotelProfile {
+  string HotelId = 1;
+  string Name = 2;
+  string Phone = 3;
+  string Info = 4;
+}
