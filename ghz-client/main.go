@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"runtime/pprof"
 	"strconv"
@@ -12,11 +13,10 @@ import (
 
 	"github.com/Jiali-Xing/ghz/printer"
 	"github.com/Jiali-Xing/ghz/runner"
+	hotelpb "github.com/Jiali-Xing/hotelproto"
 	pb "github.com/Jiali-Xing/protobuf"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
-	// printer_wo_charon "github.com/bojand/ghz/printer"
-	// runner_wo_charon "github.com/bojand/ghz/runner"
 )
 
 // ghz --insecure -O html -o test.html \
@@ -34,21 +34,14 @@ var (
 	message     = getEnv("GREETING", "Hello, from Client!")
 	URLServiceA = getEnv("SERVICE_A_URL", "localhost:50051")
 	log         = logrus.New()
-	// read from the environment variable, and convert it to bool
-	// interceptor, _ = strconv.ParseBool(getEnv("INTERCEPT", "true"))
-	// interceptor if the INTERCEPT environment variable is set to charon
+
 	interceptor = getEnv("INTERCEPT", "charon")
 
-	// loadSchedule = "step"
-	// runDuration  = time.Second * 10
-	// loadStart    = uint(10000)
-	// loadEnd      = uint(30000)
-	// loadStep     = 1000
 	constantLoadStr = getEnv("CONSTANT_LOAD", "false")
 	// make it a boolean
 	constantLoad, _ = strconv.ParseBool(constantLoadStr)
 	// runDuration     = time.Second * 10 unless specified in the environment variable
-	runDuration, _ = time.ParseDuration(getEnv("RUN_DURATION", "10s"))
+	runDuration, _ = time.ParseDuration(getEnv("RUN_DURATION", "20s"))
 	capacity       = func() int {
 		capacityStr := getEnv("CAPACITY", "4000")
 		parsedCapacity, err := strconv.Atoi(capacityStr)
@@ -59,18 +52,15 @@ var (
 		return parsedCapacity
 	}()
 
-	warmup_load, _ = strconv.Atoi(getEnv("WARMUP_LOAD", "4000"))
+	warmup_load, _ = strconv.Atoi(getEnv("WARMUP_LOAD", "1000"))
 
 	concurrency, _ = strconv.Atoi(getEnv("CONCURRENCY", "1000"))
-	// loadReduction is true or false
-	loadReduction, _ = strconv.ParseBool(getEnv("LOAD_REDUCTION", "false"))
-	loadIncrease, _  = strconv.ParseBool(getEnv("LOAD_INCREASE", "false"))
 
 	// loadStart        is from environment variable
-	loadStart        = uint(warmup_load)
-	loadEnd          = uint(capacity)
-	loadStep         = int(loadEnd - loadStart)
-	loadStepDuration = time.Second * 5 // 5 seconds to warm up before the load spikes
+	loadStart           = uint(warmup_load)
+	loadEnd             = uint(capacity)
+	loadStep            = int(loadEnd - loadStart)
+	loadStepDuration, _ = time.ParseDuration(getEnv("LOAD_STEP_DURATION", "10s"))
 
 	// read the inferface/method from the environment variable
 	method  = getEnv("METHOD", "echo")
@@ -80,8 +70,6 @@ var (
 	rateLimiting, _ = strconv.ParseBool(getEnv("RATE_LIMITING", "true"))
 	entry_point     = getEnv("ENTRY_POINT", "nginx-web-server")
 	profiling, _    = strconv.ParseBool(getEnv("PROFILING", "true"))
-	// latencyThreshold = getEnv("LATENCY_THRESHOLD", "10ms") convert to time.Duration
-	// latencyThreshold, _ = time.ParseDuration(getEnv("LATENCY_THRESHOLD", "10ms"))
 
 	priceUpdateRate  time.Duration
 	tokenUpdateRate  time.Duration
@@ -102,6 +90,10 @@ var (
 	dagorUmax                         int
 
 	debug, _ = strconv.ParseBool(getEnv("DEBUG_INFO", "false"))
+
+	// locations = []string{
+	// 	"new-york-city-ny-0", "los-angeles-ca-0", "chicago-il-0", "houston-tx-0", "phoenix-az-0", "philadelphia-pa-0", "san-antonio-tx-0", "san-diego-ca-0", "dallas-tx-0", "san-jose-ca-0", "austin-tx-0",
+	// }
 )
 
 func getHostname() string {
@@ -129,15 +121,52 @@ func main() {
 		fmt.Printf("Metadata: %s=%s\n", k, v)
 	}
 
-	requestGreeting := pb.Greeting{
-		Id:       uuid.New().String(),
-		Service:  serviceName,
-		Message:  message,
-		Created:  time.Now().Local().String(),
-		Hostname: getHostname(),
-	}
+	var req interface{}
 
-	// concurrency := 1000
+	username := fmt.Sprintf("user%d", rand.Intn(100))
+	password := fmt.Sprintf("password%d", rand.Intn(100))
+
+	// Declare proto file and method variables
+	var protoFile string
+	var protoCall string
+
+	switch method {
+	case "search-hotel":
+		// location := locations[rand.Intn(len(locations))]
+		req = &hotelpb.SearchHotelsRequest{
+			InDate:   "2023-04-17",
+			OutDate:  "2023-04-19",
+			Location: "new-york-city-ny-0",
+		}
+
+		// Declare proto file and method variables
+		protoFile = "../frontend.proto"
+		protoCall = "hotelproto.FrontendService/SearchHotels"
+
+	case "reserve-hotel":
+		req = &hotelpb.FrontendReservationRequest{
+			HotelId:  "1",
+			InDate:   "2023-04-17",
+			OutDate:  "2023-04-19",
+			Rooms:    1,
+			Username: username,
+			Password: password,
+		}
+		protoFile = "../frontend.proto"
+		protoCall = "hotelproto.FrontendService/FrontendReservation"
+
+	default:
+		requestGreetings := &pb.Greeting{
+			Id:       uuid.New().String(),
+			Service:  serviceName,
+			Message:  message,
+			Created:  time.Now().Local().String(),
+			Hostname: getHostname(),
+		}
+		req = &pb.GreetingRequest{Greeting: requestGreetings}
+		protoFile = "../greeting.proto"
+		protoCall = "greeting.v3.GreetingService/Greeting"
+	}
 
 	interceptorConfigs := GetCharonConfigs()
 	fmt.Println("Charon Configurations:")
@@ -257,13 +286,17 @@ func main() {
 			"compose":              1,
 			"home-timeline":        2,
 			"user-timeline":        3,
-			"S_149998854":          1,
-			"S_161142529":          2,
-			"S_102000854":          2,
+			"S_149998854":          2,
+			"S_161142529":          3,
+			"S_102000854":          1,
 			"hotels-http":          3,
 			"reservation-http":     1,
 			"user-http":            2,
 			"recommendations-http": 4,
+			"motivate-set":         1,
+			"motivate-get":         2,
+			"reserve-hotel":        3,
+			"search-hotel":         4,
 		},
 		EntryService:                 false,
 		IsEnduser:                    true,
@@ -276,31 +309,6 @@ func main() {
 		Debug:                        debug,
 	}
 
-	// var concurrencyStart, concurrencyEnd uint
-	// var concurrencyStep int
-	var connections uint
-
-	if loadReduction {
-		loadStart = uint(capacity * 30 / 100)
-		loadEnd = uint(capacity * 10 / 100)
-		loadStep = -capacity * 20 / 100
-		// also change the concurrency steps in proportion to the load steps
-		// concurrencyStart = uint(concurrency * 30 / 100)
-		// concurrencyEnd = uint(concurrency * 10 / 100)
-		// concurrencyStep = -(concurrency * 20 / 100)
-		connections = uint(concurrency * 10 / 100)
-	}
-	if loadIncrease {
-		loadStart = uint(capacity * 40 / 100)
-		loadEnd = uint(capacity * 80 / 100)
-		loadStep = capacity * 40 / 100
-		// also change the concurrency steps in proportion to the load steps
-		// concurrencyStart = uint(concurrency * 40 / 100)
-		// concurrencyEnd = uint(concurrency * 80 / 100)
-		// concurrencyStep = concurrency * 40 / 100
-		connections = uint(concurrency * 80 / 100)
-	}
-
 	var defactoInterceptor string
 	// the de facto interceptor is dagor when interceptor is set to "dagorf"
 	if interceptor == "dagorf" {
@@ -309,89 +317,32 @@ func main() {
 		defactoInterceptor = interceptor
 	}
 	log.Printf("De facto interceptor: %s", defactoInterceptor)
-	if constantLoad {
-		report, err = runner.Run(
-			"greeting.v3.GreetingService/Greeting",
-			URLServiceA,
-			runner.WithProtoFile("../greeting.proto", []string{}),
-			runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
-			runner.WithMetadata(md),
-			runner.WithConcurrency(uint(concurrency)),
-			runner.WithConnections(uint(concurrency)),
-			runner.WithInsecure(true),
-			runner.WithRPS(uint(capacity)),
-			runner.WithRunDuration(runDuration),
-			runner.WithLoadSchedule("const"),
-			runner.WithMethod(method),
-			runner.WithInterceptor(defactoInterceptor),
-			runner.WithInterceptorEntry(entry_point),
-			runner.WithCharonOptions(charonOptions),
-			runner.WithBreakwaterOptions(breakwaterOptions),
-			runner.WithDagorOptions(dagorParams),
-			runner.WithAsync(true),
-			runner.WithEnableCompression(false),
-			runner.WithTimeout(time.Second),
-		)
-	} else if loadReduction || loadIncrease {
-		report, err = runner.Run(
-			"greeting.v3.GreetingService/Greeting",
-			URLServiceA,
-			runner.WithProtoFile("../greeting.proto", []string{}),
-			runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
-			runner.WithMetadata(md),
-			runner.WithConcurrency(connections),
-			runner.WithConnections(connections),
-			runner.WithInsecure(true),
-			runner.WithRunDuration(runDuration),
-			runner.WithLoadSchedule("step"),
-			runner.WithLoadStart(loadStart),
-			runner.WithLoadEnd(loadEnd),
-			runner.WithLoadStep(loadStep),
-			runner.WithLoadStepDuration(loadStepDuration),
-			runner.WithMethod(method),
-			runner.WithInterceptor(defactoInterceptor),
-			runner.WithInterceptorEntry(entry_point),
-			runner.WithCharonOptions(charonOptions),
-			runner.WithBreakwaterOptions(breakwaterOptions),
-			runner.WithDagorOptions(dagorParams),
-			runner.WithAsync(true),
-			runner.WithEnableCompression(false),
-			runner.WithTimeout(time.Second),
-			// runner.WithConcurrencySchedule("step"),
-			// runner.WithConcurrencyStart(concurrencyStart),
-			// runner.WithConcurrencyEnd(concurrencyEnd),
-			// runner.WithConcurrencyStep(concurrencyStep),
-			// runner.WithConcurrencyStepDuration(loadStepDuration),
-		)
-	} else {
-		report, err = runner.Run(
-			"greeting.v3.GreetingService/Greeting",
-			URLServiceA,
-			runner.WithProtoFile("../greeting.proto", []string{}),
-			runner.WithData(&pb.GreetingRequest{Greeting: &requestGreeting}),
-			runner.WithMetadata(md),
-			runner.WithConcurrency(uint(concurrency)),
-			runner.WithConnections(uint(concurrency)),
-			runner.WithInsecure(true),
-			// runner.WithTotalRequests(3),
-			// runner.WithRPS(2000),
-			runner.WithRunDuration(runDuration),
-			runner.WithLoadSchedule("step"),
-			runner.WithLoadStart(loadStart),
-			runner.WithLoadEnd(loadEnd),
-			runner.WithLoadStep(loadStep),
-			runner.WithLoadStepDuration(loadStepDuration),
-			runner.WithMethod(method),
-			runner.WithInterceptor(defactoInterceptor),
-			runner.WithInterceptorEntry(entry_point),
-			runner.WithCharonOptions(charonOptions),
-			runner.WithBreakwaterOptions(breakwaterOptions),
-			runner.WithDagorOptions(dagorParams),
-			runner.WithAsync(true),
-			runner.WithEnableCompression(false),
-			runner.WithTimeout(time.Second),
-		)
-	}
+
+	report, err = runner.Run(
+		protoCall,
+		URLServiceA,
+		runner.WithProtoFile(protoFile, []string{}),
+		runner.WithData(req),
+		runner.WithMetadata(md),
+		runner.WithConcurrency(uint(concurrency)),
+		runner.WithConnections(uint(concurrency)),
+		runner.WithInsecure(true),
+		runner.WithRunDuration(runDuration),
+		runner.WithLoadSchedule("step"),
+		runner.WithLoadStart(loadStart),
+		runner.WithLoadEnd(loadEnd),
+		runner.WithLoadStep(loadStep),
+		runner.WithLoadStepDuration(loadStepDuration),
+		runner.WithMethod(method),
+		runner.WithInterceptor(defactoInterceptor),
+		runner.WithInterceptorEntry(entry_point),
+		runner.WithCharonOptions(charonOptions),
+		runner.WithBreakwaterOptions(breakwaterOptions),
+		runner.WithDagorOptions(dagorParams),
+		runner.WithAsync(true),
+		runner.WithEnableCompression(false),
+		runner.WithTimeout(time.Second),
+	)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -412,11 +363,8 @@ func main() {
 	// filename := fmt.Sprintf("../ghz-results/charon-%s-method-%s-constantload-%s-capacity-%d.json", enableCharonStr, method, constantLoadStr, capacity)
 	// if enableCharon, name it charon-xxx, otherwise, plain-xxx
 	filename := ""
-	// if interceptor == "charon" || interceptor == "breakwater" {
-	// else {
+
 	filename = fmt.Sprintf("../ghz-results/social-%s-%s-%s-capacity-%d.json", method, interceptor, subcall, capacity)
-	// writeToFile(filename, report)
-	// }
 
 	file, err := os.Create(filename)
 

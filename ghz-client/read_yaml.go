@@ -36,38 +36,9 @@ type Application struct {
 	Interface string              `yaml:"interface"`
 }
 
-// func main() {
-// 	callGraph := GetCallGraph()
-// 	fmt.Println("Call Graph:")
-// 	fmt.Println(callGraph)
-
-// 	downstreams := GetDownstreamURLs()
-// 	fmt.Println("Downstreams:")
-// 	fmt.Println(downstreams)
-
-// 	serverConfigs := GetServerConfigs()
-// 	fmt.Println("Server Configurations:")
-// 	fmt.Println(serverConfigs)
-
-// 	charonConfigs := GetCharonConfigs()
-// 	fmt.Println("Charon Configurations:")
-// 	fmt.Println(charonConfigs)
-// }
-
 // func SwapKeys(callGraph map[string]map[string][]string) map[string]map[string][]string {
 func SwapKeys(applications []Application) map[string]map[string][]string {
-	// swappedGraph := make(map[string]map[string][]string)
 
-	// for method, downstreams := range callGraph {
-	// 	for node, services := range downstreams {
-	// 		if swappedGraph[node] == nil {
-	// 			swappedGraph[node] = make(map[string][]string)
-	// 		}
-	// 		swappedGraph[node][method] = services
-	// 	}
-	// }
-
-	// return swappedGraph
 	downstreamMappings := make(map[string]map[string][]string)
 
 	for _, app := range applications {
