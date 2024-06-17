@@ -23,7 +23,7 @@ nodes:
 - URL: Client:50051
   charon:
   - name: INTERCEPT
-    value: charon
+    value: breakwater
   - name: PRICE_UPDATE_RATE
     value: 10ms
   - name: TOKEN_UPDATE_RATE
@@ -104,7 +104,7 @@ nodes:
 - URL: frontend:50051
   charon:
   - name: INTERCEPT
-    value: charon
+    value: breakwater
   - name: PRICE_UPDATE_RATE
     value: 10ms
   - name: TOKEN_UPDATE_RATE

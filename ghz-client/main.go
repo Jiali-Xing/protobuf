@@ -15,6 +15,7 @@ import (
 	"github.com/Jiali-Xing/ghz/runner"
 	hotelpb "github.com/Jiali-Xing/hotelproto"
 	pb "github.com/Jiali-Xing/protobuf"
+	socialpb "github.com/Jiali-Xing/socialproto"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
@@ -55,6 +56,10 @@ var (
 	warmup_load, _ = strconv.Atoi(getEnv("WARMUP_LOAD", "1000"))
 
 	concurrency, _ = strconv.Atoi(getEnv("CONCURRENCY", "1000"))
+
+	// loadReduction is true or false
+	loadReduction, _ = strconv.ParseBool(getEnv("LOAD_REDUCTION", "false"))
+	loadIncrease, _  = strconv.ParseBool(getEnv("LOAD_INCREASE", "false"))
 
 	// loadStart        is from environment variable
 	loadStart           = uint(warmup_load)
@@ -123,8 +128,9 @@ func main() {
 
 	var req interface{}
 
-	username := fmt.Sprintf("user%d", rand.Intn(100))
-	password := fmt.Sprintf("password%d", rand.Intn(100))
+	userid := rand.Intn(100)
+	username := fmt.Sprintf("user%d", userid)
+	password := fmt.Sprintf("password%d", userid)
 
 	// Declare proto file and method variables
 	var protoFile string
@@ -154,6 +160,28 @@ func main() {
 		}
 		protoFile = "../frontend.proto"
 		protoCall = "hotelproto.FrontendService/FrontendReservation"
+
+	case "read-home-timeline":
+		req = &socialpb.ReadHomeTimelineRequest{
+			UserId: username,
+		}
+		protoFile = "../home_timeline.proto"
+		protoCall = "socialproto.HomeTimeline/ReadHomeTimeline"
+
+	case "read-user-timeline":
+		req = &socialpb.ReadUserTimelineRequest{
+			UserId: username,
+		}
+		protoFile = "../user_timeline.proto"
+		protoCall = "socialproto.UserTimeline/ReadUserTimeline"
+
+	case "compose-post":
+		req = &socialpb.ComposePostRequest{
+			CreatorId: username,
+			Text:      "This is a sample post",
+		}
+		protoFile = "../compose_post.proto"
+		protoCall = "socialproto.ComposePost/ComposePost"
 
 	default:
 		requestGreetings := &pb.Greeting{
@@ -295,8 +323,9 @@ func main() {
 			"recommendations-http": 4,
 			"motivate-set":         1,
 			"motivate-get":         2,
+			"search-hotel":         1,
+			"store-hotel":          2,
 			"reserve-hotel":        3,
-			"search-hotel":         4,
 		},
 		EntryService:                 false,
 		IsEnduser:                    true,
@@ -317,6 +346,17 @@ func main() {
 		defactoInterceptor = interceptor
 	}
 	log.Printf("De facto interceptor: %s", defactoInterceptor)
+
+	if loadReduction {
+		loadStart = uint(capacity * 90 / 100)
+		loadEnd = uint(capacity * 60 / 100)
+	}
+	if loadIncrease {
+		loadStart = uint(capacity * 10 / 100)
+		loadEnd = uint(capacity * 40 / 100)
+	}
+	loadStep = int(loadEnd) - int(loadStart)
+	log.Printf("De facto load: Start=%d, End=%d, Step=%d", loadStart, loadEnd, loadStep)
 
 	report, err = runner.Run(
 		protoCall,

@@ -1,0 +1,2559 @@
+Service Name:  nginx-web-server
+Call Graph of the Service:
+map[S_149998854:[ms-66473]]
+Downstreams of the Service:
+[ms-66473]
+Server Configurations:
+[{COMPUTATION_DISTRIBUTION constant} {PROCESS_TIME 0ms} {APP_PORT 50051} {LOG_LEVEL Info} {GREETING Hi Malaka!} {SUBCALL parallel} {PROFILING false}]
+Charon Configurations:
+[{INTERCEPT breakwater} {PRICE_UPDATE_RATE 10ms} {TOKEN_UPDATE_RATE 10ms} {LATENCY_THRESHOLD 100us} {PRICE_STEP 0} {PRICE_STRATEGY step} {LAZY_UPDATE false} {RATE_LIMITING true} {LOAD_SHEDDING true} {CHARON_TRACK_PRICE false} {BREAKWATER_SLO 4618us} {BREAKWATER_A 0.2895180150248522} {BREAKWATER_B 1.2813105474595612} {BREAKWATER_CLIENT_EXPIRATION 82us} {BREAKWATER_INITIAL_CREDIT 1776} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATER_RTT 18779us} {BREAKWATER_TRACK_CREDIT true} {BREAKWATERD_SLO 12500us} {BREAKWATERD_A 0.001} {BREAKWATERD_B 0.02} {BREAKWATERD_CLIENT_EXPIRATION 10ms} {BREAKWATERD_INITIAL_CREDIT 400} {BREAKWATERD_LOAD_SHEDDING true} {BREAKWATERD_RTT 1000us} {DAGOR_QUEUING_THRESHOLD 2ms} {DAGOR_ALPHA 0.05} {DAGOR_BETA 0.01} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 10ms} {DAGOR_UMAX 20} {SIDE server_only}]
+Price Update Rate: 10ms
+Latency Threshold: 100µs
+Price Step: 0
+Price Strategy: step
+Intercept: breakwater
+Lazy Update: false
+Rate Limiting: true
+Load Shedding: true
+Charon Track Price: false
+Breakwater Track Credit: true
+Breakwater SLO: 4.618ms
+Breakwater Client Timeout: 82µs
+Breakwater Initial Credit: 1776
+Breakwater A: 0.2895180150248522
+Breakwater B: 1.2813105474595612
+Breakwater Load Shedding: true
+Breakwater RTT: 18.779ms
+BreakwaterD SLO: 12.5ms
+BreakwaterD Client Timeout: 10ms
+BreakwaterD Initial Credit: 400
+BreakwaterD A: 0.001
+BreakwaterD B: 0.02
+BreakwaterD Load Shedding: true
+BreakwaterD RTT: 1ms
+Dagor Queuing Threshold: 2ms
+Dagor Alpha: 0.05
+Dagor Beta: 0.01
+Dagor Admission Level Update Interval: 10ms
+Dagor Umax: 20
+Computation Distribution: constant
+Process Time: 0s
+Address Listening on: 0.0.0.0:50051
+Greeting Message: Hi Malaka!
+Log Level: Info
+Subcall Pattern: parallel
+{"function":"run","level":"info","line":"675","msg":"Breakwater Frontend Config: {true 1.2813105474595612 0.2895180150248522 4618 82 1776 false true true false 18779 true}","time":"2024-06-08T03:20:47Z"}
+LOG: 2024-06-08T03:20:47.465677724+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.
+
+LOG: 2024-06-08T03:20:47.46588808+00:00|	[Credit Update per RTT]: cTotal updated from 1776 to 1777, cIssued: 0
+LOG: 2024-06-08T03:21:35.01124027+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:35.011433597+00:00|	[Credit Update per RTT]: cTotal updated from 1777 to 1862, cIssued: 293
+LOG: 2024-06-08T03:21:35.031051484+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:35.031212325+00:00|	[Credit Update per RTT]: cTotal updated from 1862 to 1961, cIssued: 557
+LOG: 2024-06-08T03:21:35.049975739+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:35.050233456+00:00|	[Credit Update per RTT]: cTotal updated from 1961 to 2072, cIssued: 760
+LOG: 2024-06-08T03:21:35.070393275+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:35.070641617+00:00|	[Credit Update per RTT]: cTotal updated from 2072 to 2197, cIssued: 956
+LOG: 2024-06-08T03:21:35.089824117+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:35.090108438+00:00|	[Credit Update per RTT]: cTotal updated from 2197 to 2336, cIssued: 1121
+LOG: 2024-06-08T03:21:35.109765938+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:35.110000863+00:00|	[Credit Update per RTT]: cTotal updated from 2336 to 2487, cIssued: 1252
+LOG: 2024-06-08T03:21:35.130049995+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:35.130392312+00:00|	[Credit Update per RTT]: cTotal updated from 2487 to 2653, cIssued: 1410
+LOG: 2024-06-08T03:21:35.149844615+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:35.150162649+00:00|	[Credit Update per RTT]: cTotal updated from 2653 to 2832, cIssued: 1549
+LOG: 2024-06-08T03:21:35.169028207+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:35.169304086+00:00|	[Credit Update per RTT]: cTotal updated from 2832 to 3024, cIssued: 1681
+LOG: 2024-06-08T03:21:35.188209259+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:35.188586608+00:00|	[Credit Update per RTT]: cTotal updated from 3024 to 3229, cIssued: 1824
+LOG: 2024-06-08T03:21:35.211608448+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:35.211937715+00:00|	[Credit Update per RTT]: cTotal updated from 3229 to 3450, cIssued: 1992
+LOG: 2024-06-08T03:21:35.230654416+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:35.230927096+00:00|	[Credit Update per RTT]: cTotal updated from 3450 to 3685, cIssued: 2130
+LOG: 2024-06-08T03:21:35.249882874+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:35.250543829+00:00|	[Credit Update per RTT]: cTotal updated from 3685 to 3933, cIssued: 2268
+LOG: 2024-06-08T03:21:35.268799726+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:35.26916014+00:00|	[Credit Update per RTT]: cTotal updated from 3933 to 4194, cIssued: 2404
+LOG: 2024-06-08T03:21:35.28872642+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:35.289177861+00:00|	[Credit Update per RTT]: cTotal updated from 4194 to 4468, cIssued: 2545
+LOG: 2024-06-08T03:21:35.311364165+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:35.311844577+00:00|	[Credit Update per RTT]: cTotal updated from 4468 to 4757, cIssued: 2706
+LOG: 2024-06-08T03:21:35.330395072+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:35.330921989+00:00|	[Credit Update per RTT]: cTotal updated from 4757 to 5046, cIssued: 2798
+LOG: 2024-06-08T03:21:35.355428746+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:35.355915998+00:00|	[Credit Update per RTT]: cTotal updated from 5046 to 5335, cIssued: 2918
+LOG: 2024-06-08T03:21:35.374442452+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:35.374883132+00:00|	[Credit Update per RTT]: cTotal updated from 5335 to 5624, cIssued: 3010
+LOG: 2024-06-08T03:21:35.394215135+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:35.394505776+00:00|	[Credit Update per RTT]: cTotal updated from 5624 to 5913, cIssued: 3143
+LOG: 2024-06-08T03:21:35.413152634+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:35.413472004+00:00|	[Credit Update per RTT]: cTotal updated from 5913 to 6202, cIssued: 3277
+LOG: 2024-06-08T03:21:35.432783251+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:35.433194363+00:00|	[Credit Update per RTT]: cTotal updated from 6202 to 6491, cIssued: 3360
+LOG: 2024-06-08T03:21:35.455739876+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:35.456242116+00:00|	[Credit Update per RTT]: cTotal updated from 6491 to 6780, cIssued: 3290
+LOG: 2024-06-08T03:21:35.474722447+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:35.475049391+00:00|	[Credit Update per RTT]: cTotal updated from 6780 to 7069, cIssued: 3285
+LOG: 2024-06-08T03:21:35.494067877+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:35.496236748+00:00|	[Credit Update per RTT]: cTotal updated from 7069 to 7358, cIssued: 3331
+LOG: 2024-06-08T03:21:35.515149635+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:35.515523364+00:00|	[Credit Update per RTT]: cTotal updated from 7358 to 7647, cIssued: 3421
+LOG: 2024-06-08T03:21:35.535719073+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:35.536127308+00:00|	[Credit Update per RTT]: cTotal updated from 7647 to 7936, cIssued: 3521
+LOG: 2024-06-08T03:21:35.555688478+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:35.556017891+00:00|	[Credit Update per RTT]: cTotal updated from 7936 to 8225, cIssued: 3617
+LOG: 2024-06-08T03:21:35.574532419+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:35.574893726+00:00|	[Credit Update per RTT]: cTotal updated from 8225 to 8514, cIssued: 3747
+LOG: 2024-06-08T03:21:35.594913463+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:35.595221296+00:00|	[Credit Update per RTT]: cTotal updated from 8514 to 8803, cIssued: 3891
+LOG: 2024-06-08T03:21:35.621620518+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:35.622007528+00:00|	[Credit Update per RTT]: cTotal updated from 8803 to 9092, cIssued: 4077
+LOG: 2024-06-08T03:21:35.642667323+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:35.643097136+00:00|	[Credit Update per RTT]: cTotal updated from 9092 to 9381, cIssued: 4233
+LOG: 2024-06-08T03:21:35.662253254+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:35.662563455+00:00|	[Credit Update per RTT]: cTotal updated from 9381 to 9670, cIssued: 4377
+LOG: 2024-06-08T03:21:35.682261127+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:35.682791692+00:00|	[Credit Update per RTT]: cTotal updated from 9670 to 9960, cIssued: 4527
+LOG: 2024-06-08T03:21:35.702031733+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:35.702494316+00:00|	[Credit Update per RTT]: cTotal updated from 9960 to 10250, cIssued: 4671
+LOG: 2024-06-08T03:21:35.722211723+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:35.722580551+00:00|	[Credit Update per RTT]: cTotal updated from 10250 to 10540, cIssued: 4835
+LOG: 2024-06-08T03:21:35.7423582+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:35.742746811+00:00|	[Credit Update per RTT]: cTotal updated from 10540 to 10830, cIssued: 5027
+LOG: 2024-06-08T03:21:35.762654258+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:35.762977883+00:00|	[Credit Update per RTT]: cTotal updated from 10830 to 11120, cIssued: 5223
+LOG: 2024-06-08T03:21:35.781523956+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:35.781954007+00:00|	[Credit Update per RTT]: cTotal updated from 11120 to 11410, cIssued: 5403
+LOG: 2024-06-08T03:21:35.801371047+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:35.801718093+00:00|	[Credit Update per RTT]: cTotal updated from 11410 to 11700, cIssued: 5572
+LOG: 2024-06-08T03:21:35.821019225+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:35.821334336+00:00|	[Credit Update per RTT]: cTotal updated from 11700 to 11990, cIssued: 5720
+LOG: 2024-06-08T03:21:35.839952883+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:35.840364146+00:00|	[Credit Update per RTT]: cTotal updated from 11990 to 12280, cIssued: 5853
+LOG: 2024-06-08T03:21:35.859916469+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:35.860239551+00:00|	[Credit Update per RTT]: cTotal updated from 12280 to 12570, cIssued: 5976
+LOG: 2024-06-08T03:21:35.881022912+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:35.881311901+00:00|	[Credit Update per RTT]: cTotal updated from 12570 to 12860, cIssued: 6171
+LOG: 2024-06-08T03:21:35.900880374+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:35.901298691+00:00|	[Credit Update per RTT]: cTotal updated from 12860 to 13150, cIssued: 6339
+LOG: 2024-06-08T03:21:35.919818548+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:35.920138417+00:00|	[Credit Update per RTT]: cTotal updated from 13150 to 13440, cIssued: 6477
+LOG: 2024-06-08T03:21:35.939116059+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:35.939467555+00:00|	[Credit Update per RTT]: cTotal updated from 13440 to 13730, cIssued: 6618
+LOG: 2024-06-08T03:21:35.959236209+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:35.959542537+00:00|	[Credit Update per RTT]: cTotal updated from 13730 to 14020, cIssued: 6759
+LOG: 2024-06-08T03:21:35.980648943+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:35.980954083+00:00|	[Credit Update per RTT]: cTotal updated from 14020 to 14310, cIssued: 6895
+LOG: 2024-06-08T03:21:36.000080749+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:36.000492665+00:00|	[Credit Update per RTT]: cTotal updated from 14310 to 14600, cIssued: 6995
+LOG: 2024-06-08T03:21:36.019890371+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:36.020132765+00:00|	[Credit Update per RTT]: cTotal updated from 14600 to 14890, cIssued: 7129
+LOG: 2024-06-08T03:21:36.039386873+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:36.039706132+00:00|	[Credit Update per RTT]: cTotal updated from 14890 to 15180, cIssued: 7264
+LOG: 2024-06-08T03:21:36.059104725+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:36.059380605+00:00|	[Credit Update per RTT]: cTotal updated from 15180 to 15470, cIssued: 7408
+LOG: 2024-06-08T03:21:36.078662195+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:36.079039971+00:00|	[Credit Update per RTT]: cTotal updated from 15470 to 15760, cIssued: 7549
+LOG: 2024-06-08T03:21:36.098656654+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:36.099048198+00:00|	[Credit Update per RTT]: cTotal updated from 15760 to 16050, cIssued: 7687
+LOG: 2024-06-08T03:21:36.117636889+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:36.117969273+00:00|	[Credit Update per RTT]: cTotal updated from 16050 to 16340, cIssued: 7831
+LOG: 2024-06-08T03:21:36.13808142+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:36.138382694+00:00|	[Credit Update per RTT]: cTotal updated from 16340 to 16630, cIssued: 7958
+LOG: 2024-06-08T03:21:36.160729542+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:36.161091158+00:00|	[Credit Update per RTT]: cTotal updated from 16630 to 16920, cIssued: 8125
+LOG: 2024-06-08T03:21:36.179670248+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:36.180026808+00:00|	[Credit Update per RTT]: cTotal updated from 16920 to 17210, cIssued: 8266
+LOG: 2024-06-08T03:21:36.199427091+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:36.199820367+00:00|	[Credit Update per RTT]: cTotal updated from 17210 to 17500, cIssued: 8404
+LOG: 2024-06-08T03:21:36.219134263+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:36.219468436+00:00|	[Credit Update per RTT]: cTotal updated from 17500 to 17790, cIssued: 8545
+LOG: 2024-06-08T03:21:36.240852831+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:36.241187133+00:00|	[Credit Update per RTT]: cTotal updated from 17790 to 18080, cIssued: 8701
+LOG: 2024-06-08T03:21:36.260083625+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:36.26055472+00:00|	[Credit Update per RTT]: cTotal updated from 18080 to 18370, cIssued: 8839
+LOG: 2024-06-08T03:21:36.279380884+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:36.279687353+00:00|	[Credit Update per RTT]: cTotal updated from 18370 to 18660, cIssued: 8974
+LOG: 2024-06-08T03:21:36.298470322+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:36.298750928+00:00|	[Credit Update per RTT]: cTotal updated from 18660 to 18950, cIssued: 9143
+LOG: 2024-06-08T03:21:36.318074212+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:36.318434949+00:00|	[Credit Update per RTT]: cTotal updated from 18950 to 19240, cIssued: 9287
+LOG: 2024-06-08T03:21:36.339618413+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:36.339929719+00:00|	[Credit Update per RTT]: cTotal updated from 19240 to 19530, cIssued: 9440
+LOG: 2024-06-08T03:21:36.359976943+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:36.360426577+00:00|	[Credit Update per RTT]: cTotal updated from 19530 to 19820, cIssued: 9590
+LOG: 2024-06-08T03:21:36.379263553+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:36.379490577+00:00|	[Credit Update per RTT]: cTotal updated from 19820 to 20110, cIssued: 9725
+LOG: 2024-06-08T03:21:36.398911418+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:36.399197599+00:00|	[Credit Update per RTT]: cTotal updated from 20110 to 20400, cIssued: 9869
+LOG: 2024-06-08T03:21:36.419246376+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:36.419650181+00:00|	[Credit Update per RTT]: cTotal updated from 20400 to 20690, cIssued: 9997
+LOG: 2024-06-08T03:21:36.43817184+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:36.438455255+00:00|	[Credit Update per RTT]: cTotal updated from 20690 to 20980, cIssued: 10174
+LOG: 2024-06-08T03:21:36.459273245+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:36.459499385+00:00|	[Credit Update per RTT]: cTotal updated from 20980 to 21270, cIssued: 10324
+LOG: 2024-06-08T03:21:36.478406204+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:36.478744118+00:00|	[Credit Update per RTT]: cTotal updated from 21270 to 21560, cIssued: 10462
+LOG: 2024-06-08T03:21:36.498903024+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:36.499261289+00:00|	[Credit Update per RTT]: cTotal updated from 21560 to 21850, cIssued: 10615
+LOG: 2024-06-08T03:21:36.519317256+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:36.5195452+00:00|	[Credit Update per RTT]: cTotal updated from 21850 to 22140, cIssued: 10759
+LOG: 2024-06-08T03:21:36.53885024+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:36.539223016+00:00|	[Credit Update per RTT]: cTotal updated from 22140 to 22430, cIssued: 10897
+LOG: 2024-06-08T03:21:36.557992591+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:36.558412972+00:00|	[Credit Update per RTT]: cTotal updated from 22430 to 22720, cIssued: 11032
+LOG: 2024-06-08T03:21:36.577020673+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:36.577341004+00:00|	[Credit Update per RTT]: cTotal updated from 22720 to 23010, cIssued: 11173
+LOG: 2024-06-08T03:21:36.596033886+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:36.596449488+00:00|	[Credit Update per RTT]: cTotal updated from 23010 to 23300, cIssued: 11305
+LOG: 2024-06-08T03:21:36.615933621+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:36.616303591+00:00|	[Credit Update per RTT]: cTotal updated from 23300 to 23590, cIssued: 11455
+LOG: 2024-06-08T03:21:36.634955136+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:36.635256158+00:00|	[Credit Update per RTT]: cTotal updated from 23590 to 23880, cIssued: 11587
+LOG: 2024-06-08T03:21:36.655084391+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:36.655384531+00:00|	[Credit Update per RTT]: cTotal updated from 23880 to 24170, cIssued: 11737
+LOG: 2024-06-08T03:21:36.675061781+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:36.675338625+00:00|	[Credit Update per RTT]: cTotal updated from 24170 to 24460, cIssued: 11881
+LOG: 2024-06-08T03:21:36.694408804+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:36.69482509+00:00|	[Credit Update per RTT]: cTotal updated from 24460 to 24750, cIssued: 12036
+LOG: 2024-06-08T03:21:36.713235268+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:36.71354131+00:00|	[Credit Update per RTT]: cTotal updated from 24750 to 25040, cIssued: 12171
+LOG: 2024-06-08T03:21:36.732137635+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:36.732442263+00:00|	[Credit Update per RTT]: cTotal updated from 25040 to 25330, cIssued: 12306
+LOG: 2024-06-08T03:21:36.752179944+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:36.75272145+00:00|	[Credit Update per RTT]: cTotal updated from 25330 to 25620, cIssued: 12453
+LOG: 2024-06-08T03:21:36.771064388+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:36.771407847+00:00|	[Credit Update per RTT]: cTotal updated from 25620 to 25910, cIssued: 12588
+LOG: 2024-06-08T03:21:36.79052061+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:36.790814405+00:00|	[Credit Update per RTT]: cTotal updated from 25910 to 26200, cIssued: 12729
+LOG: 2024-06-08T03:21:36.809880459+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:36.810270772+00:00|	[Credit Update per RTT]: cTotal updated from 26200 to 26490, cIssued: 12867
+LOG: 2024-06-08T03:21:36.829731625+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:36.830075387+00:00|	[Credit Update per RTT]: cTotal updated from 26490 to 26780, cIssued: 13036
+LOG: 2024-06-08T03:21:36.85336079+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:36.853819794+00:00|	[Credit Update per RTT]: cTotal updated from 26780 to 27070, cIssued: 13209
+LOG: 2024-06-08T03:21:36.873063364+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:36.873403914+00:00|	[Credit Update per RTT]: cTotal updated from 27070 to 27360, cIssued: 13341
+LOG: 2024-06-08T03:21:36.891954706+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:36.892281301+00:00|	[Credit Update per RTT]: cTotal updated from 27360 to 27650, cIssued: 13488
+LOG: 2024-06-08T03:21:36.910966364+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:36.911288508+00:00|	[Credit Update per RTT]: cTotal updated from 27650 to 27940, cIssued: 13626
+LOG: 2024-06-08T03:21:36.933988901+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:36.934224158+00:00|	[Credit Update per RTT]: cTotal updated from 27940 to 28230, cIssued: 13788
+LOG: 2024-06-08T03:21:36.952860249+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:36.953194669+00:00|	[Credit Update per RTT]: cTotal updated from 28230 to 28520, cIssued: 13923
+LOG: 2024-06-08T03:21:36.972129792+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:36.972402021+00:00|	[Credit Update per RTT]: cTotal updated from 28520 to 28810, cIssued: 14070
+LOG: 2024-06-08T03:21:36.991110765+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:36.991473042+00:00|	[Credit Update per RTT]: cTotal updated from 28810 to 29100, cIssued: 14225
+LOG: 2024-06-08T03:21:37.010296078+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:37.010628374+00:00|	[Credit Update per RTT]: cTotal updated from 29100 to 29390, cIssued: 14363
+LOG: 2024-06-08T03:21:37.029134475+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:37.029576666+00:00|	[Credit Update per RTT]: cTotal updated from 29390 to 29680, cIssued: 14501
+LOG: 2024-06-08T03:21:37.049652457+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:37.049946067+00:00|	[Credit Update per RTT]: cTotal updated from 29680 to 29970, cIssued: 14645
+LOG: 2024-06-08T03:21:37.068486784+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:37.06900361+00:00|	[Credit Update per RTT]: cTotal updated from 29970 to 30260, cIssued: 14783
+LOG: 2024-06-08T03:21:37.087532539+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:37.087754662+00:00|	[Credit Update per RTT]: cTotal updated from 30260 to 30550, cIssued: 14918
+LOG: 2024-06-08T03:21:37.106882669+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:37.107186157+00:00|	[Credit Update per RTT]: cTotal updated from 30550 to 30840, cIssued: 15076
+LOG: 2024-06-08T03:21:37.125966366+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:37.126259276+00:00|	[Credit Update per RTT]: cTotal updated from 30840 to 31130, cIssued: 15225
+LOG: 2024-06-08T03:21:37.146412516+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:37.146716713+00:00|	[Credit Update per RTT]: cTotal updated from 31130 to 31420, cIssued: 15372
+LOG: 2024-06-08T03:21:37.165583775+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:37.165886311+00:00|	[Credit Update per RTT]: cTotal updated from 31420 to 31710, cIssued: 15510
+LOG: 2024-06-08T03:21:37.185640327+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:37.18599299+00:00|	[Credit Update per RTT]: cTotal updated from 31710 to 32000, cIssued: 15657
+LOG: 2024-06-08T03:21:37.205662903+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:37.205950167+00:00|	[Credit Update per RTT]: cTotal updated from 32000 to 32290, cIssued: 15798
+LOG: 2024-06-08T03:21:37.224825736+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:37.225167454+00:00|	[Credit Update per RTT]: cTotal updated from 32290 to 32580, cIssued: 15936
+LOG: 2024-06-08T03:21:37.247120534+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:37.247516253+00:00|	[Credit Update per RTT]: cTotal updated from 32580 to 32870, cIssued: 16109
+LOG: 2024-06-08T03:21:37.268651969+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:37.269167917+00:00|	[Credit Update per RTT]: cTotal updated from 32870 to 33160, cIssued: 16265
+LOG: 2024-06-08T03:21:37.288399101+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:37.288744346+00:00|	[Credit Update per RTT]: cTotal updated from 33160 to 33450, cIssued: 16406
+LOG: 2024-06-08T03:21:37.307538264+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:37.307966056+00:00|	[Credit Update per RTT]: cTotal updated from 33450 to 33740, cIssued: 16544
+LOG: 2024-06-08T03:21:37.329978084+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:37.330357914+00:00|	[Credit Update per RTT]: cTotal updated from 33740 to 34030, cIssued: 16706
+LOG: 2024-06-08T03:21:37.349464823+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:37.349764008+00:00|	[Credit Update per RTT]: cTotal updated from 34030 to 34320, cIssued: 16847
+LOG: 2024-06-08T03:21:37.369711113+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:37.370142303+00:00|	[Credit Update per RTT]: cTotal updated from 34320 to 34610, cIssued: 16988
+LOG: 2024-06-08T03:21:37.389176173+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:37.389644309+00:00|	[Credit Update per RTT]: cTotal updated from 34610 to 34900, cIssued: 17139
+LOG: 2024-06-08T03:21:37.408009322+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:37.408247941+00:00|	[Credit Update per RTT]: cTotal updated from 34900 to 35190, cIssued: 17274
+LOG: 2024-06-08T03:21:37.42854695+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:37.428866001+00:00|	[Credit Update per RTT]: cTotal updated from 35190 to 35480, cIssued: 17424
+LOG: 2024-06-08T03:21:37.447388974+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:37.447658862+00:00|	[Credit Update per RTT]: cTotal updated from 35480 to 35770, cIssued: 17559
+LOG: 2024-06-08T03:21:37.467909289+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:37.468189324+00:00|	[Credit Update per RTT]: cTotal updated from 35770 to 36060, cIssued: 17709
+LOG: 2024-06-08T03:21:37.487201963+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:37.487522935+00:00|	[Credit Update per RTT]: cTotal updated from 36060 to 36350, cIssued: 17847
+LOG: 2024-06-08T03:21:37.506593117+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:37.506934572+00:00|	[Credit Update per RTT]: cTotal updated from 36350 to 36640, cIssued: 17983
+LOG: 2024-06-08T03:21:37.526670485+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:37.527040809+00:00|	[Credit Update per RTT]: cTotal updated from 36640 to 36930, cIssued: 18131
+LOG: 2024-06-08T03:21:37.546210821+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:37.546729865+00:00|	[Credit Update per RTT]: cTotal updated from 36930 to 37220, cIssued: 18272
+LOG: 2024-06-08T03:21:37.566655468+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:37.566857932+00:00|	[Credit Update per RTT]: cTotal updated from 37220 to 37510, cIssued: 18419
+LOG: 2024-06-08T03:21:37.585836604+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:37.586077725+00:00|	[Credit Update per RTT]: cTotal updated from 37510 to 37800, cIssued: 18560
+LOG: 2024-06-08T03:21:37.605140601+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:37.605588747+00:00|	[Credit Update per RTT]: cTotal updated from 37800 to 38090, cIssued: 18698
+LOG: 2024-06-08T03:21:37.626621289+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:37.626966812+00:00|	[Credit Update per RTT]: cTotal updated from 38090 to 38380, cIssued: 18851
+LOG: 2024-06-08T03:21:37.645813604+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:37.64613478+00:00|	[Credit Update per RTT]: cTotal updated from 38380 to 38670, cIssued: 18990
+LOG: 2024-06-08T03:21:37.664809111+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:37.665214639+00:00|	[Credit Update per RTT]: cTotal updated from 38670 to 38960, cIssued: 19133
+LOG: 2024-06-08T03:21:37.683976561+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:37.684204617+00:00|	[Credit Update per RTT]: cTotal updated from 38960 to 39250, cIssued: 19271
+LOG: 2024-06-08T03:21:37.70281844+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:37.703029878+00:00|	[Credit Update per RTT]: cTotal updated from 39250 to 39540, cIssued: 19406
+LOG: 2024-06-08T03:21:37.726137523+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:37.726444932+00:00|	[Credit Update per RTT]: cTotal updated from 39540 to 39830, cIssued: 19577
+LOG: 2024-06-08T03:21:37.745242921+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:37.745646046+00:00|	[Credit Update per RTT]: cTotal updated from 39830 to 40120, cIssued: 19709
+LOG: 2024-06-08T03:21:37.764389526+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:37.765023342+00:00|	[Credit Update per RTT]: cTotal updated from 40120 to 40410, cIssued: 19853
+LOG: 2024-06-08T03:21:37.784856667+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:37.785125545+00:00|	[Credit Update per RTT]: cTotal updated from 40410 to 40700, cIssued: 20009
+LOG: 2024-06-08T03:21:37.804066979+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:37.804393538+00:00|	[Credit Update per RTT]: cTotal updated from 40700 to 40990, cIssued: 20158
+LOG: 2024-06-08T03:21:37.825578213+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:37.826040221+00:00|	[Credit Update per RTT]: cTotal updated from 40990 to 41280, cIssued: 20321
+LOG: 2024-06-08T03:21:37.849384886+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:37.849745723+00:00|	[Credit Update per RTT]: cTotal updated from 41280 to 41570, cIssued: 20489
+LOG: 2024-06-08T03:21:37.86844825+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:37.868908352+00:00|	[Credit Update per RTT]: cTotal updated from 41570 to 41860, cIssued: 20630
+LOG: 2024-06-08T03:21:37.887352068+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:37.887635269+00:00|	[Credit Update per RTT]: cTotal updated from 41860 to 42150, cIssued: 20762
+LOG: 2024-06-08T03:21:37.908790886+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:37.909178597+00:00|	[Credit Update per RTT]: cTotal updated from 42150 to 42440, cIssued: 20914
+LOG: 2024-06-08T03:21:37.931134263+00:00|	[Incremental Waiting Time Maximum]:	0.057344 ms.
+
+LOG: 2024-06-08T03:21:37.931408137+00:00|	[Credit Update per RTT]: cTotal updated from 42440 to 42730, cIssued: 21065
+LOG: 2024-06-08T03:21:37.950133062+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:37.950533008+00:00|	[Credit Update per RTT]: cTotal updated from 42730 to 43020, cIssued: 21203
+LOG: 2024-06-08T03:21:37.973127027+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:37.973339756+00:00|	[Credit Update per RTT]: cTotal updated from 43020 to 43310, cIssued: 21368
+LOG: 2024-06-08T03:21:37.992058255+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:37.992628305+00:00|	[Credit Update per RTT]: cTotal updated from 43310 to 43600, cIssued: 21503
+LOG: 2024-06-08T03:21:38.011134125+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:38.011470834+00:00|	[Credit Update per RTT]: cTotal updated from 43600 to 43890, cIssued: 21641
+LOG: 2024-06-08T03:21:38.03264211+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:38.033039039+00:00|	[Credit Update per RTT]: cTotal updated from 43890 to 44180, cIssued: 21794
+LOG: 2024-06-08T03:21:38.052708478+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:38.053071356+00:00|	[Credit Update per RTT]: cTotal updated from 44180 to 44470, cIssued: 21933
+LOG: 2024-06-08T03:21:38.073221673+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:38.073641275+00:00|	[Credit Update per RTT]: cTotal updated from 44470 to 44760, cIssued: 22063
+LOG: 2024-06-08T03:21:38.092053323+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:38.092479925+00:00|	[Credit Update per RTT]: cTotal updated from 44760 to 45050, cIssued: 22203
+LOG: 2024-06-08T03:21:38.111231343+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:38.111552195+00:00|	[Credit Update per RTT]: cTotal updated from 45050 to 45340, cIssued: 22338
+LOG: 2024-06-08T03:21:38.130649373+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:38.130916564+00:00|	[Credit Update per RTT]: cTotal updated from 45340 to 45630, cIssued: 22479
+LOG: 2024-06-08T03:21:38.150715773+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:38.151143536+00:00|	[Credit Update per RTT]: cTotal updated from 45630 to 45920, cIssued: 22623
+LOG: 2024-06-08T03:21:38.170856188+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:38.171330188+00:00|	[Credit Update per RTT]: cTotal updated from 45920 to 46210, cIssued: 22770
+LOG: 2024-06-08T03:21:38.189701434+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:38.190106498+00:00|	[Credit Update per RTT]: cTotal updated from 46210 to 46500, cIssued: 22890
+LOG: 2024-06-08T03:21:38.209592516+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:38.209819411+00:00|	[Credit Update per RTT]: cTotal updated from 46500 to 46790, cIssued: 23042
+LOG: 2024-06-08T03:21:38.228468773+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:38.228939956+00:00|	[Credit Update per RTT]: cTotal updated from 46790 to 47080, cIssued: 23179
+LOG: 2024-06-08T03:21:38.248466359+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:38.248772455+00:00|	[Credit Update per RTT]: cTotal updated from 47080 to 47370, cIssued: 23320
+LOG: 2024-06-08T03:21:38.267485069+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:38.26784807+00:00|	[Credit Update per RTT]: cTotal updated from 47370 to 47660, cIssued: 23455
+LOG: 2024-06-08T03:21:38.287817753+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:38.288183771+00:00|	[Credit Update per RTT]: cTotal updated from 47660 to 47950, cIssued: 23599
+LOG: 2024-06-08T03:21:38.307107201+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:38.307470283+00:00|	[Credit Update per RTT]: cTotal updated from 47950 to 48240, cIssued: 23743
+LOG: 2024-06-08T03:21:38.327472296+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:38.327805586+00:00|	[Credit Update per RTT]: cTotal updated from 48240 to 48530, cIssued: 23882
+LOG: 2024-06-08T03:21:38.348674562+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:38.349056796+00:00|	[Credit Update per RTT]: cTotal updated from 48530 to 48820, cIssued: 24069
+LOG: 2024-06-08T03:21:38.368381201+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:38.368790976+00:00|	[Credit Update per RTT]: cTotal updated from 48820 to 49110, cIssued: 24213
+LOG: 2024-06-08T03:21:38.387950654+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:38.388200161+00:00|	[Credit Update per RTT]: cTotal updated from 49110 to 49400, cIssued: 24354
+LOG: 2024-06-08T03:21:38.406869851+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:38.407158092+00:00|	[Credit Update per RTT]: cTotal updated from 49400 to 49690, cIssued: 24489
+LOG: 2024-06-08T03:21:38.42855078+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:38.428922198+00:00|	[Credit Update per RTT]: cTotal updated from 49690 to 49980, cIssued: 24648
+LOG: 2024-06-08T03:21:38.448353596+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:38.44868087+00:00|	[Credit Update per RTT]: cTotal updated from 49980 to 50270, cIssued: 24789
+LOG: 2024-06-08T03:21:38.46846404+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:38.468913495+00:00|	[Credit Update per RTT]: cTotal updated from 50270 to 50560, cIssued: 24933
+LOG: 2024-06-08T03:21:38.491333053+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:38.491659673+00:00|	[Credit Update per RTT]: cTotal updated from 50560 to 50850, cIssued: 25117
+LOG: 2024-06-08T03:21:38.516704233+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:38.516952635+00:00|	[Credit Update per RTT]: cTotal updated from 50850 to 51140, cIssued: 25300
+LOG: 2024-06-08T03:21:38.535733093+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:38.536167279+00:00|	[Credit Update per RTT]: cTotal updated from 51140 to 51430, cIssued: 25438
+LOG: 2024-06-08T03:21:38.555024485+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:38.555235021+00:00|	[Credit Update per RTT]: cTotal updated from 51430 to 51720, cIssued: 25579
+LOG: 2024-06-08T03:21:38.574012976+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:38.57437425+00:00|	[Credit Update per RTT]: cTotal updated from 51720 to 52010, cIssued: 25714
+LOG: 2024-06-08T03:21:38.594593231+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:38.594905123+00:00|	[Credit Update per RTT]: cTotal updated from 52010 to 52300, cIssued: 25861
+LOG: 2024-06-08T03:21:38.615024911+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:38.615346391+00:00|	[Credit Update per RTT]: cTotal updated from 52300 to 52590, cIssued: 25990
+LOG: 2024-06-08T03:21:38.633846777+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:38.634170991+00:00|	[Credit Update per RTT]: cTotal updated from 52590 to 52880, cIssued: 26128
+LOG: 2024-06-08T03:21:38.653418603+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:38.653821738+00:00|	[Credit Update per RTT]: cTotal updated from 52880 to 53170, cIssued: 26269
+LOG: 2024-06-08T03:21:38.673327584+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:38.673658534+00:00|	[Credit Update per RTT]: cTotal updated from 53170 to 53460, cIssued: 26413
+LOG: 2024-06-08T03:21:38.693877567+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:38.694209188+00:00|	[Credit Update per RTT]: cTotal updated from 53460 to 53750, cIssued: 26560
+LOG: 2024-06-08T03:21:38.713128605+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:38.713615114+00:00|	[Credit Update per RTT]: cTotal updated from 53750 to 54040, cIssued: 26698
+LOG: 2024-06-08T03:21:38.732043187+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:38.732245975+00:00|	[Credit Update per RTT]: cTotal updated from 54040 to 54330, cIssued: 26812
+LOG: 2024-06-08T03:21:38.752852253+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:38.753147608+00:00|	[Credit Update per RTT]: cTotal updated from 54330 to 54620, cIssued: 26968
+LOG: 2024-06-08T03:21:38.772817159+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:38.773285678+00:00|	[Credit Update per RTT]: cTotal updated from 54620 to 54910, cIssued: 27122
+LOG: 2024-06-08T03:21:38.79200862+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:38.792365265+00:00|	[Credit Update per RTT]: cTotal updated from 54910 to 55200, cIssued: 27260
+LOG: 2024-06-08T03:21:38.81159115+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:38.811917695+00:00|	[Credit Update per RTT]: cTotal updated from 55200 to 55490, cIssued: 27401
+LOG: 2024-06-08T03:21:38.83091209+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:38.831327806+00:00|	[Credit Update per RTT]: cTotal updated from 55490 to 55780, cIssued: 27542
+LOG: 2024-06-08T03:21:38.850072227+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:38.850286721+00:00|	[Credit Update per RTT]: cTotal updated from 55780 to 56070, cIssued: 27677
+LOG: 2024-06-08T03:21:38.868934599+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:38.869386972+00:00|	[Credit Update per RTT]: cTotal updated from 56070 to 56360, cIssued: 27815
+LOG: 2024-06-08T03:21:38.888715871+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:38.889104262+00:00|	[Credit Update per RTT]: cTotal updated from 56360 to 56650, cIssued: 27961
+LOG: 2024-06-08T03:21:38.907649678+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:38.908072813+00:00|	[Credit Update per RTT]: cTotal updated from 56650 to 56940, cIssued: 28116
+LOG: 2024-06-08T03:21:38.92692705+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:38.927275007+00:00|	[Credit Update per RTT]: cTotal updated from 56940 to 57230, cIssued: 28257
+LOG: 2024-06-08T03:21:38.947360072+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:38.947620651+00:00|	[Credit Update per RTT]: cTotal updated from 57230 to 57520, cIssued: 28401
+LOG: 2024-06-08T03:21:38.966703876+00:00|	[Incremental Waiting Time Maximum]:	0.049152 ms.
+
+LOG: 2024-06-08T03:21:38.967260721+00:00|	[Credit Update per RTT]: cTotal updated from 57520 to 57810, cIssued: 28542
+LOG: 2024-06-08T03:21:38.985673285+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:38.985935415+00:00|	[Credit Update per RTT]: cTotal updated from 57810 to 58100, cIssued: 28677
+LOG: 2024-06-08T03:21:39.004767021+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:39.005113975+00:00|	[Credit Update per RTT]: cTotal updated from 58100 to 58390, cIssued: 28815
+LOG: 2024-06-08T03:21:39.02441291+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:39.024793188+00:00|	[Credit Update per RTT]: cTotal updated from 58390 to 58680, cIssued: 28975
+LOG: 2024-06-08T03:21:39.043288808+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:39.043595665+00:00|	[Credit Update per RTT]: cTotal updated from 58680 to 58970, cIssued: 29132
+LOG: 2024-06-08T03:21:39.062947591+00:00|	[Incremental Waiting Time Maximum]:	0.057344 ms.
+
+LOG: 2024-06-08T03:21:39.063182932+00:00|	[Credit Update per RTT]: cTotal updated from 58970 to 59260, cIssued: 29287
+LOG: 2024-06-08T03:21:39.082650143+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:39.083043207+00:00|	[Credit Update per RTT]: cTotal updated from 59260 to 59550, cIssued: 29434
+LOG: 2024-06-08T03:21:39.101605409+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:39.101925636+00:00|	[Credit Update per RTT]: cTotal updated from 59550 to 59840, cIssued: 29566
+LOG: 2024-06-08T03:21:39.12218568+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:39.122618119+00:00|	[Credit Update per RTT]: cTotal updated from 59840 to 60130, cIssued: 29716
+LOG: 2024-06-08T03:21:39.141824273+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:39.142185872+00:00|	[Credit Update per RTT]: cTotal updated from 60130 to 60420, cIssued: 29857
+LOG: 2024-06-08T03:21:39.161653467+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:39.161847899+00:00|	[Credit Update per RTT]: cTotal updated from 60420 to 60710, cIssued: 30011
+LOG: 2024-06-08T03:21:39.181164608+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:39.181550537+00:00|	[Credit Update per RTT]: cTotal updated from 60710 to 61000, cIssued: 30172
+LOG: 2024-06-08T03:21:39.201910728+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:39.202307375+00:00|	[Credit Update per RTT]: cTotal updated from 61000 to 61290, cIssued: 30322
+LOG: 2024-06-08T03:21:39.221062797+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:39.221440328+00:00|	[Credit Update per RTT]: cTotal updated from 61290 to 61580, cIssued: 30463
+LOG: 2024-06-08T03:21:39.239899411+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:39.240126829+00:00|	[Credit Update per RTT]: cTotal updated from 61580 to 61870, cIssued: 30595
+LOG: 2024-06-08T03:21:39.259693635+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:39.260046617+00:00|	[Credit Update per RTT]: cTotal updated from 61870 to 62160, cIssued: 30739
+LOG: 2024-06-08T03:21:39.278555709+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:39.278900397+00:00|	[Credit Update per RTT]: cTotal updated from 62160 to 62450, cIssued: 30874
+LOG: 2024-06-08T03:21:39.298260301+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:39.298627989+00:00|	[Credit Update per RTT]: cTotal updated from 62450 to 62740, cIssued: 31026
+LOG: 2024-06-08T03:21:39.318013456+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:39.318310673+00:00|	[Credit Update per RTT]: cTotal updated from 62740 to 63030, cIssued: 31184
+LOG: 2024-06-08T03:21:39.337570597+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:39.337846645+00:00|	[Credit Update per RTT]: cTotal updated from 63030 to 63320, cIssued: 31322
+LOG: 2024-06-08T03:21:39.35731148+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:39.357573327+00:00|	[Credit Update per RTT]: cTotal updated from 63320 to 63610, cIssued: 31466
+LOG: 2024-06-08T03:21:39.376641682+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:39.376852955+00:00|	[Credit Update per RTT]: cTotal updated from 63610 to 63900, cIssued: 31604
+LOG: 2024-06-08T03:21:39.396107638+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:39.396628845+00:00|	[Credit Update per RTT]: cTotal updated from 63900 to 64190, cIssued: 31748
+LOG: 2024-06-08T03:21:39.418103811+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:39.418322879+00:00|	[Credit Update per RTT]: cTotal updated from 64190 to 64480, cIssued: 31901
+LOG: 2024-06-08T03:21:39.437262578+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:39.437547424+00:00|	[Credit Update per RTT]: cTotal updated from 64480 to 64770, cIssued: 32050
+LOG: 2024-06-08T03:21:39.456585882+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:39.456935054+00:00|	[Credit Update per RTT]: cTotal updated from 64770 to 65060, cIssued: 32193
+LOG: 2024-06-08T03:21:39.476560912+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:39.476994695+00:00|	[Credit Update per RTT]: cTotal updated from 65060 to 65350, cIssued: 32340
+LOG: 2024-06-08T03:21:39.496577693+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:39.496795051+00:00|	[Credit Update per RTT]: cTotal updated from 65350 to 65640, cIssued: 32481
+LOG: 2024-06-08T03:21:39.516875933+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:39.517237379+00:00|	[Credit Update per RTT]: cTotal updated from 65640 to 65930, cIssued: 32628
+LOG: 2024-06-08T03:21:39.536262436+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:39.536666718+00:00|	[Credit Update per RTT]: cTotal updated from 65930 to 66220, cIssued: 32766
+LOG: 2024-06-08T03:21:39.555111237+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:39.555363156+00:00|	[Credit Update per RTT]: cTotal updated from 66220 to 66510, cIssued: 32904
+LOG: 2024-06-08T03:21:39.574116072+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:39.574343656+00:00|	[Credit Update per RTT]: cTotal updated from 66510 to 66800, cIssued: 33053
+LOG: 2024-06-08T03:21:39.594843087+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:39.59517444+00:00|	[Credit Update per RTT]: cTotal updated from 66800 to 67090, cIssued: 33213
+LOG: 2024-06-08T03:21:39.614486481+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:39.614812159+00:00|	[Credit Update per RTT]: cTotal updated from 67090 to 67380, cIssued: 33354
+LOG: 2024-06-08T03:21:39.634997388+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:39.635403526+00:00|	[Credit Update per RTT]: cTotal updated from 67380 to 67670, cIssued: 33501
+LOG: 2024-06-08T03:21:39.654855547+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:39.65520043+00:00|	[Credit Update per RTT]: cTotal updated from 67670 to 67960, cIssued: 33648
+LOG: 2024-06-08T03:21:39.674359673+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:39.674739787+00:00|	[Credit Update per RTT]: cTotal updated from 67960 to 68250, cIssued: 33786
+LOG: 2024-06-08T03:21:39.694369178+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:39.694638037+00:00|	[Credit Update per RTT]: cTotal updated from 68250 to 68540, cIssued: 33927
+LOG: 2024-06-08T03:21:39.716062033+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:39.716456526+00:00|	[Credit Update per RTT]: cTotal updated from 68540 to 68830, cIssued: 34095
+LOG: 2024-06-08T03:21:39.735192477+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:39.735428898+00:00|	[Credit Update per RTT]: cTotal updated from 68830 to 69120, cIssued: 34233
+LOG: 2024-06-08T03:21:39.757755994+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:39.758128106+00:00|	[Credit Update per RTT]: cTotal updated from 69120 to 69410, cIssued: 34395
+LOG: 2024-06-08T03:21:39.7770376+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:39.77734934+00:00|	[Credit Update per RTT]: cTotal updated from 69410 to 69700, cIssued: 34536
+LOG: 2024-06-08T03:21:39.795960661+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:39.796327514+00:00|	[Credit Update per RTT]: cTotal updated from 69700 to 69990, cIssued: 34668
+LOG: 2024-06-08T03:21:39.817408067+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:39.817799577+00:00|	[Credit Update per RTT]: cTotal updated from 69990 to 70280, cIssued: 34827
+LOG: 2024-06-08T03:21:39.837907975+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:39.838153594+00:00|	[Credit Update per RTT]: cTotal updated from 70280 to 70570, cIssued: 34964
+LOG: 2024-06-08T03:21:39.857021402+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:39.857305933+00:00|	[Credit Update per RTT]: cTotal updated from 70570 to 70860, cIssued: 35108
+LOG: 2024-06-08T03:21:39.876754721+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:39.877085375+00:00|	[Credit Update per RTT]: cTotal updated from 70860 to 71150, cIssued: 35251
+LOG: 2024-06-08T03:21:39.896121217+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:39.896510834+00:00|	[Credit Update per RTT]: cTotal updated from 71150 to 71440, cIssued: 35392
+LOG: 2024-06-08T03:21:39.917401073+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:39.917747955+00:00|	[Credit Update per RTT]: cTotal updated from 71440 to 71730, cIssued: 35545
+LOG: 2024-06-08T03:21:39.937820531+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:39.93817096+00:00|	[Credit Update per RTT]: cTotal updated from 71730 to 72020, cIssued: 35689
+LOG: 2024-06-08T03:21:39.957265163+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:39.957576431+00:00|	[Credit Update per RTT]: cTotal updated from 72020 to 72310, cIssued: 35833
+LOG: 2024-06-08T03:21:39.984705232+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:39.984992463+00:00|	[Credit Update per RTT]: cTotal updated from 72310 to 72600, cIssued: 35998
+LOG: 2024-06-08T03:21:40.004142419+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:40.004580473+00:00|	[Credit Update per RTT]: cTotal updated from 72600 to 72890, cIssued: 36138
+LOG: 2024-06-08T03:21:40.024688847+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:40.024990718+00:00|	[Credit Update per RTT]: cTotal updated from 72890 to 73180, cIssued: 36282
+LOG: 2024-06-08T03:21:40.044554408+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:40.044911192+00:00|	[Credit Update per RTT]: cTotal updated from 73180 to 73470, cIssued: 36426
+LOG: 2024-06-08T03:21:40.064098633+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:40.064367958+00:00|	[Credit Update per RTT]: cTotal updated from 73470 to 73760, cIssued: 36570
+LOG: 2024-06-08T03:21:40.084453656+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:40.084821697+00:00|	[Credit Update per RTT]: cTotal updated from 73760 to 74050, cIssued: 36714
+LOG: 2024-06-08T03:21:40.103281942+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:40.10360177+00:00|	[Credit Update per RTT]: cTotal updated from 74050 to 74340, cIssued: 36849
+LOG: 2024-06-08T03:21:40.122419097+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:40.122794764+00:00|	[Credit Update per RTT]: cTotal updated from 74340 to 74630, cIssued: 36965
+LOG: 2024-06-08T03:21:40.141249561+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:40.141641118+00:00|	[Credit Update per RTT]: cTotal updated from 74630 to 74920, cIssued: 37118
+LOG: 2024-06-08T03:21:40.161931887+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:40.162236704+00:00|	[Credit Update per RTT]: cTotal updated from 74920 to 75210, cIssued: 37265
+LOG: 2024-06-08T03:21:40.181258869+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:40.181600692+00:00|	[Credit Update per RTT]: cTotal updated from 75210 to 75500, cIssued: 37403
+LOG: 2024-06-08T03:21:40.200735017+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:40.200983748+00:00|	[Credit Update per RTT]: cTotal updated from 75500 to 75790, cIssued: 37544
+LOG: 2024-06-08T03:21:40.220762166+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:40.221136091+00:00|	[Credit Update per RTT]: cTotal updated from 75790 to 76080, cIssued: 37688
+LOG: 2024-06-08T03:21:40.239615322+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:40.240061896+00:00|	[Credit Update per RTT]: cTotal updated from 76080 to 76370, cIssued: 37826
+LOG: 2024-06-08T03:21:40.259596736+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:40.259948482+00:00|	[Credit Update per RTT]: cTotal updated from 76370 to 76660, cIssued: 37967
+LOG: 2024-06-08T03:21:40.27941029+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:40.279767863+00:00|	[Credit Update per RTT]: cTotal updated from 76660 to 76950, cIssued: 38123
+LOG: 2024-06-08T03:21:40.301835599+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:40.302110256+00:00|	[Credit Update per RTT]: cTotal updated from 76950 to 77240, cIssued: 38288
+LOG: 2024-06-08T03:21:40.321749417+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:40.322108111+00:00|	[Credit Update per RTT]: cTotal updated from 77240 to 77530, cIssued: 38432
+LOG: 2024-06-08T03:21:40.340587374+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:40.340847943+00:00|	[Credit Update per RTT]: cTotal updated from 77530 to 77820, cIssued: 38564
+LOG: 2024-06-08T03:21:40.359452715+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:40.359718128+00:00|	[Credit Update per RTT]: cTotal updated from 77820 to 78110, cIssued: 38702
+LOG: 2024-06-08T03:21:40.378412398+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:40.378749046+00:00|	[Credit Update per RTT]: cTotal updated from 78110 to 78400, cIssued: 38840
+LOG: 2024-06-08T03:21:40.397473504+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:40.397708869+00:00|	[Credit Update per RTT]: cTotal updated from 78400 to 78690, cIssued: 38991
+LOG: 2024-06-08T03:21:40.417158804+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:40.417430224+00:00|	[Credit Update per RTT]: cTotal updated from 78690 to 78980, cIssued: 39141
+LOG: 2024-06-08T03:21:40.436073238+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:40.436366584+00:00|	[Credit Update per RTT]: cTotal updated from 78980 to 79270, cIssued: 39297
+LOG: 2024-06-08T03:21:40.455712197+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:40.456102782+00:00|	[Credit Update per RTT]: cTotal updated from 79270 to 79560, cIssued: 39441
+LOG: 2024-06-08T03:21:40.475263206+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:40.475722689+00:00|	[Credit Update per RTT]: cTotal updated from 79560 to 79850, cIssued: 39576
+LOG: 2024-06-08T03:21:40.494114582+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:40.494582929+00:00|	[Credit Update per RTT]: cTotal updated from 79850 to 80140, cIssued: 39711
+LOG: 2024-06-08T03:21:40.513244142+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:40.513555283+00:00|	[Credit Update per RTT]: cTotal updated from 80140 to 80430, cIssued: 39849
+LOG: 2024-06-08T03:21:40.532168006+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:40.532431894+00:00|	[Credit Update per RTT]: cTotal updated from 80430 to 80720, cIssued: 40008
+LOG: 2024-06-08T03:21:40.551415+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:40.551696173+00:00|	[Credit Update per RTT]: cTotal updated from 80720 to 81010, cIssued: 40151
+LOG: 2024-06-08T03:21:40.571995371+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:40.572436616+00:00|	[Credit Update per RTT]: cTotal updated from 81010 to 81300, cIssued: 40307
+LOG: 2024-06-08T03:21:40.591294869+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:40.591604329+00:00|	[Credit Update per RTT]: cTotal updated from 81300 to 81590, cIssued: 40451
+LOG: 2024-06-08T03:21:40.611318232+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:40.611651289+00:00|	[Credit Update per RTT]: cTotal updated from 81590 to 81880, cIssued: 40595
+LOG: 2024-06-08T03:21:40.63031709+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:40.630646344+00:00|	[Credit Update per RTT]: cTotal updated from 81880 to 82170, cIssued: 40733
+LOG: 2024-06-08T03:21:40.649227102+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:40.649424279+00:00|	[Credit Update per RTT]: cTotal updated from 82170 to 82460, cIssued: 40868
+LOG: 2024-06-08T03:21:40.668260086+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:40.668608074+00:00|	[Credit Update per RTT]: cTotal updated from 82460 to 82750, cIssued: 41020
+LOG: 2024-06-08T03:21:40.689311713+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:40.689745208+00:00|	[Credit Update per RTT]: cTotal updated from 82750 to 83040, cIssued: 41185
+LOG: 2024-06-08T03:21:40.708871622+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:40.709198196+00:00|	[Credit Update per RTT]: cTotal updated from 83040 to 83330, cIssued: 41329
+LOG: 2024-06-08T03:21:40.727886933+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:40.728165097+00:00|	[Credit Update per RTT]: cTotal updated from 83330 to 83620, cIssued: 41467
+LOG: 2024-06-08T03:21:40.749149537+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:40.749419033+00:00|	[Credit Update per RTT]: cTotal updated from 83620 to 83910, cIssued: 41617
+LOG: 2024-06-08T03:21:40.768122125+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:40.768537482+00:00|	[Credit Update per RTT]: cTotal updated from 83910 to 84200, cIssued: 41755
+LOG: 2024-06-08T03:21:40.790797454+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:40.791103423+00:00|	[Credit Update per RTT]: cTotal updated from 84200 to 84490, cIssued: 41920
+LOG: 2024-06-08T03:21:40.810914137+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:40.811400081+00:00|	[Credit Update per RTT]: cTotal updated from 84490 to 84780, cIssued: 42069
+LOG: 2024-06-08T03:21:40.830426061+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:40.830902936+00:00|	[Credit Update per RTT]: cTotal updated from 84780 to 85070, cIssued: 42217
+LOG: 2024-06-08T03:21:40.849461495+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:40.849744135+00:00|	[Credit Update per RTT]: cTotal updated from 85070 to 85360, cIssued: 42352
+LOG: 2024-06-08T03:21:40.870183569+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:40.870501355+00:00|	[Credit Update per RTT]: cTotal updated from 85360 to 85650, cIssued: 42499
+LOG: 2024-06-08T03:21:40.890411075+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:40.890629602+00:00|	[Credit Update per RTT]: cTotal updated from 85650 to 85940, cIssued: 42646
+LOG: 2024-06-08T03:21:40.910057022+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:40.910509641+00:00|	[Credit Update per RTT]: cTotal updated from 85940 to 86230, cIssued: 42796
+LOG: 2024-06-08T03:21:40.930681137+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:40.931029128+00:00|	[Credit Update per RTT]: cTotal updated from 86230 to 86520, cIssued: 42938
+LOG: 2024-06-08T03:21:40.952621663+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:40.953000409+00:00|	[Credit Update per RTT]: cTotal updated from 86520 to 86810, cIssued: 43093
+LOG: 2024-06-08T03:21:40.972913044+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:40.973134505+00:00|	[Credit Update per RTT]: cTotal updated from 86810 to 87100, cIssued: 43242
+LOG: 2024-06-08T03:21:40.992810105+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:40.993191936+00:00|	[Credit Update per RTT]: cTotal updated from 87100 to 87390, cIssued: 43386
+LOG: 2024-06-08T03:21:41.011632369+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:41.012131214+00:00|	[Credit Update per RTT]: cTotal updated from 87390 to 87680, cIssued: 43521
+LOG: 2024-06-08T03:21:41.03147046+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:41.031816921+00:00|	[Credit Update per RTT]: cTotal updated from 87680 to 87970, cIssued: 43659
+LOG: 2024-06-08T03:21:41.053057074+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:41.053367052+00:00|	[Credit Update per RTT]: cTotal updated from 87970 to 88260, cIssued: 43821
+LOG: 2024-06-08T03:21:41.074236504+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:41.074610804+00:00|	[Credit Update per RTT]: cTotal updated from 88260 to 88550, cIssued: 43949
+LOG: 2024-06-08T03:21:41.093569204+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:41.093997292+00:00|	[Credit Update per RTT]: cTotal updated from 88550 to 88840, cIssued: 44089
+LOG: 2024-06-08T03:21:41.116167022+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:41.116516021+00:00|	[Credit Update per RTT]: cTotal updated from 88840 to 89130, cIssued: 44252
+LOG: 2024-06-08T03:21:41.13538129+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:41.13574062+00:00|	[Credit Update per RTT]: cTotal updated from 89130 to 89420, cIssued: 44387
+LOG: 2024-06-08T03:21:41.154755274+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:41.155032602+00:00|	[Credit Update per RTT]: cTotal updated from 89420 to 89710, cIssued: 44510
+LOG: 2024-06-08T03:21:41.174806013+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:41.175137058+00:00|	[Credit Update per RTT]: cTotal updated from 89710 to 90000, cIssued: 44678
+LOG: 2024-06-08T03:21:41.19395518+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:41.194323395+00:00|	[Credit Update per RTT]: cTotal updated from 90000 to 90290, cIssued: 44813
+LOG: 2024-06-08T03:21:41.21293286+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:41.213162016+00:00|	[Credit Update per RTT]: cTotal updated from 90290 to 90580, cIssued: 44936
+LOG: 2024-06-08T03:21:41.238959+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:41.239341283+00:00|	[Credit Update per RTT]: cTotal updated from 90580 to 90870, cIssued: 45129
+LOG: 2024-06-08T03:21:41.258991397+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:41.259508316+00:00|	[Credit Update per RTT]: cTotal updated from 90870 to 91160, cIssued: 45267
+LOG: 2024-06-08T03:21:41.27845439+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:41.278845813+00:00|	[Credit Update per RTT]: cTotal updated from 91160 to 91450, cIssued: 45414
+LOG: 2024-06-08T03:21:41.297518435+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:41.297997762+00:00|	[Credit Update per RTT]: cTotal updated from 91450 to 91740, cIssued: 45555
+LOG: 2024-06-08T03:21:41.316675318+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:41.316979033+00:00|	[Credit Update per RTT]: cTotal updated from 91740 to 92030, cIssued: 45687
+LOG: 2024-06-08T03:21:41.336744471+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:41.337141154+00:00|	[Credit Update per RTT]: cTotal updated from 92030 to 92320, cIssued: 45831
+LOG: 2024-06-08T03:21:41.355947894+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:41.356472927+00:00|	[Credit Update per RTT]: cTotal updated from 92320 to 92610, cIssued: 45951
+LOG: 2024-06-08T03:21:41.374805785+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:41.375182836+00:00|	[Credit Update per RTT]: cTotal updated from 92610 to 92900, cIssued: 46112
+LOG: 2024-06-08T03:21:41.393685744+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:41.394021578+00:00|	[Credit Update per RTT]: cTotal updated from 92900 to 93190, cIssued: 46247
+LOG: 2024-06-08T03:21:41.412535091+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:41.412976904+00:00|	[Credit Update per RTT]: cTotal updated from 93190 to 93480, cIssued: 46382
+LOG: 2024-06-08T03:21:41.431596834+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:41.432036888+00:00|	[Credit Update per RTT]: cTotal updated from 93480 to 93770, cIssued: 46520
+LOG: 2024-06-08T03:21:41.451278015+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:41.451578269+00:00|	[Credit Update per RTT]: cTotal updated from 93770 to 94060, cIssued: 46661
+LOG: 2024-06-08T03:21:41.47022891+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:41.470629176+00:00|	[Credit Update per RTT]: cTotal updated from 94060 to 94350, cIssued: 46799
+LOG: 2024-06-08T03:21:41.491132767+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:41.491541109+00:00|	[Credit Update per RTT]: cTotal updated from 94350 to 94640, cIssued: 46962
+LOG: 2024-06-08T03:21:41.509986782+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:41.510304069+00:00|	[Credit Update per RTT]: cTotal updated from 94640 to 94930, cIssued: 47118
+LOG: 2024-06-08T03:21:41.528957859+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:41.529380569+00:00|	[Credit Update per RTT]: cTotal updated from 94930 to 95220, cIssued: 47257
+LOG: 2024-06-08T03:21:41.553761938+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:41.554276752+00:00|	[Credit Update per RTT]: cTotal updated from 95220 to 95510, cIssued: 47434
+LOG: 2024-06-08T03:21:41.572725781+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:41.573039498+00:00|	[Credit Update per RTT]: cTotal updated from 95510 to 95800, cIssued: 47572
+LOG: 2024-06-08T03:21:41.5918403+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:41.592176945+00:00|	[Credit Update per RTT]: cTotal updated from 95800 to 96090, cIssued: 47707
+LOG: 2024-06-08T03:21:41.613905397+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:41.614267498+00:00|	[Credit Update per RTT]: cTotal updated from 96090 to 96380, cIssued: 47866
+LOG: 2024-06-08T03:21:41.637944571+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:41.638306345+00:00|	[Credit Update per RTT]: cTotal updated from 96380 to 96670, cIssued: 48023
+LOG: 2024-06-08T03:21:41.656775325+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:41.657096827+00:00|	[Credit Update per RTT]: cTotal updated from 96670 to 96960, cIssued: 48176
+LOG: 2024-06-08T03:21:41.67766369+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:41.677968241+00:00|	[Credit Update per RTT]: cTotal updated from 96960 to 97250, cIssued: 48329
+LOG: 2024-06-08T03:21:41.697025194+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:41.697420332+00:00|	[Credit Update per RTT]: cTotal updated from 97250 to 97540, cIssued: 48467
+LOG: 2024-06-08T03:21:41.716769934+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:41.717160383+00:00|	[Credit Update per RTT]: cTotal updated from 97540 to 97830, cIssued: 48602
+LOG: 2024-06-08T03:21:41.735941552+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:41.736221881+00:00|	[Credit Update per RTT]: cTotal updated from 97830 to 98120, cIssued: 48749
+LOG: 2024-06-08T03:21:41.756255808+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:41.756703275+00:00|	[Credit Update per RTT]: cTotal updated from 98120 to 98410, cIssued: 48893
+LOG: 2024-06-08T03:21:41.775316569+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:41.775652337+00:00|	[Credit Update per RTT]: cTotal updated from 98410 to 98700, cIssued: 49015
+LOG: 2024-06-08T03:21:41.794205224+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:41.794541855+00:00|	[Credit Update per RTT]: cTotal updated from 98700 to 98990, cIssued: 49166
+LOG: 2024-06-08T03:21:41.815855601+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:41.816183524+00:00|	[Credit Update per RTT]: cTotal updated from 98990 to 99280, cIssued: 49331
+LOG: 2024-06-08T03:21:41.835167382+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:41.835535197+00:00|	[Credit Update per RTT]: cTotal updated from 99280 to 99570, cIssued: 49466
+LOG: 2024-06-08T03:21:41.854077481+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:41.854446006+00:00|	[Credit Update per RTT]: cTotal updated from 99570 to 99860, cIssued: 49601
+LOG: 2024-06-08T03:21:41.873477656+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:41.873940081+00:00|	[Credit Update per RTT]: cTotal updated from 99860 to 100150, cIssued: 49742
+LOG: 2024-06-08T03:21:41.892518457+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:41.892765051+00:00|	[Credit Update per RTT]: cTotal updated from 100150 to 100440, cIssued: 49867
+LOG: 2024-06-08T03:21:41.915453661+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:41.915798401+00:00|	[Credit Update per RTT]: cTotal updated from 100440 to 100730, cIssued: 50030
+LOG: 2024-06-08T03:21:41.936406243+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:41.937273503+00:00|	[Credit Update per RTT]: cTotal updated from 100730 to 101020, cIssued: 50183
+LOG: 2024-06-08T03:21:41.95561384+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:41.956010031+00:00|	[Credit Update per RTT]: cTotal updated from 101020 to 101310, cIssued: 50321
+LOG: 2024-06-08T03:21:41.974863614+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:41.97512334+00:00|	[Credit Update per RTT]: cTotal updated from 101310 to 101600, cIssued: 50456
+LOG: 2024-06-08T03:21:41.994587945+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:41.994940278+00:00|	[Credit Update per RTT]: cTotal updated from 101600 to 101890, cIssued: 50603
+LOG: 2024-06-08T03:21:42.014832768+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:42.015383878+00:00|	[Credit Update per RTT]: cTotal updated from 101890 to 102180, cIssued: 50750
+LOG: 2024-06-08T03:21:42.034298801+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:42.03465635+00:00|	[Credit Update per RTT]: cTotal updated from 102180 to 102470, cIssued: 50887
+LOG: 2024-06-08T03:21:42.053755426+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:42.054021191+00:00|	[Credit Update per RTT]: cTotal updated from 102470 to 102760, cIssued: 51043
+LOG: 2024-06-08T03:21:42.073825726+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:42.074187814+00:00|	[Credit Update per RTT]: cTotal updated from 102760 to 103050, cIssued: 51195
+LOG: 2024-06-08T03:21:42.095667654+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:42.096032233+00:00|	[Credit Update per RTT]: cTotal updated from 103050 to 103340, cIssued: 51348
+LOG: 2024-06-08T03:21:42.114579002+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:42.114942177+00:00|	[Credit Update per RTT]: cTotal updated from 103340 to 103630, cIssued: 51486
+LOG: 2024-06-08T03:21:42.13436597+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:42.134626355+00:00|	[Credit Update per RTT]: cTotal updated from 103630 to 103920, cIssued: 51630
+LOG: 2024-06-08T03:21:42.153302171+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:42.153639663+00:00|	[Credit Update per RTT]: cTotal updated from 103920 to 104210, cIssued: 51765
+LOG: 2024-06-08T03:21:42.172847851+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:42.173248015+00:00|	[Credit Update per RTT]: cTotal updated from 104210 to 104500, cIssued: 51903
+LOG: 2024-06-08T03:21:42.19228572+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:42.192604834+00:00|	[Credit Update per RTT]: cTotal updated from 104500 to 104790, cIssued: 52066
+LOG: 2024-06-08T03:21:42.21133775+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:42.211767415+00:00|	[Credit Update per RTT]: cTotal updated from 104790 to 105080, cIssued: 52201
+LOG: 2024-06-08T03:21:42.23096002+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:42.23132234+00:00|	[Credit Update per RTT]: cTotal updated from 105080 to 105370, cIssued: 52342
+LOG: 2024-06-08T03:21:42.250691756+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:42.251065129+00:00|	[Credit Update per RTT]: cTotal updated from 105370 to 105660, cIssued: 52480
+LOG: 2024-06-08T03:21:42.270508626+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:42.270817185+00:00|	[Credit Update per RTT]: cTotal updated from 105660 to 105950, cIssued: 52627
+LOG: 2024-06-08T03:21:42.290479267+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:42.290844872+00:00|	[Credit Update per RTT]: cTotal updated from 105950 to 106240, cIssued: 52768
+LOG: 2024-06-08T03:21:42.317998693+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:42.318323152+00:00|	[Credit Update per RTT]: cTotal updated from 106240 to 106530, cIssued: 52950
+LOG: 2024-06-08T03:21:42.337264394+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:42.337623483+00:00|	[Credit Update per RTT]: cTotal updated from 106530 to 106820, cIssued: 53096
+LOG: 2024-06-08T03:21:42.356292139+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:42.356587814+00:00|	[Credit Update per RTT]: cTotal updated from 106820 to 107110, cIssued: 53231
+LOG: 2024-06-08T03:21:42.375528719+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:42.375879813+00:00|	[Credit Update per RTT]: cTotal updated from 107110 to 107400, cIssued: 53369
+LOG: 2024-06-08T03:21:42.394822119+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:42.395083343+00:00|	[Credit Update per RTT]: cTotal updated from 107400 to 107690, cIssued: 53510
+LOG: 2024-06-08T03:21:42.414360563+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:42.414696282+00:00|	[Credit Update per RTT]: cTotal updated from 107690 to 107980, cIssued: 53648
+LOG: 2024-06-08T03:21:42.436187531+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:42.436633526+00:00|	[Credit Update per RTT]: cTotal updated from 107980 to 108270, cIssued: 53810
+LOG: 2024-06-08T03:21:42.461601183+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:42.462040079+00:00|	[Credit Update per RTT]: cTotal updated from 108270 to 108560, cIssued: 53972
+LOG: 2024-06-08T03:21:42.480635623+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:42.480870726+00:00|	[Credit Update per RTT]: cTotal updated from 108560 to 108850, cIssued: 54105
+LOG: 2024-06-08T03:21:42.499541135+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:42.499911127+00:00|	[Credit Update per RTT]: cTotal updated from 108850 to 109140, cIssued: 54240
+LOG: 2024-06-08T03:21:42.520232543+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:42.520646571+00:00|	[Credit Update per RTT]: cTotal updated from 109140 to 109430, cIssued: 54393
+LOG: 2024-06-08T03:21:42.541225502+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:42.541681609+00:00|	[Credit Update per RTT]: cTotal updated from 109430 to 109720, cIssued: 54543
+LOG: 2024-06-08T03:21:42.560387028+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:42.560859381+00:00|	[Credit Update per RTT]: cTotal updated from 109720 to 110010, cIssued: 54678
+LOG: 2024-06-08T03:21:42.579627393+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:42.580005428+00:00|	[Credit Update per RTT]: cTotal updated from 110010 to 110300, cIssued: 54819
+LOG: 2024-06-08T03:21:42.600015308+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:42.600369797+00:00|	[Credit Update per RTT]: cTotal updated from 110300 to 110590, cIssued: 54938
+LOG: 2024-06-08T03:21:42.619005175+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:42.619353179+00:00|	[Credit Update per RTT]: cTotal updated from 110590 to 110880, cIssued: 55094
+LOG: 2024-06-08T03:21:42.643234894+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:42.643542+00:00|	[Credit Update per RTT]: cTotal updated from 110880 to 111170, cIssued: 55270
+LOG: 2024-06-08T03:21:42.662547227+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:42.662854055+00:00|	[Credit Update per RTT]: cTotal updated from 111170 to 111460, cIssued: 55411
+LOG: 2024-06-08T03:21:42.681903697+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:42.68222274+00:00|	[Credit Update per RTT]: cTotal updated from 111460 to 111750, cIssued: 55549
+LOG: 2024-06-08T03:21:42.701502593+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:42.701857447+00:00|	[Credit Update per RTT]: cTotal updated from 111750 to 112040, cIssued: 55690
+LOG: 2024-06-08T03:21:42.720413522+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:42.720808353+00:00|	[Credit Update per RTT]: cTotal updated from 112040 to 112330, cIssued: 55828
+LOG: 2024-06-08T03:21:42.740897133+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:42.741173684+00:00|	[Credit Update per RTT]: cTotal updated from 112330 to 112620, cIssued: 55955
+LOG: 2024-06-08T03:21:42.76028154+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:42.760660827+00:00|	[Credit Update per RTT]: cTotal updated from 112620 to 112910, cIssued: 56125
+LOG: 2024-06-08T03:21:42.779465154+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:42.77973826+00:00|	[Credit Update per RTT]: cTotal updated from 112910 to 113200, cIssued: 56266
+LOG: 2024-06-08T03:21:42.79834816+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:42.798744434+00:00|	[Credit Update per RTT]: cTotal updated from 113200 to 113490, cIssued: 56401
+LOG: 2024-06-08T03:21:42.819580833+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:42.819957791+00:00|	[Credit Update per RTT]: cTotal updated from 113490 to 113780, cIssued: 56554
+LOG: 2024-06-08T03:21:42.838594202+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:42.8389538+00:00|	[Credit Update per RTT]: cTotal updated from 113780 to 114070, cIssued: 56689
+LOG: 2024-06-08T03:21:42.857501883+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:42.857839232+00:00|	[Credit Update per RTT]: cTotal updated from 114070 to 114360, cIssued: 56824
+LOG: 2024-06-08T03:21:42.876382955+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:42.876689248+00:00|	[Credit Update per RTT]: cTotal updated from 114360 to 114650, cIssued: 56972
+LOG: 2024-06-08T03:21:42.901182807+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:42.901582061+00:00|	[Credit Update per RTT]: cTotal updated from 114650 to 114940, cIssued: 57170
+LOG: 2024-06-08T03:21:42.920439568+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:42.920743385+00:00|	[Credit Update per RTT]: cTotal updated from 114940 to 115230, cIssued: 57305
+LOG: 2024-06-08T03:21:42.939934082+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:42.940288588+00:00|	[Credit Update per RTT]: cTotal updated from 115230 to 115520, cIssued: 57443
+LOG: 2024-06-08T03:21:42.961000287+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:42.961359919+00:00|	[Credit Update per RTT]: cTotal updated from 115520 to 115810, cIssued: 57599
+LOG: 2024-06-08T03:21:42.982089395+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:42.98251192+00:00|	[Credit Update per RTT]: cTotal updated from 115810 to 116100, cIssued: 57746
+LOG: 2024-06-08T03:21:43.001954794+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:43.002263515+00:00|	[Credit Update per RTT]: cTotal updated from 116100 to 116390, cIssued: 57893
+LOG: 2024-06-08T03:21:43.020781556+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:43.021214219+00:00|	[Credit Update per RTT]: cTotal updated from 116390 to 116680, cIssued: 58009
+LOG: 2024-06-08T03:21:43.039720508+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:43.040005274+00:00|	[Credit Update per RTT]: cTotal updated from 116680 to 116970, cIssued: 58163
+LOG: 2024-06-08T03:21:43.059952181+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:43.060361899+00:00|	[Credit Update per RTT]: cTotal updated from 116970 to 117260, cIssued: 58307
+LOG: 2024-06-08T03:21:43.079409085+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:43.079823184+00:00|	[Credit Update per RTT]: cTotal updated from 117260 to 117550, cIssued: 58448
+LOG: 2024-06-08T03:21:43.098320085+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:43.098583697+00:00|	[Credit Update per RTT]: cTotal updated from 117550 to 117840, cIssued: 58583
+LOG: 2024-06-08T03:21:43.121495574+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:43.121957218+00:00|	[Credit Update per RTT]: cTotal updated from 117840 to 118130, cIssued: 58754
+LOG: 2024-06-08T03:21:43.140718658+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:43.140969887+00:00|	[Credit Update per RTT]: cTotal updated from 118130 to 118420, cIssued: 58891
+LOG: 2024-06-08T03:21:43.159595597+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:43.160092761+00:00|	[Credit Update per RTT]: cTotal updated from 118420 to 118710, cIssued: 59026
+LOG: 2024-06-08T03:21:43.179409423+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:43.179800715+00:00|	[Credit Update per RTT]: cTotal updated from 118710 to 119000, cIssued: 59169
+LOG: 2024-06-08T03:21:43.208485384+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:43.208926993+00:00|	[Credit Update per RTT]: cTotal updated from 119000 to 119290, cIssued: 59379
+LOG: 2024-06-08T03:21:43.227543514+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:43.227850414+00:00|	[Credit Update per RTT]: cTotal updated from 119290 to 119580, cIssued: 59517
+LOG: 2024-06-08T03:21:43.246602708+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:43.246960076+00:00|	[Credit Update per RTT]: cTotal updated from 119580 to 119870, cIssued: 59652
+LOG: 2024-06-08T03:21:43.265960798+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:43.266206546+00:00|	[Credit Update per RTT]: cTotal updated from 119870 to 120160, cIssued: 59793
+LOG: 2024-06-08T03:21:43.287350457+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:43.287712113+00:00|	[Credit Update per RTT]: cTotal updated from 120160 to 120450, cIssued: 59936
+LOG: 2024-06-08T03:21:43.313445189+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:43.31386646+00:00|	[Credit Update per RTT]: cTotal updated from 120450 to 120740, cIssued: 60076
+LOG: 2024-06-08T03:21:43.332306647+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:43.332645245+00:00|	[Credit Update per RTT]: cTotal updated from 120740 to 121030, cIssued: 60227
+LOG: 2024-06-08T03:21:43.353674539+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:43.354059067+00:00|	[Credit Update per RTT]: cTotal updated from 121030 to 121320, cIssued: 60377
+LOG: 2024-06-08T03:21:43.372631936+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:43.373003215+00:00|	[Credit Update per RTT]: cTotal updated from 121320 to 121610, cIssued: 60515
+LOG: 2024-06-08T03:21:43.391946788+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:43.392288389+00:00|	[Credit Update per RTT]: cTotal updated from 121610 to 121900, cIssued: 60653
+LOG: 2024-06-08T03:21:43.411581958+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:43.411863606+00:00|	[Credit Update per RTT]: cTotal updated from 121900 to 122190, cIssued: 60791
+LOG: 2024-06-08T03:21:43.430938569+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:43.431328591+00:00|	[Credit Update per RTT]: cTotal updated from 122190 to 122480, cIssued: 60935
+LOG: 2024-06-08T03:21:43.450438452+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:43.450781721+00:00|	[Credit Update per RTT]: cTotal updated from 122480 to 122770, cIssued: 61052
+LOG: 2024-06-08T03:21:43.469610582+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:43.470022372+00:00|	[Credit Update per RTT]: cTotal updated from 122770 to 123060, cIssued: 61187
+LOG: 2024-06-08T03:21:43.490956345+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:43.491289869+00:00|	[Credit Update per RTT]: cTotal updated from 123060 to 123350, cIssued: 61343
+LOG: 2024-06-08T03:21:43.510797743+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:43.510999196+00:00|	[Credit Update per RTT]: cTotal updated from 123350 to 123640, cIssued: 61484
+LOG: 2024-06-08T03:21:43.529863631+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:43.530146006+00:00|	[Credit Update per RTT]: cTotal updated from 123640 to 123930, cIssued: 61619
+LOG: 2024-06-08T03:21:43.549364609+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:43.549722627+00:00|	[Credit Update per RTT]: cTotal updated from 123930 to 124220, cIssued: 61763
+LOG: 2024-06-08T03:21:43.570870139+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:43.571129444+00:00|	[Credit Update per RTT]: cTotal updated from 124220 to 124510, cIssued: 61911
+LOG: 2024-06-08T03:21:43.589842334+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:43.590081044+00:00|	[Credit Update per RTT]: cTotal updated from 124510 to 124800, cIssued: 62043
+LOG: 2024-06-08T03:21:43.608752608+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:43.609289416+00:00|	[Credit Update per RTT]: cTotal updated from 124800 to 125090, cIssued: 62178
+LOG: 2024-06-08T03:21:43.628687902+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:43.629050886+00:00|	[Credit Update per RTT]: cTotal updated from 125090 to 125380, cIssued: 62322
+LOG: 2024-06-08T03:21:43.648453556+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:43.648921639+00:00|	[Credit Update per RTT]: cTotal updated from 125380 to 125670, cIssued: 62463
+LOG: 2024-06-08T03:21:43.668468453+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:43.668744562+00:00|	[Credit Update per RTT]: cTotal updated from 125670 to 125960, cIssued: 62607
+LOG: 2024-06-08T03:21:43.688456018+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:43.688778829+00:00|	[Credit Update per RTT]: cTotal updated from 125960 to 126250, cIssued: 62754
+LOG: 2024-06-08T03:21:43.709552333+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:43.710042169+00:00|	[Credit Update per RTT]: cTotal updated from 126250 to 126540, cIssued: 62897
+LOG: 2024-06-08T03:21:43.730825112+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:43.731095525+00:00|	[Credit Update per RTT]: cTotal updated from 126540 to 126830, cIssued: 63090
+LOG: 2024-06-08T03:21:43.749765724+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:43.750135099+00:00|	[Credit Update per RTT]: cTotal updated from 126830 to 127120, cIssued: 63225
+LOG: 2024-06-08T03:21:43.768631934+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:43.768951994+00:00|	[Credit Update per RTT]: cTotal updated from 127120 to 127410, cIssued: 63360
+LOG: 2024-06-08T03:21:43.787923535+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:43.788322705+00:00|	[Credit Update per RTT]: cTotal updated from 127410 to 127700, cIssued: 63501
+LOG: 2024-06-08T03:21:43.809015503+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:43.809385479+00:00|	[Credit Update per RTT]: cTotal updated from 127700 to 127990, cIssued: 63651
+LOG: 2024-06-08T03:21:43.830500753+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:43.830806289+00:00|	[Credit Update per RTT]: cTotal updated from 127990 to 128280, cIssued: 63801
+LOG: 2024-06-08T03:21:43.851264045+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:43.851600348+00:00|	[Credit Update per RTT]: cTotal updated from 128280 to 128570, cIssued: 63949
+LOG: 2024-06-08T03:21:43.871321065+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:43.871660074+00:00|	[Credit Update per RTT]: cTotal updated from 128570 to 128860, cIssued: 64110
+LOG: 2024-06-08T03:21:43.891508164+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:43.891721984+00:00|	[Credit Update per RTT]: cTotal updated from 128860 to 129150, cIssued: 64254
+LOG: 2024-06-08T03:21:43.91392184+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:43.914341031+00:00|	[Credit Update per RTT]: cTotal updated from 129150 to 129440, cIssued: 64413
+LOG: 2024-06-08T03:21:43.93322543+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:43.933551208+00:00|	[Credit Update per RTT]: cTotal updated from 129440 to 129730, cIssued: 64554
+LOG: 2024-06-08T03:21:43.957901629+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:43.958112951+00:00|	[Credit Update per RTT]: cTotal updated from 129730 to 130020, cIssued: 64734
+LOG: 2024-06-08T03:21:43.977087788+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:43.977302227+00:00|	[Credit Update per RTT]: cTotal updated from 130020 to 130310, cIssued: 64869
+LOG: 2024-06-08T03:21:43.996285151+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:43.996670815+00:00|	[Credit Update per RTT]: cTotal updated from 130310 to 130600, cIssued: 64989
+LOG: 2024-06-08T03:21:44.018009176+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:44.01827175+00:00|	[Credit Update per RTT]: cTotal updated from 130600 to 130890, cIssued: 65139
+LOG: 2024-06-08T03:21:44.037608978+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:44.037941137+00:00|	[Credit Update per RTT]: cTotal updated from 130890 to 131180, cIssued: 65282
+LOG: 2024-06-08T03:21:44.056901618+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:44.057345408+00:00|	[Credit Update per RTT]: cTotal updated from 131180 to 131470, cIssued: 65423
+LOG: 2024-06-08T03:21:44.076747003+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:44.077155052+00:00|	[Credit Update per RTT]: cTotal updated from 131470 to 131760, cIssued: 65561
+LOG: 2024-06-08T03:21:44.096706047+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:44.097099981+00:00|	[Credit Update per RTT]: cTotal updated from 131760 to 132050, cIssued: 65705
+LOG: 2024-06-08T03:21:44.117135689+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:44.117515316+00:00|	[Credit Update per RTT]: cTotal updated from 132050 to 132340, cIssued: 65855
+LOG: 2024-06-08T03:21:44.137937661+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:44.138193596+00:00|	[Credit Update per RTT]: cTotal updated from 132340 to 132630, cIssued: 65973
+LOG: 2024-06-08T03:21:44.15781798+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:44.158116557+00:00|	[Credit Update per RTT]: cTotal updated from 132630 to 132920, cIssued: 66135
+LOG: 2024-06-08T03:21:44.177622262+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:44.177963561+00:00|	[Credit Update per RTT]: cTotal updated from 132920 to 133210, cIssued: 66273
+LOG: 2024-06-08T03:21:44.197096791+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:44.197346423+00:00|	[Credit Update per RTT]: cTotal updated from 133210 to 133500, cIssued: 66414
+LOG: 2024-06-08T03:21:44.21597943+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:44.216224417+00:00|	[Credit Update per RTT]: cTotal updated from 133500 to 133790, cIssued: 66549
+LOG: 2024-06-08T03:21:44.235835445+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:44.236098396+00:00|	[Credit Update per RTT]: cTotal updated from 133790 to 134080, cIssued: 66693
+LOG: 2024-06-08T03:21:44.256607302+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:44.256821094+00:00|	[Credit Update per RTT]: cTotal updated from 134080 to 134370, cIssued: 66843
+LOG: 2024-06-08T03:21:44.276864776+00:00|	[Incremental Waiting Time Maximum]:	0.057344 ms.
+
+LOG: 2024-06-08T03:21:44.277323275+00:00|	[Credit Update per RTT]: cTotal updated from 134370 to 134660, cIssued: 66971
+LOG: 2024-06-08T03:21:44.29592365+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:44.296302955+00:00|	[Credit Update per RTT]: cTotal updated from 134660 to 134950, cIssued: 67128
+LOG: 2024-06-08T03:21:44.317282389+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:44.317770302+00:00|	[Credit Update per RTT]: cTotal updated from 134950 to 135240, cIssued: 67284
+LOG: 2024-06-08T03:21:44.33702488+00:00|	[Incremental Waiting Time Maximum]:	12.582912 ms.
+
+LOG: 2024-06-08T03:21:44.337277131+00:00|	[Credit Update per RTT]: cTotal updated from 135240 to 135530, cIssued: 67422
+LOG: 2024-06-08T03:21:44.357276092+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:44.357560293+00:00|	[Credit Update per RTT]: cTotal updated from 135530 to 135820, cIssued: 67425
+LOG: 2024-06-08T03:21:44.376779585+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:44.377153548+00:00|	[Credit Update per RTT]: cTotal updated from 135820 to 136110, cIssued: 67563
+LOG: 2024-06-08T03:21:44.39569976+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:44.39591794+00:00|	[Credit Update per RTT]: cTotal updated from 136110 to 136400, cIssued: 67710
+LOG: 2024-06-08T03:21:44.414642441+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:44.414975715+00:00|	[Credit Update per RTT]: cTotal updated from 136400 to 136690, cIssued: 67890
+LOG: 2024-06-08T03:21:44.433861158+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:44.434231844+00:00|	[Credit Update per RTT]: cTotal updated from 136690 to 136980, cIssued: 68046
+LOG: 2024-06-08T03:21:44.468838497+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:44.469104511+00:00|	[Credit Update per RTT]: cTotal updated from 136980 to 137270, cIssued: 68297
+LOG: 2024-06-08T03:21:44.490901993+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:44.491140289+00:00|	[Credit Update per RTT]: cTotal updated from 137270 to 137560, cIssued: 68456
+LOG: 2024-06-08T03:21:44.510078535+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:44.51034352+00:00|	[Credit Update per RTT]: cTotal updated from 137560 to 137850, cIssued: 68594
+LOG: 2024-06-08T03:21:44.530797352+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:44.531138187+00:00|	[Credit Update per RTT]: cTotal updated from 137850 to 138140, cIssued: 68747
+LOG: 2024-06-08T03:21:44.549839909+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:44.550062784+00:00|	[Credit Update per RTT]: cTotal updated from 138140 to 138430, cIssued: 68882
+LOG: 2024-06-08T03:21:44.569033454+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:44.569345559+00:00|	[Credit Update per RTT]: cTotal updated from 138430 to 138720, cIssued: 68999
+LOG: 2024-06-08T03:21:44.587925822+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:44.588303417+00:00|	[Credit Update per RTT]: cTotal updated from 138720 to 139010, cIssued: 69141
+LOG: 2024-06-08T03:21:44.609278777+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:44.609576582+00:00|	[Credit Update per RTT]: cTotal updated from 139010 to 139300, cIssued: 69294
+LOG: 2024-06-08T03:21:44.628426125+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:44.628724127+00:00|	[Credit Update per RTT]: cTotal updated from 139300 to 139590, cIssued: 69432
+LOG: 2024-06-08T03:21:44.648341334+00:00|	[Incremental Waiting Time Maximum]:	0.196608 ms.
+
+LOG: 2024-06-08T03:21:44.64860071+00:00|	[Credit Update per RTT]: cTotal updated from 139590 to 139880, cIssued: 69576
+LOG: 2024-06-08T03:21:44.66765961+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:44.667949395+00:00|	[Credit Update per RTT]: cTotal updated from 139880 to 140170, cIssued: 69714
+LOG: 2024-06-08T03:21:44.68720725+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:44.687507109+00:00|	[Credit Update per RTT]: cTotal updated from 140170 to 140460, cIssued: 69848
+LOG: 2024-06-08T03:21:44.707093866+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:44.707453452+00:00|	[Credit Update per RTT]: cTotal updated from 140460 to 140750, cIssued: 69989
+LOG: 2024-06-08T03:21:44.726814978+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:44.727184377+00:00|	[Credit Update per RTT]: cTotal updated from 140750 to 141040, cIssued: 70132
+LOG: 2024-06-08T03:21:44.745816118+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:44.746195935+00:00|	[Credit Update per RTT]: cTotal updated from 141040 to 141330, cIssued: 70270
+LOG: 2024-06-08T03:21:44.764738671+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:44.765085291+00:00|	[Credit Update per RTT]: cTotal updated from 141330 to 141620, cIssued: 70486
+LOG: 2024-06-08T03:21:44.783588722+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:44.783880657+00:00|	[Credit Update per RTT]: cTotal updated from 141620 to 141910, cIssued: 70690
+LOG: 2024-06-08T03:21:44.80524858+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:44.805592485+00:00|	[Credit Update per RTT]: cTotal updated from 141910 to 142200, cIssued: 70831
+LOG: 2024-06-08T03:21:44.824701041+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:44.825090834+00:00|	[Credit Update per RTT]: cTotal updated from 142200 to 142490, cIssued: 70944
+LOG: 2024-06-08T03:21:44.844639114+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:44.844899776+00:00|	[Credit Update per RTT]: cTotal updated from 142490 to 142780, cIssued: 71054
+LOG: 2024-06-08T03:21:44.865765469+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:44.866192952+00:00|	[Credit Update per RTT]: cTotal updated from 142780 to 143070, cIssued: 71204
+LOG: 2024-06-08T03:21:44.885021534+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:44.885335161+00:00|	[Credit Update per RTT]: cTotal updated from 143070 to 143360, cIssued: 71318
+LOG: 2024-06-08T03:21:44.91139867+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:44.911802503+00:00|	[Credit Update per RTT]: cTotal updated from 143360 to 143650, cIssued: 71972
+LOG: 2024-06-08T03:21:44.932922449+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:44.933318192+00:00|	[Credit Update per RTT]: cTotal updated from 143650 to 143940, cIssued: 72270
+LOG: 2024-06-08T03:21:44.955826398+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:44.956194277+00:00|	[Credit Update per RTT]: cTotal updated from 143940 to 144230, cIssued: 72271
+LOG: 2024-06-08T03:21:44.98579014+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:44.986151526+00:00|	[Credit Update per RTT]: cTotal updated from 144230 to 144520, cIssued: 72459
+LOG: 2024-06-08T03:21:45.01060066+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:45.011051439+00:00|	[Credit Update per RTT]: cTotal updated from 144520 to 144810, cIssued: 72518
+LOG: 2024-06-08T03:21:45.04203394+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:45.042389175+00:00|	[Credit Update per RTT]: cTotal updated from 144810 to 145100, cIssued: 72822
+LOG: 2024-06-08T03:21:45.101948583+00:00|	[Incremental Waiting Time Maximum]:	7.340032 ms.
+
+LOG: 2024-06-08T03:21:45.102313406+00:00|	[Credit Update per RTT]: cTotal updated from 145100 to 145390, cIssued: 73000
+LOG: 2024-06-08T03:21:45.122584229+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:45.123129765+00:00|	[Credit Update per RTT]: cTotal updated from 145390 to 145680, cIssued: 73000
+LOG: 2024-06-08T03:21:45.162096494+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:45.162617071+00:00|	[Credit Update per RTT]: cTotal updated from 145680 to 145970, cIssued: 73000
+LOG: 2024-06-08T03:21:45.426824387+00:00|	[Incremental Waiting Time Maximum]:	41.943040 ms.
+
+LOG: 2024-06-08T03:21:45.427223714+00:00|	[Credit Update per RTT]: cTotal updated from 145970 to 72985, cIssued: 72704
+LOG: 2024-06-08T03:21:45.464822436+00:00|	[Incremental Waiting Time Maximum]:	12.582912 ms.
+
+LOG: 2024-06-08T03:21:45.465423325+00:00|	[Credit Update per RTT]: cTotal updated from 72985 to 73275, cIssued: 72704
+LOG: 2024-06-08T03:21:45.5119965+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:45.512228758+00:00|	[Credit Update per RTT]: cTotal updated from 73275 to 73565, cIssued: 72704
+LOG: 2024-06-08T03:21:45.564224455+00:00|	[Incremental Waiting Time Maximum]:	7.340032 ms.
+
+LOG: 2024-06-08T03:21:45.564619608+00:00|	[Credit Update per RTT]: cTotal updated from 73565 to 73855, cIssued: 72704
+LOG: 2024-06-08T03:21:45.586343549+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:45.586823643+00:00|	[Credit Update per RTT]: cTotal updated from 73855 to 61050, cIssued: 72704
+LOG: 2024-06-08T03:21:45.613186131+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:45.61353454+00:00|	[Credit Update per RTT]: cTotal updated from 61050 to 61340, cIssued: 72704
+LOG: 2024-06-08T03:21:45.63200802+00:00|	[Incremental Waiting Time Maximum]:	12.582912 ms.
+
+LOG: 2024-06-08T03:21:45.632259753+00:00|	[Credit Update per RTT]: cTotal updated from 61340 to 30670, cIssued: 72704
+LOG: 2024-06-08T03:21:45.651877026+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:45.652072399+00:00|	[Credit Update per RTT]: cTotal updated from 30670 to 30960, cIssued: 72704
+LOG: 2024-06-08T03:21:45.716917082+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:45.717386458+00:00|	[Credit Update per RTT]: cTotal updated from 30960 to 31250, cIssued: 72704
+LOG: 2024-06-08T03:21:45.770099482+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:45.770598279+00:00|	[Credit Update per RTT]: cTotal updated from 31250 to 31540, cIssued: 30014
+LOG: 2024-06-08T03:21:45.789214523+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:45.789577361+00:00|	[Credit Update per RTT]: cTotal updated from 31540 to 31830, cIssued: 17403
+LOG: 2024-06-08T03:21:45.886350494+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:45.886722657+00:00|	[Credit Update per RTT]: cTotal updated from 31830 to 15915, cIssued: 18514
+LOG: 2024-06-08T03:21:45.917983217+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:45.918336913+00:00|	[Credit Update per RTT]: cTotal updated from 15915 to 16205, cIssued: 18514
+LOG: 2024-06-08T03:21:45.941511816+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:45.941890164+00:00|	[Credit Update per RTT]: cTotal updated from 16205 to 16495, cIssued: 18514
+LOG: 2024-06-08T03:21:45.978091325+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:45.978574572+00:00|	[Credit Update per RTT]: cTotal updated from 16495 to 8248, cIssued: 14173
+LOG: 2024-06-08T03:21:46.009640531+00:00|	[Incremental Waiting Time Maximum]:	8.388608 ms.
+
+LOG: 2024-06-08T03:21:46.010043159+00:00|	[Credit Update per RTT]: cTotal updated from 8248 to 8538, cIssued: 9635
+LOG: 2024-06-08T03:21:46.028626837+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:46.029003644+00:00|	[Credit Update per RTT]: cTotal updated from 8538 to 8828, cIssued: 9635
+LOG: 2024-06-08T03:21:46.048881871+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:46.049264108+00:00|	[Credit Update per RTT]: cTotal updated from 8828 to 9118, cIssued: 9635
+LOG: 2024-06-08T03:21:46.068856596+00:00|	[Incremental Waiting Time Maximum]:	5.242880 ms.
+
+LOG: 2024-06-08T03:21:46.069187118+00:00|	[Credit Update per RTT]: cTotal updated from 9118 to 9408, cIssued: 9290
+LOG: 2024-06-08T03:21:46.112290549+00:00|	[Incremental Waiting Time Maximum]:	8.388608 ms.
+
+LOG: 2024-06-08T03:21:46.112757873+00:00|	[Credit Update per RTT]: cTotal updated from 9408 to 9698, cIssued: 9290
+LOG: 2024-06-08T03:21:46.13748561+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:46.137698591+00:00|	[Credit Update per RTT]: cTotal updated from 9698 to 9988, cIssued: 9290
+LOG: 2024-06-08T03:21:46.161129225+00:00|	[Incremental Waiting Time Maximum]:	5.242880 ms.
+
+LOG: 2024-06-08T03:21:46.161636073+00:00|	[Credit Update per RTT]: cTotal updated from 9988 to 4994, cIssued: 9145
+LOG: 2024-06-08T03:21:46.181433178+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:46.181838619+00:00|	[Credit Update per RTT]: cTotal updated from 4994 to 5284, cIssued: 9145
+LOG: 2024-06-08T03:21:46.201420609+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:46.201840878+00:00|	[Credit Update per RTT]: cTotal updated from 5284 to 5574, cIssued: 8958
+LOG: 2024-06-08T03:21:46.222202799+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:46.222401657+00:00|	[Credit Update per RTT]: cTotal updated from 5574 to 5864, cIssued: 8958
+LOG: 2024-06-08T03:21:46.242766379+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:46.243182067+00:00|	[Credit Update per RTT]: cTotal updated from 5864 to 6154, cIssued: 5765
+LOG: 2024-06-08T03:21:46.338388314+00:00|	[Incremental Waiting Time Maximum]:	33.554432 ms.
+
+LOG: 2024-06-08T03:21:46.341764362+00:00|	[Credit Update per RTT]: cTotal updated from 6154 to 5087, cIssued: 3833
+LOG: 2024-06-08T03:21:46.360409483+00:00|	[Incremental Waiting Time Maximum]:	10.485760 ms.
+
+LOG: 2024-06-08T03:21:46.360792963+00:00|	[Credit Update per RTT]: cTotal updated from 5087 to 5377, cIssued: 3833
+LOG: 2024-06-08T03:21:46.385622795+00:00|	[Incremental Waiting Time Maximum]:	10.485760 ms.
+
+LOG: 2024-06-08T03:21:46.386123556+00:00|	[Credit Update per RTT]: cTotal updated from 5377 to 2689, cIssued: 3833
+LOG: 2024-06-08T03:21:46.413642342+00:00|	[Incremental Waiting Time Maximum]:	14.680064 ms.
+
+LOG: 2024-06-08T03:21:46.414055949+00:00|	[Credit Update per RTT]: cTotal updated from 2689 to 2979, cIssued: 3833
+LOG: 2024-06-08T03:21:46.436332351+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:46.436663622+00:00|	[Credit Update per RTT]: cTotal updated from 2979 to 3269, cIssued: 3833
+LOG: 2024-06-08T03:21:46.45621437+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:46.456937098+00:00|	[Credit Update per RTT]: cTotal updated from 3269 to 3559, cIssued: 3647
+LOG: 2024-06-08T03:21:46.497776871+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:46.498292965+00:00|	[Credit Update per RTT]: cTotal updated from 3559 to 3849, cIssued: 3376
+LOG: 2024-06-08T03:21:46.521502025+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:46.521794526+00:00|	[Credit Update per RTT]: cTotal updated from 3849 to 4139, cIssued: 2170
+LOG: 2024-06-08T03:21:46.544994434+00:00|	[Incremental Waiting Time Maximum]:	10.485760 ms.
+
+LOG: 2024-06-08T03:21:46.545409346+00:00|	[Credit Update per RTT]: cTotal updated from 4139 to 4429, cIssued: 2351
+LOG: 2024-06-08T03:21:46.57025155+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:46.570721371+00:00|	[Credit Update per RTT]: cTotal updated from 4429 to 4719, cIssued: 2351
+LOG: 2024-06-08T03:21:46.592344381+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:46.592897687+00:00|	[Credit Update per RTT]: cTotal updated from 4719 to 5009, cIssued: 2496
+LOG: 2024-06-08T03:21:46.615603491+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:46.615988098+00:00|	[Credit Update per RTT]: cTotal updated from 5009 to 5299, cIssued: 2676
+LOG: 2024-06-08T03:21:46.653243191+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:46.653629298+00:00|	[Credit Update per RTT]: cTotal updated from 5299 to 5589, cIssued: 2887
+LOG: 2024-06-08T03:21:46.708863911+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:46.709274103+00:00|	[Credit Update per RTT]: cTotal updated from 5589 to 5879, cIssued: 3184
+LOG: 2024-06-08T03:21:46.807805066+00:00|	[Incremental Waiting Time Maximum]:	5.242880 ms.
+
+LOG: 2024-06-08T03:21:46.808197294+00:00|	[Credit Update per RTT]: cTotal updated from 5879 to 6169, cIssued: 3382
+LOG: 2024-06-08T03:21:46.829551337+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:46.829955557+00:00|	[Credit Update per RTT]: cTotal updated from 6169 to 6459, cIssued: 3382
+LOG: 2024-06-08T03:21:46.850863236+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:46.851246258+00:00|	[Credit Update per RTT]: cTotal updated from 6459 to 6749, cIssued: 3382
+LOG: 2024-06-08T03:21:46.876120303+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:46.876585655+00:00|	[Credit Update per RTT]: cTotal updated from 6749 to 7039, cIssued: 3434
+LOG: 2024-06-08T03:21:46.895124226+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:46.895545293+00:00|	[Credit Update per RTT]: cTotal updated from 7039 to 3520, cIssued: 3590
+LOG: 2024-06-08T03:21:46.927705029+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:46.92810794+00:00|	[Credit Update per RTT]: cTotal updated from 3520 to 3810, cIssued: 3286
+LOG: 2024-06-08T03:21:46.946562882+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:46.946946784+00:00|	[Credit Update per RTT]: cTotal updated from 3810 to 4100, cIssued: 3286
+LOG: 2024-06-08T03:21:46.967881837+00:00|	[Incremental Waiting Time Maximum]:	7.340032 ms.
+
+LOG: 2024-06-08T03:21:46.968196959+00:00|	[Credit Update per RTT]: cTotal updated from 4100 to 4390, cIssued: 2675
+LOG: 2024-06-08T03:21:46.986831082+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:46.987073839+00:00|	[Credit Update per RTT]: cTotal updated from 4390 to 4680, cIssued: 2675
+LOG: 2024-06-08T03:21:47.010476172+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:47.010915422+00:00|	[Credit Update per RTT]: cTotal updated from 4680 to 4970, cIssued: 2714
+LOG: 2024-06-08T03:21:47.033654363+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:47.034066783+00:00|	[Credit Update per RTT]: cTotal updated from 4970 to 5260, cIssued: 2714
+LOG: 2024-06-08T03:21:47.056516996+00:00|	[Incremental Waiting Time Maximum]:	12.582912 ms.
+
+LOG: 2024-06-08T03:21:47.057242031+00:00|	[Credit Update per RTT]: cTotal updated from 5260 to 5550, cIssued: 2933
+LOG: 2024-06-08T03:21:47.084895196+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:47.085352229+00:00|	[Credit Update per RTT]: cTotal updated from 5550 to 5840, cIssued: 2932
+LOG: 2024-06-08T03:21:47.115690738+00:00|	[Incremental Waiting Time Maximum]:	10.485760 ms.
+
+LOG: 2024-06-08T03:21:47.116100611+00:00|	[Credit Update per RTT]: cTotal updated from 5840 to 6130, cIssued: 3103
+LOG: 2024-06-08T03:21:47.152176887+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:47.152695812+00:00|	[Credit Update per RTT]: cTotal updated from 6130 to 6420, cIssued: 3103
+LOG: 2024-06-08T03:21:47.177412878+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:47.177798071+00:00|	[Credit Update per RTT]: cTotal updated from 6420 to 6710, cIssued: 3381
+LOG: 2024-06-08T03:21:47.242284096+00:00|	[Incremental Waiting Time Maximum]:	8.388608 ms.
+
+LOG: 2024-06-08T03:21:47.242985197+00:00|	[Credit Update per RTT]: cTotal updated from 6710 to 3355, cIssued: 3637
+LOG: 2024-06-08T03:21:47.262065101+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:47.262553236+00:00|	[Credit Update per RTT]: cTotal updated from 3355 to 3645, cIssued: 3637
+LOG: 2024-06-08T03:21:47.287016019+00:00|	[Incremental Waiting Time Maximum]:	10.485760 ms.
+
+LOG: 2024-06-08T03:21:47.287569602+00:00|	[Credit Update per RTT]: cTotal updated from 3645 to 1823, cIssued: 3109
+LOG: 2024-06-08T03:21:47.320947986+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:47.321375108+00:00|	[Credit Update per RTT]: cTotal updated from 1823 to 2113, cIssued: 3109
+LOG: 2024-06-08T03:21:47.35111127+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:47.351532444+00:00|	[Credit Update per RTT]: cTotal updated from 2113 to 2403, cIssued: 2880
+LOG: 2024-06-08T03:21:47.374645549+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:47.374879379+00:00|	[Credit Update per RTT]: cTotal updated from 2403 to 2693, cIssued: 2622
+LOG: 2024-06-08T03:21:47.396937102+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:47.397572298+00:00|	[Credit Update per RTT]: cTotal updated from 2693 to 2983, cIssued: 2400
+LOG: 2024-06-08T03:21:47.436405955+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:47.436968879+00:00|	[Credit Update per RTT]: cTotal updated from 2983 to 3273, cIssued: 2159
+LOG: 2024-06-08T03:21:47.456999836+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:47.457450217+00:00|	[Credit Update per RTT]: cTotal updated from 3273 to 3563, cIssued: 2159
+LOG: 2024-06-08T03:21:47.499118654+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:47.499509422+00:00|	[Credit Update per RTT]: cTotal updated from 3563 to 3853, cIssued: 2288
+LOG: 2024-06-08T03:21:47.520331564+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:47.520777153+00:00|	[Credit Update per RTT]: cTotal updated from 3853 to 4143, cIssued: 2314
+LOG: 2024-06-08T03:21:47.540200958+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:47.540637798+00:00|	[Credit Update per RTT]: cTotal updated from 4143 to 4433, cIssued: 2370
+LOG: 2024-06-08T03:21:47.568153544+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:47.56856396+00:00|	[Credit Update per RTT]: cTotal updated from 4433 to 4723, cIssued: 2625
+LOG: 2024-06-08T03:21:47.597266583+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:47.597883652+00:00|	[Credit Update per RTT]: cTotal updated from 4723 to 5013, cIssued: 2913
+LOG: 2024-06-08T03:21:47.617544812+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:47.618067631+00:00|	[Credit Update per RTT]: cTotal updated from 5013 to 5303, cIssued: 2927
+LOG: 2024-06-08T03:21:47.642390786+00:00|	[Incremental Waiting Time Maximum]:	5.242880 ms.
+
+LOG: 2024-06-08T03:21:47.642852498+00:00|	[Credit Update per RTT]: cTotal updated from 5303 to 5593, cIssued: 2927
+LOG: 2024-06-08T03:21:47.684630112+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:47.684998933+00:00|	[Credit Update per RTT]: cTotal updated from 5593 to 5883, cIssued: 2927
+LOG: 2024-06-08T03:21:47.731430989+00:00|	[Incremental Waiting Time Maximum]:	16.777216 ms.
+
+LOG: 2024-06-08T03:21:47.731858993+00:00|	[Credit Update per RTT]: cTotal updated from 5883 to 2942, cIssued: 3276
+LOG: 2024-06-08T03:21:47.768589922+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:47.769078973+00:00|	[Credit Update per RTT]: cTotal updated from 2942 to 3232, cIssued: 3276
+LOG: 2024-06-08T03:21:47.800442471+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:47.800879766+00:00|	[Credit Update per RTT]: cTotal updated from 3232 to 3522, cIssued: 3276
+LOG: 2024-06-08T03:21:47.825510525+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:47.825730259+00:00|	[Credit Update per RTT]: cTotal updated from 3522 to 3812, cIssued: 3272
+LOG: 2024-06-08T03:21:47.845765537+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:47.846115205+00:00|	[Credit Update per RTT]: cTotal updated from 3812 to 4102, cIssued: 3177
+LOG: 2024-06-08T03:21:47.86465229+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:47.865336137+00:00|	[Credit Update per RTT]: cTotal updated from 4102 to 4392, cIssued: 3067
+LOG: 2024-06-08T03:21:47.89481849+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:47.895266533+00:00|	[Credit Update per RTT]: cTotal updated from 4392 to 4682, cIssued: 2829
+LOG: 2024-06-08T03:21:47.918125475+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:47.918584107+00:00|	[Credit Update per RTT]: cTotal updated from 4682 to 4972, cIssued: 2630
+LOG: 2024-06-08T03:21:47.946131869+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:47.946577302+00:00|	[Credit Update per RTT]: cTotal updated from 4972 to 5262, cIssued: 2662
+LOG: 2024-06-08T03:21:47.976680971+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:47.977088743+00:00|	[Credit Update per RTT]: cTotal updated from 5262 to 5552, cIssued: 2913
+LOG: 2024-06-08T03:21:47.998888679+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:47.999303125+00:00|	[Credit Update per RTT]: cTotal updated from 5552 to 2776, cIssued: 3055
+LOG: 2024-06-08T03:21:48.022697478+00:00|	[Incremental Waiting Time Maximum]:	12.582912 ms.
+
+LOG: 2024-06-08T03:21:48.023191976+00:00|	[Credit Update per RTT]: cTotal updated from 2776 to 2295, cIssued: 2816
+LOG: 2024-06-08T03:21:48.046098131+00:00|	[Incremental Waiting Time Maximum]:	5.242880 ms.
+
+LOG: 2024-06-08T03:21:48.04655718+00:00|	[Credit Update per RTT]: cTotal updated from 2295 to 2585, cIssued: 2816
+LOG: 2024-06-08T03:21:48.064943461+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:48.065172317+00:00|	[Credit Update per RTT]: cTotal updated from 2585 to 2875, cIssued: 2816
+LOG: 2024-06-08T03:21:48.087395082+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:48.087862235+00:00|	[Credit Update per RTT]: cTotal updated from 2875 to 1438, cIssued: 2595
+LOG: 2024-06-08T03:21:48.107850845+00:00|	[Incremental Waiting Time Maximum]:	12.582912 ms.
+
+LOG: 2024-06-08T03:21:48.108256392+00:00|	[Credit Update per RTT]: cTotal updated from 1438 to 1728, cIssued: 2595
+LOG: 2024-06-08T03:21:48.129021502+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:48.129614252+00:00|	[Credit Update per RTT]: cTotal updated from 1728 to 2018, cIssued: 2595
+LOG: 2024-06-08T03:21:48.150672024+00:00|	[Incremental Waiting Time Maximum]:	8.388608 ms.
+
+LOG: 2024-06-08T03:21:48.164242662+00:00|	[Credit Update per RTT]: cTotal updated from 2018 to 1668, cIssued: 2456
+LOG: 2024-06-08T03:21:48.169723265+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:48.170101759+00:00|	[Credit Update per RTT]: cTotal updated from 1668 to 1958, cIssued: 2456
+LOG: 2024-06-08T03:21:48.188970634+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:48.18941501+00:00|	[Credit Update per RTT]: cTotal updated from 1958 to 2248, cIssued: 2236
+LOG: 2024-06-08T03:21:48.209949016+00:00|	[Incremental Waiting Time Maximum]:	14.680064 ms.
+
+LOG: 2024-06-08T03:21:48.210384506+00:00|	[Credit Update per RTT]: cTotal updated from 2248 to 1124, cIssued: 2157
+LOG: 2024-06-08T03:21:48.229097223+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:48.229613323+00:00|	[Credit Update per RTT]: cTotal updated from 1124 to 1414, cIssued: 2157
+LOG: 2024-06-08T03:21:48.269705847+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:48.27020128+00:00|	[Credit Update per RTT]: cTotal updated from 1414 to 1704, cIssued: 1819
+LOG: 2024-06-08T03:21:48.296103083+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:48.296506744+00:00|	[Credit Update per RTT]: cTotal updated from 1704 to 1994, cIssued: 1819
+LOG: 2024-06-08T03:21:48.316070875+00:00|	[Incremental Waiting Time Maximum]:	12.582912 ms.
+
+LOG: 2024-06-08T03:21:48.316345659+00:00|	[Credit Update per RTT]: cTotal updated from 1994 to 2284, cIssued: 1809
+LOG: 2024-06-08T03:21:48.335417077+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:48.335672335+00:00|	[Credit Update per RTT]: cTotal updated from 2284 to 2574, cIssued: 1809
+LOG: 2024-06-08T03:21:48.358498486+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:48.358868942+00:00|	[Credit Update per RTT]: cTotal updated from 2574 to 2864, cIssued: 1936
+LOG: 2024-06-08T03:21:48.391318418+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:48.391697974+00:00|	[Credit Update per RTT]: cTotal updated from 2864 to 3154, cIssued: 2106
+LOG: 2024-06-08T03:21:48.413930023+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:48.414424225+00:00|	[Credit Update per RTT]: cTotal updated from 3154 to 3444, cIssued: 2106
+LOG: 2024-06-08T03:21:48.433882685+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:48.434273312+00:00|	[Credit Update per RTT]: cTotal updated from 3444 to 3734, cIssued: 2100
+LOG: 2024-06-08T03:21:48.4733602+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:48.473819488+00:00|	[Credit Update per RTT]: cTotal updated from 3734 to 4024, cIssued: 2238
+LOG: 2024-06-08T03:21:48.508682177+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:48.509098062+00:00|	[Credit Update per RTT]: cTotal updated from 4024 to 4314, cIssued: 2459
+LOG: 2024-06-08T03:21:48.561756165+00:00|	[Incremental Waiting Time Maximum]:	5.242880 ms.
+
+LOG: 2024-06-08T03:21:48.562209047+00:00|	[Credit Update per RTT]: cTotal updated from 4314 to 4604, cIssued: 2588
+LOG: 2024-06-08T03:21:48.58822246+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:48.588489542+00:00|	[Credit Update per RTT]: cTotal updated from 4604 to 4894, cIssued: 2588
+LOG: 2024-06-08T03:21:48.612200682+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:48.613226919+00:00|	[Credit Update per RTT]: cTotal updated from 4894 to 5184, cIssued: 2667
+LOG: 2024-06-08T03:21:48.631881894+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:48.632350442+00:00|	[Credit Update per RTT]: cTotal updated from 5184 to 5474, cIssued: 2685
+LOG: 2024-06-08T03:21:48.657176596+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:48.657626072+00:00|	[Credit Update per RTT]: cTotal updated from 5474 to 5764, cIssued: 2911
+LOG: 2024-06-08T03:21:48.68004838+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:48.680320928+00:00|	[Credit Update per RTT]: cTotal updated from 5764 to 6054, cIssued: 3272
+LOG: 2024-06-08T03:21:48.69954275+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:48.699950855+00:00|	[Credit Update per RTT]: cTotal updated from 6054 to 5004, cIssued: 3405
+LOG: 2024-06-08T03:21:48.718782858+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:48.719203484+00:00|	[Credit Update per RTT]: cTotal updated from 5004 to 5294, cIssued: 3406
+LOG: 2024-06-08T03:21:48.737747604+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:48.739120323+00:00|	[Credit Update per RTT]: cTotal updated from 5294 to 5584, cIssued: 3434
+LOG: 2024-06-08T03:21:48.801639394+00:00|	[Incremental Waiting Time Maximum]:	16.777216 ms.
+
+LOG: 2024-06-08T03:21:48.802169093+00:00|	[Credit Update per RTT]: cTotal updated from 5584 to 5874, cIssued: 3084
+LOG: 2024-06-08T03:21:48.838237629+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:48.838609761+00:00|	[Credit Update per RTT]: cTotal updated from 5874 to 6164, cIssued: 3084
+LOG: 2024-06-08T03:21:48.890454803+00:00|	[Incremental Waiting Time Maximum]:	8.388608 ms.
+
+LOG: 2024-06-08T03:21:48.890882637+00:00|	[Credit Update per RTT]: cTotal updated from 6164 to 6454, cIssued: 3463
+LOG: 2024-06-08T03:21:48.922458775+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:48.922921232+00:00|	[Credit Update per RTT]: cTotal updated from 6454 to 6744, cIssued: 3463
+LOG: 2024-06-08T03:21:48.956687791+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:48.957293822+00:00|	[Credit Update per RTT]: cTotal updated from 6744 to 7034, cIssued: 3524
+LOG: 2024-06-08T03:21:48.983336184+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:48.983582864+00:00|	[Credit Update per RTT]: cTotal updated from 7034 to 3517, cIssued: 3541
+LOG: 2024-06-08T03:21:49.002896326+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:49.003399713+00:00|	[Credit Update per RTT]: cTotal updated from 3517 to 3807, cIssued: 3118
+LOG: 2024-06-08T03:21:49.024049597+00:00|	[Incremental Waiting Time Maximum]:	16.777216 ms.
+
+LOG: 2024-06-08T03:21:49.031490638+00:00|	[Credit Update per RTT]: cTotal updated from 3807 to 1904, cIssued: 3037
+LOG: 2024-06-08T03:21:49.043058458+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:49.043474961+00:00|	[Credit Update per RTT]: cTotal updated from 1904 to 2194, cIssued: 3037
+LOG: 2024-06-08T03:21:49.086098936+00:00|	[Incremental Waiting Time Maximum]:	10.485760 ms.
+
+LOG: 2024-06-08T03:21:49.08649931+00:00|	[Credit Update per RTT]: cTotal updated from 2194 to 1097, cIssued: 2398
+LOG: 2024-06-08T03:21:49.15273779+00:00|	[Incremental Waiting Time Maximum]:	10.485760 ms.
+
+LOG: 2024-06-08T03:21:49.153154749+00:00|	[Credit Update per RTT]: cTotal updated from 1097 to 549, cIssued: 2398
+LOG: 2024-06-08T03:21:49.17161604+00:00|	[Incremental Waiting Time Maximum]:	16.777216 ms.
+
+LOG: 2024-06-08T03:21:49.171817572+00:00|	[Credit Update per RTT]: cTotal updated from 549 to 839, cIssued: 2398
+LOG: 2024-06-08T03:21:49.191017994+00:00|	[Incremental Waiting Time Maximum]:	0.049152 ms.
+
+LOG: 2024-06-08T03:21:49.191339234+00:00|	[Credit Update per RTT]: cTotal updated from 839 to 1129, cIssued: 2398
+LOG: 2024-06-08T03:21:49.214171046+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:49.2145708+00:00|	[Credit Update per RTT]: cTotal updated from 1129 to 1419, cIssued: 2215
+LOG: 2024-06-08T03:21:49.233001281+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:49.233408625+00:00|	[Credit Update per RTT]: cTotal updated from 1419 to 1709, cIssued: 2138
+LOG: 2024-06-08T03:21:49.282727256+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:49.283053824+00:00|	[Credit Update per RTT]: cTotal updated from 1709 to 855, cIssued: 1706
+LOG: 2024-06-08T03:21:49.307232963+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:49.307543243+00:00|	[Credit Update per RTT]: cTotal updated from 855 to 1145, cIssued: 1706
+LOG: 2024-06-08T03:21:49.33046272+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:49.330846803+00:00|	[Credit Update per RTT]: cTotal updated from 1145 to 1435, cIssued: 1665
+LOG: 2024-06-08T03:21:49.390649683+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:49.39105422+00:00|	[Credit Update per RTT]: cTotal updated from 1435 to 1186, cIssued: 1432
+LOG: 2024-06-08T03:21:49.41186834+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:49.412282916+00:00|	[Credit Update per RTT]: cTotal updated from 1186 to 1476, cIssued: 1431
+LOG: 2024-06-08T03:21:49.432860481+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:49.433156203+00:00|	[Credit Update per RTT]: cTotal updated from 1476 to 1766, cIssued: 1459
+LOG: 2024-06-08T03:21:49.451767442+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:49.452139691+00:00|	[Credit Update per RTT]: cTotal updated from 1766 to 2056, cIssued: 1635
+LOG: 2024-06-08T03:21:49.476367801+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:49.476772444+00:00|	[Credit Update per RTT]: cTotal updated from 2056 to 2346, cIssued: 1888
+LOG: 2024-06-08T03:21:49.514527642+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:49.514945936+00:00|	[Credit Update per RTT]: cTotal updated from 2346 to 2636, cIssued: 1952
+LOG: 2024-06-08T03:21:49.573481593+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:49.573877867+00:00|	[Credit Update per RTT]: cTotal updated from 2636 to 2926, cIssued: 1954
+LOG: 2024-06-08T03:21:49.599285873+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:49.599499123+00:00|	[Credit Update per RTT]: cTotal updated from 2926 to 3216, cIssued: 1954
+LOG: 2024-06-08T03:21:49.6183786+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:49.618602858+00:00|	[Credit Update per RTT]: cTotal updated from 3216 to 3506, cIssued: 1954
+LOG: 2024-06-08T03:21:49.638456992+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:49.639010306+00:00|	[Credit Update per RTT]: cTotal updated from 3506 to 3796, cIssued: 2007
+LOG: 2024-06-08T03:21:49.663964934+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:49.664215241+00:00|	[Credit Update per RTT]: cTotal updated from 3796 to 4086, cIssued: 2190
+LOG: 2024-06-08T03:21:49.695608345+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:49.696034323+00:00|	[Credit Update per RTT]: cTotal updated from 4086 to 4376, cIssued: 2417
+LOG: 2024-06-08T03:21:49.716701859+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:49.716951826+00:00|	[Credit Update per RTT]: cTotal updated from 4376 to 4666, cIssued: 2470
+LOG: 2024-06-08T03:21:49.735739576+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:49.736178597+00:00|	[Credit Update per RTT]: cTotal updated from 4666 to 4956, cIssued: 2470
+LOG: 2024-06-08T03:21:49.756747807+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:49.75724979+00:00|	[Credit Update per RTT]: cTotal updated from 4956 to 5246, cIssued: 2526
+LOG: 2024-06-08T03:21:49.77780407+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:49.778248246+00:00|	[Credit Update per RTT]: cTotal updated from 5246 to 5536, cIssued: 2715
+LOG: 2024-06-08T03:21:49.79988121+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:49.800342631+00:00|	[Credit Update per RTT]: cTotal updated from 5536 to 5826, cIssued: 2758
+LOG: 2024-06-08T03:21:49.823379281+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:49.82386417+00:00|	[Credit Update per RTT]: cTotal updated from 5826 to 6116, cIssued: 2820
+LOG: 2024-06-08T03:21:49.845203062+00:00|	[Incremental Waiting Time Maximum]:	8.388608 ms.
+
+LOG: 2024-06-08T03:21:49.845615847+00:00|	[Credit Update per RTT]: cTotal updated from 6116 to 6406, cIssued: 3007
+LOG: 2024-06-08T03:21:49.864069766+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:49.864380934+00:00|	[Credit Update per RTT]: cTotal updated from 6406 to 6696, cIssued: 3007
+LOG: 2024-06-08T03:21:49.883233209+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:49.883629685+00:00|	[Credit Update per RTT]: cTotal updated from 6696 to 6986, cIssued: 3192
+LOG: 2024-06-08T03:21:49.905197104+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:49.905575011+00:00|	[Credit Update per RTT]: cTotal updated from 6986 to 7276, cIssued: 3212
+LOG: 2024-06-08T03:21:49.928007138+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:49.928402487+00:00|	[Credit Update per RTT]: cTotal updated from 7276 to 7566, cIssued: 3305
+LOG: 2024-06-08T03:21:49.957744057+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:49.95831568+00:00|	[Credit Update per RTT]: cTotal updated from 7566 to 7856, cIssued: 3691
+LOG: 2024-06-08T03:21:49.978485604+00:00|	[Incremental Waiting Time Maximum]:	5.242880 ms.
+
+LOG: 2024-06-08T03:21:49.979015297+00:00|	[Credit Update per RTT]: cTotal updated from 7856 to 8146, cIssued: 3763
+LOG: 2024-06-08T03:21:50.002088287+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:50.002513953+00:00|	[Credit Update per RTT]: cTotal updated from 8146 to 8436, cIssued: 3763
+LOG: 2024-06-08T03:21:50.022023193+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:50.022412013+00:00|	[Credit Update per RTT]: cTotal updated from 8436 to 8726, cIssued: 3822
+LOG: 2024-06-08T03:21:50.042176238+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:50.042534494+00:00|	[Credit Update per RTT]: cTotal updated from 8726 to 9016, cIssued: 3971
+LOG: 2024-06-08T03:21:50.061835762+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:50.062236018+00:00|	[Credit Update per RTT]: cTotal updated from 9016 to 9306, cIssued: 4156
+LOG: 2024-06-08T03:21:50.084158412+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:50.089355357+00:00|	[Credit Update per RTT]: cTotal updated from 9306 to 4653, cIssued: 4350
+LOG: 2024-06-08T03:21:50.147253381+00:00|	[Incremental Waiting Time Maximum]:	8.388608 ms.
+
+LOG: 2024-06-08T03:21:50.147665192+00:00|	[Credit Update per RTT]: cTotal updated from 4653 to 2327, cIssued: 3608
+LOG: 2024-06-08T03:21:50.169033633+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:50.169677436+00:00|	[Credit Update per RTT]: cTotal updated from 2327 to 2617, cIssued: 3608
+LOG: 2024-06-08T03:21:50.18985991+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:50.190199681+00:00|	[Credit Update per RTT]: cTotal updated from 2617 to 2907, cIssued: 2957
+LOG: 2024-06-08T03:21:50.218519509+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:50.218899894+00:00|	[Credit Update per RTT]: cTotal updated from 2907 to 3197, cIssued: 2921
+LOG: 2024-06-08T03:21:50.239764886+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:50.240378353+00:00|	[Credit Update per RTT]: cTotal updated from 3197 to 3487, cIssued: 2877
+LOG: 2024-06-08T03:21:50.264204448+00:00|	[Incremental Waiting Time Maximum]:	8.388608 ms.
+
+LOG: 2024-06-08T03:21:50.26470808+00:00|	[Credit Update per RTT]: cTotal updated from 3487 to 3777, cIssued: 2017
+LOG: 2024-06-08T03:21:50.297735912+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:50.298115156+00:00|	[Credit Update per RTT]: cTotal updated from 3777 to 4067, cIssued: 2017
+LOG: 2024-06-08T03:21:50.317336249+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:50.317654081+00:00|	[Credit Update per RTT]: cTotal updated from 4067 to 4357, cIssued: 2017
+LOG: 2024-06-08T03:21:50.33694627+00:00|	[Incremental Waiting Time Maximum]:	0.229376 ms.
+
+LOG: 2024-06-08T03:21:50.337412409+00:00|	[Credit Update per RTT]: cTotal updated from 4357 to 4647, cIssued: 2111
+LOG: 2024-06-08T03:21:50.361539972+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:50.361913956+00:00|	[Credit Update per RTT]: cTotal updated from 4647 to 4937, cIssued: 2356
+LOG: 2024-06-08T03:21:50.388672594+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:50.389096815+00:00|	[Credit Update per RTT]: cTotal updated from 4937 to 5227, cIssued: 2558
+LOG: 2024-06-08T03:21:50.410120292+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:50.410580076+00:00|	[Credit Update per RTT]: cTotal updated from 5227 to 5517, cIssued: 2561
+LOG: 2024-06-08T03:21:50.43093119+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:50.431334792+00:00|	[Credit Update per RTT]: cTotal updated from 5517 to 5807, cIssued: 2678
+LOG: 2024-06-08T03:21:50.453603747+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:50.454011774+00:00|	[Credit Update per RTT]: cTotal updated from 5807 to 6097, cIssued: 2835
+LOG: 2024-06-08T03:21:50.503685489+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:50.504122144+00:00|	[Credit Update per RTT]: cTotal updated from 6097 to 6387, cIssued: 3115
+LOG: 2024-06-08T03:21:50.568684857+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:50.569077052+00:00|	[Credit Update per RTT]: cTotal updated from 6387 to 6677, cIssued: 3115
+LOG: 2024-06-08T03:21:50.588195618+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:50.588677343+00:00|	[Credit Update per RTT]: cTotal updated from 6677 to 6967, cIssued: 3115
+LOG: 2024-06-08T03:21:50.607290946+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:50.607587883+00:00|	[Credit Update per RTT]: cTotal updated from 6967 to 7257, cIssued: 3116
+LOG: 2024-06-08T03:21:50.628009934+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:50.628427116+00:00|	[Credit Update per RTT]: cTotal updated from 7257 to 7547, cIssued: 3172
+LOG: 2024-06-08T03:21:50.649733892+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:50.650119795+00:00|	[Credit Update per RTT]: cTotal updated from 7547 to 7837, cIssued: 3380
+LOG: 2024-06-08T03:21:50.67188932+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:50.672283625+00:00|	[Credit Update per RTT]: cTotal updated from 7837 to 8127, cIssued: 3575
+LOG: 2024-06-08T03:21:50.691131207+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:50.691542877+00:00|	[Credit Update per RTT]: cTotal updated from 8127 to 8417, cIssued: 3724
+LOG: 2024-06-08T03:21:50.710161234+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:50.710471304+00:00|	[Credit Update per RTT]: cTotal updated from 8417 to 8707, cIssued: 3753
+LOG: 2024-06-08T03:21:50.749563423+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:50.74993922+00:00|	[Credit Update per RTT]: cTotal updated from 8707 to 8997, cIssued: 3993
+LOG: 2024-06-08T03:21:50.770832788+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:50.771326713+00:00|	[Credit Update per RTT]: cTotal updated from 8997 to 9287, cIssued: 4175
+LOG: 2024-06-08T03:21:50.80758724+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:50.807990216+00:00|	[Credit Update per RTT]: cTotal updated from 9287 to 9577, cIssued: 4283
+LOG: 2024-06-08T03:21:50.835399103+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:50.83579917+00:00|	[Credit Update per RTT]: cTotal updated from 9577 to 9867, cIssued: 4283
+LOG: 2024-06-08T03:21:50.864233742+00:00|	[Incremental Waiting Time Maximum]:	5.242880 ms.
+
+LOG: 2024-06-08T03:21:50.864646398+00:00|	[Credit Update per RTT]: cTotal updated from 9867 to 10157, cIssued: 4368
+LOG: 2024-06-08T03:21:50.884484864+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:50.884907305+00:00|	[Credit Update per RTT]: cTotal updated from 10157 to 10447, cIssued: 4368
+LOG: 2024-06-08T03:21:50.914320681+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:50.914781724+00:00|	[Credit Update per RTT]: cTotal updated from 10447 to 10737, cIssued: 4408
+LOG: 2024-06-08T03:21:50.933243442+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:50.933581684+00:00|	[Credit Update per RTT]: cTotal updated from 10737 to 11027, cIssued: 4448
+LOG: 2024-06-08T03:21:50.964437633+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:50.964798001+00:00|	[Credit Update per RTT]: cTotal updated from 11027 to 11317, cIssued: 4745
+LOG: 2024-06-08T03:21:50.984591479+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:50.985068024+00:00|	[Credit Update per RTT]: cTotal updated from 11317 to 11607, cIssued: 4952
+LOG: 2024-06-08T03:21:51.007411923+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:51.007888023+00:00|	[Credit Update per RTT]: cTotal updated from 11607 to 11897, cIssued: 4952
+LOG: 2024-06-08T03:21:51.047091641+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:51.047462811+00:00|	[Credit Update per RTT]: cTotal updated from 11897 to 12187, cIssued: 5082
+LOG: 2024-06-08T03:21:51.067483428+00:00|	[Incremental Waiting Time Maximum]:	8.388608 ms.
+
+LOG: 2024-06-08T03:21:51.067869607+00:00|	[Credit Update per RTT]: cTotal updated from 12187 to 12477, cIssued: 5096
+LOG: 2024-06-08T03:21:51.086666465+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:51.08702635+00:00|	[Credit Update per RTT]: cTotal updated from 12477 to 12767, cIssued: 5097
+LOG: 2024-06-08T03:21:51.106754837+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:51.10713857+00:00|	[Credit Update per RTT]: cTotal updated from 12767 to 13057, cIssued: 5315
+LOG: 2024-06-08T03:21:51.143774011+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:51.144189511+00:00|	[Credit Update per RTT]: cTotal updated from 13057 to 13347, cIssued: 5562
+LOG: 2024-06-08T03:21:51.1629792+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:51.163477648+00:00|	[Credit Update per RTT]: cTotal updated from 13347 to 13637, cIssued: 5820
+LOG: 2024-06-08T03:21:51.206048186+00:00|	[Incremental Waiting Time Maximum]:	10.485760 ms.
+
+LOG: 2024-06-08T03:21:51.206509411+00:00|	[Credit Update per RTT]: cTotal updated from 13637 to 6819, cIssued: 6008
+LOG: 2024-06-08T03:21:51.225320733+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:51.225768942+00:00|	[Credit Update per RTT]: cTotal updated from 6819 to 7109, cIssued: 6008
+LOG: 2024-06-08T03:21:51.259287488+00:00|	[Incremental Waiting Time Maximum]:	5.242880 ms.
+
+LOG: 2024-06-08T03:21:51.25967429+00:00|	[Credit Update per RTT]: cTotal updated from 7109 to 7399, cIssued: 4868
+LOG: 2024-06-08T03:21:51.278431346+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:51.278665269+00:00|	[Credit Update per RTT]: cTotal updated from 7399 to 7689, cIssued: 4868
+LOG: 2024-06-08T03:21:51.30008389+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:51.30040979+00:00|	[Credit Update per RTT]: cTotal updated from 7689 to 7979, cIssued: 4654
+LOG: 2024-06-08T03:21:51.320004258+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:51.320385953+00:00|	[Credit Update per RTT]: cTotal updated from 7979 to 8269, cIssued: 4354
+LOG: 2024-06-08T03:21:51.340848491+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:51.3412556+00:00|	[Credit Update per RTT]: cTotal updated from 8269 to 8559, cIssued: 4579
+LOG: 2024-06-08T03:21:51.359729319+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:51.359966202+00:00|	[Credit Update per RTT]: cTotal updated from 8559 to 8849, cIssued: 4321
+LOG: 2024-06-08T03:21:51.381967645+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:51.382442239+00:00|	[Credit Update per RTT]: cTotal updated from 8849 to 9139, cIssued: 3852
+LOG: 2024-06-08T03:21:51.405675404+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:51.406044216+00:00|	[Credit Update per RTT]: cTotal updated from 9139 to 9429, cIssued: 3890
+LOG: 2024-06-08T03:21:51.430310862+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:51.430766702+00:00|	[Credit Update per RTT]: cTotal updated from 9429 to 9719, cIssued: 4055
+LOG: 2024-06-08T03:21:51.45918271+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:51.459568418+00:00|	[Credit Update per RTT]: cTotal updated from 9719 to 10009, cIssued: 4285
+LOG: 2024-06-08T03:21:51.478436856+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:51.478631247+00:00|	[Credit Update per RTT]: cTotal updated from 10009 to 10299, cIssued: 4457
+LOG: 2024-06-08T03:21:51.51490165+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:51.515372699+00:00|	[Credit Update per RTT]: cTotal updated from 10299 to 10589, cIssued: 4719
+LOG: 2024-06-08T03:21:51.58092064+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:51.581266789+00:00|	[Credit Update per RTT]: cTotal updated from 10589 to 5295, cIssued: 4865
+LOG: 2024-06-08T03:21:51.60324434+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:51.603660997+00:00|	[Credit Update per RTT]: cTotal updated from 5295 to 5585, cIssued: 4865
+LOG: 2024-06-08T03:21:51.622850983+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:51.623237534+00:00|	[Credit Update per RTT]: cTotal updated from 5585 to 5875, cIssued: 4865
+LOG: 2024-06-08T03:21:51.646928906+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:51.647254837+00:00|	[Credit Update per RTT]: cTotal updated from 5875 to 6165, cIssued: 4207
+LOG: 2024-06-08T03:21:51.669180694+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:51.669487159+00:00|	[Credit Update per RTT]: cTotal updated from 6165 to 6455, cIssued: 3747
+LOG: 2024-06-08T03:21:51.68804206+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:51.688441413+00:00|	[Credit Update per RTT]: cTotal updated from 6455 to 6745, cIssued: 3555
+LOG: 2024-06-08T03:21:51.707541437+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:51.707797575+00:00|	[Credit Update per RTT]: cTotal updated from 6745 to 7035, cIssued: 3519
+LOG: 2024-06-08T03:21:51.726518444+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:51.726819925+00:00|	[Credit Update per RTT]: cTotal updated from 7035 to 7325, cIssued: 3409
+LOG: 2024-06-08T03:21:51.746131478+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:51.74656068+00:00|	[Credit Update per RTT]: cTotal updated from 7325 to 7615, cIssued: 3259
+LOG: 2024-06-08T03:21:51.791117239+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:51.791553558+00:00|	[Credit Update per RTT]: cTotal updated from 7615 to 7905, cIssued: 3693
+LOG: 2024-06-08T03:21:51.811750728+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:51.812220257+00:00|	[Credit Update per RTT]: cTotal updated from 7905 to 8195, cIssued: 3693
+LOG: 2024-06-08T03:21:51.834413398+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:51.834830695+00:00|	[Credit Update per RTT]: cTotal updated from 8195 to 8485, cIssued: 3696
+LOG: 2024-06-08T03:21:51.853305421+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:51.853749926+00:00|	[Credit Update per RTT]: cTotal updated from 8485 to 8775, cIssued: 3847
+LOG: 2024-06-08T03:21:51.878905899+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:51.879323291+00:00|	[Credit Update per RTT]: cTotal updated from 8775 to 9065, cIssued: 3969
+LOG: 2024-06-08T03:21:51.909408957+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:51.909724771+00:00|	[Credit Update per RTT]: cTotal updated from 9065 to 9355, cIssued: 4045
+LOG: 2024-06-08T03:21:51.95337232+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:51.953823741+00:00|	[Credit Update per RTT]: cTotal updated from 9355 to 9645, cIssued: 4283
+LOG: 2024-06-08T03:21:52.008346281+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:52.008793272+00:00|	[Credit Update per RTT]: cTotal updated from 9645 to 9935, cIssued: 4283
+LOG: 2024-06-08T03:21:52.030003393+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:52.030412899+00:00|	[Credit Update per RTT]: cTotal updated from 9935 to 10225, cIssued: 4385
+LOG: 2024-06-08T03:21:52.070549701+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:52.071101998+00:00|	[Credit Update per RTT]: cTotal updated from 10225 to 10515, cIssued: 4659
+LOG: 2024-06-08T03:21:52.123123436+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:52.123448921+00:00|	[Credit Update per RTT]: cTotal updated from 10515 to 10805, cIssued: 4820
+LOG: 2024-06-08T03:21:52.145297359+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:52.145708478+00:00|	[Credit Update per RTT]: cTotal updated from 10805 to 11095, cIssued: 4842
+LOG: 2024-06-08T03:21:52.165288245+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:52.16576692+00:00|	[Credit Update per RTT]: cTotal updated from 11095 to 11385, cIssued: 4859
+LOG: 2024-06-08T03:21:52.186307427+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:52.186773678+00:00|	[Credit Update per RTT]: cTotal updated from 11385 to 11675, cIssued: 4890
+LOG: 2024-06-08T03:21:52.246071057+00:00|	[Incremental Waiting Time Maximum]:	7.340032 ms.
+
+LOG: 2024-06-08T03:21:52.246455094+00:00|	[Credit Update per RTT]: cTotal updated from 11675 to 11965, cIssued: 5176
+LOG: 2024-06-08T03:21:52.270252147+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:52.270717822+00:00|	[Credit Update per RTT]: cTotal updated from 11965 to 12255, cIssued: 5176
+LOG: 2024-06-08T03:21:52.293673575+00:00|	[Incremental Waiting Time Maximum]:	5.242880 ms.
+
+LOG: 2024-06-08T03:21:52.294205258+00:00|	[Credit Update per RTT]: cTotal updated from 12255 to 12545, cIssued: 5245
+LOG: 2024-06-08T03:21:52.312646338+00:00|	[Incremental Waiting Time Maximum]:	5.242880 ms.
+
+LOG: 2024-06-08T03:21:52.313139941+00:00|	[Credit Update per RTT]: cTotal updated from 12545 to 6273, cIssued: 5245
+LOG: 2024-06-08T03:21:52.331869683+00:00|	[Incremental Waiting Time Maximum]:	16.777216 ms.
+
+LOG: 2024-06-08T03:21:52.332118448+00:00|	[Credit Update per RTT]: cTotal updated from 6273 to 6563, cIssued: 5245
+LOG: 2024-06-08T03:21:52.351286694+00:00|	[Incremental Waiting Time Maximum]:	0.131072 ms.
+
+LOG: 2024-06-08T03:21:52.351514+00:00|	[Credit Update per RTT]: cTotal updated from 6563 to 6853, cIssued: 5240
+LOG: 2024-06-08T03:21:52.377263816+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:52.377642266+00:00|	[Credit Update per RTT]: cTotal updated from 6853 to 7143, cIssued: 4448
+LOG: 2024-06-08T03:21:52.400652075+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:52.401074672+00:00|	[Credit Update per RTT]: cTotal updated from 7143 to 7433, cIssued: 3904
+LOG: 2024-06-08T03:21:52.42534631+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:52.425759621+00:00|	[Credit Update per RTT]: cTotal updated from 7433 to 7723, cIssued: 3451
+LOG: 2024-06-08T03:21:52.448198398+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:52.448479792+00:00|	[Credit Update per RTT]: cTotal updated from 7723 to 8013, cIssued: 3334
+LOG: 2024-06-08T03:21:52.470773069+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:52.471577618+00:00|	[Credit Update per RTT]: cTotal updated from 8013 to 8303, cIssued: 3662
+LOG: 2024-06-08T03:21:52.49647948+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:52.496976893+00:00|	[Credit Update per RTT]: cTotal updated from 8303 to 8593, cIssued: 3840
+LOG: 2024-06-08T03:21:52.528427806+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:52.528905416+00:00|	[Credit Update per RTT]: cTotal updated from 8593 to 8883, cIssued: 4041
+LOG: 2024-06-08T03:21:52.548709444+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:52.54909487+00:00|	[Credit Update per RTT]: cTotal updated from 8883 to 9173, cIssued: 4041
+LOG: 2024-06-08T03:21:52.568609742+00:00|	[Incremental Waiting Time Maximum]:	0.393216 ms.
+
+LOG: 2024-06-08T03:21:52.568910289+00:00|	[Credit Update per RTT]: cTotal updated from 9173 to 9463, cIssued: 4100
+LOG: 2024-06-08T03:21:52.596868008+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:52.597193627+00:00|	[Credit Update per RTT]: cTotal updated from 9463 to 9753, cIssued: 4131
+LOG: 2024-06-08T03:21:52.616839139+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:52.617152156+00:00|	[Credit Update per RTT]: cTotal updated from 9753 to 10043, cIssued: 4232
+LOG: 2024-06-08T03:21:52.64264819+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:52.642895538+00:00|	[Credit Update per RTT]: cTotal updated from 10043 to 10333, cIssued: 4551
+LOG: 2024-06-08T03:21:52.691820678+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:52.692226497+00:00|	[Credit Update per RTT]: cTotal updated from 10333 to 10623, cIssued: 4835
+LOG: 2024-06-08T03:21:52.715178207+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:52.715473923+00:00|	[Credit Update per RTT]: cTotal updated from 10623 to 10913, cIssued: 4835
+LOG: 2024-06-08T03:21:52.756701942+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:52.757075737+00:00|	[Credit Update per RTT]: cTotal updated from 10913 to 11203, cIssued: 4844
+LOG: 2024-06-08T03:21:52.778548298+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:52.778920197+00:00|	[Credit Update per RTT]: cTotal updated from 11203 to 11493, cIssued: 4844
+LOG: 2024-06-08T03:21:52.805669599+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:52.806090808+00:00|	[Credit Update per RTT]: cTotal updated from 11493 to 11783, cIssued: 4959
+LOG: 2024-06-08T03:21:52.828719367+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:52.829096756+00:00|	[Credit Update per RTT]: cTotal updated from 11783 to 12073, cIssued: 5049
+LOG: 2024-06-08T03:21:52.848022182+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:52.848435122+00:00|	[Credit Update per RTT]: cTotal updated from 12073 to 12363, cIssued: 5158
+LOG: 2024-06-08T03:21:52.869130707+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:52.869400811+00:00|	[Credit Update per RTT]: cTotal updated from 12363 to 12653, cIssued: 5237
+LOG: 2024-06-08T03:21:52.889258402+00:00|	[Incremental Waiting Time Maximum]:	10.485760 ms.
+
+LOG: 2024-06-08T03:21:52.889663996+00:00|	[Credit Update per RTT]: cTotal updated from 12653 to 12943, cIssued: 5447
+LOG: 2024-06-08T03:21:52.924649433+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:52.925115715+00:00|	[Credit Update per RTT]: cTotal updated from 12943 to 13233, cIssued: 5447
+LOG: 2024-06-08T03:21:52.946615977+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:52.947121621+00:00|	[Credit Update per RTT]: cTotal updated from 13233 to 13523, cIssued: 5450
+LOG: 2024-06-08T03:21:52.965488783+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:52.965866097+00:00|	[Credit Update per RTT]: cTotal updated from 13523 to 13813, cIssued: 5575
+LOG: 2024-06-08T03:21:53.008941269+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:53.009441135+00:00|	[Credit Update per RTT]: cTotal updated from 13813 to 14103, cIssued: 5783
+LOG: 2024-06-08T03:21:53.038489421+00:00|	[Incremental Waiting Time Maximum]:	5.242880 ms.
+
+LOG: 2024-06-08T03:21:53.038990013+00:00|	[Credit Update per RTT]: cTotal updated from 14103 to 14393, cIssued: 5966
+LOG: 2024-06-08T03:21:53.062213168+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:53.062424422+00:00|	[Credit Update per RTT]: cTotal updated from 14393 to 14683, cIssued: 5966
+LOG: 2024-06-08T03:21:53.093207164+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:53.093623912+00:00|	[Credit Update per RTT]: cTotal updated from 14683 to 14973, cIssued: 6145
+LOG: 2024-06-08T03:21:53.115512341+00:00|	[Incremental Waiting Time Maximum]:	0.458752 ms.
+
+LOG: 2024-06-08T03:21:53.115911403+00:00|	[Credit Update per RTT]: cTotal updated from 14973 to 15263, cIssued: 6262
+LOG: 2024-06-08T03:21:53.140691089+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:53.140921541+00:00|	[Credit Update per RTT]: cTotal updated from 15263 to 15553, cIssued: 6464
+LOG: 2024-06-08T03:21:53.167029084+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:53.167619561+00:00|	[Credit Update per RTT]: cTotal updated from 15553 to 15843, cIssued: 6611
+LOG: 2024-06-08T03:21:53.200469998+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:53.201329053+00:00|	[Credit Update per RTT]: cTotal updated from 15843 to 16133, cIssued: 6611
+LOG: 2024-06-08T03:21:53.224737396+00:00|	[Incremental Waiting Time Maximum]:	3.670016 ms.
+
+LOG: 2024-06-08T03:21:53.225209761+00:00|	[Credit Update per RTT]: cTotal updated from 16133 to 16423, cIssued: 6634
+LOG: 2024-06-08T03:21:53.248099486+00:00|	[Incremental Waiting Time Maximum]:	8.388608 ms.
+
+LOG: 2024-06-08T03:21:53.248359009+00:00|	[Credit Update per RTT]: cTotal updated from 16423 to 16713, cIssued: 6815
+LOG: 2024-06-08T03:21:53.26909255+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:53.269369476+00:00|	[Credit Update per RTT]: cTotal updated from 16713 to 17003, cIssued: 6817
+LOG: 2024-06-08T03:21:53.297900806+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:53.298154543+00:00|	[Credit Update per RTT]: cTotal updated from 17003 to 17293, cIssued: 6936
+LOG: 2024-06-08T03:21:53.325164455+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:53.325519517+00:00|	[Credit Update per RTT]: cTotal updated from 17293 to 17583, cIssued: 7011
+LOG: 2024-06-08T03:21:53.348809131+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:53.349219436+00:00|	[Credit Update per RTT]: cTotal updated from 17583 to 17873, cIssued: 7093
+LOG: 2024-06-08T03:21:53.368259112+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:53.368487965+00:00|	[Credit Update per RTT]: cTotal updated from 17873 to 18163, cIssued: 7187
+LOG: 2024-06-08T03:21:53.399439851+00:00|	[Incremental Waiting Time Maximum]:	0.917504 ms.
+
+LOG: 2024-06-08T03:21:53.399920912+00:00|	[Credit Update per RTT]: cTotal updated from 18163 to 18453, cIssued: 7644
+LOG: 2024-06-08T03:21:53.430959834+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:53.431322782+00:00|	[Credit Update per RTT]: cTotal updated from 18453 to 18743, cIssued: 7762
+LOG: 2024-06-08T03:21:53.485092402+00:00|	[Incremental Waiting Time Maximum]:	29.360128 ms.
+
+LOG: 2024-06-08T03:21:53.485577531+00:00|	[Credit Update per RTT]: cTotal updated from 18743 to 9372, cIssued: 7774
+LOG: 2024-06-08T03:21:53.507574908+00:00|	[Incremental Waiting Time Maximum]:	4.194304 ms.
+
+LOG: 2024-06-08T03:21:53.507875965+00:00|	[Credit Update per RTT]: cTotal updated from 9372 to 9662, cIssued: 7774
+LOG: 2024-06-08T03:21:53.526468091+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:53.526845478+00:00|	[Credit Update per RTT]: cTotal updated from 9662 to 9952, cIssued: 7720
+LOG: 2024-06-08T03:21:53.54731366+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:53.547776926+00:00|	[Credit Update per RTT]: cTotal updated from 9952 to 10242, cIssued: 6554
+LOG: 2024-06-08T03:21:53.566494509+00:00|	[Incremental Waiting Time Maximum]:	0.327680 ms.
+
+LOG: 2024-06-08T03:21:53.566839803+00:00|	[Credit Update per RTT]: cTotal updated from 10242 to 10532, cIssued: 6154
+LOG: 2024-06-08T03:21:53.587439799+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:53.587742147+00:00|	[Credit Update per RTT]: cTotal updated from 10532 to 10822, cIssued: 5458
+LOG: 2024-06-08T03:21:53.607370347+00:00|	[Incremental Waiting Time Maximum]:	0.262144 ms.
+
+LOG: 2024-06-08T03:21:53.60759774+00:00|	[Credit Update per RTT]: cTotal updated from 10822 to 11112, cIssued: 5060
+LOG: 2024-06-08T03:21:53.63013728+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:53.630512391+00:00|	[Credit Update per RTT]: cTotal updated from 11112 to 11402, cIssued: 4343
+LOG: 2024-06-08T03:21:53.666752721+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:53.667122387+00:00|	[Credit Update per RTT]: cTotal updated from 11402 to 11692, cIssued: 5062
+LOG: 2024-06-08T03:21:53.723877059+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:53.724293093+00:00|	[Credit Update per RTT]: cTotal updated from 11692 to 11982, cIssued: 5192
+LOG: 2024-06-08T03:21:53.742808005+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:53.743065244+00:00|	[Credit Update per RTT]: cTotal updated from 11982 to 12272, cIssued: 5192
+LOG: 2024-06-08T03:21:53.782135127+00:00|	[Incremental Waiting Time Maximum]:	0.786432 ms.
+
+LOG: 2024-06-08T03:21:53.782518359+00:00|	[Credit Update per RTT]: cTotal updated from 12272 to 12562, cIssued: 5314
+LOG: 2024-06-08T03:21:53.830151069+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:53.830507041+00:00|	[Credit Update per RTT]: cTotal updated from 12562 to 12852, cIssued: 5447
+LOG: 2024-06-08T03:21:53.855145979+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:53.8553919+00:00|	[Credit Update per RTT]: cTotal updated from 12852 to 13142, cIssued: 5447
+LOG: 2024-06-08T03:21:53.88412649+00:00|	[Incremental Waiting Time Maximum]:	6.291456 ms.
+
+LOG: 2024-06-08T03:21:53.884553725+00:00|	[Credit Update per RTT]: cTotal updated from 13142 to 13432, cIssued: 5532
+LOG: 2024-06-08T03:21:53.904403044+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:53.904795429+00:00|	[Credit Update per RTT]: cTotal updated from 13432 to 13722, cIssued: 5533
+LOG: 2024-06-08T03:21:53.923713416+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:53.924120196+00:00|	[Credit Update per RTT]: cTotal updated from 13722 to 14012, cIssued: 5644
+LOG: 2024-06-08T03:21:53.952273282+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:53.952546867+00:00|	[Credit Update per RTT]: cTotal updated from 14012 to 14302, cIssued: 5754
+LOG: 2024-06-08T03:21:53.973215291+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:53.973599346+00:00|	[Credit Update per RTT]: cTotal updated from 14302 to 14592, cIssued: 5898
+LOG: 2024-06-08T03:21:53.994771579+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:53.995209407+00:00|	[Credit Update per RTT]: cTotal updated from 14592 to 14882, cIssued: 6111
+LOG: 2024-06-08T03:21:54.019953033+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:54.020453587+00:00|	[Credit Update per RTT]: cTotal updated from 14882 to 15172, cIssued: 6282
+LOG: 2024-06-08T03:21:54.041114609+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:54.041576183+00:00|	[Credit Update per RTT]: cTotal updated from 15172 to 15462, cIssued: 6420
+LOG: 2024-06-08T03:21:54.072345828+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:54.072755869+00:00|	[Credit Update per RTT]: cTotal updated from 15462 to 15752, cIssued: 6592
+LOG: 2024-06-08T03:21:54.098109494+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:54.098504327+00:00|	[Credit Update per RTT]: cTotal updated from 15752 to 16042, cIssued: 6609
+LOG: 2024-06-08T03:21:54.119715452+00:00|	[Incremental Waiting Time Maximum]:	1.835008 ms.
+
+LOG: 2024-06-08T03:21:54.120176797+00:00|	[Credit Update per RTT]: cTotal updated from 16042 to 16332, cIssued: 6611
+LOG: 2024-06-08T03:21:54.156205989+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:54.15666002+00:00|	[Credit Update per RTT]: cTotal updated from 16332 to 16622, cIssued: 6772
+LOG: 2024-06-08T03:21:54.180993166+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:54.181475872+00:00|	[Credit Update per RTT]: cTotal updated from 16622 to 16912, cIssued: 7033
+LOG: 2024-06-08T03:21:54.217891636+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:54.218284645+00:00|	[Credit Update per RTT]: cTotal updated from 16912 to 17202, cIssued: 7192
+LOG: 2024-06-08T03:21:54.249987266+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:54.250486636+00:00|	[Credit Update per RTT]: cTotal updated from 17202 to 8601, cIssued: 7193
+LOG: 2024-06-08T03:21:54.271354345+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:54.271659567+00:00|	[Credit Update per RTT]: cTotal updated from 8601 to 8891, cIssued: 6003
+LOG: 2024-06-08T03:21:54.291974572+00:00|	[Incremental Waiting Time Maximum]:	0.655360 ms.
+
+LOG: 2024-06-08T03:21:54.292398945+00:00|	[Credit Update per RTT]: cTotal updated from 8891 to 9181, cIssued: 5320
+LOG: 2024-06-08T03:21:54.349207933+00:00|	[Incremental Waiting Time Maximum]:	2.621440 ms.
+
+LOG: 2024-06-08T03:21:54.349599349+00:00|	[Credit Update per RTT]: cTotal updated from 9181 to 9471, cIssued: 3653
+LOG: 2024-06-08T03:21:54.368766362+00:00|	[Incremental Waiting Time Maximum]:	1.310720 ms.
+
+LOG: 2024-06-08T03:21:54.369133266+00:00|	[Credit Update per RTT]: cTotal updated from 9471 to 9761, cIssued: 3973
+LOG: 2024-06-08T03:21:54.389298008+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:54.389703056+00:00|	[Credit Update per RTT]: cTotal updated from 9761 to 10051, cIssued: 4257
+LOG: 2024-06-08T03:21:54.408758697+00:00|	[Incremental Waiting Time Maximum]:	3.145728 ms.
+
+LOG: 2024-06-08T03:21:54.409177603+00:00|	[Credit Update per RTT]: cTotal updated from 10051 to 10341, cIssued: 4515
+LOG: 2024-06-08T03:21:54.44730605+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:54.447609791+00:00|	[Credit Update per RTT]: cTotal updated from 10341 to 5171, cIssued: 4789
+LOG: 2024-06-08T03:21:54.466737139+00:00|	[Incremental Waiting Time Maximum]:	2.097152 ms.
+
+LOG: 2024-06-08T03:21:54.467132201+00:00|	[Credit Update per RTT]: cTotal updated from 5171 to 5461, cIssued: 3800
+LOG: 2024-06-08T03:21:54.488310449+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:54.488829158+00:00|	[Credit Update per RTT]: cTotal updated from 5461 to 5751, cIssued: 3331
+LOG: 2024-06-08T03:21:54.507896557+00:00|	[Incremental Waiting Time Maximum]:	0.524288 ms.
+
+LOG: 2024-06-08T03:21:54.508280117+00:00|	[Credit Update per RTT]: cTotal updated from 5751 to 6041, cIssued: 3026
+LOG: 2024-06-08T03:21:54.566685643+00:00|	[Incremental Waiting Time Maximum]:	8.388608 ms.
+
+LOG: 2024-06-08T03:21:54.571538655+00:00|	[Credit Update per RTT]: cTotal updated from 6041 to 6331, cIssued: 2915
+LOG: 2024-06-08T03:21:54.592977861+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:54.593448261+00:00|	[Credit Update per RTT]: cTotal updated from 6331 to 6621, cIssued: 2953
+LOG: 2024-06-08T03:21:54.612999989+00:00|	[Incremental Waiting Time Maximum]:	1.572864 ms.
+
+LOG: 2024-06-08T03:21:54.613473971+00:00|	[Credit Update per RTT]: cTotal updated from 6621 to 6911, cIssued: 2957
+LOG: 2024-06-08T03:21:54.631882797+00:00|	[Incremental Waiting Time Maximum]:	1.048576 ms.
+
+LOG: 2024-06-08T03:21:54.632196059+00:00|	[Credit Update per RTT]: cTotal updated from 6911 to 7201, cIssued: 2957
+LOG: 2024-06-08T03:21:54.651435875+00:00|	[Incremental Waiting Time Maximum]:	0.065536 ms.
+
+LOG: 2024-06-08T03:21:54.651727892+00:00|	[Credit Update per RTT]: cTotal updated from 7201 to 7491, cIssued: 2957
+LOG: 2024-06-08T03:21:54.671326596+00:00|	[Incremental Waiting Time Maximum]:	0.163840 ms.
+
+LOG: 2024-06-08T03:21:54.67157753+00:00|	[Credit Update per RTT]: cTotal updated from 7491 to 7781, cIssued: 2957
+LOG: 2024-06-08T03:21:54.690200236+00:00|	[Incremental Waiting Time Maximum]:	0.098304 ms.
+
+LOG: 2024-06-08T03:21:54.690507509+00:00|	[Credit Update per RTT]: cTotal updated from 7781 to 8071, cIssued: 2957
+LOG: 2024-06-08T03:21:54.709128142+00:00|	[Incremental Waiting Time Maximum]:	0.081920 ms.
+
+LOG: 2024-06-08T03:21:54.7093672+00:00|	[Credit Update per RTT]: cTotal updated from 8071 to 8361, cIssued: 2957
+LOG: 2024-06-08T03:21:54.728409461+00:00|	[Incremental Waiting Time Maximum]:	0.114688 ms.
+
+LOG: 2024-06-08T03:21:54.728659601+00:00|	[Credit Update per RTT]: cTotal updated from 8361 to 8651, cIssued: 2957

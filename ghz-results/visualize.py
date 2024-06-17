@@ -14,7 +14,8 @@ from utils import calculate_goodput_ave_var, calculate_tail_latency_dynamic, rea
 
 throughput_time_interval = '100ms'
 latency_window_size = '200ms'  # Define the window size as 100 milliseconds
-offset = 0  # Define the offset as 50 milliseconds
+offset = 5  # Define the offset as 50 milliseconds
+# warmup = 5  # Define the offset as 50 milliseconds
 oneNode = False
 # remote = True
 cloudlab = True
@@ -50,7 +51,7 @@ def convert_to_dataframe(data, init=False):
     df['timestamp'] = pd.to_datetime(df['timestamp'])
 
     summary = df.groupby('status')['status'].count().reset_index(name='count')
-    print("Summary of the status", summary)
+    # print("Summary of the status", summary)
     # print(df['timestamp'].min())
 
     df.set_index('timestamp', inplace=True)
@@ -249,13 +250,13 @@ def extract_ownPrices(file_pattern):
     data_dict = {}
    
     # Provide the full path to the directory containing the files
-    directory_path = os.path.expanduser('~/Sync/Git/protobuf/priceOutput/')
+    directory_path = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/priceLogs')
 
     # Get a list of files that match the given pattern
     files = [f for f in os.listdir(directory_path) if re.match(file_pattern, f)]
 
     # append the directory path to each file name
-    files = [directory_path + f for f in files]
+    files = [os.path.join(directory_path, f) for f in files]
 
     for file_path in files:
         # print(file_path)
@@ -299,9 +300,57 @@ def extract_ownPrices(file_pattern):
 
         # Add the DataFrame to the data_dict with the service name as the key
         data_dict[service_name] = df
+    # There are a lot of services, so we only plot the highest 5 services based on the max
+    # First, we calculate the max column for each service
+    max_dict = {service_name: df.max().values[0] for service_name, df in data_dict.items()}
+    # Then, we sort the max_dict by the max value
+    max_dict = dict(sorted(max_dict.items(), key=lambda item: item[1], reverse=True))
+    # Then, we only keep the top 5 services
+    data_dict = {service_name: df for service_name, df in data_dict.items() if service_name in list(max_dict.keys())[:5]}
 
     return data_dict
 
+
+def extract_bw_credit(file_pattern):
+    # similar to extract_ownPrice, we extract the breakwater credit
+    # from log files that contains `[Credit Update per RTT]: cTotal updated from 2072 to 2348, cIssued: 1624`
+    timestamp_pattern = r"LOG: (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+[-+]\d{2}:\d{2})"
+    credit_update_patterns = r"\[Credit Update per RTT\]: cTotal updated from (\d+) to (\d+), cIssued: (\d+)"
+    data_dict = {}
+    directory_path = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/creditLogs')
+    files = [f for f in os.listdir(directory_path) if re.match(file_pattern, f)]
+    files = [os.path.join(directory_path, f) for f in files]
+    for file_path in files:
+        cTotal = []
+        cIssued = []
+        timestamps = []
+        match_service_name = re.search(cloudlabOutput, file_path)
+        if match_service_name:
+            service_name = match_service_name.group(1)
+        else:
+            continue
+        with open(file_path, "r") as file:
+            for line in file:
+                if "[Credit Update per RTT]" in line:
+                    match = re.search(credit_update_patterns, line)
+                    if match:
+                        cTotal.append(int(match.group(2)))
+                        cIssued.append(int(match.group(3)))
+                        match_timestamp = re.search(timestamp_pattern, line)
+                        assert match_timestamp
+                        timestamps.append(match_timestamp.group(1))
+        df = pd.DataFrame({service_name + "_cTotal": cTotal, service_name + "_cIssued": cIssued})
+        if df.empty:
+            continue
+        df["timestamp"] = pd.to_datetime(timestamps)
+        df.set_index('timestamp', inplace=True)
+        df.sort_index(inplace=True)
+        df = df[(df.index >= start_time) & (df.index <= end_time)]
+        min_timestamp = df.index.min()
+        df.index = df.index - min_timestamp + pd.Timestamp('2000-01-01')
+        data_dict[service_name] = df
+
+    return data_dict
 
 def extract_waiting_times_all(file_pattern):
     # Define the regular expression patterns for extracting timestamp and own price update
@@ -339,6 +388,14 @@ def extract_waiting_times_all(file_pattern):
 
         # Add the DataFrame to the data_dict with the service name as the key
         data_dict[service_name] = df
+    
+    # There are a lot of services, so we only plot the highest 5 services based on the max
+    # First, we calculate the max column for each service
+    max_dict = {service_name: df.max().values[0] for service_name, df in data_dict.items()}
+    # Then, we sort the max_dict by the max value
+    max_dict = dict(sorted(max_dict.items(), key=lambda item: item[1], reverse=True))
+    # Then, we only keep the top 5 services
+    data_dict = {service_name: df for service_name, df in data_dict.items() if service_name in list(max_dict.keys())[:5]}           
     return data_dict
 
 
@@ -518,7 +575,7 @@ def plot_timeseries_split_2(df1, df2, filename):
     capacity = load_info['load-end']
     df['total_demand'] = load_info['load-start']
     # Define the time as 00:00:00 + load-step-duration - offset
-    mid_start_time = pd.Timestamp('2000-01-01 00:00:00') + pd.Timedelta(load_info['load-step-duration']) - pd.Timedelta(offset, unit='s')
+    # mid_start_time = pd.Timestamp('2000-01-01 00:00:00') + pd.Timedelta(load_info['load-step-duration']) - pd.Timedelta(offset, unit='s')
     # Create a new column 'new_column' and fill it with 100 for rows within the time range
     df.loc[mid_start_time:, 'total_demand'] = capacity  # Set the value to 100 for the specified time range
 
@@ -569,11 +626,14 @@ def plot_timeseries_split(df, filename, computation_time=0):
     # e.g., breakwater in social-compose-control-breakwater-parallel-capacity-8000-1209_1620.json
     mechanism = re.findall(r"control-(\w+)-", filename)[0]
     
-    servicePrice = False
+    # servicePrice is true if the mechanism is charon
+    # servicePrice take from env, default is False
+    servicePrice = os.getenv('servicePrice', False)
+    serviceCredit = os.getenv('BREAKWATER_TRACK_CREDIT', False)
     narrow = False
     width = 3 if narrow else 6
-    if servicePrice:
-        fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, figsize=(12, 10), sharex=True)
+    if servicePrice or serviceCredit:
+        fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, figsize=(12, 12), sharex=True)
     else:
         fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, figsize=(width, 4), sharex=True, height_ratios=[1, 3])
 
@@ -643,7 +703,7 @@ def plot_timeseries_split(df, filename, computation_time=0):
     # if mechanism in ['charon', 'breakwater', 'breakwaterd']:
     #     ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], color='tab:blue', alpha=0.3, label='Rate Limited Req')
     ax2.tick_params(axis='y', labelcolor='tab:blue')
-    ax2.set_ylim(0, 15000)
+    # ax2.set_ylim(0, 15000)
 
     # Apply the custom formatter to the x-axis
     # use second locator to show grid lines for each second, not `09` but `9`
@@ -712,16 +772,26 @@ def plot_timeseries_split(df, filename, computation_time=0):
     ax1.legend(loc='lower left', bbox_to_anchor=(0, 1.1), ncol=1 if narrow else 2, frameon=False)
 
     if cloudlab:
-        max_price = 0
-        df_price_dict = extract_ownPrices(cloudlabOutput)
-        for service_name, df_price in df_price_dict.items():
-            # only keep the data when the index is smaller than the last timestamp of the df.index
-            df_price = df_price[df_price.index < df.index[-1]]
-            moving_average_price = df_price[service_name].rolling(latency_window_size).mean()
-            if servicePrice:
+        if servicePrice:
+            max_price = 0
+            df_price_dict = extract_ownPrices(cloudlabOutput)
+            for service_name, df_price in df_price_dict.items():
+                # only keep the data when the index is smaller than the last timestamp of the df.index
+                df_price = df_price[df_price.index < df.index[-1]]
+                moving_average_price = df_price[service_name].rolling(latency_window_size).mean()
                 ax3.plot(df_price.index, moving_average_price, label=service_name)
                 ax3.legend(loc='upper left', ncol=2, frameon=False)
-            max_price = max(moving_average_price.max(), max_price)
+                max_price = max(moving_average_price.max(), max_price)
+        elif serviceCredit:
+            df_credit_dict = extract_bw_credit(cloudlabOutput)
+            for service_name, df_credit in df_credit_dict.items():
+                # only keep the data when the index is smaller than the last timestamp of the df.index
+                df_credit = df_credit[df_credit.index < df.index[-1]]
+                moving_average_cTotal = df_credit[service_name+'_cTotal'].rolling(latency_window_size).mean()
+                moving_average_cIssued = df_credit[service_name+'_cIssued'].rolling(latency_window_size).mean()
+                ax3.plot(df_credit.index, moving_average_cTotal, label=service_name + ' Total Credit')
+                ax3.plot(df_credit.index, moving_average_cIssued, label=service_name + ' Issued Credit')
+                ax3.legend(loc='upper left', ncol=2, frameon=False)
     else:
         df_price = extract_ownPrice_update("~/Sync/Git/service-app/services/protobuf-grpc/server.output")
         # only keep the data when the index is smaller than the last timestamp of the df.index
@@ -731,7 +801,10 @@ def plot_timeseries_split(df, filename, computation_time=0):
             ax3.plot(df_price.index, moving_average_price, label='Service Price')
         max_price = moving_average_price.max()
     if servicePrice:
-        ax3.set_ylabel('Service Price')
+        ax3.set_ylabel('Rajomon Price Per Service')
+        ax3.set_xlabel('Time')
+    elif serviceCredit:
+        ax3.set_ylabel('Breakwater Credit')
         ax3.set_xlabel('Time')
 
  
@@ -922,7 +995,14 @@ def analyze_data(filename):
             capacity = int(capacity)
             print("Capacity:", capacity)
 
-    data = read_data(filename)
+    try:
+        data = read_data(filename)
+    except Exception as e:
+        print(f"Error: {e}")
+        # replace the experiment file `ghz-results` with `archived_results` and try again
+        filename = filename.replace("ghz-results", "archived_results")
+        print(f"Trying with archived_results: {filename}")
+        data = read_data(filename)
     df = convert_to_dataframe(data, init=True)
     # print(df.head())
     # plot_latency_pdf_cdf(df, filename)
@@ -1009,8 +1089,8 @@ if __name__ == '__main__':
     # the method is the word between `social-` and `-control` in the filename
     method = re.findall(r"social-(.*?)-control", filename)[0]
     timestamp = re.findall(r"-\d+_\d+", filename)[0]
-    SLO = get_slo(method, tight=False, all_methods=('S_' not in method))
-
+    SLO = get_slo(method, tight=False, all_methods=False)
+    print(f'[INFO] SLO for {method} is {SLO} ms')
     # if there is a second argument, it is the handle of showing the plot
     if len(sys.argv) > 2:
         noPlot = sys.argv[2]
@@ -1018,4 +1098,5 @@ if __name__ == '__main__':
         noPlot = noPlot.lower() == 'no-plot'
     else:
         noPlot = False
+    
     analyze_data(filename)

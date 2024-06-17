@@ -8,7 +8,8 @@ import os
 # Constants used throughout the module
 throughput_time_interval = '200ms'
 latency_window_size = '200ms'
-offset = 5 # an offset of 5 seconds to omit pre-spike metrics
+offset = 5 # an offset of 5 seconds to omit before experiment starts
+warmup = 5 # an offset of 5 seconds to omit pre-spike metrics
 from datetime import datetime
 from slo import get_slo
 
@@ -103,9 +104,10 @@ def convert_to_dataframe(data, include_warmup=False):
     if len(df) == 0:
         return df
     if include_warmup:
-        df = df[df.index < df.index[-1] - pd.Timedelta(seconds=offset)]
-    else:
+        # df = df[df.index < df.index[-1] - pd.Timedelta(seconds=offset)]
         df = df[df.index > df.index[0] + pd.Timedelta(seconds=offset)]
+    else:
+        df = df[df.index > df.index[0] + pd.Timedelta(seconds=offset + warmup)]
     min_timestamp = df.index.min()
     df.index = df.index - min_timestamp + pd.Timestamp('2000-01-01')
     return df
@@ -162,6 +164,48 @@ def calculate_average_goodput(filename, slo):
     df = convert_to_dataframe(data)
     goodput = calculate_goodput(df, slo=slo)
     return goodput
+
+
+def calculate_metrics_from_file(filename, slo):
+    
+    """
+    Calculate the tail latencies, throughput, and average goodput from a JSON file.
+
+    Parameters:
+    filename (str): Path to the JSON file.
+    slo (float): Service Level Objective (SLO) for goodput calculation.
+
+    Returns:
+    tuple: (latency_99, latency_95, latency_median, throughput, goodput)
+    """
+    data = read_data(filename)
+
+    if data is None:
+        print("Data is None for", filename)
+        return None, None, None, None, None
+    df = convert_to_dataframe(data)
+    
+    if df.empty:
+        print("DataFrame is empty for", filename)
+        return None, None, None, None, None
+    
+    # Calculate latencies
+    latency_99 = df[df['status'] == 'OK']['latency'].quantile(0.99)
+    latency_95 = df[df['status'] == 'OK']['latency'].quantile(0.95)
+    latency_median = df[df['status'] == 'OK']['latency'].quantile(0.50)
+    
+    # Calculate throughput
+    if df.index.max() == df.index.min():
+        print("Invalid index range for throughput calculation in", filename)
+        throughput = None
+    else:
+        throughput = df[df['status'] == 'OK'].shape[0] / (df.index.max() - df.index.min()).total_seconds()
+    
+    # Calculate goodput
+    goodput = calculate_goodput(df, slo=slo)
+    
+    return latency_99, latency_95, latency_median, throughput, goodput
+
 
 def calculate_goodput(df, slo):
     """
@@ -277,6 +321,23 @@ def extract_configurations_from_output_file(output_file):
         raise ValueError("Overload control configurations not found in the content")
 
 
+def extract_parameters_from_df_row(params_columns, row):
+    """
+    Extract parameters from a DataFrame row.
+
+    Parameters:
+    params_columns (list of str): List of parameter column names.
+    row (pandas.Series): DataFrame row.
+
+    Returns:
+    dict: Parameters extracted from the row.
+    """
+    params = {}
+    for param in params_columns:
+        params[param] = row[param]
+    return params
+
+
 def check_parameters(params_file, filename):
     """
     Check if the parameters in the file match the given parameters.
@@ -324,7 +385,9 @@ def extract_experiment_details_json(filename):
     dict: A dictionary containing extracted details.
     """
     # Define the regex pattern based on the filename structure
-    pattern = re.compile(r'social-(S_\d+)-control-(\w+)-parallel-capacity-(\d+)-(\d{4}_\d{4})\.json')
+    # between social- and -control, there is the interface name, which could potentially contain dashes
+    # pattern = re.compile(r'social-(S_\d+)-control-(\w+)-parallel-capacity-(\d+)-(\d{4}_\d{4})\.json')
+    pattern = re.compile(r'social-([a-zA-Z0-9_-]+)-control-(\w+)-parallel-capacity-(\d+)-(\d{4}_\d{4})\.json') 
     
     # Search for the pattern in the filename
     match = pattern.search(filename)
@@ -337,7 +400,8 @@ def extract_experiment_details_json(filename):
             'timestamp_str': match.group(4)
         }
     else:
-        raise ValueError("Filename does not match the expected pattern")
+        print(f"Filename {filename} does not match the expected pattern")
+        return None
 
 
 def load_data(method, list_of_tuples_of_experiment_timestamps, slo, given_parameter=None, request_count_cutoff=None, tail_latency_cutoff=None):
@@ -476,6 +540,86 @@ def load_data(method, list_of_tuples_of_experiment_timestamps, slo, given_parame
     return df
 
 
+def load_parameters(method, given_parameter):
+    bayesian_folder = os.path.expanduser('~/Sync/Git/protobuf/baysian-opt')
+    
+    if method not in given_parameter:
+        raise ValueError(f"Method {method} not found in the given parameter dictionary")
+
+    # loop over k-v pairs given_parameter[method], and return a dictionary of control: parameters
+    parameters = {}
+    for overload_control, params_file in given_parameter[method].items():
+        with open(os.path.join(bayesian_folder, params_file), 'r') as f:
+            parameters[overload_control] = json.load(f).get('parameters', {})
+
+    return parameters
+
+
+def load_data_from_csv(file_path, method, list_of_tuples_of_experiment_timestamps, given_parameter=None):
+    """
+    Load data from a CSV file for a given method and filter according to time ranges and parameters.
+
+    Parameters:
+    file_path (str): Path to the CSV file containing pre-computed results.
+    method (str): Method name. Application name for Alibaba, and interface name for social network etc.
+    list_of_tuples_of_experiment_timestamps (list of tuple): List of tuples containing start and end time strings.
+    given_parameter (dict): Dictionary of given parameters for filtering (default is None).
+
+    Returns:
+    DataFrame: Filtered DataFrame containing the relevant data.
+    """
+
+    # Load data from CSV
+    df = pd.read_csv(file_path)
+    
+    # Filter by method
+    df = df[df['interface'] == method]
+    
+    # Filter by time ranges
+    # def is_within_time_ranges(timestamp, time_ranges):
+    #     for start, end in time_ranges:
+    #         if start <= timestamp <= end:
+    #             return True
+    #     return False
+
+    # df = df[df['timestamp'].apply(lambda x: is_within_time_ranges(x, list_of_tuples_of_experiment_timestamps))]
+    
+    # Filter by given parameters
+    if given_parameter is not None and method in given_parameter:
+        control_params = load_parameters(method, given_parameter)
+    
+        # Initialize an empty DataFrame to store filtered results
+        filtered_df = pd.DataFrame()
+        
+        # Loop over each control scheme and filter rows based on relevant parameters
+        for control_scheme, params in control_params.items():
+            # relevant_params = get_relevant_parameters(control_scheme, params)
+            control_df = df[df['control_scheme'] == control_scheme]
+            for param, value in params.items():
+                # if param is not in the columns, continue
+                if param not in df.columns:
+                    continue
+                # if param == 'LAZY_UPDATE' or param == 'ONLY_FRONTEND':
+                if value == 'true' or value == 'false':
+                    continue
+
+                if pd.api.types.is_float_dtype(control_df[param]):
+                    control_df = control_df[np.isclose(control_df[param], value, atol=1e-3)]
+                else:
+                    control_df = control_df[control_df[param] == value]
+
+                # control_df = control_df[control_df[param] == value]
+                # if control_df becomes empty, print a message and break
+                if control_df.empty:
+                    print(f"No data found for {method} with {control_scheme} according to the given conditions {param} == {value}")
+                    break
+            filtered_df = pd.concat([filtered_df, control_df], ignore_index=True)
+        
+        df = filtered_df
+    # rename the columns `control_scheme` to `overload_control`, and `capacity` to `Load`
+    df.rename(columns={'control_scheme': 'overload_control', 'capacity': 'Load'}, inplace=True)
+    return df
+
 
 def roundDownParams(params):
     # capitalize the params
@@ -506,7 +650,7 @@ def roundDownParams(params):
     return params
 
 
-def calculate_goodput_from_file(filename, slo, quantile, average=True):
+def calculate_goodput_from_file(filename, tightSLO, quantile, average=True):
     # Read the ghz.output file and calculate the average goodput
     # Return the average goodput
     # if filename is a list, average the goodput of all the files
@@ -514,10 +658,13 @@ def calculate_goodput_from_file(filename, slo, quantile, average=True):
     if isinstance(filename, list):
         goodput = 0
         for f in filename:
-            goodput += calculate_goodput_from_file(f, slo, quantile, average)
+            goodput += calculate_goodput_from_file(f, tightSLO, quantile, average)
         goodput = goodput / len(filename)
         return goodput
 
+    # extract the method from the filename
+    method = extract_experiment_details_json(filename)['interface']
+    slo = get_slo(method, tight=tightSLO)
     data = read_data(filename)
     df = convert_to_dataframe(data, include_warmup=True)
     if average:
@@ -553,20 +700,21 @@ def goodput_quantile(df, slo, quantile=0.1):
     return goodput
 
 
-def read_tail_latency_from_file(filename, percentile=99):
+def read_tail_latency_from_file(filename, percentile=99, minusSLO=False, tightSLO=False):
     if isinstance(filename, list):
         latency = 0
         for f in filename:
-            latency += read_tail_latency_from_file(f, percentile=percentile)
+            latency += read_tail_latency_from_file(f, percentile=percentile, minusSLO=minusSLO, tightSLO=tightSLO)
         latency = latency / len(filename)
         return latency
 
-    # with open(filename, 'r') as f:
-    #     data = json.load(f)
+    method = extract_experiment_details_json(filename)['interface']
+    slo = get_slo(method, tight=tightSLO)
     data = read_data(filename)        
     df = convert_to_dataframe(data)
     percentile_latency = df[(df['status'] == 'OK')]['latency'].quantile(percentile / 100)
-
+    if minusSLO:
+        percentile_latency = percentile_latency - slo if percentile_latency > slo else 0
     return percentile_latency  # Replace with your actual function
 
 
@@ -694,7 +842,7 @@ def save_iteration_details(optimizer, file_path):
         print(f"An unexpected error occurred: {e}")
 
 
-def export_all_experiments_to_csv(time_ranges):
+def export_all_experiments_to_csv(time_ranges, output_file='experiment_results.csv'):
 
     # Create a DataFrame to store the experiment results
     base_columns = ['timestamp', 'interface', 'control_scheme', 'capacity', 'throughput', 'goodput',
@@ -710,6 +858,8 @@ def export_all_experiments_to_csv(time_ranges):
     for filename in files:
         # Extract the date and time part from the filename
         config = extract_experiment_details_json(filename)
+        if config is None:
+            continue
         timestamp_str = config['timestamp_str']
 
         # check if the file's timestamp is given format
@@ -735,12 +885,9 @@ def export_all_experiments_to_csv(time_ranges):
             continue
 
         slo = get_slo(method=method)
-        # Calculate latencies and throughput
-        latency_99 = calculate_tail_latency(filename)
-        latency_95 = calculate_tail_latency(filename, 95)
-        latency_median = calculate_tail_latency(filename, 50)
-        throughput = calculate_throughput(filename)
-        goodput = calculate_average_goodput(filename, slo)
+        # # Calculate latencies and throughput using the function calculate_metrics_from_file
+        # there are 5 return values from the function
+        latency_99, latency_95, latency_median, throughput, goodput = calculate_metrics_from_file(filename, slo)
 
         # Prepare a row with base columns
         row = {
@@ -772,11 +919,11 @@ def export_all_experiments_to_csv(time_ranges):
     df = pd.DataFrame(experiment_data, columns=columns)
 
     # Export DataFrame to CSV
-    df.to_csv('experiment_results.csv', index=False)
-    print("Experiment results successfully exported to experiment_results.csv")
+    df.to_csv(output_file, index=False)
+    print(f"Experiment results successfully exported to {output_file}")
 
 
-def calculate_group_statistics(file_path):
+def calculate_group_statistics(file_path, output_file='group_statistics.csv'):
     # Load the experiment results from the CSV file
     df = pd.read_csv(file_path)
     
@@ -806,31 +953,46 @@ def calculate_group_statistics(file_path):
     
     # Calculate mean and variance for each group
     mean_df = grouped_df[metric_columns].mean().reset_index()
-    var_df = grouped_df[metric_columns].var(ddof=0).reset_index()  # Population variance
+    std_df = grouped_df[metric_columns].std(ddof=0).reset_index()  # Population variance
+    count_df = grouped_df.size().reset_index(name='file_count')
 
     # Rename the columns to indicate mean and variance
-    mean_df = mean_df.rename(columns={col: col + '_mean' for col in metric_columns})
-    var_df = var_df.rename(columns={col: col + '_var' for col in metric_columns})
+    mean_df = mean_df.rename(columns={
+        'throughput': 'Throughput', 
+        'goodput': 'Goodput', 
+        'latency_99': '99th_percentile', 
+        'latency_95': '95th_percentile', 
+        'latency_median': 'Median Latency'
+    })
+    
+    std_df = std_df.rename(columns={
+        'throughput': 'Throughput std', 
+        'goodput': 'Goodput std', 
+        'latency_99': '99th_percentile std', 
+        'latency_95': '95th_percentile std', 
+        'latency_median': 'Median Latency std'
+    })
     
     # Merge the mean and variance dataframes
-    result_df = pd.merge(mean_df, var_df, on=primary_index_columns + secondary_index_columns)
+    result_df = pd.merge(mean_df, std_df, on=primary_index_columns + secondary_index_columns)
+    result_df = pd.merge(result_df, count_df, on=primary_index_columns + secondary_index_columns)
     
     # Export the result to a CSV file
-    result_df.to_csv('group_statistics.csv', index=False)
-    print("Group statistics successfully exported to group_statistics.csv")
+    result_df.to_csv(output_file, index=False)
+    print(f"Group statistics successfully exported to {output_file}")
     
     return result_df
 
 
-def main():
-    # Define the time ranges for the experiments
-    time_ranges = [
-        ('0527_0000', '0531_2359'),
-        # ('0529_0000', '0529_0003'),
-    ]
+# def main():
+#     # Define the time ranges for the experiments
+#     time_ranges = [
+#         ('0527_0000', '0531_2359'),
+#         # ('0531_0042', '0531_0044'),
+#     ]
 
-    # Export all experiments to a CSV file
-    export_all_experiments_to_csv(time_ranges)
+#     # Export all experiments to a CSV file
+#     export_all_experiments_to_csv(time_ranges)
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
