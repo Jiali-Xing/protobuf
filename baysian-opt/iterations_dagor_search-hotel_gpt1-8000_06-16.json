@@ -1,0 +1,42 @@
+[
+    {
+        "target": 0.6161657213605808,
+        "params": {
+            "dagor_admission_level_update_interval": 29734.0,
+            "dagor_alpha": 8.535554276394805,
+            "dagor_beta": 1.5045012305328131,
+            "dagor_queuing_threshold": 1096.0,
+            "dagor_umax": 16.0
+        }
+    },
+    {
+        "target": 0.04143750349879957,
+        "params": {
+            "dagor_admission_level_update_interval": 13093.638136374646,
+            "dagor_alpha": 7.203244934421581,
+            "dagor_beta": 0.0011437481734488664,
+            "dagor_queuing_threshold": 91397.43921692009,
+            "dagor_umax": 7.2013383622566955
+        }
+    },
+    {
+        "target": -999999999.0,
+        "params": {
+            "dagor_admission_level_update_interval": 3677.8192482951363,
+            "dagor_alpha": 1.862602113776709,
+            "dagor_beta": 3.4556072704304777,
+            "dagor_queuing_threshold": 119633.47479497032,
+            "dagor_umax": 13.082251010050355
+        }
+    },
+    {
+        "target": -999999999.0,
+        "params": {
+            "dagor_admission_level_update_interval": 13156.64091769555,
+            "dagor_alpha": 6.852195003967595,
+            "dagor_beta": 2.0445224973151745,
+            "dagor_queuing_threshold": 263557.1134808927,
+            "dagor_umax": 5.410813897968892
+        }
+    }
+]

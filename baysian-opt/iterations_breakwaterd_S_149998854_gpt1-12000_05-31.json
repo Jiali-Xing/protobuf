@@ -1,0 +1,563 @@
+[
+    {
+        "target": 0.10595807561559972,
+        "params": {
+            "breakwater_a": 12.51066014107722,
+            "breakwater_b": 7.203244934421581,
+            "breakwater_client_expiration": 1.5717597119070883,
+            "breakwater_initial_credit": 121.63069648010406,
+            "breakwater_rtt": 2935.117816342261,
+            "breakwater_slo": 13693.543790751912,
+            "breakwaterd_a": 1.862602113776709,
+            "breakwaterd_b": 3.4556072704304777,
+            "breakwaterd_client_expiration": 45709.07268076029,
+            "breakwaterd_initial_credit": 2694.5448532827813,
+            "breakwaterd_rtt": 8964.695773662601,
+            "breakwaterd_slo": 57965.365027773165
+        }
+    },
+    {
+        "target": -0.07579247923011892,
+        "params": {
+            "breakwater_a": 6.133567491945523,
+            "breakwater_b": 8.781174363909454,
+            "breakwater_client_expiration": 137.9105783964329,
+            "breakwater_initial_credit": 268.5165365611825,
+            "breakwater_rtt": 8346.09604734254,
+            "breakwater_slo": 32347.593137830067,
+            "breakwaterd_a": 1.4038693859523377,
+            "breakwaterd_b": 1.981014890848788,
+            "breakwaterd_client_expiration": 82067.0111807983,
+            "breakwaterd_initial_credit": 4841.339617021268,
+            "breakwaterd_rtt": 6955.059385025614,
+            "breakwaterd_slo": 58462.58309685199
+        }
+    },
+    {
+        "target": 0.13911417278563054,
+        "params": {
+            "breakwater_a": 26.29167456888115,
+            "breakwater_b": 8.946066635038473,
+            "breakwater_client_expiration": 426.1360126375198,
+            "breakwater_initial_credit": 16.58285850992006,
+            "breakwater_rtt": 3396.608391291378,
+            "breakwater_slo": 45125.70013717652,
+            "breakwaterd_a": 0.983468338330501,
+            "breakwaterd_b": 4.211076250050522,
+            "breakwaterd_client_expiration": 96210.05771354517,
+            "breakwaterd_initial_credit": 2666.293259580112,
+            "breakwaterd_rtt": 14145.665165058994,
+            "breakwaterd_slo": 32086.094170424407
+        }
+    },
+    {
+        "target": -999999999.0,
+        "params": {
+            "breakwater_a": 20.59502783044751,
+            "breakwater_b": 8.346256718973729,
+            "breakwater_client_expiration": 92.42309844361483,
+            "breakwater_initial_credit": 300.307581663042,
+            "breakwater_rtt": 19777.221778129893,
+            "breakwater_slo": 39926.626175193574,
+            "breakwaterd_a": 2.804439920644052,
+            "breakwaterd_b": 7.892793284514886,
+            "breakwaterd_client_expiration": 19290.340591987784,
+            "breakwaterd_initial_credit": 2240.01973735335,
+            "breakwaterd_rtt": 18263.314558768816,
+            "breakwaterd_slo": 30552.990386157566
+        }
+    },
+    {
+        "target": -0.049951969215943894,
+        "params": {
+            "breakwater_a": 8.633260157590462,
+            "breakwater_b": 1.3002857211827767,
+            "breakwater_client_expiration": 97.81542239361508,
+            "breakwater_initial_credit": 271.8553776430165,
+            "breakwater_rtt": 4232.5623200011805,
+            "breakwater_slo": 20621.866374889047,
+            "breakwaterd_a": 4.9157315928033825,
+            "breakwaterd_b": 0.5336254511708038,
+            "breakwaterd_client_expiration": 61670.584494281175,
+            "breakwaterd_initial_credit": 734.4961459541449,
+            "breakwaterd_rtt": 12196.8052011624,
+            "breakwaterd_slo": 58983.08520146518
+        }
+    },
+    {
+        "target": 0.16809005291274828,
+        "params": {
+            "breakwater_a": 3.070032864834775,
+            "breakwater_b": 4.140559878195683,
+            "breakwater_client_expiration": 3472.3063884809976,
+            "breakwater_initial_credit": 166.25752854123417,
+            "breakwater_rtt": 999.0691789217432,
+            "breakwater_slo": 31435.856236620464,
+            "breakwaterd_a": 6.637946452197888,
+            "breakwaterd_b": 5.148891120583086,
+            "breakwaterd_client_expiration": 95013.5280391732,
+            "breakwaterd_initial_credit": 2933.1886474694625,
+            "breakwaterd_rtt": 18164.636390469786,
+            "breakwaterd_slo": 19623.229290236624
+        }
+    },
+    {
+        "target": 0.19885670850358628,
+        "params": {
+            "breakwater_a": 4.178290417522756,
+            "breakwater_b": 8.073912887095238,
+            "breakwater_client_expiration": 1988.9865080906823,
+            "breakwater_initial_credit": 66.97632464965618,
+            "breakwater_rtt": 18550.171607920678,
+            "breakwater_slo": 23910.63438982026,
+            "breakwaterd_a": 7.508121031361555,
+            "breakwaterd_b": 7.259979853504515,
+            "breakwaterd_client_expiration": 89497.54820852289,
+            "breakwaterd_initial_credit": 3118.737363070989,
+            "breakwaterd_rtt": 15267.906246519406,
+            "breakwaterd_slo": 34422.88393844898
+        }
+    },
+    {
+        "target": 0.08793562718424691,
+        "params": {
+            "breakwater_a": 8.097836752950782,
+            "breakwater_b": 8.958862181960669,
+            "breakwater_client_expiration": 2141.0278581666034,
+            "breakwater_initial_credit": 385.97117881220584,
+            "breakwater_rtt": 13268.829956368962,
+            "breakwater_slo": 34867.82880836487,
+            "breakwaterd_a": 1.1474597295337519,
+            "breakwaterd_b": 9.494892587070712,
+            "breakwaterd_client_expiration": 50492.09201319465,
+            "breakwaterd_initial_credit": 2892.3696823212717,
+            "breakwaterd_rtt": 8754.599252464342,
+            "breakwaterd_slo": 26591.88861701194
+        }
+    },
+    {
+        "target": -0.2569018612159862,
+        "params": {
+            "breakwater_a": 27.101385616867613,
+            "breakwater_b": 5.7367948667228585,
+            "breakwater_client_expiration": 15.348764828763692,
+            "breakwater_initial_credit": 247.2408205346688,
+            "breakwater_rtt": 6532.898035441923,
+            "breakwater_slo": 31082.324090304373,
+            "breakwaterd_a": 8.859420993107745,
+            "breakwaterd_b": 3.5726976000249975,
+            "breakwaterd_client_expiration": 91768.16358278193,
+            "breakwaterd_initial_credit": 3117.177218843222,
+            "breakwaterd_rtt": 1300.6036140845695,
+            "breakwaterd_slo": 75060.60636206329
+        }
+    },
+    {
+        "target": 0.10918652050621382,
+        "params": {
+            "breakwater_a": 20.72690752550772,
+            "breakwater_b": 9.973228504514806,
+            "breakwater_client_expiration": 862.5302012182974,
+            "breakwater_initial_credit": 55.71716410192222,
+            "breakwater_rtt": 18651.909260743272,
+            "breakwater_slo": 37872.72645959601,
+            "breakwaterd_a": 0.6600017272206249,
+            "breakwaterd_b": 7.554630526024663,
+            "breakwaterd_client_expiration": 77848.85696151217,
+            "breakwaterd_initial_credit": 4615.19965319687,
+            "breakwaterd_rtt": 14518.970413940964,
+            "breakwaterd_slo": 18698.96733805153
+        }
+    },
+    {
+        "target": -0.004837198871732983,
+        "params": {
+            "breakwater_a": 7.74265239683669,
+            "breakwater_b": 4.1729548956761615,
+            "breakwater_client_expiration": 1239.8172837026607,
+            "breakwater_initial_credit": 385.49514190413015,
+            "breakwater_rtt": 3333.152535090382,
+            "breakwater_slo": 36922.764017794485,
+            "breakwaterd_a": 7.343868416364185,
+            "breakwaterd_b": 5.862733321486044,
+            "breakwaterd_client_expiration": 83015.22074420127,
+            "breakwaterd_initial_credit": 1293.14751134334,
+            "breakwaterd_rtt": 8830.618574852047,
+            "breakwaterd_slo": 51839.75595833645
+        }
+    },
+    {
+        "target": 0.1228368065319014,
+        "params": {
+            "breakwater_a": 8.52203709658313,
+            "breakwater_b": 9.873027806416664,
+            "breakwater_client_expiration": 4947.883785232536,
+            "breakwater_initial_credit": 108.8021693336423,
+            "breakwater_rtt": 18100.49426729358,
+            "breakwater_slo": 28396.835549928535,
+            "breakwaterd_a": 9.892631925098605,
+            "breakwaterd_b": 7.16324267765976,
+            "breakwaterd_client_expiration": 45230.961571089894,
+            "breakwaterd_initial_credit": 1415.0592685737847,
+            "breakwaterd_rtt": 16898.628883465746,
+            "breakwaterd_slo": 11335.960819934773
+        }
+    },
+    {
+        "target": -0.07775726038129242,
+        "params": {
+            "breakwater_a": 25.207288874023742,
+            "breakwater_b": 4.801880451158127,
+            "breakwater_client_expiration": 4665.305516020277,
+            "breakwater_initial_credit": 379.92870677024456,
+            "breakwater_rtt": 12881.350017090012,
+            "breakwater_slo": 27620.718994199397,
+            "breakwaterd_a": 8.065554750541684,
+            "breakwaterd_b": 1.0586457982971709,
+            "breakwaterd_client_expiration": 55235.85479985281,
+            "breakwaterd_initial_credit": 3726.6618762651406,
+            "breakwaterd_rtt": 7468.585195783741,
+            "breakwaterd_slo": 58031.87028029592
+        }
+    },
+    {
+        "target": 0.18728484883104893,
+        "params": {
+            "breakwater_a": 0.0,
+            "breakwater_b": 4.03115757534979,
+            "breakwater_client_expiration": 5000.0,
+            "breakwater_initial_credit": 400.0,
+            "breakwater_rtt": 666.4979661009462,
+            "breakwater_slo": 10000.0,
+            "breakwaterd_a": 0.0,
+            "breakwaterd_b": 10.0,
+            "breakwaterd_client_expiration": 54241.673894132844,
+            "breakwaterd_initial_credit": 5000.0,
+            "breakwaterd_rtt": 1000.0,
+            "breakwaterd_slo": 12111.003953087833
+        }
+    },
+    {
+        "target": 0.19053199152025835,
+        "params": {
+            "breakwater_a": 0.0,
+            "breakwater_b": 10.0,
+            "breakwater_client_expiration": 5000.0,
+            "breakwater_initial_credit": 1.0,
+            "breakwater_rtt": 0.0,
+            "breakwater_slo": 46686.880120076195,
+            "breakwaterd_a": 0.0,
+            "breakwaterd_b": 0.0,
+            "breakwaterd_client_expiration": 58742.59146497731,
+            "breakwaterd_initial_credit": 1.0,
+            "breakwaterd_rtt": 1000.0,
+            "breakwaterd_slo": 10000.0
+        }
+    },
+    {
+        "target": -0.2873757561138307,
+        "params": {
+            "breakwater_a": 30.0,
+            "breakwater_b": 0.0,
+            "breakwater_client_expiration": 5000.0,
+            "breakwater_initial_credit": 1.0,
+            "breakwater_rtt": 0.0,
+            "breakwater_slo": 10000.0,
+            "breakwaterd_a": 0.0,
+            "breakwaterd_b": 0.0,
+            "breakwaterd_client_expiration": 50630.71913781375,
+            "breakwaterd_initial_credit": 1.0,
+            "breakwaterd_rtt": 1000.0,
+            "breakwaterd_slo": 80000.0
+        }
+    },
+    {
+        "target": 0.016094755768492074,
+        "params": {
+            "breakwater_a": 8.404402694420323,
+            "breakwater_b": 0.9616420856704411,
+            "breakwater_client_expiration": 4939.236680853937,
+            "breakwater_initial_credit": 151.25665852436546,
+            "breakwater_rtt": 17211.574459360447,
+            "breakwater_slo": 17037.46046537589,
+            "breakwaterd_a": 4.135466728804742,
+            "breakwaterd_b": 5.294691277091533,
+            "breakwaterd_client_expiration": 86590.90052262008,
+            "breakwaterd_initial_credit": 800.0869147960134,
+            "breakwaterd_rtt": 18707.962081516405,
+            "breakwaterd_slo": 71813.01691905572
+        }
+    },
+    {
+        "target": -999999999.0,
+        "params": {
+            "breakwater_a": 30.0,
+            "breakwater_b": 1.1583017595955077e-09,
+            "breakwater_client_expiration": 5000.0,
+            "breakwater_initial_credit": 1.0,
+            "breakwater_rtt": 20000.0,
+            "breakwater_slo": 10000.0,
+            "breakwaterd_a": 0.0,
+            "breakwaterd_b": 1.4465856737828094e-09,
+            "breakwaterd_client_expiration": 68217.94830539802,
+            "breakwaterd_initial_credit": 1.0,
+            "breakwaterd_rtt": 20000.0,
+            "breakwaterd_slo": 10000.0
+        }
+    },
+    {
+        "target": 0.10233048068748346,
+        "params": {
+            "breakwater_a": 14.790032562609088,
+            "breakwater_b": 2.4044960186137843,
+            "breakwater_client_expiration": 4320.545424895791,
+            "breakwater_initial_credit": 167.0904552741751,
+            "breakwater_rtt": 12908.611744232838,
+            "breakwater_slo": 23939.48589877945,
+            "breakwaterd_a": 9.1850325109432,
+            "breakwaterd_b": 1.704705800198969,
+            "breakwaterd_client_expiration": 16846.985700541227,
+            "breakwaterd_initial_credit": 1298.4276693316715,
+            "breakwaterd_rtt": 6298.771996647466,
+            "breakwaterd_slo": 37175.81563529546
+        }
+    },
+    {
+        "target": 0.2354109386333981,
+        "params": {
+            "breakwater_a": 23.504243577782827,
+            "breakwater_b": 2.4424451623766363,
+            "breakwater_client_expiration": 3473.0158078854042,
+            "breakwater_initial_credit": 298.16325600934164,
+            "breakwater_rtt": 8929.80869072452,
+            "breakwater_slo": 46985.12014955077,
+            "breakwaterd_a": 1.1099505166385704,
+            "breakwaterd_b": 6.557082516306229,
+            "breakwaterd_client_expiration": 60686.82749767179,
+            "breakwaterd_initial_credit": 550.2979494399256,
+            "breakwaterd_rtt": 6423.11916518316,
+            "breakwaterd_slo": 47136.09432467558
+        }
+    },
+    {
+        "target": -0.07328964286746242,
+        "params": {
+            "breakwater_a": 20.729688670527914,
+            "breakwater_b": 6.773646863654683,
+            "breakwater_client_expiration": 4499.303856187973,
+            "breakwater_initial_credit": 146.5051586624801,
+            "breakwater_rtt": 14378.038147330066,
+            "breakwater_slo": 27109.70336204077,
+            "breakwaterd_a": 3.1832280950645897,
+            "breakwaterd_b": 2.3545609183922958,
+            "breakwaterd_client_expiration": 54915.90297091998,
+            "breakwaterd_initial_credit": 2403.9918052593202,
+            "breakwaterd_rtt": 5389.093864786467,
+            "breakwaterd_slo": 57729.81008111808
+        }
+    },
+    {
+        "target": -0.11723869343567772,
+        "params": {
+            "breakwater_a": 8.067939453173386,
+            "breakwater_b": 7.857924055691735,
+            "breakwater_client_expiration": 5000.0,
+            "breakwater_initial_credit": 400.0,
+            "breakwater_rtt": 402.0711963483329,
+            "breakwater_slo": 27542.79937157766,
+            "breakwaterd_a": 2.928496274480124,
+            "breakwaterd_b": 5.909498364407086,
+            "breakwaterd_client_expiration": 44695.05711225511,
+            "breakwaterd_initial_credit": 5000.0,
+            "breakwaterd_rtt": 1000.0,
+            "breakwaterd_slo": 40104.94743844827
+        }
+    },
+    {
+        "target": -999999999.0,
+        "params": {
+            "breakwater_a": 12.785340007049486,
+            "breakwater_b": 9.108482514013827,
+            "breakwater_client_expiration": 1115.8324033454319,
+            "breakwater_initial_credit": 9.414828711130456,
+            "breakwater_rtt": 7623.654300900153,
+            "breakwater_slo": 21352.0868945513,
+            "breakwaterd_a": 3.609795206797263,
+            "breakwaterd_b": 8.541370856983947,
+            "breakwaterd_client_expiration": 11484.359495680474,
+            "breakwaterd_initial_credit": 674.9123878657632,
+            "breakwaterd_rtt": 10923.124626067856,
+            "breakwaterd_slo": 65167.250260534245
+        }
+    },
+    {
+        "target": 0.14501518717023548,
+        "params": {
+            "breakwater_a": 0.0,
+            "breakwater_b": 10.0,
+            "breakwater_client_expiration": 1.0,
+            "breakwater_initial_credit": 1.0,
+            "breakwater_rtt": 1339.2933616985938,
+            "breakwater_slo": 37619.450006173465,
+            "breakwaterd_a": 0.0,
+            "breakwaterd_b": 10.0,
+            "breakwaterd_client_expiration": 55882.608551879384,
+            "breakwaterd_initial_credit": 4990.323040219127,
+            "breakwaterd_rtt": 13222.884612804753,
+            "breakwaterd_slo": 29348.415307890216
+        }
+    },
+    {
+        "target": -999999999.0,
+        "params": {
+            "breakwater_a": 0.0,
+            "breakwater_b": 6.572803501940694,
+            "breakwater_client_expiration": 1.0,
+            "breakwater_initial_credit": 1.0000000018092654,
+            "breakwater_rtt": 0.0,
+            "breakwater_slo": 10000.0,
+            "breakwaterd_a": 0.0,
+            "breakwaterd_b": 0.0,
+            "breakwaterd_client_expiration": 10000.0,
+            "breakwaterd_initial_credit": 5000.0,
+            "breakwaterd_rtt": 1000.0,
+            "breakwaterd_slo": 62341.30613975578
+        }
+    },
+    {
+        "target": 0.23161456357799243,
+        "params": {
+            "breakwater_a": 22.566346284709386,
+            "breakwater_b": 9.016771316765022,
+            "breakwater_client_expiration": 4601.942189763641,
+            "breakwater_initial_credit": 168.8110844634322,
+            "breakwater_rtt": 1616.4171442795582,
+            "breakwater_slo": 41890.281151664065,
+            "breakwaterd_a": 6.995262626643976,
+            "breakwaterd_b": 2.530386532789869,
+            "breakwaterd_client_expiration": 58392.341205234516,
+            "breakwaterd_initial_credit": 4265.207926316872,
+            "breakwaterd_rtt": 8193.087276018225,
+            "breakwaterd_slo": 17113.091896328035
+        }
+    },
+    {
+        "target": 0.06737896859513731,
+        "params": {
+            "breakwater_a": 22.84945947031332,
+            "breakwater_b": 5.1299242516187595,
+            "breakwater_client_expiration": 3488.5120917791774,
+            "breakwater_initial_credit": 1.0,
+            "breakwater_rtt": 12907.91834620745,
+            "breakwater_slo": 27357.68319116133,
+            "breakwaterd_a": 1.0423082994902049,
+            "breakwaterd_b": 9.37016589145465,
+            "breakwaterd_client_expiration": 56937.22348855215,
+            "breakwaterd_initial_credit": 705.0791367036406,
+            "breakwaterd_rtt": 6990.028112678431,
+            "breakwaterd_slo": 55754.70887649506
+        }
+    },
+    {
+        "target": -0.28548307978302556,
+        "params": {
+            "breakwater_a": 16.49537869252453,
+            "breakwater_b": 5.593021317016962,
+            "breakwater_client_expiration": 5000.0,
+            "breakwater_initial_credit": 400.0,
+            "breakwater_rtt": 16230.934369740713,
+            "breakwater_slo": 28585.01887890689,
+            "breakwaterd_a": 9.784213905870054,
+            "breakwaterd_b": 3.399357270416378e-10,
+            "breakwaterd_client_expiration": 53555.239648689174,
+            "breakwaterd_initial_credit": 5000.0,
+            "breakwaterd_rtt": 6046.417738420264,
+            "breakwaterd_slo": 54327.318317884456
+        }
+    },
+    {
+        "target": -0.09591711476280187,
+        "params": {
+            "breakwater_a": 25.43727329068793,
+            "breakwater_b": 9.999999999899746,
+            "breakwater_client_expiration": 1.0,
+            "breakwater_initial_credit": 1.0,
+            "breakwater_rtt": 0.0,
+            "breakwater_slo": 10000.0,
+            "breakwaterd_a": 0.0,
+            "breakwaterd_b": 0.0,
+            "breakwaterd_client_expiration": 10000.0,
+            "breakwaterd_initial_credit": 5000.0,
+            "breakwaterd_rtt": 1000.0,
+            "breakwaterd_slo": 66696.04200942573
+        }
+    },
+    {
+        "target": -0.09268038316798469,
+        "params": {
+            "breakwater_a": 28.491474138582905,
+            "breakwater_b": 1.2319271613225857,
+            "breakwater_client_expiration": 2853.0351896057823,
+            "breakwater_initial_credit": 388.98497571416317,
+            "breakwater_rtt": 16222.250573043355,
+            "breakwater_slo": 24110.23676640593,
+            "breakwaterd_a": 7.348644180094428,
+            "breakwaterd_b": 1.2214315633365291,
+            "breakwaterd_client_expiration": 93508.46011245927,
+            "breakwaterd_initial_credit": 4640.021256118265,
+            "breakwaterd_rtt": 4457.067724887135,
+            "breakwaterd_slo": 44399.36872019994
+        }
+    },
+    {
+        "target": -0.1766461192624147,
+        "params": {
+            "breakwater_a": 14.837487993790324,
+            "breakwater_b": 1.946061959968659,
+            "breakwater_client_expiration": 3079.1877523136855,
+            "breakwater_initial_credit": 141.3679084812732,
+            "breakwater_rtt": 12424.86916652866,
+            "breakwater_slo": 27438.725162772207,
+            "breakwaterd_a": 3.8994357341911448,
+            "breakwaterd_b": 1.9172985355854177,
+            "breakwaterd_client_expiration": 56525.812562988416,
+            "breakwaterd_initial_credit": 1886.3602261492588,
+            "breakwaterd_rtt": 5538.31914342426,
+            "breakwaterd_slo": 57829.4208253816
+        }
+    },
+    {
+        "target": 0.11254525246979859,
+        "params": {
+            "breakwater_a": 6.503766733748016,
+            "breakwater_b": 1.6087730537075406,
+            "breakwater_client_expiration": 2414.151338554072,
+            "breakwater_initial_credit": 242.39417292066906,
+            "breakwater_rtt": 18290.776975900313,
+            "breakwater_slo": 29701.403119715644,
+            "breakwaterd_a": 8.306870560381276,
+            "breakwaterd_b": 0.996021467348196,
+            "breakwaterd_client_expiration": 56274.40881589161,
+            "breakwaterd_initial_credit": 2409.105230103438,
+            "breakwaterd_rtt": 8098.394350939269,
+            "breakwaterd_slo": 25760.703734891315
+        }
+    },
+    {
+        "target": 0.19811409092894927,
+        "params": {
+            "breakwater_a": 3.8975553397497134,
+            "breakwater_b": 6.449377976161871,
+            "breakwater_client_expiration": 4180.732144112528,
+            "breakwater_initial_credit": 346.6665075918574,
+            "breakwater_rtt": 11545.302898159,
+            "breakwater_slo": 29918.830553611762,
+            "breakwaterd_a": 0.42018264637248337,
+            "breakwaterd_b": 6.067467610175145,
+            "breakwaterd_client_expiration": 54561.29698448821,
+            "breakwaterd_initial_credit": 2933.8068864456113,
+            "breakwaterd_rtt": 4692.426059078132,
+            "breakwaterd_slo": 54312.672694724824
+        }
+    }
+]

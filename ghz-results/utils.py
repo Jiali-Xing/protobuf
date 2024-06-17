@@ -868,6 +868,21 @@ def export_all_experiments_to_csv(time_ranges, output_file='experiment_results.c
         if is_within_any_duration(timestamp_str, time_ranges):
             selected_files.append(filename)
 
+    if 'hotel' in output_file:
+        # keep only the `search-hotel` files that share timestamp with `reserve-hotel`
+        # reserve-hotel files are the ones that have `reserve-hotel` in the filename
+        # search-hotel files are the ones that have `search-hotel` in the filename
+        
+        reserve_hotel_files = [f for f in selected_files if 'reserve-hotel' in f]
+        search_hotel_files = [f for f in selected_files if 'search-hotel' in f]
+        # get the timestamp of the reserve-hotel files
+        reserve_hotel_timestamps = [extract_experiment_details_json(f)['timestamp_str'] for f in reserve_hotel_files]
+        # filter the search-hotel files that share the same timestamp with the reserve-hotel files
+        selected_files = [f for f in search_hotel_files if extract_experiment_details_json(f)['timestamp_str'] in reserve_hotel_timestamps]
+
+        # concat the reserve-hotel files to the selected_files
+        selected_files += reserve_hotel_files
+
     for filename in selected_files:
         # Extract the metadata from the filename
         config = extract_experiment_details_json(filename)
@@ -923,7 +938,7 @@ def export_all_experiments_to_csv(time_ranges, output_file='experiment_results.c
     print(f"Experiment results successfully exported to {output_file}")
 
 
-def calculate_group_statistics(file_path, output_file='group_statistics.csv'):
+def calculate_group_statistics(file_path, output_file='group_statistics.csv',k=5):
     # Load the experiment results from the CSV file
     df = pd.read_csv(file_path)
     
@@ -950,6 +965,19 @@ def calculate_group_statistics(file_path, output_file='group_statistics.csv'):
     
     # Group by the primary and secondary index columns
     grouped_df = df.groupby(primary_index_columns + secondary_index_columns)
+    
+    # # Function to sample k files from each group
+    # def sample_k_files(group, k):
+    #     if len(group) > k:
+    #         return group.sample(n=k, random_state=42)  # Fixed random state for reproducibility
+    #     else:
+    #         return group
+    
+    # # Apply sampling to each group
+    # sampled_df = grouped_df.apply(lambda x: sample_k_files(x, k)).reset_index(drop=True)
+    
+    # # Group by again after sampling
+    # grouped_df = sampled_df.groupby(primary_index_columns + secondary_index_columns)
     
     # Calculate mean and variance for each group
     mean_df = grouped_df[metric_columns].mean().reset_index()

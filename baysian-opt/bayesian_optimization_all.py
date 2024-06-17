@@ -33,7 +33,7 @@ from collections import defaultdict
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'ghz-results'))
 from visualize import analyze_data
 from slo import get_slo, get_sustainable_load
-from utils import convert_to_dataframe, calculate_goodput_mean, calculate_goodput_from_file, read_tail_latency_from_file, roundDownParams, save_iteration_details
+from utils import convert_to_dataframe, calculate_goodput_mean, calculate_goodput_from_file, read_tail_latency_from_file, roundDownParams, save_iteration_details, parse_configurations
 
 # throughput_time_interval = '50ms'
 # latency_window_size = '200ms'  # Define the window size as 100 milliseconds
@@ -55,7 +55,7 @@ configDict = {
         'token_update_rate': 5000,  # Assuming numeric values for simplicity
         'latency_threshold': 5000,
         'price_step': 10,
-        'price_strategy': 'proportional',
+        'price_strategy': 'linear',
         'lazy_update': 'true',
         'rate_limiting': 'true',
         'only_frontend': 'false',
@@ -93,9 +93,10 @@ configDict = {
 
 def generate_output_filename(interceptor_type, method, capacity):
     directory = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
+    # directory = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/charon-linear-price/')
     outputFile = f"social-{method}-control-{interceptor_type}-parallel-capacity-{capacity}-*.json.output"
-    if method == "all-methods-social" or method == "compose" or method == "home-timeline" or method == "user-timeline" or method == "all-methods-hotel":
-        outputFile = f"social-{method}-control-{interceptor_type}-parallel-capacity-{capacity}-01*.json.output"
+    # if method == "all-methods-social" or method == "compose" or method == "home-timeline" or method == "user-timeline" or method == "all-methods-hotel":
+    #     outputFile = f"social-{method}-control-{interceptor_type}-parallel-capacity-{capacity}-01*.json.output"
     return os.path.join(directory, outputFile)
 
 
@@ -122,29 +123,16 @@ def find_method_file_sets(directory, methods, capacity):
     return complete_sets
 
 
-def parse_configurations(config_str):
-    # Remove potential \n[ 
-    config_str = config_str.replace('\n[', '[')
-    # Remove surrounding brackets and split by '} {'
-    config_items = config_str.strip('[]').split('} {')
-    config_dict = {}
-
-    for item in config_items:
-        # Remove potential curly braces and split by space
-        key_value = item.replace('{', '').replace('}', '').split(' ', 1)
-        if len(key_value) == 2:
-            config_dict[key_value[0]] = key_value[1]
-
-    return config_dict
-
 def check_previous_run_exists(interceptor_type, method, capacity, combined_params, existing_files=None):
+    prev_run_folder = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
+    # prev_run_folder = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/charon-linear-price/')
     if method == "all-methods-social":
         sub_methods = ["user-timeline", "home-timeline", "compose"]
     if method == "all-methods-hotel":
         sub_methods = ["hotels-http", "reservation-http", "user-http", "recommendations-http"]
     if method == "all-methods-social" or method == "all-methods-hotel":
         # return a list of files that match the parameters
-        filesets = find_method_file_sets(os.path.expanduser('~/Sync/Git/protobuf/ghz-results/'), sub_methods, capacity)
+        filesets = find_method_file_sets(prev_run_folder, sub_methods, capacity)
         # append the file to the list only when all sub-methods have the same timestamp
         # if all sub-methods have the same timestamp, return the list of files
         for files in filesets:
@@ -342,15 +330,15 @@ def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodTo
 
 # Define the objective function to optimize
 def objective(interceptor_type, **params):
-    global SLO, quantile
+    global tightSLO, quantile
     hugePenalty = -999999999
     load = int(capacity.split('-')[1])
     latest_file = run_experiments(interceptor_type, load, '', **params)
     if latest_file is None:
         print("No file found for objective function")
         return hugePenalty
-    goodput = calculate_goodput_from_file(latest_file, slo=SLO, quantile=quantile, average=True)
-    tail_latency = read_tail_latency_from_file(latest_file, percentile=99)
+    goodput = calculate_goodput_from_file(latest_file, tightSLO, quantile=quantile, average=True)
+    tail_latency = read_tail_latency_from_file(latest_file, percentile=99, minusSLO=True)
     print("[Experiment Ran] average goodput:", goodput, "and tail latency:", tail_latency, "\nfrom file:", latest_file)
     # if average_goodput == nan, return 0
     if np.isnan(goodput):
@@ -365,16 +353,16 @@ def objective(interceptor_type, **params):
     if 'gpt0' in capacity:
         obj = goodput
     elif 'gpt1' in capacity:
-        obj = goodput - 10 * (tail_latency - SLO) if tail_latency > SLO else goodput
+        obj = goodput - 10 * (tail_latency )
     elif 'gpt2' in capacity:
         obj = goodput - (tail_latency - SLO) ** 2 if tail_latency > SLO else goodput
     elif 'tgpt' in capacity:
-        obj = calculate_goodput_from_file(latest_file, slo=SLO, quantile=quantile, average=False)
+        obj = calculate_goodput_from_file(latest_file, tightSLO, quantile=quantile, average=False)
     return obj / maximum_goodput
 
 
 def objective_dual(interceptor_type, **params):
-    global SLO, quantile
+    global tightSLO, quantile
     obj = []
     # same as objective, but run twice with different loads, and return the lower goodput
     latest_file = ''
@@ -383,9 +371,9 @@ def objective_dual(interceptor_type, **params):
         if latest_file is None:
             print("No file found for objective function")
             return -999999999
-        goodput = calculate_goodput_from_file(latest_file, slo=SLO, quantile=quantile, average=True)
-        tail_goodput = calculate_goodput_from_file(latest_file, slo=SLO, quantile=quantile, average=False)
-        tail_latency = read_tail_latency_from_file(latest_file, percentile=99)
+        goodput = calculate_goodput_from_file(latest_file, tightSLO, quantile=quantile, average=True)
+        tail_goodput = calculate_goodput_from_file(latest_file, tightSLO, quantile=quantile, average=False)
+        tail_latency = read_tail_latency_from_file(latest_file, percentile=99, minusSLO=True)
         print(f"[Experiment Ran] average goodput: {goodput}, {100*quantile}th percentile goodput: {tail_goodput}, and tail latency: {tail_latency} \nfrom file: {latest_file}")
         # if average_goodput == nan, return 0
         if np.isnan(goodput):
@@ -400,9 +388,10 @@ def objective_dual(interceptor_type, **params):
         if 'gpt0' in capacity:
             obj.append(goodput)
         elif 'gpt1' in capacity:
-            obj.append(goodput - 10 * (tail_latency - SLO) if tail_latency > SLO else goodput)
-        elif 'gpt2' in capacity:
-            obj.append(goodput - (tail_latency - SLO) ** 2 if tail_latency > SLO else goodput)
+            obj.append(goodput - 10 * tail_latency)
+            # obj.append(goodput - 10 * (tail_latency - SLO) if tail_latency > SLO else goodput)
+        # elif 'gpt2' in capacity:
+            # obj.append(goodput - (tail_latency - SLO) ** 2 if tail_latency > SLO else goodput)
         elif 'tgpt' in capacity:
             obj.append(tail_goodput)
     # return the mean obj of the two loads
@@ -505,13 +494,33 @@ def read_optimal_parameters(filename):
     return data
 
 
+def load_optimal_parameters(method, control):
+    """
+    Loads optimal parameters from a JSON file.
+
+    Args:
+            filename (str): The name of the JSON file containing the parameters.
+
+    Returns:
+            dict: A dictionary containing the loaded parameters (or None if not found).
+    """
+    # Try opening the file
+    filename = f'bopt_False_{control}_{method}_gpt1-best.json'
+    path = os.path.expanduser('~/Sync/Git/protobuf/baysian-opt/')
+    try:
+        with open(os.path.join(path, filename), 'r') as f:
+            # Load the JSON data
+            data = json.load(f)
+            return data
+    except (FileNotFoundError, json.JSONDecodeError):
+        # Handle errors like file not found or invalid JSON data
+        return None
+    return None
+
+
 def main():
     
     pbounds_charon = {
-        # 'price_update_rate': (100, 500000),  # Example range
-        # 'token_update_rate': (100, 500000),  # Example range
-        # 'latency_threshold': (10, 50000),  # Example range
-        # 'price_step': (1, 500)  # Example range
         # the range above is too large... I will use the following range based on the empirical results
         'price_update_rate': (1000, 30000), 
         'token_update_rate': (1000, 30000), 
@@ -519,40 +528,18 @@ def main():
         'latency_threshold': (100, 3000),
     }
     pbounds_breakwater = {
-        # 'breakwater_slo': (100, 100000),  # Example range
-        # 'breakwater_a': (0.0001, 0.9),    # Example range
-        # 'breakwater_b': (0.01, 0.9),      # Example range
-        # 'breakwater_initial_credit': (10, 3000),      # Example range
-        # 'breakwater_client_expiration': (1, 100000) # Example range
-        # the range above is too large... I will use the following range based on the empirical results {BREAKWATER_SLO 749158us} {BREAKWATER_A 11.692336257688945} {BREAKWATER_B 0.004983989475762508} {B    REAKWATER_CLIENT_EXPIRATION 13317us} {BREAKWATER_INITIAL_CREDIT 59} 
-        'breakwater_slo': (100, 5000),
-        'breakwater_a': (0, 20),
-        'breakwater_b': (0, 2),
-        'breakwater_initial_credit': (1, 2000),
-        'breakwater_client_expiration': (0, 5000),
-        'breakwater_rtt': (0, 20000),
+        'breakwater_slo': (2000, 8000),
+        'breakwater_a': (0, 30),
+        'breakwater_b': (0, 3),
+        'breakwater_initial_credit': (1, 1500),
+        'breakwater_client_expiration': (0, 1000),
+        'breakwater_rtt': (1000, 30000),
     }
-
-    # pbounds_breakwaterd = {
-    #     'breakwater_slo': (10000, 40000),
-    #     'breakwater_a': (0, 2),
-    #     'breakwater_b': (0, 2),
-    #     'breakwater_initial_credit': (1, 400),
-    #     'breakwater_client_expiration': (1, 3000),
-    #     'breakwaterd_slo': (30000, 80000),
-    #     'breakwaterd_a': (0, 10),
-    #     'breakwaterd_b': (0, 30),
-    #     'breakwaterd_initial_credit': (1, 1000),
-    #     'breakwaterd_client_expiration': (10000, 40000),
-    #     'breakwater_rtt': (1000, 20000),
-    #     'breakwaterd_rtt': (1000, 20000),
-    # }
-
     pbounds_breakwaterd = {
-        'breakwater_slo': (10000, 50000),
+        'breakwater_slo': (1000, 50000),
         'breakwater_a': (0, 20),
         'breakwater_b': (0, 10),
-        'breakwater_initial_credit': (1, 400),
+        'breakwater_initial_credit': (1, 1000),
         'breakwater_client_expiration': (1, 5000),
         'breakwaterd_slo': (10000, 80000),
         'breakwaterd_a': (0, 10),
@@ -576,80 +563,63 @@ def main():
         pbounds_breakwater['breakwater_slo'] = (100, 20000)
         pbounds_breakwaterd['breakwater_a'] = (0, 30)
         pbounds_dagor['dagor_queuing_threshold'] = (1000, 100000)  # Example range
-        # pbounds_dagor['dagor_alpha'] = (0, 3)              # Example range
-        # pbounds_dagor['dagor_admission_level_update_interval'] = (100, 20000)
-
         
         if 'S_16' in method:
             pbounds_charon['latency_threshold'] = (100, 30000)
+            pbounds_breakwater['breakwater_slo'] = (100, 4000)
+            pbounds_breakwater['breakwater_a'] = (0, 3)
+            pbounds_breakwater['breakwater_b'] = (0, 3)
+            pbounds_breakwater['breakwater_rtt'] = (1000, 5000)
         if 'S_14' in method:
             # pbounds_breakwater['breakwater_a'] = (0, 30)
             pbounds_charon['latency_threshold'] = (100, 40000)
-            pbounds_charon['price_update_rate'] = (1000, 40000)
-            # pbounds_charon['token_update_rate'] = (1000, 40000)
-        # if 'S_10' in method:
-        #     pbounds_breakwater['breakwater_a'] = (0, 30)
+            pbounds_charon['price_update_rate'] = (100, 20000)
+            pbounds_charon['token_update_rate'] = (10000, 90000)
+            pbounds_charon['price_step'] = (1, 100)
 
-    # if 'all' in method:
-        # change the pbounds for 4 mechanisms
-        # pbounds_charon['price_step'] = (10, 80)
-        # pbounds_breakwater = {
-        #     'breakwater_slo': (100, 20000),
-        #     'breakwater_a': (0, 2),
-        #     'breakwater_b': (0, 1),
-        #     'breakwater_initial_credit': (1, 1000),
-        #     'breakwater_client_expiration': (10, 10000),
-        # }
-        # pbounds_breakwaterd = {
-        #     'breakwater_slo': (20000, 50000),
-        #     'breakwater_a': (0, 2),
-        #     'breakwater_b': (0, 1),
-        #     'breakwater_initial_credit': (1, 500),
-        #     'breakwater_client_expiration': (1, 5000),
-        #     'breakwaterd_slo': (30000, 80000),
-        #     'breakwaterd_a': (0, 10),
-        #     'breakwaterd_b': (0, 20),
-        #     'breakwaterd_initial_credit': (10, 500),
-        #     'breakwaterd_client_expiration': (10000, 40000),
-        # }
-        # pbounds_dagor = {
-        #     'dagor_queuing_threshold': (100000, 500000),  # Example range
-        #     'dagor_alpha': (0, 1.5),              # Example range
-        #     'dagor_beta': (0, 2),             # Example range
-        #     'dagor_admission_level_update_interval': (10000, 20000),  # Example range
-        #     'dagor_umax': (2, 20)  # Example range
-        # }
+        if 'motivate' in method or 'hotel' in method:
+            pbounds_breakwater['breakwater_slo'] = (100, 80000)
+            pbounds_breakwater['breakwater_client_expiration'] = (0, 1)
+            pbounds_breakwater['breakwater_rtt'] = (1000, 50000)
+            pbounds_breakwater['breakwater_initial_credit'] = (100, 1500)
+            pbounds_breakwater['breakwater_a'] = (0.01, 10)
+            pbounds_breakwater['breakwater_b'] = (0.01, 20)
+
+            pbounds_breakwaterd['breakwaterd_b'] = (0.01, 20)
+            pbounds_breakwaterd['breakwater_slo'] = (100, 80000)
+            pbounds_breakwaterd['breakwater_b'] = (0.01, 20)
+            pbounds_breakwaterd['breakwaterd_rtt'] = (10, 50000)
+            pbounds_breakwaterd['breakwater_rtt'] = (10, 50000)
+
+            pbounds_charon['latency_threshold'] = (1, 1000)
+            pbounds_charon['price_step'] = (150, 250)
+            pbounds_charon['price_update_rate'] = (10000, 20000)
+            pbounds_charon['token_update_rate'] = (80000, 120000)
+
+            pbounds_dagor['dagor_queuing_threshold'] = (500, 2000)
+            pbounds_dagor['dagor_alpha'] = (5, 10)
+            pbounds_dagor['dagor_beta'] = (0, 5)
+            pbounds_dagor['dagor_admission_level_update_interval'] = (20000, 40000)
 
     # run the experiments with the interceptors for all capacities
     capacity_step = 1000
     capacity_start = 1000
-    capacity_end = 16000
-    # if '8000' in capacity:
-    #     capacity_range = range(5000, 13500, 500) if not tightSLO else range(4000, 10500, 500)
-    # else:
-    #     capacity_range = range(6000, 12500, 500)
+    capacity_end = 15000
 
-    # if 'all' in method:
-    #     capacity_range = range(2000, 9500, 500)
     capacity_range = range(capacity_start, capacity_end, capacity_step)
 
     timestamp = datetime.datetime.now().strftime("%m-%d")
     print("Timestamp:", timestamp)
     print("method:", method)
     
-    # skipOptimize = False
-
-    # if skipOptimize:
-    #     # set all the optimize to False
-    #     optimizeCharon = optimizeBreakwater = optimizeBreakwaterD = optimizeDagor = False
-
-
     optimization_config = {
         'charon': (optimizeCharon, objective_charon, pbounds_charon, 'charon'),
         'breakwater': (optimizeBreakwater, objective_breakwater, pbounds_breakwater, 'breakwater'),
         'breakwaterd': (optimizeBreakwaterD, objective_breakwaterd, pbounds_breakwaterd, 'breakwaterd'),
         'dagor': (optimizeDagor, objective_dagor, pbounds_dagor, 'dagor')
     }
+
+    n_iterate = 55
 
     for opt_key, (optimize, objective_func, pbounds, opt_name) in optimization_config.items():
         if optimize and not skipOptimize:
@@ -659,14 +629,44 @@ def main():
                 random_state=1,
                 allow_duplicate_points=True
             )
+
+            # Try loading previous results
             try:
-                optimizer.maximize(init_points=10, n_iter=55)
+                best_past_results = load_optimal_parameters(control=opt_name, method=method)
+                if 'parameters' in best_past_results:
+                    initial_points = [best_past_results['parameters']]
+                    print(f"[Bayesian Init] Loaded initial points from previous run for {opt_name}. Parameters:", initial_points)
+                    # now add the initial points to the optimizer to start from the previous best results
+                    lowerCaseParams = {key.lower(): value for key, value in initial_points[0].items()}
+                    # drop the extra key of `only_frontend` if it exists
+                    if 'only_frontend' in lowerCaseParams:
+                        lowerCaseParams.pop('only_frontend')
+                    # convert string values us to float
+                    drop_keys = []
+                    for key, value in lowerCaseParams.items():
+                        if isinstance(value, str) and value.endswith('us'):
+                            lowerCaseParams[key] = float(value[:-2])
+                        elif isinstance(value, str) and value.endswith('ms'):
+                            lowerCaseParams[key] = float(value[:-2]) * 1000
+                        elif not isinstance(value, (int, float)):
+                            # drop the key if the value is not a number
+                            drop_keys.append(key)
+                    for key in drop_keys:
+                        lowerCaseParams.pop(key)
+                    optimizer.probe(params=lowerCaseParams)
+                else:
+                    print(f"[Bayesian Init] No initial points found for {opt_name}.")
+            except (FileNotFoundError, json.JSONDecodeError):
+                print(f"[Bayesian Opt] No previous results found for {opt_name}, starting fresh.")
+
+            try:
+                optimizer.maximize(init_points=10, n_iter=n_iterate)
             except Exception as e:
                 print(f"[Bayesian Opt] Error Optimization encountered an error for {opt_name}:", e)
                 # continue
 
             if 'params' in optimizer.max:
-                global SLO
+                # global SLO
                 best_params = optimizer.max['params']
                 # combine the best_params with the specific params
                 best_params = {**configDict[opt_name], **best_params}
@@ -678,8 +678,8 @@ def main():
                     'capacity': capacity,
                     'load': int(capacity.split('-')[1]),
                     'timestamp': timestamp,
-                    'quantile': quantile,
-                    'SLO': SLO,
+                    # 'quantile': quantile,
+                    # 'SLO': SLO,
                 }
                 record_optimal_parameters(f'bopt_{tightSLO}_{opt_name}_{method}_{capacity}_{timestamp}.json', results)
                 # Save the iteration details at the end of each optimization
@@ -691,6 +691,7 @@ def main():
         if optimize:
             # find the latest file with `bopt_{tightSLO}_{opt_name}_{method}_{capacity}_*.json`
             latest_bopt = get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/baysian-opt/'), pattern=f"bopt_{tightSLO}_{opt_name}_{method}_{capacity}_*.json")
+            print(f"[Post Opt] Latest Bayesian Opt file for {opt_name}:", latest_bopt)
             bayesian_result = read_optimal_parameters(latest_bopt)
             for capact in capacity_range:
                 print(f"[Post Opt] Analyzing file and run experiments in loop for {opt_name}:", bayesian_result)
@@ -702,32 +703,32 @@ def main():
     #     run_experiments_loop('plain', {}, capact, method)
 
 
-def check_goodput(file):
-    # check the goodput distribution of social-compose-control-charon-parallel-capacity-8000-1211_1804.json
-    dir = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
-    filename = os.path.join(dir, file)
+# def check_goodput(file):
+#     # check the goodput distribution of social-compose-control-charon-parallel-capacity-8000-1211_1804.json
+#     dir = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
+#     filename = os.path.join(dir, file)
 
-    goodput = calculate_goodput_from_file(filename, average=True)
-    tail_latency = read_tail_latency_from_file(filename, percentile=99)
+#     goodput = calculate_goodput_from_file(filename, average=True)
+#     tail_latency = read_tail_latency_from_file(filename, percentile=99)
   
-    data = read_data(filename)
-    df = convert_to_dataframe(data)
-    goodput_mean = calculate_goodput_mean(df, slo=SLO)
-    print("goodput_mean:", goodput_mean)
-    goodquantile = goodput_quantile(df, slo=SLO, quantile=quantile)
-    print("goodquantile:", goodquantile)
-    # print(df["goodput"].describe())
-    # plot the histogram of goodput
-    df["goodput"].plot.hist(bins=100)
-    plt.show()
-    loadTested = int(re.search(r'capacity-(\d+)', file).group(1))
-    if 'gpt0' in capacity:
-        obj = goodput
-    elif 'gpt1' in capacity:
-        obj = goodput - 10 * (tail_latency - SLO) if tail_latency > SLO else goodput
-    elif 'gpt2' in capacity:
-        obj = goodput - (tail_latency - SLO) ** 2 if tail_latency > SLO else goodput
-    print("[Experiment Ran] objecive {} with average goodput: {} and loadTested: {}".format(obj, goodput_mean, loadTested))
+#     data = read_data(filename)
+#     df = convert_to_dataframe(data)
+#     goodput_mean = calculate_goodput_mean(df, slo=SLO)
+#     print("goodput_mean:", goodput_mean)
+#     goodquantile = goodput_quantile(df, slo=SLO, quantile=quantile)
+#     print("goodquantile:", goodquantile)
+#     # print(df["goodput"].describe())
+#     # plot the histogram of goodput
+#     df["goodput"].plot.hist(bins=100)
+#     plt.show()
+#     loadTested = int(re.search(r'capacity-(\d+)', file).group(1))
+#     if 'gpt0' in capacity:
+#         obj = goodput
+#     elif 'gpt1' in capacity:
+#         obj = goodput - 10 * (tail_latency - SLO) if tail_latency > SLO else goodput
+#     elif 'gpt2' in capacity:
+#         obj = goodput - (tail_latency - SLO) ** 2 if tail_latency > SLO else goodput
+#     print("[Experiment Ran] objecive {} with average goodput: {} and loadTested: {}".format(obj, goodput_mean, loadTested))
 
 
 if __name__ == '__main__':
@@ -745,10 +746,11 @@ if __name__ == '__main__':
     parser.add_argument('--dagor', action='store_true', default=False, help='Optimize Dagor')
     # capacity is gpt1 by default, unless otherwise specified
     parser.add_argument('--tune', type=str, default='gpt1', help='Specify the weight for tuning')
+    parser.add_argument('--tune-load', type=int, default=8000, help='Specify the load for tuning')
 
     args = parser.parse_args()
 
-    global method, SLO, tightSLO, skipOptimize
+    global method, tightSLO, skipOptimize
 
     global optimizeBreakwater, optimizeBreakwaterD, optimizeCharon, optimizeDagor
     
@@ -759,8 +761,7 @@ if __name__ == '__main__':
     optimizeDagor = args.dagor
 
     if not optimizeBreakwater and not optimizeBreakwaterD and not optimizeCharon and not optimizeDagor:
-        optimizeCharon = optimizeBreakwater = optimizeBreakwaterD = objective_dagor = True
-        # optimizeDagor = False
+        optimizeCharon = optimizeBreakwater = optimizeBreakwaterD = optimizeDagor = True
 
 
     method = args.method
@@ -769,40 +770,40 @@ if __name__ == '__main__':
         's1': 'S_102000854',
         's2': 'S_149998854',
         's3': 'S_161142529',
+        'n4get': 'motivate-get',
+        'n4set': 'motivate-set',
+        'n4both': 'both-motivate',
     }
     method = map[method] if method in map else method
+
+    # if method == 'both-motivate':
+    #     # we focus on the get method for tuning
+    #     method = 'motivate-get'
+    #     motivate_both = True
+        
     tightSLO = args.tight_slo
     skipOptimize = args.skip_opt
 
-    # if len(sys.argv) > 1:
-    #     method = sys.argv[1]
-    # else:
-    #     raise Exception("Please specify the method")
+    load_no_control = get_sustainable_load(method)
+    # load_control = 3 * load_no_control
+    # load_control = 10000
     
-    # tightSLO = False
-    # if len(sys.argv) > 2:
-    #     tightSLO = sys.argv[2] == 'tightSLO'
-    
-    maximum_goodput = 10000
-    capacity = args.tune + '-10000'
+    if 'motivate' in method:
+        maximum_goodput = load_control = 30000
+    elif 'S_1' in method:
+        maximum_goodput = 10000
+        load_control = 2 * load_no_control
+    elif 'hotel' in method:
+        maximum_goodput = 5000
+        load_control = args.tune_load
+    # convert it to string
+    load_control = str(load_control)
+    capacity = args.tune + '-' + load_control
 
-    # capacity = 'gpt1-10000' if 'S_' in method else 'gpt2-8000'
-    # # if method == 'S_102000854':
-    # #     capacity = 'gpt1-10000'
-    # if method == 'hotels-http':
-    #     capacity = 'gpt1-2000'
+    # SLO = get_slo(method, tight=tightSLO)
 
-    # if method == 'all-methods-social':
-    #     capacity = 'gpt1-6000'
-    # if method == 'all-methods-hotel':
-    #     capacity = 'gpt1-8000'
-
-    # if 'S_' in method:
-    #     capacity = 'gpt0-10000'
-    # set the SLO based on the method
-    SLO = get_slo(method, tight=tightSLO)
-
-
+    print(f"Now running the optimization for method: {method}, capacity: {capacity}, tightSLO: {tightSLO}, skipOptimize: {skipOptimize}")
+    print(f"Optimizing Breakwater: {optimizeBreakwater}, BreakwaterD: {optimizeBreakwaterD}, Charon: {optimizeCharon}, Dagor: {optimizeDagor}")
 
     main()
 

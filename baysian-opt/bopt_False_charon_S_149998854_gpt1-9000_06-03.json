@@ -1,0 +1,19 @@
+{
+    "target": 0.3121915453818387,
+    "parameters": {
+        "PRICE_UPDATE_RATE": "1520us",
+        "TOKEN_UPDATE_RATE": "50228us",
+        "LATENCY_THRESHOLD": "12155us",
+        "PRICE_STEP": 220,
+        "PRICE_STRATEGY": "proportional",
+        "LAZY_UPDATE": "true",
+        "RATE_LIMITING": "true",
+        "ONLY_FRONTEND": "false"
+    },
+    "method": "S_149998854",
+    "capacity": "gpt1-9000",
+    "load": 9000,
+    "timestamp": "06-03",
+    "quantile": 0.1,
+    "SLO": 580
+}

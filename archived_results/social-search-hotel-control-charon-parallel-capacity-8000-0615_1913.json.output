@@ -1,0 +1,83 @@
+Deployments: frontend
+profile
+profile-redis
+rate
+rate-redis
+reservation
+reservation-redis
+search
+search-redis
+user
+user-redis
+deployment "frontend" successfully rolled out
+deployment "profile" successfully rolled out
+deployment "profile-redis" successfully rolled out
+deployment "rate" successfully rolled out
+deployment "rate-redis" successfully rolled out
+deployment "reservation" successfully rolled out
+deployment "reservation-redis" successfully rolled out
+deployment "search" successfully rolled out
+deployment "search-redis" successfully rolled out
+deployment "user" successfully rolled out
+deployment "user-redis" successfully rolled out
+ENTRY_POINT: frontend
+SERVICE_A_URL: 10.110.99.35:50051
+Capacity: 8000
+Metadata: request-id={{.RequestNumber}}
+Metadata: timestamp={{.TimestampUnix}}
+Metadata: method=search-hotel
+Charon Configurations:
+[{INTERCEPT charon} {PRICE_UPDATE_RATE 7531us} {TOKEN_UPDATE_RATE 41100us} {LATENCY_THRESHOLD 1468us} {PRICE_STEP 37} {PRICE_STRATEGY linear} {LAZY_UPDATE true} {RATE_LIMITING true} {LOAD_SHEDDING true} {CHARON_TRACK_PRICE false} {BREAKWATER_SLO 12500us} {BREAKWATER_A 0.001} {BREAKWATER_B 0.02} {BREAKWATER_CLIENT_EXPIRATION 10ms} {BREAKWATER_INITIAL_CREDIT 400} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATER_RTT 1000us} {BREAKWATER_TRACK_CREDIT false} {BREAKWATERD_SLO 12500us} {BREAKWATERD_A 0.001} {BREAKWATERD_B 0.02} {BREAKWATERD_CLIENT_EXPIRATION 10ms} {BREAKWATERD_INITIAL_CREDIT 400} {BREAKWATERD_LOAD_SHEDDING true} {BREAKWATERD_RTT 1000us} {DAGOR_QUEUING_THRESHOLD 2ms} {DAGOR_ALPHA 0.05} {DAGOR_BETA 0.01} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 10ms} {DAGOR_UMAX 20}]
+
+Summary:
+  Count:	109017
+  Total:	19.73 s
+  Slowest:	0 ns
+  Fastest:	0 ns
+  Average:	0.01 ms
+  Requests/sec:	5524.15
+
+Response time histogram:
+
+Latency distribution:
+
+Status code distribution:
+  [Unavailable]   109017 responses   
+
+Error distribution:
+  [109017]   rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing: dial tcp 10.110.99.35:50051: connect: connection refused"   
+
+Debug: Checking Namespace=default, Pod=frontend-57d8d8c76f-mtgv4 for Target File=deathstar_*.output
+Namespace: default, Pod: frontend-57d8d8c76f-mtgv4 has the target files.
+Copying deathstar_frontend.output to deathstar_frontend.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=profile-5968fcb7c7-k9j5h for Target File=deathstar_*.output
+Namespace: default, Pod: profile-5968fcb7c7-k9j5h has the target files.
+Copying deathstar_profile.output to deathstar_profile.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=profile-redis-68d9cc9448-jmwbl for Target File=deathstar_*.output
+Target files not found in Pod profile-redis-68d9cc9448-jmwbl in Namespace default.
+Debug: Checking Namespace=default, Pod=rate-5d67db6d6f-hbjmv for Target File=deathstar_*.output
+Namespace: default, Pod: rate-5d67db6d6f-hbjmv has the target files.
+Copying deathstar_rate.output to deathstar_rate.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=rate-redis-56c4795944-b8xxc for Target File=deathstar_*.output
+Target files not found in Pod rate-redis-56c4795944-b8xxc in Namespace default.
+Debug: Checking Namespace=default, Pod=reservation-75898fc94c-n6gjk for Target File=deathstar_*.output
+Namespace: default, Pod: reservation-75898fc94c-n6gjk has the target files.
+Copying deathstar_reservation.output to deathstar_reservation.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=reservation-redis-7cf7b4d94-5pfxn for Target File=deathstar_*.output
+Target files not found in Pod reservation-redis-7cf7b4d94-5pfxn in Namespace default.
+Debug: Checking Namespace=default, Pod=search-5bc99bdfdf-v5ld7 for Target File=deathstar_*.output
+Namespace: default, Pod: search-5bc99bdfdf-v5ld7 has the target files.
+Copying deathstar_search.output to deathstar_search.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=search-redis-99748f84-266n7 for Target File=deathstar_*.output
+Target files not found in Pod search-redis-99748f84-266n7 in Namespace default.
+Debug: Checking Namespace=default, Pod=user-77764cd465-rxkfn for Target File=deathstar_*.output
+Namespace: default, Pod: user-77764cd465-rxkfn has the target files.
+Copying deathstar_user.output to deathstar_user.output
+tar: removing leading '/' from member names
+Debug: Checking Namespace=default, Pod=user-redis-545bcd449b-g74gl for Target File=deathstar_*.output
+Target files not found in Pod user-redis-545bcd449b-g74gl in Namespace default.

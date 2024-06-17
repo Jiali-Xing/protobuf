@@ -1,0 +1,17 @@
+{
+    "target": 0.7297029243782661,
+    "parameters": {
+        "PRICE_UPDATE_RATE": "28403us",
+        "TOKEN_UPDATE_RATE": "78826us",
+        "LATENCY_THRESHOLD": "176us",
+        "PRICE_STEP": 65,
+        "PRICE_STRATEGY": "linear",
+        "LAZY_UPDATE": "true",
+        "RATE_LIMITING": "true",
+        "ONLY_FRONTEND": "false"
+    },
+    "method": "search-hotel",
+    "capacity": "gpt1-6000",
+    "load": 6000,
+    "timestamp": "06-14"
+}

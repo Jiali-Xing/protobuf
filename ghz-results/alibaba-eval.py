@@ -2,6 +2,7 @@ import glob, os, sys, re, json
 from datetime import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
 import seaborn as sns
 from collections import defaultdict
 import numpy as np
@@ -30,6 +31,11 @@ def plot_error_bars(ax, subset, metric, control, colors, lineStyles, labelDict, 
         else:
             ax.axhline(y=SLO, color='c', linestyle='-.')
 
+def format_ticks(value, tick_number):
+    if value >= 1000:
+        return f'{int(value/1000)}K'
+    return int(value)
+
 def setup_axes(axs, interfaces, ali_dict, alibaba_combined):
     if alibaba_combined:
         for i, interface in enumerate(interfaces):
@@ -39,18 +45,18 @@ def setup_axes(axs, interfaces, ali_dict, alibaba_combined):
             if i == 0:
                 ax1.set_ylabel('95th Tail\nLatency (ms)')
                 ax2.set_ylabel('Goodput (RPS)')
-                # # Set y-ticks for the leftmost plots
-                # ax1.set_yticks(np.arange(0, 1000, 100))
-                # ax1.set_yticklabels(np.arange(0, 1000, 100))
-                # ax2.set_yticks(np.arange(0, 9000, 1000))
-                # ax2.set_yticklabels(np.arange(0, 9000, 1000))
-            # else:
-            #     ax1.set_yticklabels([])
-            #     ax2.set_yticklabels([])
-        axs[0][1].legend(frameon=False, loc='upper center', bbox_to_anchor=(0.02, 1.3), ncol=4)
 
+            ax1.xaxis.set_major_formatter(FuncFormatter(format_ticks))
+            ax1.yaxis.set_major_formatter(FuncFormatter(format_ticks))
+            ax2.xaxis.set_major_formatter(FuncFormatter(format_ticks))
+            ax2.yaxis.set_major_formatter(FuncFormatter(format_ticks))
+
+            # make latency subplot y-axis log scale
+            # ax1.set_yscale('log')
+        # axs[0][1].legend(frameon=False, loc='upper center', bbox_to_anchor=(0.02, 1.3), ncol=4)
+        axs[0][0].legend(frameon=False, loc='upper left')  # Ensure the SLO legend is added to the first subplot
         # make the gap between the subplots smaller
-        plt.subplots_adjust(wspace=0.02)
+        plt.subplots_adjust(wspace=0.03)
         plt.subplots_adjust(hspace=0.03)
     else:
         ax1, ax2 = axs
@@ -83,7 +89,8 @@ def plot_combined_interfaces(axs, df, interfaces, control_mechanisms, colors, li
             subset = df[(df['overload_control'] == control) & (df['Request'] == interface)]
             for latency in whatLatency:
                 plot_error_bars(ax1, subset, latency, control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=True, hline_label=slo_label)
-                slo_label = False
+                if slo_label:
+                    slo_label = False
             plot_error_bars(ax2, subset, 'Goodput', control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=False)
 
 
@@ -150,13 +157,13 @@ def plot_alibaba_eval(df, interfaces):
     print(f"Saved plot to {save_path}{save_name}-{datetime.now().strftime('%m%d')}.pdf")
 
 
-def plot_4nodes(df, interfaces):
+def plot_4nodes(df, interfaces, control_mechanisms):
     if df is None:
         return
 
     motivate_combined = len(interfaces) > 1
 
-    control_mechanisms = ['dagor', 'breakwater', 'breakwaterd', 'charon']
+    # control_mechanisms = ['dagor', 'breakwater', 'breakwaterd']
     whatLatency = ['95th_percentile']
 
     colors = {
@@ -194,10 +201,16 @@ def plot_4nodes(df, interfaces):
     ali_dict = {
         "motivate-set": "Set",
         "motivate-get": "Get",
+        "search-hotel": "Search Hotel",
+        "reserve-hotel": "Reserve Hotel",
     }
 
     if motivate_combined:
-        fig, axs = plt.subplots(2, len(interfaces), figsize=(6, 5), sharex=True, sharey='row')
+        fig, axs = plt.subplots(2, len(interfaces), figsize=(6, 5), sharex=True, )
+
+        # Share the y-axis for the second row
+        for i in range(1, len(interfaces)):
+            axs[1, i].sharey(axs[1, 0])
         plot_combined_interfaces(axs, df, interfaces, control_mechanisms, colors, lineStyles, labelDict, control_markers, whatLatency)
     else:
         fig, axs = plt.subplots(1, 2, figsize=(10, 4))
@@ -207,10 +220,62 @@ def plot_4nodes(df, interfaces):
 
     save_path = os.path.expanduser(f'~/Sync/Git/protobuf/ghz-results/')
     save_name = 'both-4nodes' if motivate_combined else '4nodes'
+
+    save_name = 'both-hotels' if 'hotel' in interfaces[0] else save_name
+
     plt.savefig(f'{save_path}{save_name}-{datetime.now().strftime("%m%d")}.pdf')
     plt.show()
     print(f"Saved plot to {save_path}{save_name}-{datetime.now().strftime('%m%d')}.pdf")
 
+
+def load_plot_hotel():
+    global method
+    global tightSLO
+
+    method = os.getenv('METHOD', 'both-hotel')
+    tightSLO = os.getenv('TIGHTSLO', 'False').lower() == 'true'
+
+    print(f"Method: {method}, Tight SLO: {tightSLO}")
+
+    # experiment time ranges
+    time_ranges = {
+        'search-hotel': [
+            ('0613_1200', '0617_0000'),
+        ],
+        'reserve-hotel': [
+            ('0613_1200', '0617_0000'),
+        ],
+    }
+
+    control_mechanisms = ['dagor', 'breakwater', 'breakwaterd', 'charon']
+
+    parameter_files = {
+        'search-hotel': {
+            control: f'bopt_False_{control}_search-hotel_gpt1-best.json' for control in control_mechanisms
+        },
+    }
+    parameter_files['reserve-hotel'] = parameter_files['search-hotel']
+
+    csv_file = '~/Sync/Git/protobuf/ghz-results/grouped_hotel.csv'
+    # Load data
+    hotel_df = pd.DataFrame()
+    interfaces = ['search-hotel', 'reserve-hotel']
+
+    for interface in interfaces:
+        df = load_data_from_csv(csv_file, method=interface, list_of_tuples_of_experiment_timestamps=time_ranges[interface], given_parameter=parameter_files)
+        assert df is not None, f"Dataframe for {interface} is None"
+        df['Request'] = interface
+        # report the file_count column for each interface and capacity
+        df['file_count'] = df['file_count'].astype(int)
+        for control in control_mechanisms:
+            subset = df[(df['Request'] == interface) & (df['overload_control'] == control)]
+            print(f"{interface} {control} file_count: {subset['file_count'].values}")
+        hotel_df = pd.concat([hotel_df, df])
+
+    df = hotel_df
+    # remove the rows with Load > 24000
+    df = df[df['Load'] < 11000]
+    plot_4nodes(df, interfaces, control_mechanisms)
 
 def load_plot_4nodes():
     global method
@@ -221,7 +286,7 @@ def load_plot_4nodes():
     method = os.getenv('METHOD', 'motivate-set')
     tightSLO = os.getenv('TIGHTSLO', 'False').lower() == 'true'
 
-    print(f"Method: {os.getenv('METHOD', 'ali3')}, Tight SLO: {tightSLO}")
+    print(f"Method: {method}, Tight SLO: {tightSLO}")
 
     # experiment time ranges
     time_ranges = {
@@ -233,19 +298,24 @@ def load_plot_4nodes():
         ],
     }
 
-    control_mechanisms = ['dagor', 'breakwater', 'breakwaterd', 'charon']
+    control_mechanisms = ['dagor', 'breakwater', 'breakwaterd']
 
     parameter_files = {
         'motivate-set': {
             control: f'bopt_False_{control}_motivate-set_gpt1-30000_06-10.json' for control in control_mechanisms
         }, 
+    } if 'monotonic' in method else {
+        'motivate-set': {
+            control: f'bopt_False_{control}_motivate-set_gpt1-30000_06-07.json' for control in control_mechanisms
+        },
     }
         # motivate-get uses the same parameter files as motivate-set
     parameter_files['motivate-get'] = {
         k: v for k, v in parameter_files['motivate-set'].items()
     }
 
-    csv_file = '~/Sync/Git/protobuf/ghz-results/grouped_4n_monotonic.csv'
+    csv_file = '~/Sync/Git/protobuf/ghz-results/grouped_4n_monotonic.csv' if 'monotonic' in method else '~/Sync/Git/protobuf/ghz-results/grouped_4n.csv'
+
     if motivate_combined:
         # init a dataframe to merge the 2 motivate interfaces for `motivate-set` and `motivate-get`
         motivate_df = pd.DataFrame()
@@ -270,14 +340,12 @@ def load_plot_4nodes():
 
     # remove the rows with Load > 24000
     df = df[df['Load'] > 9000]
-    plot_4nodes(df, interfaces)
+    plot_4nodes(df, interfaces, control_mechanisms)
 
 def load_plot_alibaba():
     global method
     global tightSLO
     # global SLO
-    
-    old_data_sigcomm = False
 
     method = os.getenv('METHOD', 'ali3')
     alibaba_combined = (method == 'ali3' or method == 'all-alibaba')
@@ -415,18 +483,18 @@ def load_plot_alibaba():
         # loop through the 3 alibaba interfaces and load the data and combine them into one dataframe
         interfaces = ["S_102000854", "S_149998854", "S_161142529"]
         for interface in interfaces:
-            method = interface
-            SLO = get_slo(method=method, tight=tightSLO, all_methods=False)
+            # method = interface
+            SLO = get_slo(method=interface, tight=tightSLO, all_methods=False)
             df = None
             if method == 'all-alibaba':
                 parameter_files = {
                     api: {
-                        control: f'bopt_False_{control}_{api}_gpt1-12000_06-10.json.json' for control in control_mechanisms
+                        control: f'bopt_False_{control}_S_149998854_gpt1-10000_06-10.json' for control in control_mechanisms
                     } for api in interfaces
                 }
-                df = load_data_from_csv(f'~/Sync/Git/protobuf/ghz-results/grouped_all_ali.csv', method=method, list_of_tuples_of_experiment_timestamps=time_ranges[method], given_parameter=parameter_files)
+                df = load_data_from_csv(f'~/Sync/Git/protobuf/ghz-results/grouped_all_ali.csv', method=interface, list_of_tuples_of_experiment_timestamps=time_ranges[interface], given_parameter=parameter_files)
             elif method == 'ali3':
-                df = load_data_from_csv(f'~/Sync/Git/protobuf/ghz-results/grouped_ali.csv', method=method, list_of_tuples_of_experiment_timestamps=time_ranges[interface], given_parameter=parameter_files)
+                df = load_data_from_csv(f'~/Sync/Git/protobuf/ghz-results/grouped_ali.csv', method=interface, list_of_tuples_of_experiment_timestamps=time_ranges[interface], given_parameter=parameter_files)
             assert df is not None, f"Dataframe for {interface} is None"
             df['Request'] = interface
             alibaba_df = pd.concat([alibaba_df, df])
@@ -454,3 +522,5 @@ if __name__ == '__main__':
         load_plot_4nodes()
     elif method == 'all-alibaba' or method == 'ali3':
         load_plot_alibaba()
+    elif method == 'both-hotel':
+        load_plot_hotel()

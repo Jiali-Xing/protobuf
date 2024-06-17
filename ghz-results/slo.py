@@ -19,7 +19,8 @@ def get_sustainable_load(method):
         "motivate-get": 15000,
         "motivate-set": 15000,
         "both-motivate": 20000,
-        "search-hotel": 8000,
+        "search-hotel": 4000,
+        "reserve-hotel": 10000,
         # "hotels-http": 8000,
         # "reservation-http": 8000,
         # "user-http": 8000,
@@ -76,7 +77,8 @@ def get_slo(method, tight=False, all_methods=False):
         "motivate-set": 26,
         "motivate-get": 8,
         "both-motivate": 26,
-        "search-hotel": 6,
+        "search-hotel": 18,
+        "reserve-hotel": 3,
         "hotels-http": 17, # under 8k req/s
         "reservation-http": 12, # under 8k req/s 
         "user-http": 7, # under 8k req/s

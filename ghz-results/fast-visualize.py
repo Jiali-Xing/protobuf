@@ -56,10 +56,12 @@ def main():
 
     params_file = sys.argv[1]
     load = int(sys.argv[2])
-    if 'S_' in params_file:
-        experiment_file = find_experiment_file(params_file, load, 'ghz-results/alibaba-experiment_results.csv')
+    if 'S_' in params_file in params_file:
+        experiment_file = find_experiment_file(params_file, load, 'ghz-results/all-alibaba-experiment_results.csv')
     elif 'motivate' in params_file:
         experiment_file = find_experiment_file(params_file, load, 'ghz-results/4-nodes-monotonic-experiment_results.csv')
+    elif 'hotel' in params_file:
+        experiment_file = find_experiment_file(params_file, load, 'ghz-results/hotel-experiment_results.csv')
 
     if experiment_file:
         print(f"Found experiment file: {experiment_file}")

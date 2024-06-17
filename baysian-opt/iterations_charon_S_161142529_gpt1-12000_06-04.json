@@ -1,0 +1,20 @@
+[
+    {
+        "target": 0.6841754135614654,
+        "params": {
+            "latency_threshold": 12568.957940606962,
+            "price_step": 110.84542908190214,
+            "price_update_rate": 1003.3168697030017,
+            "token_update_rate": 9767.644606323352
+        }
+    },
+    {
+        "target": 0.715980893275127,
+        "params": {
+            "latency_threshold": 4488.00113543168,
+            "price_step": 22.927403267631693,
+            "price_update_rate": 6401.546129952456,
+            "token_update_rate": 11021.261084248385
+        }
+    }
+]
