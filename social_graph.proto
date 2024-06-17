@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package socialproto;
+
+option go_package = "github.com/Jiali-Xing/socialproto;socialproto";
+
+service SocialGraph {
+  rpc InsertUser(InsertUserRequest) returns (InsertUserResponse);
+  rpc GetFollowers(GetFollowersRequest) returns (GetFollowersResponse);
+  rpc GetFollowees(GetFolloweesRequest) returns (GetFolloweesResponse);
+  rpc Follow(FollowRequest) returns (FollowResponse);
+  rpc FollowMany(FollowManyRequest) returns (FollowManyResponse);
+}
+
+message InsertUserRequest {
+  string user_id = 1;
+}
+
+message InsertUserResponse {
+  bool success = 1;
+}
+
+message GetFollowersRequest {
+  string user_id = 1;
+}
+
+message GetFollowersResponse {
+  repeated string followers = 1;
+}
+
+message GetFolloweesRequest {
+  string user_id = 1;
+}
+
+message GetFolloweesResponse {
+  repeated string followees = 1;
+}
+
+message FollowRequest {
+  string follower_id = 1;
+  string followee_id = 2;
+}
+
+message FollowResponse {
+  bool success = 1;
+}
+
+message FollowManyRequest {
+  string user_id = 1;
+  repeated string follower_ids = 2;
+  repeated string followee_ids = 3;
+}
+
+message FollowManyResponse {
+  bool success = 1;
+}

@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package socialproto;
+
+option go_package = "github.com/Jiali-Xing/socialproto;socialproto";
+
+import "post.proto";
+
+
+service PostStorage {
+  rpc StorePost(StorePostRequest) returns (StorePostResponse);
+  rpc StorePostMulti(StorePostMultiRequest) returns (StorePostMultiResponse);
+  rpc ReadPost(ReadPostRequest) returns (ReadPostResponse);
+  rpc ReadPosts(ReadPostsRequest) returns (ReadPostsResponse);
+}
+
+message StorePostRequest {
+  string text = 1;
+  string creator_id = 2;
+}
+
+message StorePostResponse {
+  string post_id = 1;
+}
+
+message StorePostMultiRequest {
+  string text = 1;
+  string creator_id = 2;
+  int32 number = 3;
+}
+
+message StorePostMultiResponse {
+  repeated string post_ids = 1;
+}
+
+message ReadPostRequest {
+  string post_id = 1;
+}
+
+message ReadPostResponse {
+  Post post = 1;
+}
+
+message ReadPostsRequest {
+  repeated string post_ids = 1;
+}
+
+message ReadPostsResponse {
+  repeated Post posts = 1;
+}
