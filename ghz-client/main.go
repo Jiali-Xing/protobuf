@@ -161,21 +161,21 @@ func main() {
 		protoFile = "../frontend.proto"
 		protoCall = "hotelproto.FrontendService/FrontendReservation"
 
-	case "read-home-timeline":
+	case "home-timeline":
 		req = &socialpb.ReadHomeTimelineRequest{
 			UserId: username,
 		}
 		protoFile = "../home_timeline.proto"
 		protoCall = "socialproto.HomeTimeline/ReadHomeTimeline"
 
-	case "read-user-timeline":
+	case "user-timeline":
 		req = &socialpb.ReadUserTimelineRequest{
 			UserId: username,
 		}
 		protoFile = "../user_timeline.proto"
 		protoCall = "socialproto.UserTimeline/ReadUserTimeline"
 
-	case "compose-post":
+	case "compose":
 		req = &socialpb.ComposePostRequest{
 			CreatorId: username,
 			Text:      "This is a sample post",
