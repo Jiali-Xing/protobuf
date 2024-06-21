@@ -165,23 +165,23 @@ func main() {
 		req = &socialpb.ReadHomeTimelineRequest{
 			UserId: username,
 		}
-		protoFile = "../home_timeline.proto"
-		protoCall = "socialproto.HomeTimeline/ReadHomeTimeline"
+		protoFile = "../nginx.proto"
+		protoCall = "socialproto.NginxService/ReadHomeTimeline"
 
 	case "user-timeline":
 		req = &socialpb.ReadUserTimelineRequest{
 			UserId: username,
 		}
-		protoFile = "../user_timeline.proto"
-		protoCall = "socialproto.UserTimeline/ReadUserTimeline"
+		protoFile = "../nginx.proto"
+		protoCall = "socialproto.NginxService/ReadUserTimeline"
 
 	case "compose":
 		req = &socialpb.ComposePostRequest{
 			CreatorId: username,
 			Text:      "This is a sample post",
 		}
-		protoFile = "../compose_post.proto"
-		protoCall = "socialproto.ComposePost/ComposePost"
+		protoFile = "../nginx.proto"
+		protoCall = "socialproto.NginxService/ComposePost"
 
 	default:
 		requestGreetings := &pb.Greeting{
