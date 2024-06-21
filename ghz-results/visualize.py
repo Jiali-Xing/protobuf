@@ -116,7 +116,7 @@ def plot_timeseries(df, filename):
     ax1.set_ylabel('Latencies (ms)', color='tab:red')
     ax1.tick_params(axis='y', labelcolor='tab:red')
     ax1.plot(df.index, df['latency_ma'], color='orange', linestyle='--', label='Average Latency (e2e)')
-    ax1.plot(df.index, df['tail_latency'], color='green', linestyle='-.', label='99% Tail Latency (e2e)')
+    ax1.plot(df.index, df['tail_latency'], color='green', linestyle='-.', label='95% Tail Latency (e2e)')
     ax1.set_ylim(0, 2000)
 
     ax2 = ax1.twinx()
@@ -405,7 +405,7 @@ def plot_timeseries_ok(df, filename):
     ax1.set_ylabel('Latencies (ms)', color='tab:red')
     ax1.tick_params(axis='y', labelcolor='tab:red')
     ax1.plot(df.index, df['latency_ma'], linestyle='-.', label='Average Latency (e2e)')
-    ax1.plot(df.index, df['tail_latency'], linestyle='-', label='99% Tail Latency (e2e)')
+    ax1.plot(df.index, df['tail_latency'], linestyle='-', label='95% Tail Latency (e2e)')
     # ax1.set_ylim(70, 2000)
     ax1.set_yscale('log')
 
@@ -452,7 +452,7 @@ def plot_timeseries_lat(df, filename, computation_time=0):
     ax1.plot(df.index, np.maximum(0.001, df['latency_ma']-computation_time), linestyle='--',
              label='Average Latency (e2e)' if computation_time == 0 else 'Average Latency (e2e) \nminus computation time')
     ax1.plot(df.index, np.maximum(0.001, df['tail_latency']-computation_time), linestyle='-.',
-             label='99% Tail Latency (e2e)' if computation_time == 0 else '99% Tail Latency (e2e) \nminus computation time')
+             label='95% Tail Latency (e2e)' if computation_time == 0 else '99% Tail Latency (e2e) \nminus computation time')
     # set the y axis to be above the 0.001
     ax1.set_ylim(0.01, np.max(df['tail_latency'])*1.1)
     ax1.set_yscale('log')
@@ -658,11 +658,11 @@ def plot_timeseries_split(df, filename, computation_time=0):
     ax1.plot(df.index, np.maximum(0.001, df['latency_ma']-computation_time), linestyle='--',
              label='Average Latency (e2e)' if computation_time == 0 else 'Average Latency (e2e) \nminus computation time')
     ax1.plot(df.index, np.maximum(0.001, df['tail_latency']-computation_time), linestyle='-.',
-             label='99% Tail Latency (e2e)' if computation_time == 0 else '99% Tail Latency (e2e) \nminus computation time')
+             label='95% Tail Latency (e2e)' if computation_time == 0 else '95% Tail Latency (e2e) \nminus computation time')
     # if alibaba:
         # ax1.set_ylim(100, 500)
     if not alibaba:
-        ax1.set_ylim(10, 200)
+        ax1.set_ylim(1, 200)
     ax1.set_yscale('log')
 
     # add .fillna(0) to all the columns of df, so that we can plot the throughput and goodput
@@ -672,7 +672,8 @@ def plot_timeseries_split(df, filename, computation_time=0):
     ax2.set_ylabel('Throughput (req/s)', color='tab:blue')
     ax2.plot(df.index, df['throughput'], 'r-.', alpha=0.2)
     ax2.plot(df.index, df['goodput'], color='green', linestyle='--', alpha=0.2)
-    ax2.plot(df.index, df['dropped']+df['throughput'], color='tab:blue', linestyle='-', label='Req Sent', alpha=0.2)
+    # ax2.plot(df.index, df['dropped']+df['throughput'], color='tab:blue', linestyle='-', label='Req Sent', alpha=0.2)
+
     # plot dropped requests + rate limit requests + throughput = total demand
     # if df['limited'].sum() > 0, then plot the rate limited requests
     load_info = read_load_info_from_json(filename)
@@ -703,7 +704,8 @@ def plot_timeseries_split(df, filename, computation_time=0):
     # if mechanism in ['charon', 'breakwater', 'breakwaterd']:
     #     ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], color='tab:blue', alpha=0.3, label='Rate Limited Req')
     ax2.tick_params(axis='y', labelcolor='tab:blue')
-    # ax2.set_ylim(0, 15000)
+    
+    ax2.set_ylim(0, 22000)
 
     # Apply the custom formatter to the x-axis
     # use second locator to show grid lines for each second, not `09` but `9`
@@ -812,7 +814,7 @@ def plot_timeseries_split(df, filename, computation_time=0):
     if mechanism != 'baseline' and mechanism != 'dagor':
         ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], where=df['total_demand'] > df['throughput'] + df['dropped'], color='tab:blue', alpha=0.3, label='Rate Limited')
     
-    ax2.legend(loc='upper left', bbox_to_anchor=(0, 1), ncol=2 if narrow else 3, frameon=True)
+    ax2.legend(loc='upper left', bbox_to_anchor=(0, 1), ncol=2 if narrow else 1, frameon=True)
     # concurrent_clients = re.findall(r"\d+", filename)[0]
     # plt.suptitle(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
 

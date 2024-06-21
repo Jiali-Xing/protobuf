@@ -7,7 +7,7 @@ require (
 	github.com/Jiali-Xing/dagor-grpc v0.0.0-20231203061458-e8a10f01b52d
 	github.com/Jiali-Xing/ghz v0.0.0-20240606215519-89918b22f777
 	github.com/Jiali-Xing/hotelproto v0.0.0-20240609022535-ea9137c9f3e8
-	github.com/Jiali-Xing/socialproto v0.0.0-20240614070428-e68c1612eaea
+	github.com/Jiali-Xing/socialproto v0.0.0-20240621081102-966a8e827703
 	github.com/google/uuid v1.6.0
 	github.com/sirupsen/logrus v1.9.0
 	google.golang.org/api v0.180.0
@@ -71,5 +71,5 @@ require (
 	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	google.golang.org/genproto v0.0.0-20240604185151-ef581f913117 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240604185151-ef581f913117 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240617180043-68d350f18fd4 // indirect
 )

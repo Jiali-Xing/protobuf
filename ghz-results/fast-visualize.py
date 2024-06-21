@@ -40,7 +40,7 @@ def find_experiment_file(params_file, load, csv_file='ghz-results/alibaba-experi
         return None
     else:
         # randomly select one of the matching files
-        experiment_file = df_filtered.iloc[0]['filename']
+        experiment_file = df_filtered.sample()['filename'].values[0]
         print(f"Warning: Found {len(df_filtered)} matching files. Randomly selecting {experiment_file}.")
         return experiment_file
 
@@ -61,6 +61,8 @@ def main():
     elif 'motivate' in params_file:
         experiment_file = find_experiment_file(params_file, load, 'ghz-results/4-nodes-monotonic-experiment_results.csv')
     elif 'hotel' in params_file:
+        experiment_file = find_experiment_file(params_file, load, 'ghz-results/hotel-experiment_results.csv')
+    else:
         experiment_file = find_experiment_file(params_file, load, 'ghz-results/hotel-experiment_results.csv')
 
     if experiment_file:

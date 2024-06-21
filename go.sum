@@ -53,6 +53,10 @@ github.com/Jiali-Xing/plain v0.0.0-20231227034046-b79fd58cb753 h1:nmRXE8JFRClfK+
 github.com/Jiali-Xing/plain v0.0.0-20231227034046-b79fd58cb753/go.mod h1:Zn5ZkJmbhoVVgYMaACaT4c8mByeJTolYzGZzKKNZ9vw=
 github.com/Jiali-Xing/socialproto v0.0.0-20240614070428-e68c1612eaea h1:ZjC2ipPtZvJ3sKMzB3vL6dGXbLTU0GnBIbFS1LHvObk=
 github.com/Jiali-Xing/socialproto v0.0.0-20240614070428-e68c1612eaea/go.mod h1:M/tEHAEwZblysHvD7/IrdW9h257mXPLbwl4U9RHfyFs=
+github.com/Jiali-Xing/socialproto v0.0.0-20240621060513-601e69015057 h1:sgiyhk9JzgrVkO0wafNP+bFNNhvsn0CkZqUMFOqo27s=
+github.com/Jiali-Xing/socialproto v0.0.0-20240621060513-601e69015057/go.mod h1:M/tEHAEwZblysHvD7/IrdW9h257mXPLbwl4U9RHfyFs=
+github.com/Jiali-Xing/socialproto v0.0.0-20240621081102-966a8e827703 h1:nZ/lygdxY/MeNgN5XJE6l9poWmeEhrn8gkFmVQX1uTQ=
+github.com/Jiali-Xing/socialproto v0.0.0-20240621081102-966a8e827703/go.mod h1:M/tEHAEwZblysHvD7/IrdW9h257mXPLbwl4U9RHfyFs=
 github.com/Masterminds/goutils v1.1.1 h1:5nUrii3FMTL5diU80unEVvNevw1nH4+ZV4DSLVJLSYI=
 github.com/Masterminds/goutils v1.1.1/go.mod h1:8cTjp+g8YejhMuvIA5y2vz3BpJxksy863GQaJW2MFNU=
 github.com/Masterminds/semver/v3 v3.2.0 h1:3MEsd0SM6jqZojhjLWWeBY+Kcjy9i6MQAeY7YgDP83g=
@@ -573,6 +577,8 @@ google.golang.org/genproto/googleapis/api v0.0.0-20240604185151-ef581f913117 h1:
 google.golang.org/genproto/googleapis/api v0.0.0-20240604185151-ef581f913117/go.mod h1:OimBR/bc1wPO9iV4NC2bpyjy3VnAwZh5EBPQdtaE5oo=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20240604185151-ef581f913117 h1:1GBuWVLM/KMVUv1t1En5Gs+gFZCNd360GGb4sSxtrhU=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20240604185151-ef581f913117/go.mod h1:EfXuqaE1J41VCDicxHzUDm+8rk+7ZdXzHV0IhO/I6s0=
+google.golang.org/genproto/googleapis/rpc v0.0.0-20240617180043-68d350f18fd4 h1:Di6ANFilr+S60a4S61ZM00vLdw0IrQOSMS2/6mrnOU0=
+google.golang.org/genproto/googleapis/rpc v0.0.0-20240617180043-68d350f18fd4/go.mod h1:Ue6ibwXGpU+dqIcODieyLOcgj7z8+IcskoNIgZxtrFY=
 google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZiDr8c=
 google.golang.org/grpc v1.20.1/go.mod h1:10oTOabMzJvdu6/UiuZezV6QK5dSlG84ov/aaiqXj38=
 google.golang.org/grpc v1.21.1/go.mod h1:oYelfM1adQP15Ek0mdvEgi9Df8B9CZIaU1084ijfRaM=

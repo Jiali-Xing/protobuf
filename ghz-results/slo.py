@@ -7,7 +7,7 @@ def get_sustainable_load(method):
     # The sustainable load is determined by the stabliity of the throughput. 
     # Results here are measured under 8 nodes.  
     sustainable_load = {
-        # "compose": 4000,
+        "compose": 10000,
         # "user-timeline": 6000,
         # "home-timeline": 6000,
         "S_102000854": 6000,
@@ -68,7 +68,7 @@ def get_slo(method, tight=False, all_methods=False):
         # "all-methods-hotel": 10,
     }
     tail95_lat = {
-        "compose": 30, # under 4k req/s
+        "compose": 5,
         "user-timeline": 20, # under 6k req/s
         "home-timeline": 20, # under 6k req/s
         "S_102000854": 43,

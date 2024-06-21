@@ -25,11 +25,10 @@ def plot_error_bars(ax, subset, metric, control, colors, lineStyles, labelDict, 
                 linewidth=2, capsize=5, alpha=0.6)
     if max_x_range:
         ax.set_xlim(9000, max_x_range+1000)
-    if add_hline:
-        if hline_label:
-            ax.axhline(y=SLO, color='c', linestyle='-.', label='SLO')
-        else:
-            ax.axhline(y=SLO, color='c', linestyle='-.')
+    # if add_hline:
+    #     if hline_label:
+    #     else:
+    #         ax.axhline(y=SLO, color='c', linestyle='-.')
 
 def format_ticks(value, tick_number):
     if value >= 1000:
@@ -43,21 +42,31 @@ def setup_axes(axs, interfaces, ali_dict, alibaba_combined):
             ax1, ax2 = axs[:, i]
             ax1.set_title(f'{iname}')
             if i == 0:
-                ax1.set_ylabel('95th Tail\nLatency (ms)')
+                ax1.set_ylabel('95th Tail Latency (ms)')
                 ax2.set_ylabel('Goodput (RPS)')
 
-            ax1.xaxis.set_major_formatter(FuncFormatter(format_ticks))
-            ax1.yaxis.set_major_formatter(FuncFormatter(format_ticks))
-            ax2.xaxis.set_major_formatter(FuncFormatter(format_ticks))
-            ax2.yaxis.set_major_formatter(FuncFormatter(format_ticks))
+            # ax1.xaxis.set_major_formatter(FuncFormatter(format_ticks))
+            # # ax1.yaxis.set_major_formatter(FuncFormatter(format_ticks))
+            # ax2.xaxis.set_major_formatter(FuncFormatter(format_ticks))
+            # ax2.yaxis.set_major_formatter(FuncFormatter(format_ticks))
+
+            # set y limits for the latency subplots to be 0 to 800ms
+            # ax1.set_ylim(1, 600)
+            ax2.set_ylim(0, 6000)
 
             # make latency subplot y-axis log scale
             # ax1.set_yscale('log')
-        # axs[0][1].legend(frameon=False, loc='upper center', bbox_to_anchor=(0.02, 1.3), ncol=4)
-        axs[0][0].legend(frameon=False, loc='upper left')  # Ensure the SLO legend is added to the first subplot
+        axs[0][1].legend(frameon=False, loc='upper center', bbox_to_anchor=(0.02, 1.4), ncol=3)
+        # axs[0][1].legend(frameon=False, loc='upper left')  # Ensure the SLO legend is added to the first subplot
         # make the gap between the subplots smaller
         plt.subplots_adjust(wspace=0.03)
         plt.subplots_adjust(hspace=0.03)
+
+        # remove y ticks for the second column of subplots
+        for i in range(1, len(interfaces)):
+            axs[0][i].tick_params(labelleft=False)
+            axs[1][i].tick_params(labelleft=False)
+
     else:
         ax1, ax2 = axs
         ax1.set_xlabel('Load (RPS)')
@@ -71,6 +80,35 @@ def setup_axes(axs, interfaces, ali_dict, alibaba_combined):
         # ax2.legend(frameon=False, loc='upper center', bbox_to_anchor=(0.5, 1.3), ncol=4)
         ax2.legend(frameon=False, bbox_to_anchor=(1.05, 1), loc='upper left')
 
+
+def setup_axes_single_row(axs, interfaces, ali_dict):
+
+    for i, interface in enumerate(interfaces):
+        iname = ali_dict[interface]
+        ax = axs[i]
+        ax.set_title(f'{iname}')
+        if i == 0:
+            ax.set_ylabel('95th Tail\nLatency (ms)')
+        else:
+            ax.tick_params(labelleft=False)  # Remove y-ticks for 2nd and 3rd subplots
+        ax.xaxis.set_major_formatter(FuncFormatter(format_ticks))
+        ax.yaxis.set_major_formatter(FuncFormatter(format_ticks))
+        ax.set_ylim(0, 2400)
+        if i > 0:  # Share y-axis with the first plot
+            ax.sharey(axs[0])
+ 
+    # Setup for the aggregated goodput plot
+    ax_agg_goodput = axs[len(interfaces)]
+    ax_agg_goodput.set_title('Aggregated Goodput')
+    ax_agg_goodput.set_ylabel('Goodput (RPS)')
+    ax_agg_goodput.xaxis.set_major_formatter(FuncFormatter(format_ticks))
+    ax_agg_goodput.yaxis.set_major_formatter(FuncFormatter(format_ticks))
+    
+    axs[0].legend(frameon=False, loc='upper left')  # Ensure the SLO legend is added to the first subplot
+    plt.subplots_adjust(wspace=0.2)  # Adjust space between subplots
+    plt.subplots_adjust(hspace=0.03)
+
+
 def plot_individual_interface(axs, df, control_mechanisms, colors, lineStyles, labelDict, control_markers, whatLatency):
     ax1, ax2 = axs
     for control in control_mechanisms:
@@ -81,23 +119,56 @@ def plot_individual_interface(axs, df, control_mechanisms, colors, lineStyles, l
         plot_error_bars(ax2, subset, 'Goodput', control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=False)
 
 def plot_combined_interfaces(axs, df, interfaces, control_mechanisms, colors, lineStyles, labelDict, control_markers, whatLatency):
-    slo_label = True
+    slo_label = False
     for i, interface in enumerate(interfaces):
         ax1, ax2 = axs[:, i]
+        SLO = get_slo(method=interface, tight=tightSLO, all_methods=False)
+        for latency in whatLatency:
+            for control in control_mechanisms:
+                subset = df[(df['overload_control'] == control) & (df['Request'] == interface)]
+                plot_error_bars(ax1, subset, latency, control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=True, hline_label=slo_label)
+        ax1.axhline(y=SLO, color='c', linestyle='-.', label='SLO')
+        for control in control_mechanisms:
+            subset = df[(df['overload_control'] == control) & (df['Request'] == interface)]
+            plot_error_bars(ax2, subset, 'Goodput', control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=False)
+
+
+def plot_single_row_combined(axs, df, interfaces, control_mechanisms, colors, lineStyles, labelDict, control_markers, whatLatency):
+    slo_label = True
+    for i, interface in enumerate(interfaces):
+        ax = axs[i]
         SLO = get_slo(method=interface, tight=tightSLO, all_methods=False)
         for control in control_mechanisms:
             subset = df[(df['overload_control'] == control) & (df['Request'] == interface)]
             for latency in whatLatency:
-                plot_error_bars(ax1, subset, latency, control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=True, hline_label=slo_label)
+                plot_error_bars(ax, subset, latency, control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=True, hline_label=slo_label)
                 if slo_label:
                     slo_label = False
-            plot_error_bars(ax2, subset, 'Goodput', control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=False)
+            ax.set_title(f'Latency - {interface}')
+        ax.set_xlabel('Load')
+
+    # Plot the aggregated goodput in the fourth plot
+    ax_agg_goodput = axs[len(interfaces)]
+    for control in control_mechanisms:
+        # agg_goodput = df[df['overload_control'] == control].groupby('Load')['Goodput'].sum()
+        # agg_goodput = df[df['overload_control'] == control].groupby('Load')['Goodput'].sum()
+        # ax_agg_goodput.plot(agg_goodput.index, agg_goodput.values, label=labelDict[control], color=colors[control], linestyle=lineStyles[control], marker=control_markers[control])
+        # for interface in interfaces:
+        interface = interfaces[0]
+        subset = df[(df['overload_control'] == control) & (df['Request'] == interface)]
+        plot_error_bars(ax_agg_goodput, subset, 'Total Goodput', control, colors, lineStyles, labelDict, control_markers, SLO, add_hline=False)
+    ax_agg_goodput.set_title('Aggregated Goodput')
+    ax_agg_goodput.set_ylabel('Goodput')
+    ax_agg_goodput.set_xlabel('Load')
+    # Remove legend for the last subplot
+    ax_agg_goodput.legend().remove()
 
 
 def plot_alibaba_eval(df, interfaces):
     if df is None:
         return
 
+    merge_goodput = True
     alibaba_combined = len(interfaces) > 1
 
     control_mechanisms = ['dagor', 'breakwater', 'breakwaterd', 'charon']
@@ -142,13 +213,20 @@ def plot_alibaba_eval(df, interfaces):
     }
 
     if alibaba_combined:
-        fig, axs = plt.subplots(2, len(interfaces), figsize=(12, 5), sharex=True, sharey='row')
-        plot_combined_interfaces(axs, df, interfaces, control_mechanisms, colors, lineStyles, labelDict, control_markers, whatLatency)
+        if merge_goodput:
+            fig, axs = plt.subplots(1, len(interfaces) + 1, figsize=(12, 3.5), sharex=True, gridspec_kw={'width_ratios': [1]*len(interfaces) + [1.2]})
+            plot_single_row_combined(axs, df, interfaces, control_mechanisms, colors, lineStyles, labelDict, control_markers, whatLatency)
+        else:
+            fig, axs = plt.subplots(2, len(interfaces), figsize=(12, 5), sharex=True, sharey='row')
+            plot_combined_interfaces(axs, df, interfaces, control_mechanisms, colors, lineStyles, labelDict, control_markers, whatLatency)
     else:
         fig, axs = plt.subplots(1, 2, figsize=(10, 4))
         plot_individual_interface(axs, df, control_mechanisms, colors, lineStyles, labelDict, control_markers, whatLatency)
 
-    setup_axes(axs, interfaces, ali_dict, alibaba_combined)
+    if alibaba_combined and merge_goodput:
+        setup_axes_single_row(axs, interfaces, ali_dict)
+    else:
+        setup_axes(axs, interfaces, ali_dict, alibaba_combined)
 
     save_path = os.path.expanduser(f'~/Sync/Git/protobuf/ghz-results/')
     save_name = 'all-alibaba' if alibaba_combined else interfaces[0]
@@ -203,10 +281,13 @@ def plot_4nodes(df, interfaces, control_mechanisms):
         "motivate-get": "Get",
         "search-hotel": "Search Hotel",
         "reserve-hotel": "Reserve Hotel",
+        "compose": "Compose Post",
+        "user-timeline": "Read UserTimeline",
+        "home-timeline": "Read HomeTimeline",
     }
 
     if motivate_combined:
-        fig, axs = plt.subplots(2, len(interfaces), figsize=(6, 5), sharex=True, )
+        fig, axs = plt.subplots(2, len(interfaces), figsize=(2.5*len(interfaces), 5), sharex=True, )
 
         # Share the y-axis for the second row
         for i in range(1, len(interfaces)):
@@ -219,16 +300,14 @@ def plot_4nodes(df, interfaces, control_mechanisms):
     setup_axes(axs, interfaces, ali_dict, motivate_combined)
 
     save_path = os.path.expanduser(f'~/Sync/Git/protobuf/ghz-results/')
-    save_name = 'both-4nodes' if motivate_combined else '4nodes'
-
-    save_name = 'both-hotels' if 'hotel' in interfaces[0] else save_name
+    save_name = method
 
     plt.savefig(f'{save_path}{save_name}-{datetime.now().strftime("%m%d")}.pdf')
     plt.show()
     print(f"Saved plot to {save_path}{save_name}-{datetime.now().strftime('%m%d')}.pdf")
 
 
-def load_plot_hotel():
+def load_plot_hotel(social=False):
     global method
     global tightSLO
 
@@ -251,18 +330,24 @@ def load_plot_hotel():
 
     parameter_files = {
         'search-hotel': {
-            control: f'bopt_False_{control}_search-hotel_gpt1-best.json' for control in control_mechanisms
+            # control: f'bopt_False_{control}_search-hotel_gpt1-tuned.json' for control in control_mechanisms
+            control: f'bopt_False_{control}_search-hotel_gpt1-8000_06-20.json' for control in control_mechanisms
         },
     }
+    # parameter_files['search-hotel']['dagor'] = 'bopt_False_dagor_search-hotel_gpt1-best.json'
+    # parameter_files['search-hotel']['breakwaterd'] = 'bopt_False_breakwaterd_search-hotel_gpt1-best.json'
+    # parameter_files['search-hotel']['charon'] = 'bopt_False_charon_search-hotel_gpt1-tuned.json'
+
     parameter_files['reserve-hotel'] = parameter_files['search-hotel']
 
     csv_file = '~/Sync/Git/protobuf/ghz-results/grouped_hotel.csv'
     # Load data
     hotel_df = pd.DataFrame()
-    interfaces = ['search-hotel', 'reserve-hotel']
+    # interfaces = ['search-hotel', 'reserve-hotel'] 
+    interfaces = ['compose', 'user-timeline', 'home-timeline'] if social else ['search-hotel', 'reserve-hotel']
 
     for interface in interfaces:
-        df = load_data_from_csv(csv_file, method=interface, list_of_tuples_of_experiment_timestamps=time_ranges[interface], given_parameter=parameter_files)
+        df = load_data_from_csv(csv_file, method=interface, list_of_tuples_of_experiment_timestamps=[], given_parameter=parameter_files)
         assert df is not None, f"Dataframe for {interface} is None"
         df['Request'] = interface
         # report the file_count column for each interface and capacity
@@ -274,7 +359,8 @@ def load_plot_hotel():
 
     df = hotel_df
     # remove the rows with Load > 24000
-    df = df[df['Load'] < 11000]
+    df = df[df['Load'] < 4000]
+    # df = df[df['Load'] > 2000]
     plot_4nodes(df, interfaces, control_mechanisms)
 
 def load_plot_4nodes():
@@ -437,40 +523,6 @@ def load_plot_alibaba():
         },
     }
     parameter_files = different_spike
-    
-    # add bopt_False_dagor_S_*_gpt1-10000_05-29.json to the parameter_files
-    # dagor_files = {
-    #     interface: {
-    #         'dagor': f'bopt_False_dagor_{interface}_gpt1-10000_05-29.json'
-    #     } for interface in ['S_102000854', 'S_149998854', 'S_161142529']
-    # }
-    # merge the two dictionaries at second level
-    # parameter_files = {k: {**parameter_files[k], **dagor_files[k]} for k in parameter_files}
-
-
-    # old_time_ranges = {
-    #     'S_102000854': [
-    #         ("1229_0301", "1229_0448"), # this includes plain no overload control. 4000-10000
-    #         ("1231_2055", "1231_2241"), # this is for 6000-12000 load 
-    #         ("1231_1747", "1231_1950"), # this is also for 6000-12000 load
-    #         ("0129_0049", "0129_0138")
-    #         ],
-    #     'S_149998854': [
-    #         ("1228_1702", "1228_1844"),
-    #         ("1228_2356", "1229_0203"),
-    #         ("1229_0141", "1229_0203"), # this is plain no overload control.
-    #         ("1230_2124", "1230_2333"),
-    #         ("1231_2244", "0101_0027"),  # newest result
-    #         ("0128_0842", "0128_0902"),
-    #         ("0128_1543", "0128_1640"),            
-    #         ],
-    #     'S_161142529': [
-    #         ("1230_0611", "1230_0754"),
-    #         ("1231_0042", "1231_0225"),  # this is new
-    #         # ("0101_0127", "0101_0251"),
-    #         ("0129_1654", "0129_1742"),
-    #     ],
-    # }
 
     # time_ranges = old_time_ranges if old_data_sigcomm else time_ranges
     time_ranges = new_time_ranges 
@@ -492,6 +544,7 @@ def load_plot_alibaba():
                         control: f'bopt_False_{control}_S_149998854_gpt1-10000_06-10.json' for control in control_mechanisms
                     } for api in interfaces
                 }
+                # df = load_data_from_csv(f'~/Sync/Git/protobuf/ghz-results/grouped_all_ali.csv', method=interface, list_of_tuples_of_experiment_timestamps=time_ranges[interface], given_parameter=parameter_files)
                 df = load_data_from_csv(f'~/Sync/Git/protobuf/ghz-results/grouped_all_ali.csv', method=interface, list_of_tuples_of_experiment_timestamps=time_ranges[interface], given_parameter=parameter_files)
             elif method == 'ali3':
                 df = load_data_from_csv(f'~/Sync/Git/protobuf/ghz-results/grouped_ali.csv', method=interface, list_of_tuples_of_experiment_timestamps=time_ranges[interface], given_parameter=parameter_files)
@@ -513,6 +566,7 @@ def load_plot_alibaba():
         for control in control_mechanisms:
             subset = df[(df['Request'] == interface) & (df['overload_control'] == control)]
             print(f"{interface} {control} file_count: {subset['file_count'].values}")
+    df = df[df['Load'] < 12000]
     plot_alibaba_eval(df, interfaces)
 
 
@@ -524,3 +578,5 @@ if __name__ == '__main__':
         load_plot_alibaba()
     elif method == 'both-hotel':
         load_plot_hotel()
+    elif method == 'all-social':
+        load_plot_hotel(social=True)

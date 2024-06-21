@@ -339,7 +339,7 @@ def objective(interceptor_type, **params):
         return hugePenalty
     goodput = calculate_goodput_from_file(latest_file, tightSLO, quantile=quantile, average=True)
     tail_latency = read_tail_latency_from_file(latest_file, percentile=99, minusSLO=True)
-    print("[Experiment Ran] average goodput:", goodput, "and tail latency:", tail_latency, "\nfrom file:", latest_file)
+    print(f"[Experiment Ran] average goodput: {goodput}, and tail latency: {tail_latency} \nfrom file: {latest_file}")
     # if average_goodput == nan, return 0
     if np.isnan(goodput):
         print("No average goodput found for objective function")
@@ -354,8 +354,6 @@ def objective(interceptor_type, **params):
         obj = goodput
     elif 'gpt1' in capacity:
         obj = goodput - 10 * (tail_latency )
-    elif 'gpt2' in capacity:
-        obj = goodput - (tail_latency - SLO) ** 2 if tail_latency > SLO else goodput
     elif 'tgpt' in capacity:
         obj = calculate_goodput_from_file(latest_file, tightSLO, quantile=quantile, average=False)
     return obj / maximum_goodput
@@ -389,9 +387,6 @@ def objective_dual(interceptor_type, **params):
             obj.append(goodput)
         elif 'gpt1' in capacity:
             obj.append(goodput - 10 * tail_latency)
-            # obj.append(goodput - 10 * (tail_latency - SLO) if tail_latency > SLO else goodput)
-        # elif 'gpt2' in capacity:
-            # obj.append(goodput - (tail_latency - SLO) ** 2 if tail_latency > SLO else goodput)
         elif 'tgpt' in capacity:
             obj.append(tail_goodput)
     # return the mean obj of the two loads
@@ -433,23 +428,23 @@ def get_latest_file(path, pattern="*.json"):
 
 def objective_charon(price_update_rate, token_update_rate, latency_threshold, price_step):
     # return objective('charon', price_update_rate, latency_threshold, price_step)
-    return objective_dual('charon', price_update_rate=price_update_rate, token_update_rate=token_update_rate, latency_threshold=latency_threshold, price_step=price_step)
+    return objective('charon', price_update_rate=price_update_rate, token_update_rate=token_update_rate, latency_threshold=latency_threshold, price_step=price_step)
 
 
 def objective_breakwater(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration, breakwater_rtt):
-    return objective_dual('breakwater', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b,
+    return objective('breakwater', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b,
                           breakwater_initial_credit=breakwater_initial_credit, breakwater_client_expiration=breakwater_client_expiration, breakwater_rtt=breakwater_rtt)
 
 def objective_breakwaterd(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration, breakwater_rtt,
                           breakwaterd_slo, breakwaterd_a, breakwaterd_b, breakwaterd_initial_credit, breakwaterd_client_expiration, breakwaterd_rtt):
-    return objective_dual('breakwaterd', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b, breakwater_initial_credit=breakwater_initial_credit, 
+    return objective('breakwaterd', breakwater_slo=breakwater_slo, breakwater_a=breakwater_a, breakwater_b=breakwater_b, breakwater_initial_credit=breakwater_initial_credit, 
                           breakwater_client_expiration=breakwater_client_expiration, breakwaterd_slo=breakwaterd_slo, breakwaterd_a=breakwaterd_a, 
                           breakwaterd_b=breakwaterd_b, breakwaterd_initial_credit=breakwaterd_initial_credit, breakwaterd_client_expiration=breakwaterd_client_expiration,
                           breakwater_rtt=breakwater_rtt, breakwaterd_rtt=breakwaterd_rtt)
 
 
 def objective_dagor(dagor_queuing_threshold, dagor_alpha, dagor_beta, dagor_admission_level_update_interval, dagor_umax):
-    return objective_dual('dagor', dagor_queuing_threshold=dagor_queuing_threshold, dagor_alpha=dagor_alpha, dagor_beta=dagor_beta, dagor_admission_level_update_interval=dagor_admission_level_update_interval, dagor_umax=dagor_umax)
+    return objective('dagor', dagor_queuing_threshold=dagor_queuing_threshold, dagor_alpha=dagor_alpha, dagor_beta=dagor_beta, dagor_admission_level_update_interval=dagor_admission_level_update_interval, dagor_umax=dagor_umax)
 
 
 # Define a function to read and parse the JSON file
@@ -522,84 +517,85 @@ def main():
     
     pbounds_charon = {
         # the range above is too large... I will use the following range based on the empirical results
-        'price_update_rate': (1000, 30000), 
-        'token_update_rate': (1000, 30000), 
-        'price_step': (10, 150),
-        'latency_threshold': (100, 3000),
+        'price_update_rate': (10000, 20000),
+        'token_update_rate': (80000, 120000),
+        'price_step': (150, 250),
+        'latency_threshold': (1, 1000),
     }
     pbounds_breakwater = {
-        'breakwater_slo': (2000, 8000),
-        'breakwater_a': (0, 30),
-        'breakwater_b': (0, 3),
-        'breakwater_initial_credit': (1, 1500),
-        'breakwater_client_expiration': (0, 1000),
-        'breakwater_rtt': (1000, 30000),
+        'breakwater_slo': (1000, 4000),
+        'breakwater_a': (0.001, 5),
+        'breakwater_b': (0.001, 5),
+        'breakwater_initial_credit': (100, 2000),
+        'breakwater_client_expiration': (0, 500),
+        'breakwater_rtt': (100, 5000),
     }
     pbounds_breakwaterd = {
-        'breakwater_slo': (1000, 50000),
-        'breakwater_a': (0, 20),
-        'breakwater_b': (0, 10),
-        'breakwater_initial_credit': (1, 1000),
-        'breakwater_client_expiration': (1, 5000),
-        'breakwaterd_slo': (10000, 80000),
-        'breakwaterd_a': (0, 10),
-        'breakwaterd_b': (0, 10),
-        'breakwaterd_initial_credit': (1, 5000),
-        'breakwaterd_client_expiration': (10000, 100000),
-        'breakwater_rtt': (0, 20000),
-        'breakwaterd_rtt': (1000, 20000),
+        'breakwater_slo': (20000, 50000),
+        'breakwater_a': (0.01, 10),
+        'breakwater_b': (0.01, 10),
+        'breakwater_initial_credit': (1, 3000),
+        'breakwaterd_initial_credit': (1, 2000),
+        'breakwater_client_expiration': (0, 1000),
+        'breakwaterd_client_expiration': (0, 10000),
+        'breakwaterd_slo': (10000, 30000),
+        'breakwaterd_a': (0.01, 10),
+        'breakwaterd_b': (0.01, 10),
+        'breakwater_rtt': (5000, 15000),
+        'breakwaterd_rtt': (5000, 15000),
     }
     pbounds_dagor = {
-        'dagor_queuing_threshold': (1000, 50000),  # Example range
-        'dagor_alpha': (0, 2),              # Example range
-        'dagor_beta': (0, 3),             # Example range
-        'dagor_admission_level_update_interval': (1000, 20000),  # Example range
-        'dagor_umax': (5, 20)  # Example range
+        'dagor_queuing_threshold': (500, 100000),
+        'dagor_alpha': (0, 1),
+        'dagor_beta': (0, 4),
+        'dagor_admission_level_update_interval': (1000, 40000),
+        'dagor_umax': (5, 20),
     }
 
-    if not tightSLO:
-        # loosen the control target for charon and breakwater.
-        pbounds_charon['latency_threshold'] = (100, 10000)
-        pbounds_breakwater['breakwater_slo'] = (100, 20000)
-        pbounds_breakwaterd['breakwater_a'] = (0, 30)
-        pbounds_dagor['dagor_queuing_threshold'] = (1000, 100000)  # Example range
+    if 'hotel' in method:
+        pbounds_dagor['dagor_queuing_threshold'] = (500, 2000)
+        pbounds_dagor['dagor_admission_level_update_interval'] = (25000, 35000)
         
-        if 'S_16' in method:
-            pbounds_charon['latency_threshold'] = (100, 30000)
-            pbounds_breakwater['breakwater_slo'] = (100, 4000)
-            pbounds_breakwater['breakwater_a'] = (0, 3)
-            pbounds_breakwater['breakwater_b'] = (0, 3)
-            pbounds_breakwater['breakwater_rtt'] = (1000, 5000)
-        if 'S_14' in method:
-            # pbounds_breakwater['breakwater_a'] = (0, 30)
-            pbounds_charon['latency_threshold'] = (100, 40000)
-            pbounds_charon['price_update_rate'] = (100, 20000)
-            pbounds_charon['token_update_rate'] = (10000, 90000)
-            pbounds_charon['price_step'] = (1, 100)
+        pbounds_charon['latency_threshold'] = (200, 800)
+        pbounds_charon['token_update_rate'] = (80000, 100000)
+        pbounds_charon['price_update_rate'] = (8000, 12000)
 
-        if 'motivate' in method or 'hotel' in method:
-            pbounds_breakwater['breakwater_slo'] = (100, 80000)
-            pbounds_breakwater['breakwater_client_expiration'] = (0, 1)
-            pbounds_breakwater['breakwater_rtt'] = (1000, 50000)
-            pbounds_breakwater['breakwater_initial_credit'] = (100, 1500)
-            pbounds_breakwater['breakwater_a'] = (0.01, 10)
-            pbounds_breakwater['breakwater_b'] = (0.01, 20)
+        pbounds_breakwater['breakwater_slo'] = (12000, 18000)
+        pbounds_breakwater['breakwater_rtt'] = (500, 2000)
 
-            pbounds_breakwaterd['breakwaterd_b'] = (0.01, 20)
-            pbounds_breakwaterd['breakwater_slo'] = (100, 80000)
-            pbounds_breakwaterd['breakwater_b'] = (0.01, 20)
-            pbounds_breakwaterd['breakwaterd_rtt'] = (10, 50000)
-            pbounds_breakwaterd['breakwater_rtt'] = (10, 50000)
+    if method == 'compose':
+        pbounds_charon['latency_threshold'] = (800, 1400)
+        pbounds_charon['price_update_rate'] = (8000, 10000)
+        pbounds_charon['price_step'] = (100, 150)
+        # pbounds_charon['price_update_rate'] = (8000, 10000)
 
-            pbounds_charon['latency_threshold'] = (1, 1000)
-            pbounds_charon['price_step'] = (150, 250)
-            pbounds_charon['price_update_rate'] = (10000, 20000)
-            pbounds_charon['token_update_rate'] = (80000, 120000)
+        pbounds_dagor['dagor_queuing_threshold'] = (1000, 4000)
+        pbounds_dagor['dagor_beta'] = (2, 5)
+        pbounds_dagor['dagor_admission_level_update_interval'] = (12000, 15000)
 
-            pbounds_dagor['dagor_queuing_threshold'] = (500, 2000)
-            pbounds_dagor['dagor_alpha'] = (5, 10)
-            pbounds_dagor['dagor_beta'] = (0, 5)
-            pbounds_dagor['dagor_admission_level_update_interval'] = (20000, 40000)
+        pbounds_breakwater['breakwater_slo'] = (1000, 2000)
+        pbounds_breakwater['breakwater_rtt'] = (500, 1000)
+
+        # pbounds_breakwaterd['breakwaterd_slo'] = (1000, 3000)
+        # pbounds_breakwaterd['breakwater_slo'] = (1000, 3000)
+        pbounds_breakwaterd['breakwaterd_client_expiration'] = (0, 1000)
+        pbounds_breakwaterd['breakwater_rtt'] = (1000, 5000)
+        pbounds_breakwaterd['breakwaterd_rtt'] = (1000, 5000)
+
+    if 'S_16' in method:
+        pbounds_charon['latency_threshold'] = (100, 30000)
+        pbounds_breakwater['breakwater_slo'] = (100, 4000)
+        pbounds_breakwater['breakwater_a'] = (0, 3)
+        pbounds_breakwater['breakwater_b'] = (0, 3)
+        pbounds_breakwater['breakwater_rtt'] = (1000, 5000)
+    if 'S_14' in method:
+        # pbounds_breakwater['breakwater_a'] = (0, 30)
+        pbounds_charon['latency_threshold'] = (100, 40000)
+        pbounds_charon['price_update_rate'] = (100, 20000)
+        pbounds_charon['token_update_rate'] = (10000, 90000)
+        pbounds_charon['price_step'] = (1, 100)
+
+
 
     # run the experiments with the interceptors for all capacities
     capacity_step = 1000
@@ -793,6 +789,9 @@ if __name__ == '__main__':
     elif 'S_1' in method:
         maximum_goodput = 10000
         load_control = 2 * load_no_control
+    elif method == 'compose' or method == 'user-timeline' or method == 'home-timeline':
+        maximum_goodput = 10000
+        load_control = 18000
     elif 'hotel' in method:
         maximum_goodput = 5000
         load_control = args.tune_load

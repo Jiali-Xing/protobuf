@@ -18,5 +18,7 @@ ghz-results/*.json
 ghz-results/*.output
 ghz-results/*.pdf
 ghz-results/*.png
+*.pdf
 .stversions/*
 ghz-results/.syncthing*
+*sync-conflict*

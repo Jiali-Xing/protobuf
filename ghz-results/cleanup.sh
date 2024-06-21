@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Loop through each json.output file
-for output_file in social-search-hotel-control-*.json.output; do
+for output_file in social-*-control-*.json.output; do
     # Check if the file contains '[OK]'
     if ! grep -q '\[OK\]' "$output_file"; then
         # Remove the output file

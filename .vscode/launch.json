@@ -10,11 +10,11 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "args": [""],
+            "args": ["~/Sync/Git/protobuf/ghz-results/social-search-hotel-control-breakwater-parallel-capacity-8000-0617_1618.json"],
             "console": "integratedTerminal",
             // env vars
             "env": {
-                "METHOD": "S_149998854"
+                "BREAKWATER_TRACK_CREDIT": "true"
             },
             "justMyCode": true,
         },

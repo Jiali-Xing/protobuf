@@ -38,7 +38,7 @@ export WARMUP_LOAD=2000
 
 # Define variables
 CAPACITY_STEP=1000
-CAPACITY_START=3000
+CAPACITY_START=1000
 CAPACITY_END=10000
 # CONTROLS=("charon" "breakwater")
 
@@ -52,6 +52,7 @@ run_experiments() {
     local CONTROL=$1
     for ((LOAD = CAPACITY_START; LOAD <= CAPACITY_END; LOAD += CAPACITY_STEP)); do
         # Construct the parameter file pattern
+        # PARAM_FILE=$(ls ~/Sync/Git/protobuf/baysian-opt/bopt_False_${CONTROL}_search-hotel_gpt1-8000_06-20.json | sort -V | tail -n 1)
         PARAM_FILE=$(ls ~/Sync/Git/protobuf/baysian-opt/bopt_False_${CONTROL}_search-hotel_gpt1-best.json | sort -V | tail -n 1)
         
         # Run the compound experiments script

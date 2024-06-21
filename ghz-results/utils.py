@@ -774,7 +774,7 @@ def calculate_tail_latency_dynamic(df):
     # Only cound the latency of successful requests, i.e., status == 'OK'
     df.sort_index(inplace=True)
     # Assuming your DataFrame is named 'df' and the column to calculate the moving average is 'data'
-    tail_latency = df['latency'].rolling(latency_window_size).quantile(0.99)
+    tail_latency = df['latency'].rolling(latency_window_size).quantile(0.95)
     df['tail_latency'] = tail_latency
     # Calculate moving average of latency
     df['latency_ma'] = df['latency'].rolling(latency_window_size).mean()
@@ -853,7 +853,12 @@ def export_all_experiments_to_csv(time_ranges, output_file='experiment_results.c
     selected_files = []
 
     # For every file in the directory and another directory `~/Sync/Git/charon-experiments/json`
-    files = glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/protobuf/ghz-results'), f'social-*-control-*-parallel-capacity-*.json')) \
+    if 'alibaba' in output_file:
+        files = glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/protobuf/ghz-results'), f'social-S_*-control-*-parallel-capacity-*.json')) 
+    else:
+        # take files that does not have `-S_` in the filename
+        files = glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/protobuf/ghz-results'), f'social-*control-*-parallel-capacity-*.json'))
+        files = [f for f in files if '-S_' not in f]
 
     for filename in files:
         # Extract the date and time part from the filename
@@ -868,20 +873,20 @@ def export_all_experiments_to_csv(time_ranges, output_file='experiment_results.c
         if is_within_any_duration(timestamp_str, time_ranges):
             selected_files.append(filename)
 
-    if 'hotel' in output_file:
-        # keep only the `search-hotel` files that share timestamp with `reserve-hotel`
-        # reserve-hotel files are the ones that have `reserve-hotel` in the filename
-        # search-hotel files are the ones that have `search-hotel` in the filename
+    # if 'hotel' in output_file:
+    #     # keep only the `search-hotel` files that share timestamp with `reserve-hotel`
+    #     # reserve-hotel files are the ones that have `reserve-hotel` in the filename
+    #     # search-hotel files are the ones that have `search-hotel` in the filename
         
-        reserve_hotel_files = [f for f in selected_files if 'reserve-hotel' in f]
-        search_hotel_files = [f for f in selected_files if 'search-hotel' in f]
-        # get the timestamp of the reserve-hotel files
-        reserve_hotel_timestamps = [extract_experiment_details_json(f)['timestamp_str'] for f in reserve_hotel_files]
-        # filter the search-hotel files that share the same timestamp with the reserve-hotel files
-        selected_files = [f for f in search_hotel_files if extract_experiment_details_json(f)['timestamp_str'] in reserve_hotel_timestamps]
+    #     reserve_hotel_files = [f for f in selected_files if 'reserve-hotel' in f]
+    #     search_hotel_files = [f for f in selected_files if 'search-hotel' in f]
+    #     # get the timestamp of the reserve-hotel files
+    #     reserve_hotel_timestamps = [extract_experiment_details_json(f)['timestamp_str'] for f in reserve_hotel_files]
+    #     # filter the search-hotel files that share the same timestamp with the reserve-hotel files
+    #     selected_files = [f for f in search_hotel_files if extract_experiment_details_json(f)['timestamp_str'] in reserve_hotel_timestamps]
 
-        # concat the reserve-hotel files to the selected_files
-        selected_files += reserve_hotel_files
+    #     # concat the reserve-hotel files to the selected_files
+    #     selected_files += reserve_hotel_files
 
     for filename in selected_files:
         # Extract the metadata from the filename
@@ -896,8 +901,19 @@ def export_all_experiments_to_csv(time_ranges, output_file='experiment_results.c
         # if there's no `OK` in the file, remove the file
         if 'OK' not in open(filename).read():
             print("File ", filename, " is not valid, no OK")
-            os.remove(filename)
+            # os.remove(filename)
             continue
+        
+        # if Count is less than 10000, skip the file
+        request_count_cutoff = 10000
+        with open(filename, 'r') as f:
+            try:
+                data = json.load(f)
+            except json.decoder.JSONDecodeError:
+                continue
+            if data['count'] < request_count_cutoff:
+                print("File ", filename, " is not valid, count is less than", request_count_cutoff)
+                continue
 
         slo = get_slo(method=method)
         # # Calculate latencies and throughput using the function calculate_metrics_from_file
@@ -938,7 +954,42 @@ def export_all_experiments_to_csv(time_ranges, output_file='experiment_results.c
     print(f"Experiment results successfully exported to {output_file}")
 
 
+def aggregate_concurrent_runs(input_file='experiment_results.csv', output_file='aggregated_experiment_results.csv'):
+    # Read the CSV file into a DataFrame
+    df = pd.read_csv(input_file)
+    
+    # Define the columns to group by
+    group_columns = ['timestamp', 'control_scheme']
+    
+    # Find the concurrent runs and calculate total goodput and total throughput
+    aggregated_data = []
+    grouped = df.groupby(group_columns)
+    
+    for name, group in grouped:
+        interfaces = tuple(sorted(group['interface'].unique()))
+        total_goodput = group['goodput'].sum()
+        total_throughput = group['throughput'].sum()
+        
+        for _, row in group.iterrows():
+            row_data = row.to_dict()
+            row_data['interfaces'] = interfaces
+            row_data['total_goodput'] = total_goodput
+            row_data['total_throughput'] = total_throughput
+            aggregated_data.append(row_data)
+    
+    # Define columns for the final DataFrame
+    columns = list(df.columns) + ['interfaces', 'total_goodput', 'total_throughput']
+    
+    # Create DataFrame from the aggregated data list
+    aggregated_df = pd.DataFrame(aggregated_data, columns=columns)
+    
+    # Export the aggregated DataFrame to a new CSV file
+    aggregated_df.to_csv(output_file, index=False)
+    print(f"Aggregated experiment results successfully exported to {output_file}")
+
+
 def calculate_group_statistics(file_path, output_file='group_statistics.csv',k=5):
+    concurrent_runs = False
     # Load the experiment results from the CSV file
     df = pd.read_csv(file_path)
     
@@ -959,25 +1010,31 @@ def calculate_group_statistics(file_path, output_file='group_statistics.csv',k=5
     # Define the metric columns for which we want to calculate the mean and variance
     metric_columns = ['throughput', 'goodput', 'latency_99', 'latency_95', 'latency_median']
     
+    # if columns ['total_goodput,total_throughput'] are in the dataframe, also calculate the mean and variance
+    if 'total_goodput' in df.columns:
+        concurrent_runs = True
+        metric_columns += ['total_goodput', 'total_throughput']
+
     # Filter the dataframe to include only relevant columns
     all_columns = primary_index_columns + secondary_index_columns + metric_columns
+
     df = df[all_columns]
     
     # Group by the primary and secondary index columns
     grouped_df = df.groupby(primary_index_columns + secondary_index_columns)
     
-    # # Function to sample k files from each group
-    # def sample_k_files(group, k):
-    #     if len(group) > k:
-    #         return group.sample(n=k, random_state=42)  # Fixed random state for reproducibility
-    #     else:
-    #         return group
+    # Function to sample k files from each group
+    def sample_k_files(group, k):
+        if len(group) > k:
+            return group.sample(n=k, random_state=1)  # Fixed random state for reproducibility
+        else:
+            return group
     
-    # # Apply sampling to each group
-    # sampled_df = grouped_df.apply(lambda x: sample_k_files(x, k)).reset_index(drop=True)
+    # Apply sampling to each group
+    sampled_df = grouped_df.apply(lambda x: sample_k_files(x, k)).reset_index(drop=True)
     
-    # # Group by again after sampling
-    # grouped_df = sampled_df.groupby(primary_index_columns + secondary_index_columns)
+    # Group by again after sampling
+    grouped_df = sampled_df.groupby(primary_index_columns + secondary_index_columns)
     
     # Calculate mean and variance for each group
     mean_df = grouped_df[metric_columns].mean().reset_index()
@@ -991,6 +1048,14 @@ def calculate_group_statistics(file_path, output_file='group_statistics.csv',k=5
         'latency_99': '99th_percentile', 
         'latency_95': '95th_percentile', 
         'latency_median': 'Median Latency'
+    }) if not concurrent_runs else mean_df.rename(columns={
+        'throughput': 'Throughput', 
+        'goodput': 'Goodput', 
+        'latency_99': '99th_percentile', 
+        'latency_95': '95th_percentile', 
+        'latency_median': 'Median Latency',
+        'total_goodput': 'Total Goodput',
+        'total_throughput': 'Total Throughput'
     })
     
     std_df = std_df.rename(columns={
@@ -999,7 +1064,17 @@ def calculate_group_statistics(file_path, output_file='group_statistics.csv',k=5
         'latency_99': '99th_percentile std', 
         'latency_95': '95th_percentile std', 
         'latency_median': 'Median Latency std'
+    }) if not concurrent_runs else std_df.rename(columns={
+        'throughput': 'Throughput std', 
+        'goodput': 'Goodput std', 
+        'latency_99': '99th_percentile std', 
+        'latency_95': '95th_percentile std', 
+        'latency_median': 'Median Latency std',
+        'total_goodput': 'Total Goodput std',
+        'total_throughput': 'Total Throughput std'
     })
+
+    # if 'total_goodput' in df.columns:
     
     # Merge the mean and variance dataframes
     result_df = pd.merge(mean_df, std_df, on=primary_index_columns + secondary_index_columns)

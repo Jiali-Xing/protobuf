@@ -1,22 +1,22 @@
 {
-    "target": -0.5250736677942776,
+    "target": -1.5679271035155158,
     "parameters": {
-        "BREAKWATER_SLO": "5ms",
-        "BREAKWATER_A": 10,
-        "BREAKWATER_B": 3.3529879796635544,
-        "BREAKWATER_INITIAL_CREDIT": 3000,
-        "BREAKWATER_CLIENT_EXPIRATION": "0us",
+        "BREAKWATER_SLO": "3ms",
+        "BREAKWATER_A": 12.51066014107722,
+        "BREAKWATER_B": 14.40928662390874,
+        "BREAKWATER_INITIAL_CREDIT": 303,
+        "BREAKWATER_CLIENT_EXPIRATION": "1us",
         "ONLY_FRONTEND": "false",
-        "BREAKWATERD_SLO": "10ms",
-        "BREAKWATERD_A": 2.0127144757281568,
-        "BREAKWATERD_B": 1.0302237696336403,
-        "BREAKWATERD_INITIAL_CREDIT": 4000,
-        "BREAKWATERD_CLIENT_EXPIRATION": "1ms",
-        "BREAKWATER_RTT": "1ms",
-        "BREAKWATERD_RTT": "2ms"
+        "BREAKWATERD_SLO": "4ms",
+        "BREAKWATERD_A": 1.862602113776709,
+        "BREAKWATERD_B": 6.917758933590524,
+        "BREAKWATERD_INITIAL_CREDIT": 2694,
+        "BREAKWATERD_CLIENT_EXPIRATION": "0us",
+        "BREAKWATER_RTT": "7346us",
+        "BREAKWATERD_RTT": "20965us"
     },
     "method": "search-hotel",
     "capacity": "gpt1-8000",
     "load": 8000,
-    "timestamp": "06-15"
+    "timestamp": "06-17"
 }
