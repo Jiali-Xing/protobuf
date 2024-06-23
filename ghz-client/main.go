@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"os"
 	"runtime/pprof"
 	"strconv"
@@ -128,9 +127,9 @@ func main() {
 
 	var req interface{}
 
-	userid := rand.Intn(100)
-	username := fmt.Sprintf("user%d", userid)
-	password := fmt.Sprintf("password%d", userid)
+	username := "user1"
+	password := "password1"
+	// we randomize the user and password and hotel location for each request in the frontend of the hotel and social services
 
 	// Declare proto file and method variables
 	var protoFile string

@@ -534,8 +534,8 @@ def main():
         'breakwater_slo': (20000, 50000),
         'breakwater_a': (0.01, 10),
         'breakwater_b': (0.01, 10),
-        'breakwater_initial_credit': (1, 3000),
-        'breakwaterd_initial_credit': (1, 2000),
+        'breakwater_initial_credit': (100, 3000),
+        'breakwaterd_initial_credit': (100, 2000),
         'breakwater_client_expiration': (0, 1000),
         'breakwaterd_client_expiration': (0, 10000),
         'breakwaterd_slo': (10000, 30000),
@@ -556,18 +556,19 @@ def main():
         pbounds_dagor['dagor_queuing_threshold'] = (500, 2000)
         pbounds_dagor['dagor_admission_level_update_interval'] = (25000, 35000)
         
-        pbounds_charon['latency_threshold'] = (200, 800)
-        pbounds_charon['token_update_rate'] = (80000, 100000)
-        pbounds_charon['price_update_rate'] = (8000, 12000)
+        pbounds_charon['latency_threshold'] = (200, 600)
+        pbounds_charon['token_update_rate'] = (80000, 110000)
+        pbounds_charon['price_update_rate'] = (9000, 16000)
+        pbounds_charon['price_step'] = (100, 250)
 
-        pbounds_breakwater['breakwater_slo'] = (12000, 18000)
-        pbounds_breakwater['breakwater_rtt'] = (500, 2000)
+        pbounds_breakwater['breakwater_slo'] = (18000, 24000)
+        pbounds_breakwater['breakwater_rtt'] = (2000, 10000)
 
     if method == 'compose':
-        pbounds_charon['latency_threshold'] = (800, 1400)
-        pbounds_charon['price_update_rate'] = (8000, 10000)
-        pbounds_charon['price_step'] = (100, 150)
-        # pbounds_charon['price_update_rate'] = (8000, 10000)
+        pbounds_charon['latency_threshold'] = (100, 400)
+        pbounds_charon['price_update_rate'] = (3000, 5000)
+        pbounds_charon['price_step'] = (100, 200)
+        pbounds_charon['token_update_rate'] = (60000, 80000)
 
         pbounds_dagor['dagor_queuing_threshold'] = (1000, 4000)
         pbounds_dagor['dagor_beta'] = (2, 5)
@@ -599,8 +600,8 @@ def main():
 
     # run the experiments with the interceptors for all capacities
     capacity_step = 1000
-    capacity_start = 1000
-    capacity_end = 15000
+    capacity_start = 2000
+    capacity_end = 8000
 
     capacity_range = range(capacity_start, capacity_end, capacity_step)
 
@@ -684,7 +685,7 @@ def main():
                 print(f"[Bayesian Opt] No successful optimization results available for {opt_name}.")
 
     for opt_key, (optimize, objective_func, pbounds, opt_name) in optimization_config.items():
-        if optimize:
+        if optimize and not skipPostOptimize:
             # find the latest file with `bopt_{tightSLO}_{opt_name}_{method}_{capacity}_*.json`
             latest_bopt = get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/baysian-opt/'), pattern=f"bopt_{tightSLO}_{opt_name}_{method}_{capacity}_*.json")
             print(f"[Post Opt] Latest Bayesian Opt file for {opt_name}:", latest_bopt)
@@ -692,40 +693,7 @@ def main():
             for capact in capacity_range:
                 print(f"[Post Opt] Analyzing file and run experiments in loop for {opt_name}:", bayesian_result)
                 run_experiments_loop(opt_name, bayesian_result['parameters'], capact, method)
-    
-    # # run the experiments without interceptors too for all capacities
-    # for capact in capacity_range:
-    #     print("[Post Opt] Analyzing file and run experiments in loop for no-interceptor:")
-    #     run_experiments_loop('plain', {}, capact, method)
-
-
-# def check_goodput(file):
-#     # check the goodput distribution of social-compose-control-charon-parallel-capacity-8000-1211_1804.json
-#     dir = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
-#     filename = os.path.join(dir, file)
-
-#     goodput = calculate_goodput_from_file(filename, average=True)
-#     tail_latency = read_tail_latency_from_file(filename, percentile=99)
-  
-#     data = read_data(filename)
-#     df = convert_to_dataframe(data)
-#     goodput_mean = calculate_goodput_mean(df, slo=SLO)
-#     print("goodput_mean:", goodput_mean)
-#     goodquantile = goodput_quantile(df, slo=SLO, quantile=quantile)
-#     print("goodquantile:", goodquantile)
-#     # print(df["goodput"].describe())
-#     # plot the histogram of goodput
-#     df["goodput"].plot.hist(bins=100)
-#     plt.show()
-#     loadTested = int(re.search(r'capacity-(\d+)', file).group(1))
-#     if 'gpt0' in capacity:
-#         obj = goodput
-#     elif 'gpt1' in capacity:
-#         obj = goodput - 10 * (tail_latency - SLO) if tail_latency > SLO else goodput
-#     elif 'gpt2' in capacity:
-#         obj = goodput - (tail_latency - SLO) ** 2 if tail_latency > SLO else goodput
-#     print("[Experiment Ran] objecive {} with average goodput: {} and loadTested: {}".format(obj, goodput_mean, loadTested))
-
+   
 
 if __name__ == '__main__':
     # take an optional argument to specify the method
@@ -735,6 +703,8 @@ if __name__ == '__main__':
     parser.add_argument('method', type=str, help='Specify the method')
     parser.add_argument('--tight-slo', action='store_true', default=False, help='Enable tight SLO')
     parser.add_argument('--skip-opt', action='store_true', default=False, help='Skip optimization')
+    parser.add_argument('--skip-post-opt', action='store_true', default=True, help='Skip the loop after optimization')
+
     # add a new argument to specify the scheme to use for optimization, default is True for all optimization schemes
     parser.add_argument('--breakwater', action='store_true', default=False, help='Optimize Breakwater')
     parser.add_argument('--breakwaterd', action='store_true', default=False, help='Optimize BreakwaterD')
@@ -779,6 +749,7 @@ if __name__ == '__main__':
         
     tightSLO = args.tight_slo
     skipOptimize = args.skip_opt
+    skipPostOptimize = args.skip_post_opt
 
     load_no_control = get_sustainable_load(method)
     # load_control = 3 * load_no_control
@@ -791,10 +762,10 @@ if __name__ == '__main__':
         load_control = 2 * load_no_control
     elif method == 'compose' or method == 'user-timeline' or method == 'home-timeline':
         maximum_goodput = 10000
-        load_control = 18000
+        load_control = 2 * load_no_control
     elif 'hotel' in method:
         maximum_goodput = 5000
-        load_control = args.tune_load
+        load_control = 2 * load_no_control
     # convert it to string
     load_control = str(load_control)
     capacity = args.tune + '-' + load_control
