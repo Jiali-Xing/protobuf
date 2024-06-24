@@ -60,6 +60,7 @@ var (
 	loadReduction, _ = strconv.ParseBool(getEnv("LOAD_REDUCTION", "false"))
 	loadIncrease, _  = strconv.ParseBool(getEnv("LOAD_INCREASE", "false"))
 
+	loadSchedule = "step"
 	// loadStart        is from environment variable
 	loadStart           = uint(warmup_load)
 	loadEnd             = uint(capacity)
@@ -346,16 +347,25 @@ func main() {
 	}
 	log.Printf("De facto interceptor: %s", defactoInterceptor)
 
-	if loadReduction {
-		loadStart = uint(capacity * 90 / 100)
-		loadEnd = uint(capacity * 60 / 100)
-	}
+	// if loadReduction {
+	// 	loadStart = uint(capacity * 90 / 100)
+	// 	loadEnd = uint(capacity * 60 / 100)
+	// }
+	// if loadIncrease {
+	// 	loadStart = uint(capacity * 10 / 100)
+	// 	loadEnd = uint(capacity * 40 / 100)
+	// }
+
+	// if loadIncrease, we will use a linear increase in load from 10% to 100% of the capacity in the first few seconds of warmup
 	if loadIncrease {
-		loadStart = uint(capacity * 10 / 100)
-		loadEnd = uint(capacity * 40 / 100)
+		loadSchedule = "line"
+		// loadStart = uint(warmup_load)
+		// loadEnd = uint(capacity)
+		// load step is the difference between the end and start divided by the seconds of warmup
+		loadStep = int(loadEnd-loadStart) / 5
 	}
-	loadStep = int(loadEnd) - int(loadStart)
-	log.Printf("De facto load: Start=%d, End=%d, Step=%d", loadStart, loadEnd, loadStep)
+
+	log.Printf("De facto load: Shape=%s, Start=%d, End=%d, Step=%d", loadSchedule, loadStart, loadEnd, loadStep)
 
 	report, err = runner.Run(
 		protoCall,
@@ -367,7 +377,7 @@ func main() {
 		runner.WithConnections(uint(concurrency)),
 		runner.WithInsecure(true),
 		runner.WithRunDuration(runDuration),
-		runner.WithLoadSchedule("step"),
+		runner.WithLoadSchedule(loadSchedule),
 		runner.WithLoadStart(loadStart),
 		runner.WithLoadEnd(loadEnd),
 		runner.WithLoadStep(loadStep),
