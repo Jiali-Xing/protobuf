@@ -367,31 +367,58 @@ func main() {
 
 	log.Printf("De facto load: Shape=%s, Start=%d, End=%d, Step=%d", loadSchedule, loadStart, loadEnd, loadStep)
 
-	report, err = runner.Run(
-		protoCall,
-		URLServiceA,
-		runner.WithProtoFile(protoFile, []string{}),
-		runner.WithData(req),
-		runner.WithMetadata(md),
-		runner.WithConcurrency(uint(concurrency)),
-		runner.WithConnections(uint(concurrency)),
-		runner.WithInsecure(true),
-		runner.WithRunDuration(runDuration),
-		runner.WithLoadSchedule(loadSchedule),
-		runner.WithLoadStart(loadStart),
-		runner.WithLoadEnd(loadEnd),
-		runner.WithLoadStep(loadStep),
-		runner.WithLoadStepDuration(loadStepDuration),
-		runner.WithMethod(method),
-		runner.WithInterceptor(defactoInterceptor),
-		runner.WithInterceptorEntry(entry_point),
-		runner.WithCharonOptions(charonOptions),
-		runner.WithBreakwaterOptions(breakwaterOptions),
-		runner.WithDagorOptions(dagorParams),
-		runner.WithAsync(true),
-		runner.WithEnableCompression(false),
-		runner.WithTimeout(time.Second),
-	)
+	if loadIncrease {
+		report, err = runner.Run(
+			protoCall,
+			URLServiceA,
+			runner.WithProtoFile(protoFile, []string{}),
+			runner.WithData(req),
+			runner.WithMetadata(md),
+			runner.WithConcurrency(uint(concurrency)),
+			runner.WithConnections(uint(concurrency)),
+			runner.WithInsecure(true),
+			runner.WithRunDuration(runDuration),
+			runner.WithLoadSchedule(loadSchedule),
+			runner.WithLoadStart(loadStart),
+			runner.WithLoadEnd(loadEnd),
+			runner.WithLoadStep(loadStep),
+			runner.WithMethod(method),
+			runner.WithInterceptor(defactoInterceptor),
+			runner.WithInterceptorEntry(entry_point),
+			runner.WithCharonOptions(charonOptions),
+			runner.WithBreakwaterOptions(breakwaterOptions),
+			runner.WithDagorOptions(dagorParams),
+			runner.WithAsync(true),
+			runner.WithEnableCompression(false),
+			runner.WithTimeout(time.Second),
+		)
+	} else {
+		report, err = runner.Run(
+			protoCall,
+			URLServiceA,
+			runner.WithProtoFile(protoFile, []string{}),
+			runner.WithData(req),
+			runner.WithMetadata(md),
+			runner.WithConcurrency(uint(concurrency)),
+			runner.WithConnections(uint(concurrency)),
+			runner.WithInsecure(true),
+			runner.WithRunDuration(runDuration),
+			runner.WithLoadSchedule(loadSchedule),
+			runner.WithLoadStart(loadStart),
+			runner.WithLoadEnd(loadEnd),
+			runner.WithLoadStep(loadStep),
+			runner.WithLoadStepDuration(loadStepDuration),
+			runner.WithMethod(method),
+			runner.WithInterceptor(defactoInterceptor),
+			runner.WithInterceptorEntry(entry_point),
+			runner.WithCharonOptions(charonOptions),
+			runner.WithBreakwaterOptions(breakwaterOptions),
+			runner.WithDagorOptions(dagorParams),
+			runner.WithAsync(true),
+			runner.WithEnableCompression(false),
+			runner.WithTimeout(time.Second),
+		)
+	}
 
 	if err != nil {
 		fmt.Println(err.Error())
