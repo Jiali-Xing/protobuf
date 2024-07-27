@@ -119,6 +119,7 @@ func getEnv(key, fallback string) string {
 func main() {
 	md := make(map[string]string)
 	md["request-id"] = "{{.RequestNumber}}"
+	md["conn-id"] = "{{.WorkerID}}"
 	md["timestamp"] = "{{.TimestampUnix}}"
 	md["method"] = method
 	// print the metadata used
