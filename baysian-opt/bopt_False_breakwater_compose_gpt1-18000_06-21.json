@@ -1,10 +1,10 @@
 {
-    "target": 0.7569562848103151,
+    "target": 0.24836436403987522,
     "parameters": {
-        "BREAKWATER_SLO": "2000us",
+        "BREAKWATER_SLO": "1631us",
         "BREAKWATER_A": 5.0,
         "BREAKWATER_B": 5.0,
-        "BREAKWATER_INITIAL_CREDIT": 100,
+        "BREAKWATER_INITIAL_CREDIT": 753,
         "BREAKWATER_CLIENT_EXPIRATION": "0us",
         "ONLY_FRONTEND": "true",
         "BREAKWATER_RTT": "1000us"

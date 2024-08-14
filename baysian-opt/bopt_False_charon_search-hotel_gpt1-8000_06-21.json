@@ -1,10 +1,10 @@
 {
-    "target": 0.7005726984640681,
+    "target": 0.891482540369628,
     "parameters": {
-        "PRICE_UPDATE_RATE": "10000us",
-        "TOKEN_UPDATE_RATE": "86046us",
-        "LATENCY_THRESHOLD": "450us",
-        "PRICE_STEP": 222,
+        "PRICE_UPDATE_RATE": "10884us",
+        "TOKEN_UPDATE_RATE": "100831us",
+        "LATENCY_THRESHOLD": "372us",
+        "PRICE_STEP": 184,
         "PRICE_STRATEGY": "linear",
         "LAZY_UPDATE": "true",
         "RATE_LIMITING": "true",

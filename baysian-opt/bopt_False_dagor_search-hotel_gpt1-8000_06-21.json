@@ -1,0 +1,14 @@
+{
+    "target": 0.8351559295282104,
+    "parameters": {
+        "DAGOR_QUEUING_THRESHOLD": "1326us",
+        "DAGOR_ALPHA": 0.43843807774821986,
+        "DAGOR_BETA": 2.561117943369776,
+        "DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL": "25942us",
+        "DAGOR_UMAX": 11
+    },
+    "method": "search-hotel",
+    "capacity": "gpt1-8000",
+    "load": 8000,
+    "timestamp": "06-21"
+}

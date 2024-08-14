@@ -38,7 +38,7 @@ export METHOD=all-alibaba
 # Define variables
 CAPACITY_STEP=1000
 CAPACITY_START=1000
-CAPACITY_END=12000
+CAPACITY_END=10000
 # CONTROLS=("charon" "breakwater")
 
 # Check if at least one control option is provided

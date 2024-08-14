@@ -52,8 +52,8 @@ run_experiments() {
     local CONTROL=$1
     for ((LOAD = CAPACITY_START; LOAD <= CAPACITY_END; LOAD += CAPACITY_STEP)); do
         # Construct the parameter file pattern
-        # PARAM_FILE=$(ls ~/Sync/Git/protobuf/baysian-opt/bopt_False_${CONTROL}_search-hotel_gpt1-8000_06-20.json | sort -V | tail -n 1)
-        PARAM_FILE=$(ls ~/Sync/Git/protobuf/baysian-opt/bopt_False_${CONTROL}_search-hotel_gpt1-best.json | sort -V | tail -n 1)
+        PARAM_FILE=$(ls ~/Sync/Git/protobuf/baysian-opt/bopt_False_${CONTROL}_search-hotel_gpt1-7000_08-11.json | sort -V | tail -n 1)
+        # PARAM_FILE=$(ls ~/Sync/Git/protobuf/baysian-opt/bopt_False_${CONTROL}_search-hotel_gpt1-best.json | sort -V | tail -n 1)
         
         # Run the compound experiments script
         if [ -n "$PARAM_FILE" ]; then

@@ -39,7 +39,7 @@ export WARMUP_LOAD=2000
 # Define variables
 CAPACITY_STEP=1000
 CAPACITY_START=1000
-CAPACITY_END=10000
+CAPACITY_END=12000
 # CONTROLS=("charon" "breakwater")
 
 # Check if at least one control option is provided
@@ -52,7 +52,7 @@ run_experiments() {
     local CONTROL=$1
     for ((LOAD = CAPACITY_START; LOAD <= CAPACITY_END; LOAD += CAPACITY_STEP)); do
         # Construct the parameter file pattern
-        PARAM_FILE=$(ls ~/Sync/Git/protobuf/baysian-opt/bopt_False_${CONTROL}_compose_gpt1-18000_06-21.json | sort -V | tail -n 1)
+        PARAM_FILE=$(ls ~/Sync/Git/protobuf/baysian-opt/bopt_False_${CONTROL}_compose_gpt1-5000_08-11.json | sort -V | tail -n 1)
         
         # Run the compound experiments script
         if [ -n "$PARAM_FILE" ]; then

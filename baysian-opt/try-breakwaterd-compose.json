@@ -1,22 +1,22 @@
 {
-    "target": 0.007969401238160867,
+    "target": -0.3717200759654009,
     "parameters": {
-        "BREAKWATER_SLO": "1302us",
-        "BREAKWATER_A": 2.99,
-        "BREAKWATER_B": 1.59,
-        "BREAKWATER_INITIAL_CREDIT": 951,
-        "BREAKWATER_CLIENT_EXPIRATION": "331us",
-        "ONLY_FRONTEND": "false",
-        "BREAKWATERD_SLO": "50ms",
-        "BREAKWATERD_A": 0.4905479417835865,
-        "BREAKWATERD_B": 1.803225799799824,
-        "BREAKWATERD_INITIAL_CREDIT": 2500,
-        "BREAKWATERD_CLIENT_EXPIRATION": "0us",
-        "BREAKWATER_RTT": "600us",
-        "BREAKWATERD_RTT": "3ms"
+	  "BREAKWATER_SLO": "7635us",
+	  "BREAKWATER_A": 0.45,
+	  "BREAKWATER_B": 0.07,
+	  "BREAKWATER_INITIAL_CREDIT": 808,
+	  "BREAKWATER_CLIENT_EXPIRATION": "102us",
+	  "ONLY_FRONTEND": "false",
+	  "BREAKWATERD_SLO": "9647us",
+	  "BREAKWATERD_A": 8.97,
+	  "BREAKWATERD_B": 0.05,
+	  "BREAKWATERD_INITIAL_CREDIT": 1623,
+	  "BREAKWATERD_CLIENT_EXPIRATION": "1862us",
+	  "BREAKWATER_RTT": "989us",
+	  "BREAKWATERD_RTT": "523us"
     },
     "method": "compose",
-    "capacity": "gpt1-18000",
-    "load": 18000,
-    "timestamp": "06-19"
+    "capacity": "gpt1-6000",
+    "load": 6000,
+    "timestamp": "06-25"
 }

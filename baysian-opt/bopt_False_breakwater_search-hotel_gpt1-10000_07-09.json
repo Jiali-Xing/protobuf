@@ -1,0 +1,16 @@
+{
+    "target": 1.5622080082518683,
+    "parameters": {
+        "BREAKWATER_SLO": "1682us",
+        "BREAKWATER_A": 0.007203478420153781,
+        "BREAKWATER_B": 0.5404733221783165,
+        "BREAKWATER_INITIAL_CREDIT": 662,
+        "BREAKWATER_CLIENT_EXPIRATION": "557us",
+        "ONLY_FRONTEND": "true",
+        "BREAKWATER_RTT": "1712us"
+    },
+    "method": "search-hotel",
+    "capacity": "gpt1-10000",
+    "load": 10000,
+    "timestamp": "07-09"
+}

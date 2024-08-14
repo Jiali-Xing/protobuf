@@ -1,0 +1,17 @@
+{
+    "target": 0.2988047176870759,
+    "parameters": {
+        "PRICE_UPDATE_RATE": "4979us",
+        "TOKEN_UPDATE_RATE": "74014us",
+        "LATENCY_THRESHOLD": "213us",
+        "PRICE_STEP": 134,
+        "PRICE_STRATEGY": "linear",
+        "LAZY_UPDATE": "true",
+        "RATE_LIMITING": "true",
+        "ONLY_FRONTEND": "false"
+    },
+    "method": "compose",
+    "capacity": "gpt1-6000",
+    "load": 6000,
+    "timestamp": "07-02"
+}

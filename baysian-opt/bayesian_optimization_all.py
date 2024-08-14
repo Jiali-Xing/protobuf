@@ -329,7 +329,7 @@ def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodTo
 
 
 # Define the objective function to optimize
-def objective(interceptor_type, **params):
+def objective_once(interceptor_type, **params):
     global tightSLO, quantile
     hugePenalty = -999999999
     load = int(capacity.split('-')[1])
@@ -359,7 +359,7 @@ def objective(interceptor_type, **params):
     return obj / maximum_goodput
 
 
-def objective_dual(interceptor_type, **params):
+def objective(interceptor_type, **params):
     global tightSLO, quantile
     obj = []
     # same as objective, but run twice with different loads, and return the lower goodput
@@ -523,26 +523,26 @@ def main():
         'latency_threshold': (1, 1000),
     }
     pbounds_breakwater = {
-        'breakwater_slo': (1000, 4000),
-        'breakwater_a': (0.001, 5),
-        'breakwater_b': (0.001, 5),
-        'breakwater_initial_credit': (100, 2000),
-        'breakwater_client_expiration': (0, 500),
-        'breakwater_rtt': (100, 5000),
+        'breakwater_slo': (500, 5000),
+        'breakwater_a': (0.001, 0.5),
+        'breakwater_b': (0.02, 0.5),
+        'breakwater_initial_credit': (500, 1000),
+        'breakwater_client_expiration': (10, 5000),
+        'breakwater_rtt': (500, 2000),
     }
     pbounds_breakwaterd = {
-        'breakwater_slo': (20000, 50000),
-        'breakwater_a': (0.01, 10),
-        'breakwater_b': (0.01, 10),
-        'breakwater_initial_credit': (100, 3000),
-        'breakwaterd_initial_credit': (100, 2000),
-        'breakwater_client_expiration': (0, 1000),
-        'breakwaterd_client_expiration': (0, 10000),
-        'breakwaterd_slo': (10000, 30000),
-        'breakwaterd_a': (0.01, 10),
-        'breakwaterd_b': (0.01, 10),
-        'breakwater_rtt': (5000, 15000),
-        'breakwaterd_rtt': (5000, 15000),
+        'breakwater_slo': (500, 5000),
+        'breakwater_a': (0.001, 0.5),
+        'breakwater_b': (0.02, 0.5),
+        'breakwater_initial_credit': (500, 1000),
+        'breakwater_client_expiration': (0, 500),
+        'breakwater_rtt': (500, 2000),
+        'breakwaterd_initial_credit': (1000, 2000),
+        'breakwaterd_client_expiration': (0, 1000),
+        'breakwaterd_slo': (500, 5000),
+        'breakwaterd_a': (1, 10),
+        'breakwaterd_b': (0.02, 0.5),
+        'breakwaterd_rtt': (500, 2000),
     }
     pbounds_dagor = {
         'dagor_queuing_threshold': (500, 100000),
@@ -556,32 +556,96 @@ def main():
         pbounds_dagor['dagor_queuing_threshold'] = (500, 2000)
         pbounds_dagor['dagor_admission_level_update_interval'] = (25000, 35000)
         
-        pbounds_charon['latency_threshold'] = (200, 600)
-        pbounds_charon['token_update_rate'] = (80000, 110000)
+        pbounds_charon['latency_threshold'] = (300, 900)
+        pbounds_charon['token_update_rate'] = (80000, 120000)
         pbounds_charon['price_update_rate'] = (9000, 16000)
         pbounds_charon['price_step'] = (100, 250)
 
-        pbounds_breakwater['breakwater_slo'] = (18000, 24000)
-        pbounds_breakwater['breakwater_rtt'] = (2000, 10000)
+        # pbounds_breakwater['breakwater_slo'] = (500, 2000)
+        # pbounds_breakwater['breakwater_a'] = (0.001, 1)
+        # pbounds_breakwater['breakwater_b'] = (0.02, 0.9)
+        # pbounds_breakwater['breakwater_client_expiration'] = (200, 800)
+
+        pbounds_breakwater = {
+            'breakwater_slo': (1000, 2000),  # Adjusting around 1382us
+            'breakwater_client_expiration': (400, 800),  # Adjusting around 592us
+            'breakwater_a': (0.0001, 0.01),  # Adjusting around 0.001
+            'breakwater_b': (0.4, 2),  # Adjusting around 0.5
+            'breakwater_initial_credit': (600, 700),  # Adding around 685
+            'breakwater_rtt': (1500, 2000)  # Adjusting around 1853us
+        }
+
+        pbounds_breakwaterd = {
+            'breakwaterd_slo': (1000, 8000),  # Adjusting around 1382us
+            'breakwater_slo': (1000, 2000),  # Adjusting around 1382us
+            'breakwater_client_expiration': (400, 800),  # Adjusting around 592us
+            'breakwaterd_client_expiration': (400, 800),  # Adjusting around 592us
+            'breakwater_a': (0.0001, 0.01),  # Adjusting around 0.001
+            'breakwaterd_a': (2, 5),  # Keeping same as before
+            'breakwater_b': (0.4, 2),  # Adjusting around 0.5
+            'breakwaterd_b': (0.1, 2),  # Keeping same as before
+            'breakwater_rtt': (1500, 2000),  # Adjusting around 1853us
+            'breakwaterd_rtt': (7000, 10000),  # Keeping same as before
+            'breakwater_initial_credit': (600, 700),  # Adding around 685
+            'breakwaterd_initial_credit': (900, 1000)  # Assuming similar range as previous credit
+        }
+        # pbounds_breakwaterd['breakwaterd_slo'] = (12000, 18000)
+        # pbounds_breakwaterd['breakwater_slo'] = (30000, 40000)
+        # pbounds_breakwaterd['breakwater_client_expiration'] = (200, 800)
+        # pbounds_breakwaterd['breakwaterd_client_expiration'] = (1000, 2000)
+        # pbounds_breakwaterd['breakwater_a'] = (2, 5)
+        # pbounds_breakwaterd['breakwaterd_a'] = (5, 10)
+        # pbounds_breakwaterd['breakwater_b'] = (1, 2)
+        # pbounds_breakwaterd['breakwaterd_b'] = (1, 2)
+        # pbounds_breakwaterd['breakwater_rtt'] = (12000, 16000)
+        # pbounds_breakwaterd['breakwaterd_rtt'] = (7000, 10000)
 
     if method == 'compose':
-        pbounds_charon['latency_threshold'] = (100, 400)
+        pbounds_charon['latency_threshold'] = (200, 600)
         pbounds_charon['price_update_rate'] = (3000, 5000)
-        pbounds_charon['price_step'] = (100, 200)
+        pbounds_charon['price_step'] = (50, 150)
         pbounds_charon['token_update_rate'] = (60000, 80000)
 
-        pbounds_dagor['dagor_queuing_threshold'] = (1000, 4000)
-        pbounds_dagor['dagor_beta'] = (2, 5)
+        pbounds_dagor['dagor_queuing_threshold'] = (1000, 2000)
+        pbounds_dagor['dagor_alpha'] = (0, 2)
+        pbounds_dagor['dagor_beta'] = (1.5, 4)
         pbounds_dagor['dagor_admission_level_update_interval'] = (12000, 15000)
+        pbounds_dagor['dagor_umax'] = (10, 20)
 
-        pbounds_breakwater['breakwater_slo'] = (1000, 2000)
-        pbounds_breakwater['breakwater_rtt'] = (500, 1000)
+        pbounds_breakwater = {
+            'breakwater_slo': (2000, 8000),  # Adjusting around 1382us
+            'breakwater_client_expiration': (400, 800),  # Adjusting around 592us
+            'breakwater_a': (0.0001, 1),  # Adjusting around 0.001
+            'breakwater_b': (0.4, 4),  # Adjusting around 0.5
+            'breakwater_initial_credit': (300, 700),  # Adding around 685
+            'breakwater_rtt': (1200, 2000)  # Adjusting around 1853us
+        }
+        # pbounds_breakwater['breakwater_slo'] = (100, 2000)
+        # pbounds_breakwater['breakwater_rtt'] = (1000, 4000)
+        # pbounds_breakwater['breakwater_b'] = (0.02, 0.9)
+        # pbounds_breakwater['breakwater_client_expiration'] = (100, 1000)
 
-        # pbounds_breakwaterd['breakwaterd_slo'] = (1000, 3000)
-        # pbounds_breakwaterd['breakwater_slo'] = (1000, 3000)
-        pbounds_breakwaterd['breakwaterd_client_expiration'] = (0, 1000)
-        pbounds_breakwaterd['breakwater_rtt'] = (1000, 5000)
-        pbounds_breakwaterd['breakwaterd_rtt'] = (1000, 5000)
+        pbounds_breakwaterd = {
+            'breakwaterd_slo': (1000, 8000),  # Adjusting around 1382us
+            'breakwater_slo': (1000, 8000),  # Adjusting around 1382us
+            'breakwater_client_expiration': (400, 800),  # Adjusting around 592us
+            'breakwaterd_client_expiration': (400, 800),  # Adjusting around 592us
+            'breakwater_a': (0.0001, 0.2),  # Adjusting around 0.001
+            'breakwaterd_a': (2, 5),  # Keeping same as before
+            'breakwater_b': (0.4, 2),  # Adjusting around 0.5
+            'breakwaterd_b': (0.1, 2),  # Keeping same as before
+            'breakwater_rtt': (1500, 2000),  # Adjusting around 1853us
+            'breakwaterd_rtt': (7000, 10000),  # Keeping same as before
+            'breakwater_initial_credit': (600, 700),  # Adding around 685
+            'breakwaterd_initial_credit': (900, 1000)  # Assuming similar range as previous credit
+        }
+        # pbounds_breakwaterd['breakwaterd_slo'] = (5000, 10000)
+        # pbounds_breakwaterd['breakwater_slo'] = (8000, 12000)
+        # pbounds_breakwaterd['breakwater_client_expiration'] = (100, 150)
+        # pbounds_breakwaterd['breakwaterd_client_expiration'] = (1000, 2000)
+        # pbounds_breakwaterd['breakwaterd_a'] = (5, 50)
+        # pbounds_breakwaterd['breakwater_rtt'] = (800, 1200)
+        # pbounds_breakwaterd['breakwaterd_rtt'] = (400, 700)
 
     if 'S_16' in method:
         pbounds_charon['latency_threshold'] = (100, 30000)

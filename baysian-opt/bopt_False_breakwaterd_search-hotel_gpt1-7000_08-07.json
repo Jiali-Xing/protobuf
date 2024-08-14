@@ -1,0 +1,22 @@
+{
+    "target": 0.631600232972556,
+    "parameters": {
+        "BREAKWATER_SLO": "1527us",
+        "BREAKWATER_A": 0.009043457253566313,
+        "BREAKWATER_B": 1.3178871786756574,
+        "BREAKWATER_INITIAL_CREDIT": 661,
+        "BREAKWATER_CLIENT_EXPIRATION": "401us",
+        "ONLY_FRONTEND": "false",
+        "BREAKWATERD_SLO": "7506us",
+        "BREAKWATERD_A": 4.657826297932323,
+        "BREAKWATERD_B": 0.7788125440047495,
+        "BREAKWATERD_INITIAL_CREDIT": 962,
+        "BREAKWATERD_CLIENT_EXPIRATION": "763us",
+        "BREAKWATER_RTT": "1663us",
+        "BREAKWATERD_RTT": "7047us"
+    },
+    "method": "search-hotel",
+    "capacity": "gpt1-7000",
+    "load": 7000,
+    "timestamp": "08-07"
+}
