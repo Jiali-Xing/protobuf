@@ -22,3 +22,5 @@ ghz-results/*.png
 .stversions/*
 ghz-results/.syncthing*
 *sync-conflict*
+ppo_model_*zip
+model*episodes.zip
