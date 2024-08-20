@@ -24,3 +24,4 @@ ghz-results/.syncthing*
 *sync-conflict*
 ppo_model_*zip
 model*episodes.zip
+events.out.tfevents*
