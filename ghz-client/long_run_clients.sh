@@ -20,12 +20,13 @@
 # # Get the NodePort (if available) of grpc-service-1
 # SERVICE_A_NODEPORT=$(kubectl get service $ENTRY_POINT -o=jsonpath='{.spec.ports[0].nodePort}')
 
+# SERVICE_A_URL="$SERVICE_A_IP:50051"
+
+
 # query the service for the IP address from user input
 # from stdin
-echo "Enter the IP address of the service you want to query: "
-read SERVICE_A_IP
-
-SERVICE_A_URL="$SERVICE_A_IP:50051"
+echo "Enter the IP address and port of the service you want to query: "
+read SERVICE_A_URL
 
 # Export the SERVICE_A_URL as an environment variable
 export SERVICE_A_URL
