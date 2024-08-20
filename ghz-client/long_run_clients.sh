@@ -2,23 +2,28 @@
 # Run this file from the kube master node in order to run the ghz experiment
 
 # Get the names of all deployments
-deployments=$(kubectl get deployments -o custom-columns=":metadata.name" --no-headers)
-echo "Deployments: $deployments"
+# deployments=$(kubectl get deployments -o custom-columns=":metadata.name" --no-headers)
+# echo "Deployments: $deployments"
 
-# Loop through each deployment and wait for it to complete
-for deployment in $deployments; do
-  kubectl rollout status deployment/$deployment
-  # echo "Deployment $deployment is ready."
-done
+# # Loop through each deployment and wait for it to complete
+# for deployment in $deployments; do
+#   kubectl rollout status deployment/$deployment
+#   # echo "Deployment $deployment is ready."
+# done
 
-# entrypoint is 
-echo "ENTRY_POINT: $ENTRY_POINT"
+# # entrypoint is 
+# echo "ENTRY_POINT: $ENTRY_POINT"
 
-# Get the Cluster IP of grpc-service-1
-SERVICE_A_IP=$(kubectl get service $ENTRY_POINT -o=jsonpath='{.spec.clusterIP}')
+# # Get the Cluster IP of grpc-service-1
+# SERVICE_A_IP=$(kubectl get service $ENTRY_POINT -o=jsonpath='{.spec.clusterIP}')
 
-# Get the NodePort (if available) of grpc-service-1
-SERVICE_A_NODEPORT=$(kubectl get service $ENTRY_POINT -o=jsonpath='{.spec.ports[0].nodePort}')
+# # Get the NodePort (if available) of grpc-service-1
+# SERVICE_A_NODEPORT=$(kubectl get service $ENTRY_POINT -o=jsonpath='{.spec.ports[0].nodePort}')
+
+# query the service for the IP address from user input
+# from stdin
+echo "Enter the IP address of the service you want to query: "
+read SERVICE_A_IP
 
 SERVICE_A_URL="$SERVICE_A_IP:50051"
 
