@@ -62,7 +62,11 @@ class RealAppEnv(gym.Env):
         self.penalty_coefficient = penalty_coefficient  # Penalty coefficient (ρ)
         self.slo = slo  # Service Level Objective for latency
         
-        server_address = get_server_address(entry_point)
+        # server_address = get_server_address(entry_point)
+        # get the server address from the user cmd input
+        server_address = input("Enter the server address: ")
+        server_address = f'http://{server_address}'
+
         if server_address is None:
             raise ValueError("Error retrieving server address")
         
