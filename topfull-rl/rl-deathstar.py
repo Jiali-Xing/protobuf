@@ -168,7 +168,12 @@ class PrintCallback(BaseCallback):
 
 if __name__ == "__main__":
     # Replace 'social' with 'hotel' to train on the hotel application
-    app_name = "social"
+    # app_name take from user cmd input
+    app_name = input("Enter the application name (e.g., 'social' or 'hotel'): ")
+
+    # Now you can use the `app_name` variable
+    print(f"Training on the {app_name} application")
+
     entry_point = "nginx" if app_name == "social" else "frontend"
     env = RealAppEnv(app_name=app_name, entry_point=entry_point)
 
