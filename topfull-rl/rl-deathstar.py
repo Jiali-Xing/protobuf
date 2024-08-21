@@ -185,6 +185,34 @@ class CustomCheckpointCallback(BaseCallback):
             if self.verbose > 0:
                 print(f"Saved model checkpoint at step {current_step} to {save_path}")
         return True
+    
+
+from torch.utils.tensorboard import SummaryWriter
+
+class CustomTensorBoardCallback(BaseCallback):
+    def __init__(self, log_dir='./logs/', log_freq=1000, verbose=0):
+        super(CustomTensorBoardCallback, self).__init__(verbose)
+        self.writer = SummaryWriter(log_dir)
+        self.n_calls = 0
+        self.log_freq = log_freq
+
+    def _on_step(self):
+        self.n_calls += 1
+        if self.n_calls % self.log_freq == 0:
+            env = self.locals['env']
+            # Log custom metrics
+            for i in range(env.num_envs):
+                current_env = env.envs[i]
+                step = self.n_calls
+                # Log to TensorBoard
+                self.writer.add_scalar('Goodput', current_env.prev_goodput, step)
+                self.writer.add_scalar('Latency', current_env.current_latency, step)
+                self.writer.add_scalar('Rate Limit', current_env.rate_limit, step)
+                self.writer.add_scalar('Learning Rate', model.optimizer.param_groups[0]['lr'], step)
+        return True
+
+    def _on_training_end(self):
+        self.writer.close()
 
 
 if __name__ == "__main__":
@@ -219,8 +247,10 @@ if __name__ == "__main__":
 
     print_callback = PrintCallback(check_freq=20, max_prints=200)
 
+    custom_tb_callback = CustomTensorBoardCallback(log_dir=app_name + "_logs", log_freq=1000)
+
     # Combine callbacks
-    callbacks = CallbackList([checkpoint_callback, eval_callback, print_callback])
+    callbacks = CallbackList([checkpoint_callback, eval_callback, print_callback, custom_tb_callback])
 
     # Configure TensorBoard logger
     new_logger = configure(app_name + "_logs", ["stdout", "csv", "tensorboard"])
