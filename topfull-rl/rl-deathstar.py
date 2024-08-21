@@ -170,6 +170,23 @@ class PrintCallback(BaseCallback):
         return True
 
 
+class CustomCheckpointCallback(BaseCallback):
+    def __init__(self, save_freq, save_path, name_prefix='', verbose=1):
+        super(CustomCheckpointCallback, self).__init__(verbose)
+        self.save_freq = save_freq
+        self.save_path = save_path
+        self.name_prefix = name_prefix
+
+    def _on_step(self) -> bool:
+        if self.n_calls % self.save_freq == 0:
+            current_step = self.num_timesteps  # This is the total number of timesteps so far
+            save_path = os.path.join(self.save_path, f"{self.name_prefix}_{current_step}_steps.zip")
+            self.model.save(save_path)
+            if self.verbose > 0:
+                print(f"Saved model checkpoint at step {current_step} to {save_path}")
+        return True
+
+
 if __name__ == "__main__":
     # Replace 'social' with 'hotel' to train on the hotel application
     # app_name take from user cmd input
@@ -184,7 +201,7 @@ if __name__ == "__main__":
     # Set up the checkpoint callback
     checkpoint_dir = app_name + "_checkpoints"
     os.makedirs(checkpoint_dir, exist_ok=True)
-    checkpoint_callback = CheckpointCallback(save_freq=50, save_path=checkpoint_dir, name_prefix=app_name+"_ppo")
+    checkpoint_callback = CustomCheckpointCallback(save_freq=50, save_path=checkpoint_dir, name_prefix=app_name+"_ppo")
 
     # Set up the evaluation environment
     eval_env = RealAppEnv(app_name=app_name, entry_point=entry_point)
@@ -208,7 +225,8 @@ if __name__ == "__main__":
     # Configure TensorBoard logger
     new_logger = configure(app_name + "_logs", ["stdout", "csv", "tensorboard"])
 
-    pre_trained_model = "checkpoints-17/ppo_final_model.zip"
+    # pre_trained_model = "checkpoints-17/ppo_final_model.zip"
+    pre_trained_model = "checkpoints-19/pretrained_model_final.zip"
 
     # Find the last checkpoint by sorting based on the linux timestamp (not the get_step_number)
     checkpoints = sorted(
