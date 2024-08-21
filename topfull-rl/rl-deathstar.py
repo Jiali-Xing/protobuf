@@ -5,7 +5,7 @@ from gymnasium import spaces
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import CheckpointCallback, BaseCallback, EvalCallback, CallbackList
 from stable_baselines3.common.logger import configure
-import os, subprocess
+import os, subprocess, re
 
 
 # rather than localhost, get the server address from the k8s
@@ -220,18 +220,35 @@ if __name__ == "__main__":
         last_checkpoint = os.path.join(checkpoint_dir, checkpoints[-1])
         print(f"Loading model from checkpoint: {last_checkpoint}")
         model = PPO.load(last_checkpoint, env=env)
+        timestep_str = re.findall(r'\d+', last_checkpoint)
+        if timestep_str:
+            completed_timesteps = int(timestep_str[-1])  # Extracting the number of steps
+        else:
+            completed_timesteps = 0
     else:
         model = PPO.load(pre_trained_model, 
                             env=env, 
                             tensorboard_log=app_name + "_logs",
                             verbose=1)
+        completed_timesteps = 0
         print("Loaded pre-trained model")
 
     # Set the logger
     model.set_logger(new_logger)
 
     # Train the model with real application data
-    model.learn(total_timesteps=50*800, callback=callbacks, tb_log_name=app_name)
+    
+    # Calculate the remaining timesteps to train
+    total_timesteps = 50 * 800  # Or however many total timesteps you want to train
+    remaining_timesteps = total_timesteps - completed_timesteps
+
+    if remaining_timesteps > 0:
+        # Train the model with the remaining timesteps
+        model.learn(total_timesteps=remaining_timesteps, callback=callbacks, tb_log_name=app_name)
+    else:
+        print("Training is already complete.")
+
+    # model.learn(total_timesteps=50*800, callback=callbacks, tb_log_name=app_name)
 
     # Save the final model
     model.save(os.path.join(checkpoint_dir, app_name + "_final_model"))
