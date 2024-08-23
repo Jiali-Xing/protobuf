@@ -34,10 +34,6 @@ export SERVICE_A_URL
 # Display the URL
 echo "SERVICE_A_URL: $SERVICE_A_URL"
 
-# if RL_TIERS env is set, then echo it
-if [ -n "$RL_TIERS" ]; then
-  echo "RL_TIERS: $RL_TIERS"
-fi
 # if AQM_ENABLED env is set, then echo it
 if [ -n "$AQM_ENABLED" ]; then
   echo "AQM_ENABLED: $AQM_ENABLED"
@@ -49,7 +45,13 @@ export LOAD_INCREASE=true
 # Function to run clientcall with randomized capacity
 run_clientcall() {
     # Generate a random capacity between 100 and 2000
-    local CAPACITY=$((RANDOM % 1901 + 100))
+    # if `hotel` is in METHOD, then capacity is between 100 and 4000
+    # local CAPACITY=$((RANDOM % 1901 + 100))
+    if [[ $METHOD == *"hotel"* ]]; then
+      CAPACITY=$((RANDOM % 3901 + 100))
+    else
+      CAPACITY=$((RANDOM % 1901 + 100))
+    fi
     
     # Print the capacity value
     echo "Capacity: $CAPACITY"
