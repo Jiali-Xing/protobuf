@@ -343,6 +343,8 @@ func main() {
 	// the de facto interceptor is dagor when interceptor is set to "dagorf"
 	if interceptor == "dagorf" {
 		defactoInterceptor = "dagor"
+	} else if interceptor == "topdown" {
+		defactoInterceptor = "plain"
 	} else {
 		defactoInterceptor = interceptor
 	}
