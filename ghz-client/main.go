@@ -96,9 +96,7 @@ var (
 
 	debug, _ = strconv.ParseBool(getEnv("DEBUG_INFO", "false"))
 
-	// locations = []string{
-	// 	"new-york-city-ny-0", "los-angeles-ca-0", "chicago-il-0", "houston-tx-0", "phoenix-az-0", "philadelphia-pa-0", "san-antonio-tx-0", "san-diego-ca-0", "dallas-tx-0", "san-jose-ca-0", "austin-tx-0",
-	// }
+	timeOut = time.Second
 )
 
 func getHostname() string {
@@ -370,6 +368,11 @@ func main() {
 
 	log.Printf("De facto load: Shape=%s, Start=%d, End=%d, Step=%d", loadSchedule, loadStart, loadEnd, loadStep)
 
+	// if method start with S_, then timeout is 10 seconds
+	if method[0] == 'S' {
+		timeOut = time.Second * 100
+	}
+
 	if loadIncrease {
 		report, err = runner.Run(
 			protoCall,
@@ -393,7 +396,7 @@ func main() {
 			runner.WithDagorOptions(dagorParams),
 			runner.WithAsync(true),
 			runner.WithEnableCompression(false),
-			runner.WithTimeout(time.Second),
+			runner.WithTimeout(timeOut),
 		)
 	} else {
 		report, err = runner.Run(
@@ -419,7 +422,7 @@ func main() {
 			runner.WithDagorOptions(dagorParams),
 			runner.WithAsync(true),
 			runner.WithEnableCompression(false),
-			runner.WithTimeout(time.Second),
+			runner.WithTimeout(timeOut),
 		)
 	}
 
