@@ -5,7 +5,7 @@ import gymnasium as gym
 from gymnasium import spaces
 
 import networkx as nx
-import random, os, re
+import random, os, re, time
 import torch
 
 from stable_baselines3.common.env_util import make_vec_env
@@ -396,13 +396,17 @@ if __name__ == "__main__":
     # Train the model
     model.learn(total_timesteps=1e10, callback=callbacks, tb_log_name="ppo_model")
 
-    # Save the final model
-    model.save(os.path.join(checkpoint_dir, "pretrained_model_final"))
+    # Save the final model with date timestamp
+    timestamp = time.strftime("%Y%m%d-%H")
+    model.save(os.path.join(checkpoint_dir, f"ppo_final_model_{timestamp}"))
 
     # Evaluate the model
     obs = env.reset()
     for i in range(1000):
         action, _ = model.predict(obs, deterministic=True)
         obs, reward, done, _, _ = env.step(action)
-        if done.any():
+        # if done or if done any. 
+        if len(done) > 0 and done.any() or done:
             obs = env.reset()
+            print(f"Episode {i} completed.")
+            break
