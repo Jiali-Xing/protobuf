@@ -7,11 +7,11 @@ def get_sustainable_load(method):
     # The sustainable load is determined by the stabliity of the throughput. 
     # Results here are measured under 8 nodes.  
     sustainable_load = {
-        "compose": 10000,
-        # "user-timeline": 6000,
-        # "home-timeline": 6000,
+        "compose": 2500,
+        "user-timeline": 10000,
+        "home-timeline": 10000,
         "S_102000854": 6000,
-        "S_149998854": 5000,
+        "S_149998854": 150,
         "S_161142529": 6000,
         # "S_102000854": 4000,
         # "S_149998854": 3000,
@@ -19,7 +19,7 @@ def get_sustainable_load(method):
         "motivate-get": 15000,
         "motivate-set": 15000,
         "both-motivate": 20000,
-        "search-hotel": 4000,
+        "search-hotel": 5000,
         "reserve-hotel": 10000,
         # "hotels-http": 8000,
         # "reservation-http": 8000,
@@ -30,6 +30,11 @@ def get_sustainable_load(method):
         # "all-methods-social": 8000,
         # "all-methods-hotel": 8000,
     }
+
+    # Return a default value or raise an error if the method is not found
+    if method not in sustainable_load:
+        raise ValueError(f"Sustainable load for method '{method}' not found.")
+    
     return sustainable_load.get(method, None)
 
 def get_slo(method, tight=False, all_methods=False):
@@ -68,17 +73,17 @@ def get_slo(method, tight=False, all_methods=False):
         # "all-methods-hotel": 10,
     }
     tail95_lat = {
-        "compose": 5,
-        "user-timeline": 20, # under 6k req/s
-        "home-timeline": 20, # under 6k req/s
+        "compose": 18, # under 3000 req/s
+        "user-timeline": 4, # under 4000 req/s
+        "home-timeline": 4, # under 4000 req/s
         "S_102000854": 43,
-        "S_149998854": 116,
+        "S_149998854": 180,
         "S_161142529": 71,
-        "motivate-set": 26,
+        "motivate-set": 50,
         "motivate-get": 8,
         "both-motivate": 26,
-        "search-hotel": 18,
-        "reserve-hotel": 3,
+        "search-hotel": 12, # under 2000 req/s
+        "reserve-hotel": 2,
         "hotels-http": 17, # under 8k req/s
         "reservation-http": 12, # under 8k req/s 
         "user-http": 7, # under 8k req/s
