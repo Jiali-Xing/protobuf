@@ -6,6 +6,9 @@ from stable_baselines3 import PPO
 import os, subprocess, re
 import sys
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'ghz-results'))
+from slo import get_slo, get_sustainable_load
+
 
 def get_server_address(entry_point, port=8082):
     try:
@@ -28,121 +31,124 @@ def get_server_address(entry_point, port=8082):
     
 
 class RealAppEnv(gym.Env):
-    def __init__(self, app_name, apis, max_steps=50, penalty_coefficient=1.0, slo=100, entry_point="nginx"):
+    def __init__(self, app_name, apis, max_steps=50, penalty_coefficient=1.0, entry_point="nginx"):
         super(RealAppEnv, self).__init__()
         self.app_name = app_name
-        self.apis = apis  # List of APIs in the cluster
         self.max_steps = max_steps
         self.penalty_coefficient = penalty_coefficient  # Penalty coefficient (ρ)
-        self.slo = slo  # Service Level Objective for latency
-        
-        # Define priority map
-        self.priority_map = {
-            "compose": 1,
-            "home-timeline": 2,
-            "user-timeline": 3,
-            "S_149998854": 2,
-            "S_161142529": 3,
-            "S_102000854": 1,
-            "hotels-http": 3,
-            "reservation-http": 1,
-            "user-http": 2,
-            "recommendations-http": 4,
-            "motivate-set": 1,
-            "motivate-get": 2,
-            "search-hotel": 1,
-            "store-hotel": 2,
-            "reserve-hotel": 3,
-        }
+
+        self.apis = apis  # List of APIs in the cluster
 
         # Get the server address from the Kubernetes service
-        self.server_addresses = {}
-        for api in apis:
-            server_address = get_server_address(entry_point)
-            if server_address is None:
-                raise ValueError(f"Error retrieving server address for {api}")
-            self.server_addresses[api] = server_address
-            print(f"Server address for {api}: {self.server_addresses[api]}")
+        server_address = get_server_address(entry_point)
+        if server_address is None:
+            raise ValueError("Error retrieving server address")
+        
+        self.server_address = server_address
+        print(f"Server address: {self.server_address}")
 
-        self.rate_limits = {api: 3000 for api in apis}  # Initial rate limit for each API
-        self.prev_goodput = {api: None for api in apis}  # To store previous goodput for each API
-        self.current_latency = {api: 0 for api in apis}
+        # updated for multiple APIs
+        self.rate_limits = {api: 3000 for api in self.apis}
+        self.prev_total_goodput = None  # To store previous goodput for ΔGoodput calculation
+        self.current_latencies = {api: 0 for api in self.apis}
         self.current_step = 0
 
-        # Observation space: [aggregate_goodput_ratio, max_latency]
+        # Observation space: [total_latency, total_goodput]
         self.observation_space = spaces.Box(low=0, high=np.inf, shape=(2,), dtype=np.float32)
 
-        # Action space: single continuous action to adjust the rate limits
+        # Action space: single continuous action to adjust the rate limit
         self.action_space = spaces.Box(low=-0.5, high=0.5, shape=(1,), dtype=np.float32)
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         self.current_step = 0
-        self.rate_limits = {api: 3000 for api in self.apis}  # Reset rate limits
+        self.rate_limit = {api: 3000 for api in self.apis}  # Reset rate limit
+        # You can set a random seed here for the environment
+        if seed is not None:
+            np.random.seed(seed)
         return self._get_observation(), {}
 
     def _get_observation(self):
+        
         aggregate_goodput = 0
         aggregate_rate_limit = 0
         max_latency = 0
-
+        
         for api in self.apis:
-            # GET metrics from the Go server for each API
             params = {"method": api}
-            response = requests.get(f"{self.server_addresses[api]}/metrics", params=params)
+            # GET metrics from the Go server
+            response = requests.get(f"{self.server_address}/metrics", params=params)
             metrics = response.json()
-
-            # Assuming the metrics are returned as key-value pairs with API as key
             total_latency = metrics["latency"]
             total_goodput = metrics["goodput"]
-            
-            # Aggregate goodput and rate limits
+            # Calculate the ratio of goodput to the current rate limit
+
             aggregate_goodput += total_goodput
-            aggregate_rate_limit += self.rate_limits[api]
-            
-            # Track the maximum latency
+            aggregate_rate_limit += self.rate_limit[api]
             max_latency = max(max_latency, total_latency)
 
         goodput_ratio = aggregate_goodput / aggregate_rate_limit if aggregate_rate_limit > 0 else 0
         
+        # The observation now includes:
+        # 1. Ratio of goodput to the current rate limit
+        # 2. The maximum latency across candidate APIs (already max_latency)
         return np.array([goodput_ratio, max_latency], dtype=np.float32)
 
     def step(self, action):
         start_time = time.time()  # Record start time
 
-        # below is Algorithm 1 from the paper TopFull 
+        # Apply Algorithm 1 from the paper
         action_rl = action[0]
         if action_rl > 0:
             # Highest priority API (lowest priority value)
-            api = min(self.apis, key=lambda api: self.priority_map.get(api, float('inf')))
+            # api = min(self.apis, key=lambda api: self.priority_map.get(api, float('inf')))
+            sorted_apis = sorted(self.apis, key=lambda api: self.priority_map.get(api, float('inf')))
         else:
             # Lowest priority API (highest priority value)
-            api = max(self.apis, key=lambda api: self.priority_map.get(api, float('inf')))
+            # api = max(self.apis, key=lambda api: self.priority_map.get(api, 0))
+            sorted_apis = sorted(self.apis, key=lambda api: -self.priority_map.get(api, float('inf')))
 
-        # Adjust rate limits based on action and priority
-        # for api in targets:
-        self.rate_limits[api] = max(1000, min(9000, self.rate_limits[api] * (1 + action_rl)))
-        print(f"New rate limit for {api}: {self.rate_limits[api]}")
-        # SET the new rate limit on the Go server
+        # Loop through the sorted APIs and apply the action to the first valid one
+        for api in sorted_apis:
+            sustainable_load = get_sustainable_load(api)
+            upper_bound = 2 * sustainable_load
+            lower_bound = sustainable_load / 5
+
+            current_rate_limit = self.rate_limits[api]
+
+            # If we're increasing the rate and the rate limit is below the upper bound, apply the action
+            if action_rl > 0 and current_rate_limit < upper_bound:
+                self.rate_limits[api] = min(upper_bound, current_rate_limit * (1 + action_rl))
+                break  # Apply the action to the first valid API and exit the loop
+
+            # If we're decreasing the rate and the rate limit is above the lower bound, apply the action
+            elif action_rl < 0 and current_rate_limit > lower_bound:
+                self.rate_limits[api] = max(lower_bound, current_rate_limit * (1 + action_rl))
+                break  # Apply the action to the first valid API and exit the loop
+
+        
+        # SET the new rate limit on the Go server for the selected API
         params = {'method': api}
         data = {'rate_limit': self.rate_limits[api]}
-        requests.post(f"{self.server_addresses[api]}/set_rate", params=params, json=data)
-
+        requests.post(f"{self.server_address}/set_rate", params=params, json=data)
+        
         observation = self._get_observation()
+
+        # Extract goodput_ratio and max_latency from the observation
         goodput_ratio, max_latency = observation
 
-        # Calculate aggregate goodput
+        # For total_goodput, compute it based on the goodput_ratio and current total rate limit
         total_goodput = goodput_ratio * sum(self.rate_limits.values())
 
         # Calculate the change in goodput (ΔGoodput)
-        delta_goodput = total_goodput - sum(self.prev_goodput.values()) if all(self.prev_goodput.values()) else 0
+        delta_goodput = total_goodput - self.prev_total_goodput if self.prev_total_goodput is not None else 0
 
         # Update previous goodput
-        for api in self.apis:
-            self.prev_goodput[api] = goodput_ratio * self.rate_limits[api]
+        self.prev_total_goodput = total_goodput
 
         # Calculate the penalty for latency exceeding the SLO
-        latency_penalty = max(0, max_latency - self.slo)
+        # let's find the max SLO for apis
+        latency_penalty = max(0, max_latency - max(get_slo(api) for api in self.apis))
 
         # Reward calculation
         reward = delta_goodput - self.penalty_coefficient * latency_penalty
@@ -158,14 +164,17 @@ class RealAppEnv(gym.Env):
     def close(self):
         pass
 
-# Main function to run the RL agent across clusters
+
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python rl_multicluster.py <application_name>")
+    if len(sys.argv) != 3:
+        print("Usage: python apply_model.py <application_name>")
         sys.exit(1)
 
     methods = sys.argv[1]
-    print(f"Applying model on the {methods} interface")
+    entry_point = sys.argv[2]
+    print(f"Applying model on the {methods} application")
+
+    env = RealAppEnv(app_name=methods, entry_point=entry_point)
 
     # Define clusters and APIs
     if methods == "all-social":
@@ -177,33 +186,44 @@ if __name__ == "__main__":
         clusters = {
             "cluster1": ["search-hotel", "reserve-hotel"]
         }
+    elif methods == "both-motivate":
+        clusters = {
+            "cluster1": ["motivate-set", "motivate-get"]
+        }
+    elif methods == "all-alibaba":
+        clusters = {
+            "cluster1": ["S_102000854"],
+            "cluster2": ["S_149998854"],
+            "cluster3": ["S_161142529"]
+        }
     else:
         clusters = {
             "default": [methods]
         }
-
+    
     # Loop through each cluster and apply the RL model
     for cluster_name, apis in clusters.items():
-        if 'social' in methods:
-            entry_point = "nginx" 
+        # Set entry_point and app_name based on the method
+        if 'social' in methods or 'compose' in methods or 'timeline' in methods:
             app_name = "social"
         elif 'hotel' in methods:
-            entry_point = "frontend"
             app_name = "hotel"
+        elif 'motivate' in methods:
+            app_name = "motivate"
+        elif 'alibaba' in methods or 'S_' in methods:
+            app_name = "alibaba"
         else:
-            entry_point = "nginx-web-server"
+            app_name = methods  # Default case uses the method as app_name
 
-        env = RealAppEnv(app_name=methods, apis=apis, entry_point=entry_point)
+    # Load the final trained model
+    final_model_path = f"{app_name}_checkpoints/{app_name}_final_model.zip"
+    model = PPO.load(final_model_path, env=env)
+    print(f"Loaded model from {final_model_path}")
 
-        # Load the final trained model
-        final_model_path = f"{app_name}_checkpoints/{app_name}_final_model.zip"
-        model = PPO.load(final_model_path, env=env)
-        print(f"Loaded model from {final_model_path}")
-
-        # Apply the trained model in the real environment
-        obs, _ = env.reset()
-        for i in range(1000):
-            action, _ = model.predict(obs, deterministic=True)
-            obs, reward, done, _, _ = env.step(action)
-            if done:
-                obs, _ = env.reset()
+    # Apply the trained model in the real environment
+    obs, _ = env.reset()
+    for i in range(1000):
+        action, _ = model.predict(obs, deterministic=True)
+        obs, reward, done, _, _ = env.step(action)
+        if done:
+            obs, _ = env.reset()
