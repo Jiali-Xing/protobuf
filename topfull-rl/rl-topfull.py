@@ -39,6 +39,20 @@ class RealAppEnv(gym.Env):
 
         self.apis = apis  # List of APIs in the cluster
 
+        # Priority map for APIs
+        self.priority_map = {
+            "compose": 1,
+            "home-timeline": 2,
+            "user-timeline": 3,
+            "S_102000854": 1,
+            "S_149998854": 2,
+            "S_161142529": 3,
+            "motivate-set": 1,
+            "motivate-get": 2,
+            "search-hotel": 1,
+            "reserve-hotel": 2
+        }
+
         # Get the server address from the Kubernetes service
         server_address = get_server_address(entry_point)
         if server_address is None:
