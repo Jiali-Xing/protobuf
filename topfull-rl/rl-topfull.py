@@ -167,14 +167,12 @@ class RealAppEnv(gym.Env):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: python apply_model.py <application_name>")
+        print("Usage: python rl-topfull.py <method> <entry_point>")
         sys.exit(1)
 
     methods = sys.argv[1]
     entry_point = sys.argv[2]
     print(f"Applying model on the {methods} application")
-
-    env = RealAppEnv(app_name=methods, entry_point=entry_point)
 
     # Define clusters and APIs
     if methods == "all-social":
@@ -215,15 +213,19 @@ if __name__ == "__main__":
         else:
             app_name = methods  # Default case uses the method as app_name
 
-    # Load the final trained model
-    final_model_path = f"{app_name}_checkpoints/{app_name}_final_model.zip"
-    model = PPO.load(final_model_path, env=env)
-    print(f"Loaded model from {final_model_path}")
+            
+        # Pass the 'apis' argument to the RealAppEnv class
+        env = RealAppEnv(app_name=app_name, apis=apis, entry_point=entry_point)
 
-    # Apply the trained model in the real environment
-    obs, _ = env.reset()
-    for i in range(1000):
-        action, _ = model.predict(obs, deterministic=True)
-        obs, reward, done, _, _ = env.step(action)
-        if done:
-            obs, _ = env.reset()
+        # Load the final trained model
+        final_model_path = f"{app_name}_checkpoints/{app_name}_final_model.zip"
+        model = PPO.load(final_model_path, env=env)
+        print(f"Loaded model from {final_model_path}")
+
+        # Apply the trained model in the real environment
+        obs, _ = env.reset()
+        for i in range(1000):
+            action, _ = model.predict(obs, deterministic=True)
+            obs, reward, done, _, _ = env.step(action)
+            if done:
+                obs, _ = env.reset()
