@@ -249,9 +249,10 @@ if __name__ == "__main__":
         else:
             app_name = methods  # Default case uses the method as app_name
 
-            
+        print(f"[DEBUG] Applying model on the {app_name} application")           
         # Pass the 'apis' argument to the RealAppEnv class
         env = RealAppEnv(app_name=app_name, apis=apis, entry_point=entry_point)
+        print(f"[DEBUG] Environment initialized: {env}")
 
         # Load the final trained model
         final_model_path = f"{app_name}_checkpoints/{app_name}_final_model.zip"
