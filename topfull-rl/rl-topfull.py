@@ -24,6 +24,7 @@ def get_server_address(entry_point, port=8082):
 
         # Construct the service URL
         server_address = f"http://{service_ip}:{port}"
+        print(f"[DEBUG] Server address: {server_address}")
         return server_address
     except subprocess.CalledProcessError as e:
         print(f"Error retrieving server address: {e}")
@@ -59,10 +60,10 @@ class RealAppEnv(gym.Env):
             raise ValueError("Error retrieving server address")
         
         self.server_address = server_address
-        print(f"Server address: {self.server_address}")
+        print(f"[DEBUG] Server address initialized: {self.server_address}")
 
         # updated for multiple APIs
-        self.rate_limits = {api: 3000 for api in self.apis}
+        self.rate_limits = {api: 1000 for api in self.apis}
         self.prev_total_goodput = None  # To store previous goodput for ΔGoodput calculation
         self.current_latencies = {api: 0 for api in self.apis}
         self.current_step = 0
@@ -78,6 +79,7 @@ class RealAppEnv(gym.Env):
         self.current_step = 0
         self.rate_limit = {api: 3000 for api in self.apis}  # Reset rate limit
         # You can set a random seed here for the environment
+        print(f"[DEBUG] Environment reset: {self.rate_limits}")
         if seed is not None:
             np.random.seed(seed)
         return self._get_observation(), {}
@@ -106,6 +108,7 @@ class RealAppEnv(gym.Env):
         # The observation now includes:
         # 1. Ratio of goodput to the current rate limit
         # 2. The maximum latency across candidate APIs (already max_latency)
+        print(f"[DEBUG] Observation: Goodput Ratio={goodput_ratio}, Max Latency={max_latency}")
         return np.array([goodput_ratio, max_latency], dtype=np.float32)
 
     def step(self, action):
@@ -113,6 +116,8 @@ class RealAppEnv(gym.Env):
 
         # Apply Algorithm 1 from the paper
         action_rl = action[0]
+        print(f"[DEBUG] Action received: {action_rl*100}% rate adjustment")
+
         if action_rl > 0:
             # Highest priority API (lowest priority value)
             # api = min(self.apis, key=lambda api: self.priority_map.get(api, float('inf')))
@@ -126,18 +131,20 @@ class RealAppEnv(gym.Env):
         for api in sorted_apis:
             sustainable_load = get_sustainable_load(api)
             upper_bound = 2 * sustainable_load
-            lower_bound = sustainable_load / 5
+            lower_bound = sustainable_load / 10
 
             current_rate_limit = self.rate_limits[api]
 
             # If we're increasing the rate and the rate limit is below the upper bound, apply the action
             if action_rl > 0 and current_rate_limit < upper_bound:
                 self.rate_limits[api] = min(upper_bound, current_rate_limit * (1 + action_rl))
+                print(f"[DEBUG] Increasing rate for {api}: {self.rate_limits[api]}")
                 break  # Apply the action to the first valid API and exit the loop
 
             # If we're decreasing the rate and the rate limit is above the lower bound, apply the action
             elif action_rl < 0 and current_rate_limit > lower_bound:
                 self.rate_limits[api] = max(lower_bound, current_rate_limit * (1 + action_rl))
+                print(f"[DEBUG] Decreasing rate for {api}: {self.rate_limits[api]}")
                 break  # Apply the action to the first valid API and exit the loop
 
         
@@ -173,6 +180,7 @@ class RealAppEnv(gym.Env):
         elapsed_time = time.time() - start_time
         time.sleep(max(0, 1 - elapsed_time))  # Enforce 1-second interval
         
+        print(f"[DEBUG] Reward: {reward}, Goodput: {total_goodput}, Latency Penalty: {latency_penalty}")
         return observation, reward, done, False, {}  # Return False for 'truncated' as this example doesn't use truncation.
 
     def close(self):
@@ -213,6 +221,20 @@ if __name__ == "__main__":
             "default": [methods]
         }
     
+    # Test the connection and 2 HTTP requests first
+    try:
+        for cluster_name, apis in clusters.items():
+            for api in apis:
+                print(f"[DEBUG] Testing connection to {api}")
+                server_url = get_server_address(entry_point)
+                response = requests.get(f"{server_url}/metrics", params={"method": api})
+                if response.status_code == 200:
+                    print(f"[DEBUG] Connection to {api} successful")
+                else:
+                    print(f"[ERROR] Failed to connect to {api}")
+    except Exception as e:
+        print(f"[ERROR] {e}")
+
     # Loop through each cluster and apply the RL model
     for cluster_name, apis in clusters.items():
         # Set entry_point and app_name based on the method
@@ -234,7 +256,7 @@ if __name__ == "__main__":
         # Load the final trained model
         final_model_path = f"{app_name}_checkpoints/{app_name}_final_model.zip"
         model = PPO.load(final_model_path, env=env)
-        print(f"Loaded model from {final_model_path}")
+        print(f"[DEBUG] Model loaded: {final_model_path}")
 
         # Apply the trained model in the real environment
         obs, _ = env.reset()
