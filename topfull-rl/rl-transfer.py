@@ -229,7 +229,19 @@ class CustomCheckpointCallback(BaseCallback):
         return True
     
 
-def fine_tune_model(cluster_name, apis, entry_point, app_name, fine_tune=False):
+def fine_tune_model(cluster_name, apis, entry_point, methods, fine_tune=False):
+    # Set entry_point and app_name based on the method
+    if 'social' in methods or 'compose' in methods or 'timeline' in methods:
+        app_name = "social"
+    elif 'hotel' in methods:
+        app_name = "hotel"
+    elif 'motivate' in methods:
+        app_name = "motivate"
+    elif 'alibaba' in methods or 'S_' in methods:
+        app_name = "alibaba"
+    else:
+        app_name = methods  # Default case uses the method as app_name
+
     env = RealAppEnv(app_name=app_name, apis=apis, entry_point=entry_point)
 
     checkpoint_dir = app_name + "_checkpoints"
@@ -345,5 +357,5 @@ if __name__ == "__main__":
         print(f"[ERROR] {e}")
 
     for cluster_name, apis in clusters.items():
-        fine_tune_model(cluster_name, apis, entry_point, app_name, fine_tune=True)
+        fine_tune_model(cluster_name, apis, entry_point, methods, fine_tune=True)
 
