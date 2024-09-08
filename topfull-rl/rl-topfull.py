@@ -131,7 +131,8 @@ class RealAppEnv(gym.Env):
         for api in sorted_apis:
             sustainable_load = get_sustainable_load(api)
             upper_bound = 2 * sustainable_load
-            lower_bound = sustainable_load / 10
+            # lower_bound = sustainable_load / 10
+            lower_bound = 500
 
             current_rate_limit = self.rate_limits[api]
 
