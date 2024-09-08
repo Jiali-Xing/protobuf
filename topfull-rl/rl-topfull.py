@@ -3,7 +3,7 @@ import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
 from stable_baselines3 import PPO
-import os, subprocess, re
+import os, subprocess, multiprocessing
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'ghz-results'))
@@ -120,12 +120,12 @@ class RealAppEnv(gym.Env):
 
         if action_rl > 0:
             # Highest priority API (lowest priority value)
-            # api = min(self.apis, key=lambda api: self.priority_map.get(api, float('inf')))
             sorted_apis = sorted(self.apis, key=lambda api: self.priority_map.get(api, float('inf')))
         else:
             # Lowest priority API (highest priority value)
-            # api = max(self.apis, key=lambda api: self.priority_map.get(api, 0))
             sorted_apis = sorted(self.apis, key=lambda api: -self.priority_map.get(api, float('inf')))
+        
+        print(f"[DEBUG] Sorted APIs: {sorted_apis} in the order of target for the action")
 
         # Loop through the sorted APIs and apply the action to the first valid one
         for api in sorted_apis:
@@ -136,16 +136,22 @@ class RealAppEnv(gym.Env):
             current_rate_limit = self.rate_limits[api]
 
             # If we're increasing the rate and the rate limit is below the upper bound, apply the action
-            if action_rl > 0 and current_rate_limit < upper_bound:
-                self.rate_limits[api] = min(upper_bound, current_rate_limit * (1 + action_rl))
-                print(f"[DEBUG] Increasing rate for {api}: {self.rate_limits[api]}")
-                break  # Apply the action to the first valid API and exit the loop
+            if action_rl > 0:
+                if current_rate_limit < upper_bound:
+                    self.rate_limits[api] = min(upper_bound, current_rate_limit * (1 + action_rl))
+                    print(f"[DEBUG] Increasing rate for {api}: {self.rate_limits[api]}")
+                    break  # Apply the action to the first valid API and exit the loop
+                else:
+                    print(f"[DEBUG] Rate limit for {api} is {current_rate_limit} and already at the upper bound {upper_bound}")
 
             # If we're decreasing the rate and the rate limit is above the lower bound, apply the action
-            elif action_rl < 0 and current_rate_limit > lower_bound:
-                self.rate_limits[api] = max(lower_bound, current_rate_limit * (1 + action_rl))
-                print(f"[DEBUG] Decreasing rate for {api}: {self.rate_limits[api]}")
-                break  # Apply the action to the first valid API and exit the loop
+            if action_rl < 0:
+                if current_rate_limit > lower_bound:
+                    self.rate_limits[api] = max(lower_bound, current_rate_limit * (1 + action_rl))
+                    print(f"[DEBUG] Decreasing rate for {api}: {self.rate_limits[api]}")
+                    break  # Apply the action to the first valid API and exit the loop
+                else:
+                    print(f"[DEBUG] Rate limit for {api} is {current_rate_limit} and already at the lower bound {lower_bound}")
 
         
         # SET the new rate limit on the Go server for the selected API
@@ -185,6 +191,38 @@ class RealAppEnv(gym.Env):
 
     def close(self):
         pass
+
+
+def run_rl_model_for_cluster(cluster_name, apis, entry_point, methods):
+    # Set entry_point and app_name based on the method
+    if 'social' in methods or 'compose' in methods or 'timeline' in methods:
+        app_name = "social"
+    elif 'hotel' in methods:
+        app_name = "hotel"
+    elif 'motivate' in methods:
+        app_name = "motivate"
+    elif 'alibaba' in methods or 'S_' in methods:
+        app_name = "alibaba"
+    else:
+        app_name = methods  # Default case uses the method as app_name
+
+    print(f"[DEBUG] Applying model on the {app_name} application")           
+    # Pass the 'apis' argument to the RealAppEnv class
+    env = RealAppEnv(app_name=app_name, apis=apis, entry_point=entry_point)
+    print(f"[DEBUG] Environment initialized: {env}")
+
+    # Load the final trained model
+    final_model_path = f"{app_name}_checkpoints/{app_name}_final_model.zip"
+    model = PPO.load(final_model_path, env=env)
+    print(f"[DEBUG] Model loaded: {final_model_path}")
+
+    # Apply the trained model in the real environment
+    obs, _ = env.reset()
+    for i in range(1000):
+        action, _ = model.predict(obs, deterministic=True)
+        obs, reward, done, _, _ = env.step(action)
+        if done:
+            obs, _ = env.reset()
 
 
 if __name__ == "__main__":
@@ -235,34 +273,16 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"[ERROR] {e}")
 
+    # Create a list to hold the processes
+    processes = []
+
     # Loop through each cluster and apply the RL model
     for cluster_name, apis in clusters.items():
-        # Set entry_point and app_name based on the method
-        if 'social' in methods or 'compose' in methods or 'timeline' in methods:
-            app_name = "social"
-        elif 'hotel' in methods:
-            app_name = "hotel"
-        elif 'motivate' in methods:
-            app_name = "motivate"
-        elif 'alibaba' in methods or 'S_' in methods:
-            app_name = "alibaba"
-        else:
-            app_name = methods  # Default case uses the method as app_name
+        # Create a new process for each cluster
+        p = multiprocessing.Process(target=run_rl_model_for_cluster, args=(cluster_name, apis, entry_point, methods))
+        processes.append(p)
+        p.start()
 
-        print(f"[DEBUG] Applying model on the {app_name} application")           
-        # Pass the 'apis' argument to the RealAppEnv class
-        env = RealAppEnv(app_name=app_name, apis=apis, entry_point=entry_point)
-        print(f"[DEBUG] Environment initialized: {env}")
-
-        # Load the final trained model
-        final_model_path = f"{app_name}_checkpoints/{app_name}_final_model.zip"
-        model = PPO.load(final_model_path, env=env)
-        print(f"[DEBUG] Model loaded: {final_model_path}")
-
-        # Apply the trained model in the real environment
-        obs, _ = env.reset()
-        for i in range(1000):
-            action, _ = model.predict(obs, deterministic=True)
-            obs, reward, done, _, _ = env.step(action)
-            if done:
-                obs, _ = env.reset()
+    # Wait for all processes to finish
+    for p in processes:
+        p.join()
