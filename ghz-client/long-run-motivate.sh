@@ -28,6 +28,7 @@ run_clientcall() {
     else
       METHOD="motivate-set"
     fi
+    export METHOD
     # then randomize the capacity to be around 3000
     CAPACITY=$((RANDOM % 6001 + 100))
 
