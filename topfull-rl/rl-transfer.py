@@ -78,7 +78,7 @@ class RealAppEnv(gym.Env):
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         self.current_step = 0
-        self.rate_limit = {api: 3000 for api in self.apis}  # Reset rate limit
+        self.rate_limits = {api: 1000 for api in self.apis}  # Reset rate limit
         # You can set a random seed here for the environment
         print(f"[DEBUG] Environment reset: {self.rate_limits}")
         if seed is not None:
@@ -101,7 +101,7 @@ class RealAppEnv(gym.Env):
             # Calculate the ratio of goodput to the current rate limit
 
             aggregate_goodput += total_goodput
-            aggregate_rate_limit += self.rate_limit[api]
+            aggregate_rate_limit += self.rate_limits[api]
             max_latency = max(max_latency, total_latency)
 
         goodput_ratio = aggregate_goodput / aggregate_rate_limit if aggregate_rate_limit > 0 else 0
@@ -207,7 +207,7 @@ class PrintCallback(BaseCallback):
             for i in range(env.num_envs):
                 current_env = env.envs[i]
                 print(f"Step {current_env.current_step}: Goodput = {current_env.prev_total_goodput}, Latency = {current_env.current_latencies}")
-                print(f"Rate Limit = {current_env.rate_limit}")
+                print(f"Rate Limit = {current_env.rate_limits}")
             self.print_count += 1
         return True
 
@@ -244,14 +244,14 @@ def fine_tune_model(cluster_name, apis, entry_point, methods, fine_tune=False):
     else:
         app_name = methods  # Default case uses the method as app_name
 
-    env = RealAppEnv(app_name=app_name, apis=apis, entry_point=entry_point)
+    env = RealAppEnv(app_name=app_name, apis=apis, entry_point=entry_point, penalty_coefficient=0.01)
 
     checkpoint_dir = app_name + "_checkpoints"
     os.makedirs(checkpoint_dir, exist_ok=True)
     
     # Load pre-trained or checkpointed model
     pre_trained_model = "checkpoints-19/pretrained_model_final.zip"
-    eval_env = RealAppEnv(app_name=app_name, apis=apis, entry_point=entry_point)
+    eval_env = RealAppEnv(app_name=app_name, apis=apis, entry_point=entry_point, penalty_coefficient=0.01)
     checkpoint_callback = CustomCheckpointCallback(save_freq=50, save_path=checkpoint_dir, name_prefix=app_name+"_ppo", starting_step=0)
     # Add the evaluation callback
     eval_callback = EvalCallback(
