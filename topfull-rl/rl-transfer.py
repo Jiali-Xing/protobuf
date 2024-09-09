@@ -3,7 +3,7 @@ import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
 from stable_baselines3 import PPO
-import os, subprocess, multiprocessing
+import os, subprocess, re
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'ghz-results'))
@@ -266,12 +266,41 @@ def fine_tune_model(cluster_name, apis, entry_point, methods, fine_tune=False):
 
    
     callbacks = CallbackList([checkpoint_callback, eval_callback, print_callback])
+ 
+    # Find the last checkpoint by sorting based on the linux timestamp (not the get_step_number)
+    checkpoints = sorted(
+        os.listdir(checkpoint_dir),
+        key=lambda x: os.path.getctime(os.path.join(checkpoint_dir, x))
+    )
+    
+    if checkpoints:
+        last_checkpoint = os.path.join(checkpoint_dir, checkpoints[-1])
+        print(f"Loading model from checkpoint: {last_checkpoint}")
+        model = PPO.load(last_checkpoint, env=env)
+        timestep_str = re.findall(r'\d+', last_checkpoint)
+        if timestep_str:
+            completed_timesteps = int(timestep_str[-1])  # Extracting the number of steps
+        else:
+            completed_timesteps = 0
+    else:
+        model = PPO.load(pre_trained_model, 
+                            env=env, 
+                            tensorboard_log=app_name + "_logs",
+                            verbose=1)
+        completed_timesteps = 0
+        print("Loaded pre-trained model")
+    # Calculate the remaining timesteps to train
+    total_timesteps = 50 * 800  # Or however many total timesteps you want to train
+    remaining_timesteps = total_timesteps - completed_timesteps
 
-    if fine_tune:
+    if remaining_timesteps > 0:
+        # Train the model with the remaining timesteps
         print(f"Fine-tuning the model {pre_trained_model}")
         model = PPO.load(pre_trained_model, env=env, tensorboard_log=app_name + "_logs", verbose=1)
-        model.learn(total_timesteps=800 * 50, callback=callbacks)
+        model.learn(total_timesteps=remaining_timesteps, callback=callbacks)
         model.save(os.path.join(checkpoint_dir, app_name + "_fine_tuned_model"))
+    else:
+        print("Training is already complete.")
 
     print(f"Model saved at {checkpoint_dir}/{app_name}_fine_tuned_model")
 
