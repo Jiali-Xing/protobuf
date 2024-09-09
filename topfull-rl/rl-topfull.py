@@ -77,7 +77,7 @@ class RealAppEnv(gym.Env):
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         self.current_step = 0
-        self.rate_limit = {api: 3000 for api in self.apis}  # Reset rate limit
+        self.rate_limits = {api: 1000 for api in self.apis}  # Reset rate limit
         # You can set a random seed here for the environment
         print(f"[DEBUG] Environment reset: {self.rate_limits}")
         if seed is not None:
@@ -101,7 +101,7 @@ class RealAppEnv(gym.Env):
             print(f"[DEBUG] Metrics for {api}: Goodput={total_goodput}, Latency={total_latency}")
 
             aggregate_goodput += total_goodput
-            aggregate_rate_limit += self.rate_limit[api]
+            aggregate_rate_limit += self.rate_limits[api]
             max_latency = max(max_latency, total_latency)
 
         goodput_ratio = aggregate_goodput / aggregate_rate_limit if aggregate_rate_limit > 0 else 0
