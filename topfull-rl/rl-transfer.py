@@ -213,17 +213,19 @@ class PrintCallback(BaseCallback):
 
 
 class CustomCheckpointCallback(BaseCallback):
-    def __init__(self, save_freq, save_path, name_prefix='', verbose=1):
+    def __init__(self, save_freq, save_path, name_prefix='', starting_step=0, verbose=1):
         super(CustomCheckpointCallback, self).__init__(verbose)
         self.save_freq = save_freq
         self.save_path = save_path
         self.name_prefix = name_prefix
+        self.starting_step = starting_step
 
     def _on_step(self) -> bool:
-        if self.n_calls % self.save_freq == 0:
-            current_step = self.num_timesteps  # This is the total number of timesteps so far
+        current_step = self.num_timesteps + self.starting_step  # Use starting_step to offset the counter
+        if current_step % self.save_freq == 0:
             save_path = os.path.join(self.save_path, f"{self.name_prefix}_{current_step}_steps.zip")
             self.model.save(save_path)
+
             if self.verbose > 0:
                 print(f"Saved model checkpoint at step {current_step} to {save_path}")
         return True
@@ -250,7 +252,7 @@ def fine_tune_model(cluster_name, apis, entry_point, methods, fine_tune=False):
     # Load pre-trained or checkpointed model
     pre_trained_model = "checkpoints-19/pretrained_model_final.zip"
     eval_env = RealAppEnv(app_name=app_name, apis=apis, entry_point=entry_point)
-    checkpoint_callback = CustomCheckpointCallback(save_freq=50, save_path=checkpoint_dir, name_prefix=app_name+"_ppo")
+    checkpoint_callback = CustomCheckpointCallback(save_freq=50, save_path=checkpoint_dir, name_prefix=app_name+"_ppo", starting_step=0)
     # Add the evaluation callback
     eval_callback = EvalCallback(
         eval_env, 
@@ -264,9 +266,6 @@ def fine_tune_model(cluster_name, apis, entry_point, methods, fine_tune=False):
 
     print_callback = PrintCallback(check_freq=20, max_prints=200)
 
-   
-    callbacks = CallbackList([checkpoint_callback, eval_callback, print_callback])
- 
     # Find the last checkpoint by sorting based on the linux timestamp (not the get_step_number)
     checkpoints = sorted(
         os.listdir(checkpoint_dir),
@@ -289,10 +288,18 @@ def fine_tune_model(cluster_name, apis, entry_point, methods, fine_tune=False):
                             verbose=1)
         completed_timesteps = 0
         print("Loaded pre-trained model")
+    
+    # Update starting_step in the checkpoint callback
+    checkpoint_callback.starting_step = completed_timesteps
+    print(f"Starting fine-tuning from step {completed_timesteps}")
+    print("-----------------------------------")
+
     # Calculate the remaining timesteps to train
     total_timesteps = 50 * 800  # Or however many total timesteps you want to train
     remaining_timesteps = total_timesteps - completed_timesteps
 
+    callbacks = CallbackList([checkpoint_callback, eval_callback, print_callback])
+ 
     if remaining_timesteps > 0:
         # Train the model with the remaining timesteps
         print(f"Fine-tuning the model {pre_trained_model}")
