@@ -133,7 +133,7 @@ class RealAppEnv(gym.Env):
             sustainable_load = get_sustainable_load(api)
             upper_bound = 2 * sustainable_load
             # lower_bound = sustainable_load / 10
-            lower_bound = 100
+            lower_bound = 500
 
             current_rate_limit = self.rate_limits[api]
 
@@ -210,7 +210,7 @@ def run_rl_model_for_cluster(cluster_name, apis, entry_point, methods):
 
     print(f"[DEBUG] Applying model on the {app_name} application")           
     # Pass the 'apis' argument to the RealAppEnv class
-    env = RealAppEnv(app_name=app_name, apis=apis, entry_point=entry_point)
+    env = RealAppEnv(app_name=app_name, apis=apis, entry_point=entry_point, penalty_coefficient=0.01)
     print(f"[DEBUG] Environment initialized: {env}")
 
     # Load the final trained model
