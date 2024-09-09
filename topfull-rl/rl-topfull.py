@@ -98,6 +98,7 @@ class RealAppEnv(gym.Env):
             total_latency = metrics["latency"]
             total_goodput = metrics["goodput"]
             # Calculate the ratio of goodput to the current rate limit
+            print(f"[DEBUG] Metrics for {api}: Goodput={total_goodput}, Latency={total_latency}")
 
             aggregate_goodput += total_goodput
             aggregate_rate_limit += self.rate_limit[api]
@@ -132,7 +133,7 @@ class RealAppEnv(gym.Env):
             sustainable_load = get_sustainable_load(api)
             upper_bound = 2 * sustainable_load
             # lower_bound = sustainable_load / 10
-            lower_bound = 500
+            lower_bound = 100
 
             current_rate_limit = self.rate_limits[api]
 
