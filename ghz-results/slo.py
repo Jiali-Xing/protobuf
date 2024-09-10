@@ -11,7 +11,7 @@ def get_sustainable_load(method):
         "user-timeline": 10000,
         "home-timeline": 10000,
         "S_102000854": 6000,
-        "S_149998854": 150,
+        "S_149998854": 10000,
         "S_161142529": 6000,
         # "S_102000854": 4000,
         # "S_149998854": 3000,
@@ -76,9 +76,9 @@ def get_slo(method, tight=False, all_methods=False):
         "compose": 18, # under 3000 req/s
         "user-timeline": 4, # under 4000 req/s
         "home-timeline": 4, # under 4000 req/s
-        "S_102000854": 43,
-        "S_149998854": 180,
-        "S_161142529": 71,
+        "S_102000854": 80,
+        "S_149998854": 120,
+        "S_161142529": 85,
         "motivate-set": 50,
         "motivate-get": 8,
         "both-motivate": 26,
