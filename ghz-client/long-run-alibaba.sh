@@ -1,4 +1,3 @@
-
 # query the service for the IP address from user input
 # from stdin
 echo "Enter the IP address and port of the service you want to query: "
@@ -18,19 +17,20 @@ fi
 # Export LOAD_INCREASE environment variable
 export LOAD_INCREASE=true
 
+# Define an array of methods for the Alibaba services
+methods=("S_102000854" "S_149998854" "S_161142529")
+
 # Function to run clientcall with randomized capacity
 run_clientcall() {
     # Generate a random capacity between 100 and 2000
     # first, randomize the method to be either `motivate-get` or `motivate-set`
-    METHOD=$((RANDOM % 2))
-    if [ $METHOD -eq 0 ]; then
-      METHOD="motivate-get"
-    else
-      METHOD="motivate-set"
-    fi
+
+    # Randomly select one of the Alibaba methods
+    METHOD=${methods[$RANDOM % ${#methods[@]}]}
     export METHOD
-    # then randomize the capacity to be around 3000
-    CAPACITY=$((RANDOM % 1001 + 100))
+
+    # then randomize the capacity to be around 4000
+    CAPACITY=$((RANDOM % 7001 + 500))
 
     # Print the capacity value
     echo "Capacity: $CAPACITY"
@@ -50,5 +50,6 @@ while true; do
     sleep 4
     run_clientcall
     # clean disk space, empty the ../ghz-results/ folder
-    rm -rf ../ghz-results/*
+    rm -rf ../ghz-results/*json
+    rm -rf ../ghz-results/*output
 done
