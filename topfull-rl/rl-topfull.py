@@ -214,7 +214,10 @@ def run_rl_model_for_cluster(cluster_name, apis, entry_point, methods):
     print(f"[DEBUG] Environment initialized: {env}")
 
     # Load the final trained model
-    final_model_path = f"{app_name}_checkpoints/{app_name}_final_model.zip"
+    if app_name == "alibaba":
+        final_model_path = f"{app_name}_checkpoints/{cluster_name}/{app_name}_fine_tuned_model.zip"
+    else:
+        final_model_path = f"{app_name}_checkpoints/{app_name}_final_model.zip"
     model = PPO.load(final_model_path, env=env)
     print(f"[DEBUG] Model loaded: {final_model_path}")
 
