@@ -3,7 +3,7 @@ import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
 from stable_baselines3 import PPO
-import os, subprocess, re
+import os, subprocess, re, multiprocessing
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'ghz-results'))
@@ -311,6 +311,44 @@ def fine_tune_model(cluster_name, apis, entry_point, methods, fine_tune=False):
 
     print(f"Model saved at {checkpoint_dir}/{app_name}_fine_tuned_model")
 
+def fine_tune_alibaba_model(cluster_name, apis, entry_point, methods):
+    app_name = "alibaba"
+    env = RealAppEnv(app_name=app_name, apis=apis, entry_point=entry_point, penalty_coefficient=0.01)
+    checkpoint_dir = f"{app_name}_checkpoints/{cluster_name}"  # Process-specific directory
+    os.makedirs(checkpoint_dir, exist_ok=True)
+    
+    # Load pre-trained or checkpointed model
+    pre_trained_model = "checkpoints-19/pretrained_model_final.zip"
+    eval_env = RealAppEnv(app_name=app_name, apis=apis, entry_point=entry_point, penalty_coefficient=0.01)
+    checkpoint_callback = CustomCheckpointCallback(save_freq=50, save_path=checkpoint_dir, name_prefix=app_name+"_ppo", starting_step=0)
+    eval_callback = EvalCallback(eval_env, best_model_save_path=checkpoint_dir, log_path=app_name + "_logs", eval_freq=10000, n_eval_episodes=5, deterministic=True, render=False)
+
+    print_callback = PrintCallback(check_freq=20, max_prints=200)
+
+    # Find last checkpoint
+    checkpoints = sorted(os.listdir(checkpoint_dir), key=lambda x: os.path.getctime(os.path.join(checkpoint_dir, x)))
+    if checkpoints:
+        last_checkpoint = os.path.join(checkpoint_dir, checkpoints[-1])
+        print(f"Loading model from checkpoint: {last_checkpoint}")
+        model = PPO.load(last_checkpoint, env=env)
+        timestep_str = re.findall(r'\d+', last_checkpoint)
+        completed_timesteps = int(timestep_str[-1]) if timestep_str else 0
+    else:
+        model = PPO.load(pre_trained_model, env=env, tensorboard_log=app_name + "_logs", verbose=1)
+        completed_timesteps = 0
+
+    checkpoint_callback.starting_step = completed_timesteps
+    total_timesteps = 50 * 800
+    remaining_timesteps = total_timesteps - completed_timesteps
+
+    callbacks = CallbackList([checkpoint_callback, eval_callback, print_callback])
+    if remaining_timesteps > 0:
+        model.learn(total_timesteps=remaining_timesteps, callback=callbacks)
+        model.save(os.path.join(checkpoint_dir, app_name + "_fine_tuned_model"))
+    else:
+        print("Training is already complete.")
+    print(f"Model saved at {checkpoint_dir}/{app_name}_fine_tuned_model")
+
 
 def run_rl_model_for_cluster(cluster_name, apis, entry_point, methods):
     # Set entry_point and app_name based on the method
@@ -392,6 +430,20 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"[ERROR] {e}")
 
+    # Create a list to hold processes
+    processes = []
+
     for cluster_name, apis in clusters.items():
-        fine_tune_model(cluster_name, apis, entry_point, methods, fine_tune=True)
+        if 'alibaba' in methods:
+            p = multiprocessing.Process(target=fine_tune_alibaba_model, args=(cluster_name, apis, entry_point, methods))
+            processes.append(p)
+            p.start()
+        else:
+            fine_tune_model(cluster_name, apis, entry_point, methods, fine_tune=True)
+
+    # Wait for all processes to complete
+    for p in processes:
+        p.join()
+
+    print("All fine-tuning processes completed.")
 
