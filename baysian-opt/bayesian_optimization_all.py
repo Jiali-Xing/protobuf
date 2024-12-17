@@ -1,14 +1,8 @@
-# In this file, we loop over 3 parameters: priceUpdateRate, delayTarget, and clientTimeout, as param1 2 3
-# run the following bash command:
-    # bash go run ./one-service.go A 50051 param1 param2 param3 & > ./server.output
-    # cd /home/ying/Sync/Git/protobuf/ghz-client
-    # go run ./main.go 2000 > ./ghz.output
-    # cd /home/ying/Sync/Git/service-app/services/protobuf-grpc
-    # bash kill_services.sh
+# Jiali 
+# The Bayesian Optimization is used to optimize the parameters for the overload experiments
+# The parameters are optimized for the goodput - tail latency
 
-# with the parameters, and calculate the average goodput as a target,
-# This process is repeated and the parameters are updated using Bayesian Optimization.
- 
+
 import subprocess
 from bayes_opt import BayesianOptimization
 
@@ -28,35 +22,25 @@ import datetime
 import sklearn
 from collections import defaultdict
 
-# import the ~/Sync/Git/protobuf/ghz-results/visualize.py file and run its function `analyze_data` 
-# with the optimal results from the Bayesian Optimization
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'ghz-results'))
 from visualize import analyze_data
 from slo import get_slo, get_sustainable_load
 from utils import convert_to_dataframe, calculate_goodput_mean, calculate_goodput_from_file, read_tail_latency_from_file, roundDownParams, save_iteration_details, parse_configurations
 
-# throughput_time_interval = '50ms'
-# latency_window_size = '200ms'  # Define the window size as 100 milliseconds
-# filename = '/home/ying/Sync/Git/protobuf/ghz-results/charon_stepup_nclients_1000.json'
 rerun = True
 quantile = 0.1
 
-# # Define global variables at the module level
-# method = None
-# SLO = None
-# tightSLO = False
-# skipOptimize = False
 
 param_ranges = [(50, 500), (1000, 10000), (1, 20), ]  # (priceUpdateRate, delayTarget) 
   
 configDict = {
-    'charon': {
+    'rajomon': {
         'price_update_rate': 5000,  # Assuming numeric values for simplicity
         'token_update_rate': 5000,  # Assuming numeric values for simplicity
         'latency_threshold': 5000,
         'price_step': 10,
         'price_strategy': 'linear',
-        'lazy_update': 'true',
+        'lazy_update': 'false',
         'rate_limiting': 'true',
         'only_frontend': 'false',
     },
@@ -93,7 +77,7 @@ configDict = {
 
 def generate_output_filename(interceptor_type, method, capacity):
     directory = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
-    # directory = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/charon-linear-price/')
+    # directory = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/rajomon-linear-price/')
     outputFile = f"social-{method}-control-{interceptor_type}-parallel-capacity-{capacity}-*.json.output"
     # if method == "all-methods-social" or method == "compose" or method == "home-timeline" or method == "user-timeline" or method == "all-methods-hotel":
     #     outputFile = f"social-{method}-control-{interceptor_type}-parallel-capacity-{capacity}-01*.json.output"
@@ -125,12 +109,14 @@ def find_method_file_sets(directory, methods, capacity):
 
 def check_previous_run_exists(interceptor_type, method, capacity, combined_params, existing_files=None):
     prev_run_folder = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
-    # prev_run_folder = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/charon-linear-price/')
+    # prev_run_folder = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/rajomon-linear-price/')
     if method == "all-methods-social":
         sub_methods = ["user-timeline", "home-timeline", "compose"]
     if method == "all-methods-hotel":
         sub_methods = ["hotels-http", "reservation-http", "user-http", "recommendations-http"]
-    if method == "all-methods-social" or method == "all-methods-hotel":
+    if method == "all-alibaba":
+        sub_methods = ["S_102000854", "S_149998854", "S_161142529"]
+    if method == "all-methods-social" or method == "all-methods-hotel" or method == "all-alibaba":
         # return a list of files that match the parameters
         filesets = find_method_file_sets(prev_run_folder, sub_methods, capacity)
         # append the file to the list only when all sub-methods have the same timestamp
@@ -146,9 +132,9 @@ def check_previous_run_exists(interceptor_type, method, capacity, combined_param
                 with open(files[0], 'r') as file:
                     content = file.read()
 
-                    if 'Charon Configurations:' in content:
+                    if 'Rajomon Configurations:' in content:
                         # Extract the configurations string from the file
-                        start = content.find('Charon Configurations:') + len('Charon Configurations:')
+                        start = content.find('Rajomon Configurations:') + len('Rajomon Configurations:')
                         end = content.find(']', start) + 1
                         file_config_str = content[start:end]
                         file_config_dict = parse_configurations(file_config_str)
@@ -180,9 +166,9 @@ def check_previous_run_exists(interceptor_type, method, capacity, combined_param
             with open(filename, 'r') as file:
                 content = file.read()
 
-                if 'Charon Configurations:' in content:
+                if 'Rajomon Configurations:' in content:
                     # Extract the configurations string from the file
-                    start = content.find('Charon Configurations:') + len('Charon Configurations:')
+                    start = content.find('Rajomon Configurations:') + len('Rajomon Configurations:')
                     end = content.find(']', start) + 1
                     file_config_str = content[start:end]
                     file_config_dict = parse_configurations(file_config_str)
@@ -247,7 +233,7 @@ def run_experiments(interceptor_type, load, previous_run, **params):
     # load = np.random.randint(int(capacity.split('-')[1]), 10000)
     # Full command to source envs.sh and run the experiment
     # full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && {env_vars_command} ~/Sync/Git/service-app/cloudlab/scripts/bayesian_experiments.sh -c {capacity} -s parallel --{interceptor_type}'"
-    full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c {load} -s parallel --{interceptor_type}'"
+    full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/overload-experiments.sh -c {load} -s parallel --{interceptor_type}'"
 
     # Set environment variables in Python
     env = os.environ.copy()
@@ -255,10 +241,12 @@ def run_experiments(interceptor_type, load, previous_run, **params):
         env[key] = str(value)
     # add the method to env
     env['METHOD'] = method
-
-    load_value = get_sustainable_load(method)
-    warmup_load = int(load_value * 0.8)
-    env['WARMUP_LOAD'] = str(warmup_load)
+    if method == "all-alibaba":
+        env['METHOD'] = "all-alibaba"
+    else:
+        load_value = get_sustainable_load(method)
+        warmup_load = int(load_value * 0.8)
+        env['WARMUP_LOAD'] = str(warmup_load)
     # Run the experiment script
     experiment_process = subprocess.Popen(full_command, shell=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = experiment_process.communicate()
@@ -279,6 +267,12 @@ def run_experiments(interceptor_type, load, previous_run, **params):
         resultf = []
         # append all 3 files one by one
         for interface in ["hotels-http", "reservation-http", "user-http", "recommendations-http"]:
+            resultf.append(get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/ghz-results/'), pattern=f"social-{interface}-control-{interceptor_type}-parallel-capacity-{load}-*.json"))
+    elif method == "all-alibaba":
+        # same for alibaba, with interface in ["S_102000854", "S_149998854", "S_161142529"]
+        resultf = []
+        # append all 3 files one by one
+        for interface in ["S_102000854", "S_149998854", "S_161142529"]:
             resultf.append(get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/ghz-results/'), pattern=f"social-{interface}-control-{interceptor_type}-parallel-capacity-{load}-*.json"))
 
     return resultf
@@ -304,7 +298,7 @@ def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodTo
 
     # Full command to source envs.sh and run the experiment
     # full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && {env_vars_command} ~/Sync/Git/service-app/cloudlab/scripts/bayesian_experiments.sh -c {capacity} -s parallel --{interceptor_type}'"
-    full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c {capact} -s parallel --{interceptor_type}'" if interceptor_type != 'plain' else f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c {capact} -s parallel'"
+    full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/overload-experiments.sh -c {capact} -s parallel --{interceptor_type}'" if interceptor_type != 'plain' else f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/overload-experiments.sh -c {capact} -s parallel'"
 
     # Set environment variables in Python
     env = os.environ.copy()
@@ -393,27 +387,6 @@ def objective(interceptor_type, **params):
     return np.mean(obj) / maximum_goodput
 
 
-# def plot_opt(priceUpdateRate, clientTimeout, delayTarget, guidePrice, priceStep):
-#     # Convert the parameters to int64
-#     priceUpdateRate = int(priceUpdateRate)
-#     # priceUpdateRate = 100
-#     delayTarget = int(delayTarget)
-#     guidePrice = int(guidePrice)
-#     # clientTimeout = int(clientTimeout)
-#     clientTimeout = int(clientTimeout)
-#     priceStep = int(priceStep)
-
-#     # Run the experiments
-#     run_experiments(priceUpdateRate, delayTarget, priceStep, guidePrice, clientTimeout)
-
-#     analyze_data(filename)
-
-
-# # Define the objective function to optimize
-# def objective_wrapper(priceUpdateRate, delayTarget, priceStep,):
-#     return objective(priceUpdateRate, 0, delayTarget, -1, priceStep)
-
-
 def plot_opt_wrapper(priceUpdateRate, delayTarget, priceStep,):
     return plot_opt(priceUpdateRate, 0, delayTarget, -1, priceStep)
 
@@ -426,9 +399,9 @@ def get_latest_file(path, pattern="*.json"):
     latest_file = max(list_of_files, key=os.path.getmtime)
     return latest_file
 
-def objective_charon(price_update_rate, token_update_rate, latency_threshold, price_step):
-    # return objective('charon', price_update_rate, latency_threshold, price_step)
-    return objective('charon', price_update_rate=price_update_rate, token_update_rate=token_update_rate, latency_threshold=latency_threshold, price_step=price_step)
+def objective_rajomon(price_update_rate, token_update_rate, latency_threshold, price_step):
+    # return objective('rajomon', price_update_rate, latency_threshold, price_step)
+    return objective('rajomon', price_update_rate=price_update_rate, token_update_rate=token_update_rate, latency_threshold=latency_threshold, price_step=price_step)
 
 
 def objective_breakwater(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration, breakwater_rtt):
@@ -458,17 +431,17 @@ def parse_file(file_path):
     method = re.search(r'METHOD: (\w+)', content)
     intercept = re.search(r'INTERCEPT: (\w+)', content)
 
-    # Extracting Charon Configurations
-    charon_config_match = re.search(r'Charon Configurations:\s*\[(.*?)\]', content, re.DOTALL)
-    if charon_config_match:
-        charon_config_str = charon_config_match.group(1)
-        charon_config_pairs = charon_config_str.split('} {')
-        charon_config = {item.split(' ')[0]: item.split(' ')[1] for item in charon_config_pairs}
+    # Extracting Rajomon Configurations
+    rajomon_config_match = re.search(r'Rajomon Configurations:\s*\[(.*?)\]', content, re.DOTALL)
+    if rajomon_config_match:
+        rajomon_config_str = rajomon_config_match.group(1)
+        rajomon_config_pairs = rajomon_config_str.split('} {')
+        rajomon_config = {item.split(' ')[0]: item.split(' ')[1] for item in rajomon_config_pairs}
 
     return {
         'METHOD': method.group(1) if method else None,
         'INTERCEPT': intercept.group(1) if intercept else None,
-        'Charon_Configurations': charon_config
+        'Rajomon_Configurations': rajomon_config
     }
 
 
@@ -515,7 +488,7 @@ def load_optimal_parameters(method, control):
 
 def main():
     
-    pbounds_charon = {
+    pbounds_rajomon = {
         # the range above is too large... I will use the following range based on the empirical results
         'price_update_rate': (10000, 20000),
         'token_update_rate': (80000, 120000),
@@ -555,11 +528,11 @@ def main():
     if 'hotel' in method:
         pbounds_dagor['dagor_queuing_threshold'] = (500, 2000)
         pbounds_dagor['dagor_admission_level_update_interval'] = (25000, 35000)
-        
-        pbounds_charon['latency_threshold'] = (300, 900)
-        pbounds_charon['token_update_rate'] = (80000, 120000)
-        pbounds_charon['price_update_rate'] = (9000, 16000)
-        pbounds_charon['price_step'] = (100, 250)
+
+        pbounds_rajomon['latency_threshold'] = (200, 900)
+        pbounds_rajomon['token_update_rate'] = (80000, 120000)
+        pbounds_rajomon['price_update_rate'] = (6000, 9000)
+        pbounds_rajomon['price_step'] = (100, 200)
 
         # pbounds_breakwater['breakwater_slo'] = (500, 2000)
         # pbounds_breakwater['breakwater_a'] = (0.001, 1)
@@ -589,22 +562,12 @@ def main():
             'breakwater_initial_credit': (600, 700),  # Adding around 685
             'breakwaterd_initial_credit': (900, 1000)  # Assuming similar range as previous credit
         }
-        # pbounds_breakwaterd['breakwaterd_slo'] = (12000, 18000)
-        # pbounds_breakwaterd['breakwater_slo'] = (30000, 40000)
-        # pbounds_breakwaterd['breakwater_client_expiration'] = (200, 800)
-        # pbounds_breakwaterd['breakwaterd_client_expiration'] = (1000, 2000)
-        # pbounds_breakwaterd['breakwater_a'] = (2, 5)
-        # pbounds_breakwaterd['breakwaterd_a'] = (5, 10)
-        # pbounds_breakwaterd['breakwater_b'] = (1, 2)
-        # pbounds_breakwaterd['breakwaterd_b'] = (1, 2)
-        # pbounds_breakwaterd['breakwater_rtt'] = (12000, 16000)
-        # pbounds_breakwaterd['breakwaterd_rtt'] = (7000, 10000)
 
     if method == 'compose':
-        pbounds_charon['latency_threshold'] = (200, 600)
-        pbounds_charon['price_update_rate'] = (3000, 5000)
-        pbounds_charon['price_step'] = (50, 150)
-        pbounds_charon['token_update_rate'] = (60000, 80000)
+        pbounds_rajomon['latency_threshold'] = (200, 300)
+        pbounds_rajomon['price_update_rate'] = (3000, 5500)
+        pbounds_rajomon['price_step'] = (100, 160)
+        pbounds_rajomon['token_update_rate'] = (90000, 120000)
 
         pbounds_dagor['dagor_queuing_threshold'] = (1000, 2000)
         pbounds_dagor['dagor_alpha'] = (0, 2)
@@ -613,12 +576,12 @@ def main():
         pbounds_dagor['dagor_umax'] = (10, 20)
 
         pbounds_breakwater = {
-            'breakwater_slo': (2000, 8000),  # Adjusting around 1382us
-            'breakwater_client_expiration': (400, 800),  # Adjusting around 592us
-            'breakwater_a': (0.0001, 1),  # Adjusting around 0.001
-            'breakwater_b': (0.4, 4),  # Adjusting around 0.5
-            'breakwater_initial_credit': (300, 700),  # Adding around 685
-            'breakwater_rtt': (1200, 2000)  # Adjusting around 1853us
+            'breakwater_slo': (8000, 12000),  # Adjusting around 1382us
+            'breakwater_client_expiration': (300, 1000),  # Adjusting around 592us
+            'breakwater_a': (0.00001, 0.1),  # Adjusting around 0.001
+            'breakwater_b': (1, 20),  # Adjusting around 0.5
+            'breakwater_initial_credit': (200, 800),  # Adding around 685
+            'breakwater_rtt': (800, 2000)  # Adjusting around 1853us
         }
         # pbounds_breakwater['breakwater_slo'] = (100, 2000)
         # pbounds_breakwater['breakwater_rtt'] = (1000, 4000)
@@ -626,40 +589,94 @@ def main():
         # pbounds_breakwater['breakwater_client_expiration'] = (100, 1000)
 
         pbounds_breakwaterd = {
-            'breakwaterd_slo': (1000, 8000),  # Adjusting around 1382us
-            'breakwater_slo': (1000, 8000),  # Adjusting around 1382us
-            'breakwater_client_expiration': (400, 800),  # Adjusting around 592us
-            'breakwaterd_client_expiration': (400, 800),  # Adjusting around 592us
+            'breakwaterd_slo': (8000, 14000),  # Adjusting around 1382us
+            'breakwater_slo': (6000, 12000),  # Adjusting around 1382us
+            'breakwater_client_expiration': (100, 2000),  # Adjusting around 592us
+            'breakwaterd_client_expiration': (100, 2000),  # Adjusting around 592us
             'breakwater_a': (0.0001, 0.2),  # Adjusting around 0.001
-            'breakwaterd_a': (2, 5),  # Keeping same as before
-            'breakwater_b': (0.4, 2),  # Adjusting around 0.5
-            'breakwaterd_b': (0.1, 2),  # Keeping same as before
-            'breakwater_rtt': (1500, 2000),  # Adjusting around 1853us
-            'breakwaterd_rtt': (7000, 10000),  # Keeping same as before
-            'breakwater_initial_credit': (600, 700),  # Adding around 685
-            'breakwaterd_initial_credit': (900, 1000)  # Assuming similar range as previous credit
+            'breakwaterd_a': (25, 40),  # Keeping same as before
+            'breakwater_b': (0.001, 10),  # Adjusting around 0.5
+            'breakwaterd_b': (1, 10),  # Keeping same as before
+            'breakwater_rtt': (100, 800),  # Adjusting around 1853us
+            'breakwaterd_rtt': (1000, 3000),  # Keeping same as before
+            'breakwater_initial_credit': (1000, 2500),  # Adding around 685
+            'breakwaterd_initial_credit': (100, 1000)  # Assuming similar range as previous credit
         }
-        # pbounds_breakwaterd['breakwaterd_slo'] = (5000, 10000)
-        # pbounds_breakwaterd['breakwater_slo'] = (8000, 12000)
-        # pbounds_breakwaterd['breakwater_client_expiration'] = (100, 150)
-        # pbounds_breakwaterd['breakwaterd_client_expiration'] = (1000, 2000)
-        # pbounds_breakwaterd['breakwaterd_a'] = (5, 50)
-        # pbounds_breakwaterd['breakwater_rtt'] = (800, 1200)
-        # pbounds_breakwaterd['breakwaterd_rtt'] = (400, 700)
 
     if 'S_16' in method:
-        pbounds_charon['latency_threshold'] = (100, 30000)
+        pbounds_rajomon['latency_threshold'] = (100, 30000)
         pbounds_breakwater['breakwater_slo'] = (100, 4000)
         pbounds_breakwater['breakwater_a'] = (0, 3)
         pbounds_breakwater['breakwater_b'] = (0, 3)
         pbounds_breakwater['breakwater_rtt'] = (1000, 5000)
-    if 'S_14' in method:
+    if 'S_14' in method or method == 'all-alibaba':
         # pbounds_breakwater['breakwater_a'] = (0, 30)
-        pbounds_charon['latency_threshold'] = (100, 40000)
-        pbounds_charon['price_update_rate'] = (100, 20000)
-        pbounds_charon['token_update_rate'] = (10000, 90000)
-        pbounds_charon['price_step'] = (1, 100)
+        pbounds_rajomon['latency_threshold'] = (50, 6000)
+        pbounds_rajomon['price_update_rate'] = (10, 5000)
+        pbounds_rajomon['token_update_rate'] = (30000, 60000)
+        pbounds_rajomon['price_step'] = (100, 700)
+        
+        pbounds_breakwater = {
+            'breakwater_slo': (2000, 3000),  # Around 2418us
+            'breakwater_a': (1.5, 2.5),  # Around 1.85
+            'breakwater_b': (1.5, 2.5),  # Around 1.99
+            'breakwater_initial_credit': (200, 350),  # Around 279
+            'breakwater_client_expiration': (1500, 2500),  # Around 2313us
+            'breakwater_rtt': (4000, 7000)  # Around 5913us
+        }
 
+        pbounds_breakwaterd = {
+            'breakwater_slo': (3000, 45000),  # Around 3500us
+            'breakwater_a': (0.1, 2.5),  # Around 1.8
+            'breakwater_b': (0.1, 1.5),  # Around 0.9
+            'breakwater_initial_credit': (50, 150),  # Around 80
+            'breakwater_client_expiration': (2000, 4000),  # Around 3000us
+            'breakwater_rtt': (5000, 9000),  # Around 7000us
+            'breakwaterd_slo': (50000, 210000),  # Around 180000us
+            'breakwaterd_a': (1, 140),  # Around 120
+            'breakwaterd_b': (0.05, 0.1),  # Around 0.08
+            'breakwaterd_initial_credit': (50, 150),  # Around 80
+            'breakwaterd_client_expiration': (80000, 100000),  # Around 90000us
+            'breakwaterd_rtt': (10000, 14000)  # Around 12000us
+        }
+        pbounds_dagor = {
+            'dagor_queuing_threshold': (4000, 10000),  # Around 8000us
+            'dagor_alpha': (0.05, 1),  # Around 0.9
+            'dagor_beta': (1, 8),  # Around 2.01
+            'dagor_admission_level_update_interval': (1000, 5000),  # Around 3806us
+            'dagor_umax': (7, 15)  # Around 9
+        }
+
+    if 'motivate' in method:
+        pbounds_breakwater = {
+            'breakwater_slo': (2000, 8000),  # 圍繞5724us
+            'breakwater_a': (0.01, 1.5),      # 圍繞0.869
+            'breakwater_b': (0.01, 2),      # 圍繞0.506
+            'breakwater_initial_credit': (200, 300),  # 圍繞255
+            'breakwater_client_expiration': (300, 600),  # 圍繞484us
+            'breakwater_rtt': (6000, 10000),  # 圍繞8986us
+        }
+        pbounds_breakwaterd = {
+            'breakwater_slo': (50000, 70000),  # 圍繞60000us
+            'breakwater_a': (7.0, 12.0),       # 圍繞8.1
+            'breakwater_b': (7.0, 12.0),       # 圍繞9.26
+            'breakwater_initial_credit': (3000, 5000),  # 圍繞4000
+            'breakwater_client_expiration': (4000, 8000),  # 圍繞5385us
+            'breakwater_rtt': (18000, 25000),  # 圍繞20000us
+            'breakwaterd_slo': (15000, 25000),  # 圍繞20080us
+            'breakwaterd_a': (9.0, 13.0),      # 圍繞10.57
+            'breakwaterd_b': (5.0, 10.0),      # 圍繞6.16
+            'breakwaterd_initial_credit': (1200, 1800),  # 圍繞1509
+            'breakwaterd_client_expiration': (40000, 60000),  # 圍繞45801us
+            'breakwaterd_rtt': (15000, 25000)  # 圍繞18000us
+        }
+        pbounds_dagor = {
+            'dagor_queuing_threshold': (3000, 6000),  # 圍繞4051us
+            'dagor_alpha': (0.5, 1.0),  # 圍繞0.75
+            'dagor_beta': (1.0, 2.0),  # 圍繞1.12
+            'dagor_admission_level_update_interval': (4000, 6000),  # 圍繞4949us
+            'dagor_umax': (10, 20)  # 圍繞15
+        }
 
 
     # run the experiments with the interceptors for all capacities
@@ -674,7 +691,7 @@ def main():
     print("method:", method)
     
     optimization_config = {
-        'charon': (optimizeCharon, objective_charon, pbounds_charon, 'charon'),
+        'rajomon': (optimizeRajomon, objective_rajomon, pbounds_rajomon, 'rajomon'),
         'breakwater': (optimizeBreakwater, objective_breakwater, pbounds_breakwater, 'breakwater'),
         'breakwaterd': (optimizeBreakwaterD, objective_breakwaterd, pbounds_breakwaterd, 'breakwaterd'),
         'dagor': (optimizeDagor, objective_dagor, pbounds_dagor, 'dagor')
@@ -772,7 +789,7 @@ if __name__ == '__main__':
     # add a new argument to specify the scheme to use for optimization, default is True for all optimization schemes
     parser.add_argument('--breakwater', action='store_true', default=False, help='Optimize Breakwater')
     parser.add_argument('--breakwaterd', action='store_true', default=False, help='Optimize BreakwaterD')
-    parser.add_argument('--charon', action='store_true', default=False, help='Optimize Charon')
+    parser.add_argument('--rajomon', action='store_true', default=False, help='Optimize Rajomon')
     parser.add_argument('--dagor', action='store_true', default=False, help='Optimize Dagor')
     # capacity is gpt1 by default, unless otherwise specified
     parser.add_argument('--tune', type=str, default='gpt1', help='Specify the weight for tuning')
@@ -782,16 +799,16 @@ if __name__ == '__main__':
 
     global method, tightSLO, skipOptimize
 
-    global optimizeBreakwater, optimizeBreakwaterD, optimizeCharon, optimizeDagor
+    global optimizeBreakwater, optimizeBreakwaterD, optimizeRajomon, optimizeDagor
     
     # if specified, only optimize the specified scheme. If none is specified, optimize all
     optimizeBreakwater = args.breakwater
     optimizeBreakwaterD = args.breakwaterd
-    optimizeCharon = args.charon
+    optimizeRajomon = args.rajomon
     optimizeDagor = args.dagor
 
-    if not optimizeBreakwater and not optimizeBreakwaterD and not optimizeCharon and not optimizeDagor:
-        optimizeCharon = optimizeBreakwater = optimizeBreakwaterD = optimizeDagor = True
+    if not optimizeBreakwater and not optimizeBreakwaterD and not optimizeRajomon and not optimizeDagor:
+        optimizeRajomon = optimizeBreakwater = optimizeBreakwaterD = optimizeDagor = True
 
 
     method = args.method
@@ -815,35 +832,38 @@ if __name__ == '__main__':
     skipOptimize = args.skip_opt
     skipPostOptimize = args.skip_post_opt
 
-    load_no_control = get_sustainable_load(method)
-    # load_control = 3 * load_no_control
-    # load_control = 10000
-    
-    if 'motivate' in method:
-        maximum_goodput = load_control = 30000
-    elif 'S_1' in method:
-        maximum_goodput = 10000
-        load_control = 2 * load_no_control
-    elif method == 'compose' or method == 'user-timeline' or method == 'home-timeline':
-        maximum_goodput = 10000
-        load_control = 2 * load_no_control
-    elif 'hotel' in method:
-        maximum_goodput = 5000
-        load_control = 2 * load_no_control
+    if method == 'all-alibaba':
+        maximum_goodput = 1000
+        load_control = 10000
+    else:
+        load_no_control = get_sustainable_load(method)
+
+        # load_control = 3 * load_no_control
+        # load_control = 10000
+        
+        if 'motivate' in method:
+            maximum_goodput = 30000
+            load_control = 2 * load_no_control
+        elif 'S_1' in method:
+            maximum_goodput = 5000
+            load_control = 2 * load_no_control
+        elif method == 'compose' or method == 'user-timeline' or method == 'home-timeline':
+            maximum_goodput = 10000
+            load_control = 2 * load_no_control
+        elif 'hotel' in method:
+            maximum_goodput = 10000
+            load_control = 2 * load_no_control
     # convert it to string
-    load_control = str(load_control)
-    capacity = args.tune + '-' + load_control
+    if '-' in args.tune:
+        capacity = args.tune
+    else:
+        load_control = str(load_control)
+        capacity = args.tune + '-' + load_control
+
 
     # SLO = get_slo(method, tight=tightSLO)
 
     print(f"Now running the optimization for method: {method}, capacity: {capacity}, tightSLO: {tightSLO}, skipOptimize: {skipOptimize}")
-    print(f"Optimizing Breakwater: {optimizeBreakwater}, BreakwaterD: {optimizeBreakwaterD}, Charon: {optimizeCharon}, Dagor: {optimizeDagor}")
+    print(f"Optimizing Breakwater: {optimizeBreakwater}, BreakwaterD: {optimizeBreakwaterD}, Rajomon: {optimizeRajomon}, Dagor: {optimizeDagor}")
 
     main()
-
-    # for capacity in range(4000, 10000, 500), get latest file and run the check below
-    # check_goodput('social-compose-control-breakwater-parallel-capacity-6807-1213_2351.json')
-    # check_goodput('social-compose-control-breakwaterd-parallel-capacity-6601-1214_0006.json')
-    # for load in range(4000, 10000, 500):
-    #     experiment = get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/ghz-results/'), f'social-compose-control-charon-parallel-capacity-{load}-1213*json')
-    #     check_goodput(experiment)
