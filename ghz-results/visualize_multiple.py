@@ -194,9 +194,9 @@ def load_data():
 
     # For every file in the directory
     selected_files = []
-    # For every file in the directory and another directory `~/Sync/Git/charon-experiments/json`
+    # For every file in the directory and another directory `~/Sync/Git/rajomon-experiments/json`
     for filename in glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/protobuf/ghz-results'), f'social-{method}-control-*-parallel-capacity-*.json')) \
-        + glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/charon-experiments-results/'), f'social-{method}-control-*-parallel-capacity-*.json')):
+        + glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/rajomon-experiments-results/'), f'social-{method}-control-*-parallel-capacity-*.json')):
         # Extract the date and time part from the filename
         timestamp_str = os.path.basename(filename).split('-')[-1].rstrip('.json')
         # check if the file's timestamp is given format
@@ -222,12 +222,12 @@ def load_data():
         # death_gpt1_8000 = ("1216_1938", "1216_2130")
         # death_gpt1_8000 = ("1216_2304", "1217_0210")
         # death_gpt1_8000 = ("1217_0330", "1217_0900")
-        # death_gpt1_8000_charon = ("1217_2121", "1217_2138")
+        # death_gpt1_8000_rajomon = ("1217_2121", "1217_2138")
         # # death_gpt1_8000_bw = ("1217_2307", "1217_2324")
         # death_gpt1_8000_bwd = ("1218_0056", "1218_0115")
-        # death_gpt1_9000_charon = ("1218_1904", "1218_1921")
-        death_gpt1_10000_charon = ("1219_2100", "1219_2117")
-        death_tgpt_8000_charon = ("1220_0008", "1220_0030")
+        # death_gpt1_9000_rajomon = ("1218_1904", "1218_1921")
+        death_gpt1_10000_rajomon = ("1219_2100", "1219_2117")
+        death_tgpt_8000_rajomon = ("1220_0008", "1220_0030")
         death_tgpt_8000 = ("1220_0314", "1220_0855")
         death_gpt1_8000 = ("1221_0016", "1221_0609")
         compose_gpt1_8000 = [("1221_2126", "1221_2142"), ("1221_2018", "1221_2038"), ("1221_1904", "1221_1921"), ("1221_1801", "1221_1817")]
@@ -238,7 +238,7 @@ def load_data():
         # compose_bw_8000 = [("1226_0455", "1226_0515"), ("1225_0141", "1225_0201")]
         compose_bw_8000 = [("1226_0455", "1226_0515"), ("1225_0141", "1225_0202"), ("1225_2053", "1225_2113")]
         compose_bwd_8000 = [("1226_0516", "1226_0537"),("1220_0649", "1220_0708")]
-        compose_charon_8000 = [("1226_0436", "1226_0453"), ("1221_1800", "1221_1817"), ("1225_0123", "1225_0140")]
+        compose_rajomon_8000 = [("1226_0436", "1226_0453"), ("1221_1800", "1221_1817"), ("1225_0123", "1225_0140")]
         compose_dg_8000 = [("1225_0225", "1225_0241"), ("1226_0538", "1226_0555")]
 
         # Now you can call this function with a list of ranges
@@ -254,7 +254,7 @@ def load_data():
             # compose_gpt1_8000_3,
             # *compose_bw_8000,
             # *compose_bwd_8000,
-            # *compose_charon_8000,
+            # *compose_rajomon_8000,
             # *compose_dg_8000,
             # below are new compose experiments based on new profile
             # ("0114_1323", "0114_1455"),
@@ -267,8 +267,8 @@ def load_data():
         ]
 
         new_compose_looseSLO = [
-            ("0116_1653", "0116_1714"), # these two are charon tuned for loose SLO, but with 50 ms buffer.
-            ("0116_1855", "0116_1916"), # these two are charon tuned for loose SLO, but with 50 ms buffer.
+            ("0116_1653", "0116_1714"), # these two are rajomon tuned for loose SLO, but with 50 ms buffer.
+            ("0116_1855", "0116_1916"), # these two are rajomon tuned for loose SLO, but with 50 ms buffer.
             ("0117_0437", "0117_0637"),
             ("0117_1418", "0117_1618"),
             ("0117_1939", "0117_2139"),
@@ -556,7 +556,7 @@ def extract_info_rl(file_list):
     return file_depths
 
 
-# load motivation data is similar to load_data, it loads social-motivation-aqm-control-charon-parallel-capacity-8000-1222_xxxx.json 
+# load motivation data is similar to load_data, it loads social-motivation-aqm-control-rajomon-parallel-capacity-8000-1222_xxxx.json 
 # select them with a time frame and then rank them by timpstamp
 def load_motivation_data():
     # A dictionary to hold intermediate results, indexed by (overload_control, method_subcall, capacity)
@@ -952,10 +952,10 @@ def load_sensitivity_data():
                 continue
 
             # Check if the file's timestamp is within the given duration
-            robust_charon = [
+            robust_rajomon = [
                 ("0202_0104", "0202_0249"),
             ]
-            if is_within_any_duration(timestamp_str, robust_charon):
+            if is_within_any_duration(timestamp_str, robust_rajomon):
                 selected_files.append(filename)
  
     for filename in selected_files:
@@ -1085,9 +1085,9 @@ def main():
     # Define the methods you want to plot
     # methods = ['parallel']
     # methods = ['sequential', 'parallel']
-    # control_mechanisms = ['dagor', 'breakwater', 'charon', 'breakwaterd'] if not motivation else ['nginx-web-server', 'service-6', 'all']
+    # control_mechanisms = ['dagor', 'breakwater', 'rajomon', 'breakwaterd'] if not motivation else ['nginx-web-server', 'service-6', 'all']
     if not motivation:
-        control_mechanisms = ['breakwaterd', 'breakwater', 'charon', 'dagor', ]
+        control_mechanisms = ['breakwaterd', 'breakwater', 'rajomon', 'dagor', ]
     elif method == 'motivation-aqm':
         control_mechanisms = ['nginx-web-server', 'service-6', 'all', 'plain']
     else:
@@ -1108,7 +1108,7 @@ def main():
         'breakwaterd': '#0D47A1',
         'dagor': '#4CAF50',
         'dagorf': '#1B5E20',
-        'charon': '#FF9800',
+        'rajomon': '#FF9800',
         'nginx-web-server': '#9C27B0',  # Example color for nginx-web-server
         'service-6': '#3F51B5',  # Example color for service-6
         'all': '#009688',  # Example color for all
@@ -1127,7 +1127,7 @@ def main():
         'breakwaterd': '-.',
         'dagor': ':',
         'dagorf': '-',
-        'charon': '-',
+        'rajomon': '-',
         'nginx-web-server': '--',  # Example line style for nginx-web-server
         'service-6': ':',  # Example line style for service-6
         'all': '-.',  # Example line style for all
@@ -1139,7 +1139,7 @@ def main():
         'breakwaterd': 'breakwaterd',
         'dagor': 'dagor',
         'dagorf': 'dagor frontend',
-        'charon': 'our model',
+        'rajomon': 'our model',
         'nginx-web-server': 'Frontend',
         'service-6': 'Backend',
         'all': 'Coordinated',
@@ -1149,7 +1149,7 @@ def main():
         'dagorf': 'AQM\nFrontend',
         'breakwaterd': 'Rate\nLimiting',
         'dagor': 'AQM',
-        'charon': 'our model',
+        'rajomon': 'our model',
     }
 
     if multipleFiles:
