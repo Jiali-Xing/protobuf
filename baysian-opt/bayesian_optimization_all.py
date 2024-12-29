@@ -23,6 +23,8 @@ import sklearn
 from collections import defaultdict
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'ghz-results'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '/z/large-nsdi/results'))
+
 from visualize import analyze_data
 from slo import get_slo, get_sustainable_load
 from utils import convert_to_dataframe, calculate_goodput_mean, calculate_goodput_from_file, read_tail_latency_from_file, roundDownParams, save_iteration_details, parse_configurations
@@ -39,10 +41,11 @@ configDict = {
         'token_update_rate': 5000,  # Assuming numeric values for simplicity
         'latency_threshold': 5000,
         'price_step': 10,
-        'price_strategy': 'linear',
+        'price_strategy': 'expgrow',
         'lazy_update': 'false',
         'rate_limiting': 'true',
         'only_frontend': 'false',
+        'fast_drop': 'true',
     },
     'breakwater': {
         'breakwater_slo': 12500,
@@ -75,12 +78,9 @@ configDict = {
     }
 }
 
-def generate_output_filename(interceptor_type, method, capacity):
-    directory = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
-    # directory = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/rajomon-linear-price/')
+def generate_output_filename(interceptor_type, method, capacity, dir='~/Sync/Git/protobuf/ghz-results/'):
+    directory = os.path.expanduser(dir)
     outputFile = f"social-{method}-control-{interceptor_type}-parallel-capacity-{capacity}-*.json.output"
-    # if method == "all-methods-social" or method == "compose" or method == "home-timeline" or method == "user-timeline" or method == "all-methods-hotel":
-    #     outputFile = f"social-{method}-control-{interceptor_type}-parallel-capacity-{capacity}-01*.json.output"
     return os.path.join(directory, outputFile)
 
 
@@ -149,9 +149,10 @@ def check_previous_run_exists(interceptor_type, method, capacity, combined_param
 
     # Generate the expected output filename
     output_filename_pattern = generate_output_filename(interceptor_type, method, capacity)
+    archived_output_filename_pattern = generate_output_filename(interceptor_type, method, capacity, dir='/z/large-nsdi/results')
     
     # Search for files that match the pattern
-    matching_files = glob.glob(output_filename_pattern)
+    matching_files = glob.glob(output_filename_pattern) + glob.glob(archived_output_filename_pattern)
 
     # Iterate through matching files and check contents
     for filename in matching_files:
@@ -162,6 +163,17 @@ def check_previous_run_exists(interceptor_type, method, capacity, combined_param
             # Skip this file if the timestamp is in the existing_files
             if timestamp in existing_files:
                 continue
+        # 1. remove the .output at end of filename
+        base_filename = filename.replace('.output', '')
+        if not os.path.exists(base_filename):
+            continue
+        with open(base_filename, 'r') as file:
+            # 2. read it if it has line `"load-start": 10,` in first 20 rows, then skip this file
+            # find the line with "load-start": 10 without looping through the file
+            content = file.read(2000)
+            if '"load-start": 10,' in content:
+                continue
+
         try:
             with open(filename, 'r') as file:
                 content = file.read()
@@ -526,48 +538,82 @@ def main():
     }
 
     if 'hotel' in method:
-        pbounds_dagor['dagor_queuing_threshold'] = (500, 2000)
-        pbounds_dagor['dagor_admission_level_update_interval'] = (25000, 35000)
+        #  {DAGOR_QUEUING_THRESHOLD 1600us} {DAGOR_ALPHA 0.83} {DAGOR_BETA 6} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 14000us} {DAGOR_UMAX 11}
+        # use the above values as the range for the parameters, surrounding the optimal values
+        pbounds_dagor = {
+            'dagor_queuing_threshold': (1000, 2000),
+            'dagor_alpha': (0, 4),
+            'dagor_beta': (0, 10),
+            'dagor_admission_level_update_interval': (1000, 24000),
+            'dagor_umax': (5, 15),
+        }
 
-        pbounds_rajomon['latency_threshold'] = (200, 900)
-        pbounds_rajomon['token_update_rate'] = (80000, 120000)
-        pbounds_rajomon['price_update_rate'] = (6000, 9000)
-        pbounds_rajomon['price_step'] = (100, 200)
+        pbounds_rajomon['latency_threshold'] = (300, 700)
+        pbounds_rajomon['token_update_rate'] = (90000, 150000)
+        pbounds_rajomon['price_update_rate'] = (1000, 6000)
+        pbounds_rajomon['price_step'] = (100, 500)
 
-        # pbounds_breakwater['breakwater_slo'] = (500, 2000)
-        # pbounds_breakwater['breakwater_a'] = (0.001, 1)
-        # pbounds_breakwater['breakwater_b'] = (0.02, 0.9)
-        # pbounds_breakwater['breakwater_client_expiration'] = (200, 800)
-
+        # for large scale experiments, use the ranges near the optimal values below
+        # "BREAKWATER_SLO": "500us",
+        # "BREAKWATER_A": 0.0001,
+        # "BREAKWATER_B": 5.0,
+        # "BREAKWATER_INITIAL_CREDIT": 600,
+        # "BREAKWATER_CLIENT_EXPIRATION": "100us",
+        # "ONLY_FRONTEND": "true",
+        # "BREAKWATER_RTT": "1000us"
         pbounds_breakwater = {
-            'breakwater_slo': (1000, 2000),  # Adjusting around 1382us
-            'breakwater_client_expiration': (400, 800),  # Adjusting around 592us
-            'breakwater_a': (0.0001, 0.01),  # Adjusting around 0.001
-            'breakwater_b': (0.4, 2),  # Adjusting around 0.5
-            'breakwater_initial_credit': (600, 700),  # Adding around 685
-            'breakwater_rtt': (1500, 2000)  # Adjusting around 1853us
+            'breakwater_slo': (100, 1000),
+            'breakwater_a': (0.00001, 0.1),
+            'breakwater_b': (0.5, 10),
+            'breakwater_initial_credit': (400, 800),
+            'breakwater_client_expiration': (10, 500),
+            'breakwater_rtt': (500, 2000),
         }
 
+
+        # pbounds_breakwater = {
+        #     'breakwater_slo': (1000, 2000),  # Adjusting around 1382us
+        #     'breakwater_client_expiration': (400, 800),  # Adjusting around 592us
+        #     'breakwater_a': (0.0001, 0.01),  # Adjusting around 0.001
+        #     'breakwater_b': (0.4, 2),  # Adjusting around 0.5
+        #     'breakwater_initial_credit': (600, 700),  # Adding around 685
+        #     'breakwater_rtt': (1500, 2000)  # Adjusting around 1853us
+        # }
         pbounds_breakwaterd = {
-            'breakwaterd_slo': (1000, 8000),  # Adjusting around 1382us
-            'breakwater_slo': (1000, 2000),  # Adjusting around 1382us
-            'breakwater_client_expiration': (400, 800),  # Adjusting around 592us
-            'breakwaterd_client_expiration': (400, 800),  # Adjusting around 592us
-            'breakwater_a': (0.0001, 0.01),  # Adjusting around 0.001
-            'breakwaterd_a': (2, 5),  # Keeping same as before
-            'breakwater_b': (0.4, 2),  # Adjusting around 0.5
-            'breakwaterd_b': (0.1, 2),  # Keeping same as before
-            'breakwater_rtt': (1500, 2000),  # Adjusting around 1853us
-            'breakwaterd_rtt': (7000, 10000),  # Keeping same as before
-            'breakwater_initial_credit': (600, 700),  # Adding around 685
-            'breakwaterd_initial_credit': (900, 1000)  # Assuming similar range as previous credit
+            'breakwater_slo': (950, 1050),  # Marginally around 1000us
+            'breakwaterd_slo': (5700, 5900),  # Marginally around 5791us
+            'breakwater_client_expiration': (390, 410),  # Marginally around 400us
+            'breakwaterd_client_expiration': (460, 480),  # Marginally around 471us
+            'breakwater_a': (0.00009, 0.00011),  # Marginally around 0.0001
+            'breakwaterd_a': (2.8, 3.0),  # Marginally around 2.9019
+            'breakwater_b': (1.1, 1.2),  # Marginally around 1.1456
+            'breakwaterd_b': (0.75, 0.8),  # Marginally around 0.7841
+            'breakwater_rtt': (1450, 1550),  # Marginally around 1500us
+            'breakwaterd_rtt': (8500, 8700),  # Marginally around 8599us
+            'breakwater_initial_credit': (600, 630),  # Marginally around 615
+            'breakwaterd_initial_credit': (900, 930),  # Marginally around 918
         }
+
+        # pbounds_breakwaterd = {
+        #     'breakwaterd_slo': (1000, 8000),  # Adjusting around 1382us
+        #     'breakwater_slo': (1000, 2000),  # Adjusting around 1382us
+        #     'breakwater_client_expiration': (400, 800),  # Adjusting around 592us
+        #     'breakwaterd_client_expiration': (400, 800),  # Adjusting around 592us
+        #     'breakwater_a': (0.0001, 0.01),  # Adjusting around 0.001
+        #     'breakwaterd_a': (2, 5),  # Keeping same as before
+        #     'breakwater_b': (0.4, 2),  # Adjusting around 0.5
+        #     'breakwaterd_b': (0.1, 2),  # Keeping same as before
+        #     'breakwater_rtt': (1500, 2000),  # Adjusting around 1853us
+        #     'breakwaterd_rtt': (7000, 10000),  # Keeping same as before
+        #     'breakwater_initial_credit': (600, 700),  # Adding around 685
+        #     'breakwaterd_initial_credit': (900, 1000)  # Assuming similar range as previous credit
+        # }
 
     if method == 'compose':
-        pbounds_rajomon['latency_threshold'] = (200, 300)
-        pbounds_rajomon['price_update_rate'] = (3000, 5500)
-        pbounds_rajomon['price_step'] = (100, 160)
-        pbounds_rajomon['token_update_rate'] = (90000, 120000)
+        pbounds_rajomon['latency_threshold'] = (300, 500)  # 300 to 500 due to better machine
+        pbounds_rajomon['price_update_rate'] = (2000, 5000)
+        pbounds_rajomon['price_step'] = (100, 200)
+        pbounds_rajomon['token_update_rate'] = (80000, 120000)
 
         pbounds_dagor['dagor_queuing_threshold'] = (1000, 2000)
         pbounds_dagor['dagor_alpha'] = (0, 2)
@@ -575,33 +621,49 @@ def main():
         pbounds_dagor['dagor_admission_level_update_interval'] = (12000, 15000)
         pbounds_dagor['dagor_umax'] = (10, 20)
 
+        # for large scale experiments, use the ranges near the optimal values below
+        # "BREAKWATER_SLO": "250us",
+        # "BREAKWATER_A": 0.001,
+        # "BREAKWATER_B": 5,
+        # "BREAKWATER_INITIAL_CREDIT": 600,
+        # "BREAKWATER_CLIENT_EXPIRATION": "10us",
+        # "ONLY_FRONTEND": "true",
+        # "BREAKWATER_RTT": "1000us"
         pbounds_breakwater = {
-            'breakwater_slo': (8000, 12000),  # Adjusting around 1382us
-            'breakwater_client_expiration': (300, 1000),  # Adjusting around 592us
-            'breakwater_a': (0.00001, 0.1),  # Adjusting around 0.001
-            'breakwater_b': (1, 20),  # Adjusting around 0.5
-            'breakwater_initial_credit': (200, 800),  # Adding around 685
-            'breakwater_rtt': (800, 2000)  # Adjusting around 1853us
+            'breakwater_slo': (10, 500),  # Adjusting around 1382us
+            'breakwater_a': (0.0001, 0.01),  # Adjusting around 0.001
+            'breakwater_b': (0.5, 20),  # Adjusting around 0.5
+            'breakwater_initial_credit': (400, 800),  # Adding around 685
+            'breakwater_client_expiration': (10, 200),  # Adjusting around 592us
+            'breakwater_rtt': (50, 2000)  # Adjusting around 1853us
         }
-        # pbounds_breakwater['breakwater_slo'] = (100, 2000)
-        # pbounds_breakwater['breakwater_rtt'] = (1000, 4000)
-        # pbounds_breakwater['breakwater_b'] = (0.02, 0.9)
-        # pbounds_breakwater['breakwater_client_expiration'] = (100, 1000)
 
+
+        # pbounds_breakwater = {
+        #     'breakwater_slo': (10, 12000),  # Adjusting around 1382us
+        #     'breakwater_client_expiration': (300, 1000),  # Adjusting around 592us
+        #     'breakwater_a': (0.00001, 0.5),  # Adjusting around 0.001
+        #     'breakwater_b': (0.1, 100),  # Adjusting around 0.5
+        #     'breakwater_initial_credit': (200, 800),  # Adding around 685
+        #     'breakwater_rtt': (800, 2000)  # Adjusting around 1853us
+        # }
+        
+        # explore the following ranges for the parameters
         pbounds_breakwaterd = {
-            'breakwaterd_slo': (8000, 14000),  # Adjusting around 1382us
-            'breakwater_slo': (6000, 12000),  # Adjusting around 1382us
-            'breakwater_client_expiration': (100, 2000),  # Adjusting around 592us
-            'breakwaterd_client_expiration': (100, 2000),  # Adjusting around 592us
-            'breakwater_a': (0.0001, 0.2),  # Adjusting around 0.001
-            'breakwaterd_a': (25, 40),  # Keeping same as before
-            'breakwater_b': (0.001, 10),  # Adjusting around 0.5
-            'breakwaterd_b': (1, 10),  # Keeping same as before
-            'breakwater_rtt': (100, 800),  # Adjusting around 1853us
-            'breakwaterd_rtt': (1000, 3000),  # Keeping same as before
-            'breakwater_initial_credit': (1000, 2500),  # Adding around 685
-            'breakwaterd_initial_credit': (100, 1000)  # Assuming similar range as previous credit
+            'breakwater_slo': (1000, 11000),  # Covers 1000us to 10783us
+            'breakwaterd_slo': (5000, 9000),  # Covers 5791us to 8609us
+            'breakwater_client_expiration': (400, 2000),  # Covers 400us to 1848us
+            'breakwaterd_client_expiration': (400, 1200),  # Covers 471us to 1121us
+            'breakwater_a': (0.0001, 0.2),  # Covers 0.0001 to 0.150467
+            'breakwaterd_a': (2.5, 40),  # Covers 2.9 to 35.4929
+            'breakwater_b': (1, 10),  # Covers 1.15 to 9.0168
+            'breakwaterd_b': (0.75, 4),  # Covers 0.78 to 3.2773
+            'breakwater_rtt': (1500, 2000),  # Covers 1500us to 1757us
+            'breakwaterd_rtt': (1500, 9000),  # Covers 1757us to 8599us
+            'breakwater_initial_credit': (600, 1700),  # Covers 615 to 1630
+            'breakwaterd_initial_credit': (800, 1000),  # Covers 867 to 918
         }
+
 
     if 'S_16' in method:
         pbounds_rajomon['latency_threshold'] = (100, 30000)
@@ -851,7 +913,7 @@ if __name__ == '__main__':
             maximum_goodput = 10000
             load_control = 2 * load_no_control
         elif 'hotel' in method:
-            maximum_goodput = 10000
+            maximum_goodput = 12000
             load_control = 2 * load_no_control
     # convert it to string
     if '-' in args.tune:
