@@ -1,43 +1,67 @@
 #!/bin/bash
 # Run this file from the kube master node in order to run the ghz experiment
 
-# Get the names of all deployments
-# deployments=$(kubectl get deployments -o custom-columns=":metadata.name" --no-headers)
-# echo "Deployments: $deployments"
+# Function to get node IP from pod name
+get_node_ip() {
+    local NODE_NAME=$1
+    grep "$NODE_NAME" /etc/hosts | awk '{print $1}'
+}
 
-# # Loop through each deployment and wait for it to complete
-# for deployment in $deployments; do
-#   kubectl rollout status deployment/$deployment
-#   # echo "Deployment $deployment is ready."
-# done
+# Function to get the service port number
+get_service_port() {
+    local APP=$1
+    local ENTRY_POINT=$2
+    kubectl get svc -o wide | grep "$ENTRY_POINT" | awk -F '[[:space:]]+|,' '{for (i=1; i<=NF; i++) if ($i ~ /[0-9]+:[0-9]+\/TCP/) {split($i, ports, ":"); print ports[2]; break}}' | sed 's/\/TCP//'
+}
 
-# # entrypoint is 
-# echo "ENTRY_POINT: $ENTRY_POINT"
+# Prompt user for app and service IP/port
+echo "Enter the app name (social or hotel): "
+read APP
 
-# # Get the Cluster IP of grpc-service-1
-# SERVICE_A_IP=$(kubectl get service $ENTRY_POINT -o=jsonpath='{.spec.clusterIP}')
+# Determine METHOD and entry point based on app name
+if [ "$APP" == "social" ]; then
+    METHOD="compose"
+    ENTRY_POINT="nginx"
+elif [ "$APP" == "hotel" ]; then
+    METHOD="search-hotel"
+    ENTRY_POINT="frontend"
+else
+    echo "Unknown app. Exiting."
+    exit 1
+fi
 
-# # Get the NodePort (if available) of grpc-service-1
-# SERVICE_A_NODEPORT=$(kubectl get service $ENTRY_POINT -o=jsonpath='{.spec.ports[0].nodePort}')
+# Display app configuration
+echo "App: $APP"
+echo "Method: $METHOD"
+echo "Entry Point: $ENTRY_POINT"
 
-# SERVICE_A_URL="$SERVICE_A_IP:50051"
+# Run kubectl to find the pod and node
+kubectl get pods -o wide | grep "$ENTRY_POINT" > pod_info.txt
+NODE_NAME=$(awk '{print $7}' pod_info.txt)
+echo "Node: $NODE_NAME"
 
+# Get node IP address
+NODE_IP=$(get_node_ip "$NODE_NAME")
+if [ -z "$NODE_IP" ]; then
+    echo "Failed to find IP for node $NODE_NAME. Exiting."
+    exit 1
+fi
+echo "Node IP: $NODE_IP"
 
-# query the service for the IP address from user input
-# from stdin
-echo "Enter the IP address and port of the service you want to query: "
-read SERVICE_A_URL
+# Get service port number
+SERVICE_PORT=$(get_service_port "$APP" "$ENTRY_POINT")
+if [ -z "$SERVICE_PORT" ]; then
+    echo "Failed to find port for service $ENTRY_POINT. Exiting."
+    exit 1
+fi
+echo "Service Port: $SERVICE_PORT"
 
-# Export the SERVICE_A_URL as an environment variable
+# Combine IP and port to create SERVICE_A_URL
+SERVICE_A_URL="$NODE_IP:$SERVICE_PORT"
 export SERVICE_A_URL
 
-# Display the URL
 echo "SERVICE_A_URL: $SERVICE_A_URL"
 
-# if AQM_ENABLED env is set, then echo it
-if [ -n "$AQM_ENABLED" ]; then
-  echo "AQM_ENABLED: $AQM_ENABLED"
-fi
 
 # Export LOAD_INCREASE environment variable
 export LOAD_INCREASE=true
