@@ -1,4 +1,4 @@
-name: charon
+name: rajomon
 channels:
   - pytorch
   - conda-forge
@@ -238,4 +238,4 @@ dependencies:
       - tomlkit==0.12.3
       - typing-extensions==4.8.0
       - werkzeug==3.0.3
-prefix: /home/jiali/miniconda3/envs/charon
+prefix: /home/jiali/miniconda3/envs/rajomon

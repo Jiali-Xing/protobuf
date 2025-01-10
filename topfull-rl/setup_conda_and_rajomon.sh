@@ -4,7 +4,7 @@
 CONDA_DIR="/users/jiali/miniconda"
 CONDA_INSTALLER="Miniconda3-latest-Linux-x86_64.sh"
 CONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
-ENV_YAML="charon_env.yaml"
+ENV_YAML="rajomon_env.yaml"
 
 # Function to display a message
 echo_message() {
@@ -33,23 +33,23 @@ conda update -y conda
 
 # Step 4: Check if the environment YAML file exists
 if [ -f "$ENV_YAML" ]; then
-    echo_message "Creating the 'charon' environment from $ENV_YAML..."
+    echo_message "Creating the 'rajomon' environment from $ENV_YAML..."
     conda env create -f $ENV_YAML
 else
     echo "Error: $ENV_YAML file not found!"
     exit 1
 fi
 
-# Step 5: Activate the charon environment
-echo_message "Activating the 'charon' environment..."
-conda activate charon
+# Step 5: Activate the rajomon environment
+echo_message "Activating the 'rajomon' environment..."
+conda activate rajomon
 
 # Step 6: Verify the environment creation
-if conda env list | grep -q "charon"; then
-    echo_message "The 'charon' environment has been successfully created and activated."
+if conda env list | grep -q "rajomon"; then
+    echo_message "The 'rajomon' environment has been successfully created and activated."
 else
-    echo "Error: Failed to create the 'charon' environment."
+    echo "Error: Failed to create the 'rajomon' environment."
     exit 1
 fi
 
-echo_message "Setup complete. You can now use the 'charon' environment."
+echo_message "Setup complete. You can now use the 'rajomon' environment."
