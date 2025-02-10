@@ -1,14 +1,14 @@
 {
-    "target": 0.6762247753268168,
+    "target": 0.5277991790670133,
     "parameters": {
-        "DAGOR_QUEUING_THRESHOLD": "1299us",
-        "DAGOR_ALPHA": 0.42110762500505217,
-        "DAGOR_BETA": 3.8315581206020077,
-        "DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL": "25983us",
-        "DAGOR_UMAX": 15
+        "DAGOR_QUEUING_THRESHOLD": "1817us",
+        "DAGOR_ALPHA": 0.6852195003967595,
+        "DAGOR_BETA": 0.8178089989260697,
+        "DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL": "29191us",
+        "DAGOR_UMAX": 5
     },
     "method": "search-hotel",
-    "capacity": "gpt1-7000",
-    "load": 7000,
-    "timestamp": "08-11"
+    "capacity": "gpt0-10000",
+    "load": 10000,
+    "timestamp": "08-23"
 }

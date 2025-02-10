@@ -1,5 +1,5 @@
 {
-    "target": 0.36265851913376435,
+    "target": -7.7063092418066255,
     "parameters": {
         "BREAKWATER_SLO": "4618us",
         "BREAKWATER_A": 0.2895180150248522,
@@ -9,10 +9,8 @@
         "ONLY_FRONTEND": "true",
         "BREAKWATER_RTT": "18779us"
     },
-    "method": "S_149998854",
+    "method": "all-alibaba",
     "capacity": "gpt1-10000",
     "load": 10000,
-    "timestamp": "05-29",
-    "quantile": 0.1,
-    "SLO": 580
+    "timestamp": "09-12"
 }

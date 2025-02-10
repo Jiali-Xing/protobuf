@@ -6,7 +6,8 @@ from datetime import datetime
 import os
 
 # Constants used throughout the module
-throughput_time_interval = '200ms'
+throughput_time_interval = '400ms'
+request_count_cutoff = 2000
 latency_window_size = '200ms'
 offset = 5 # an offset of 5 seconds to omit before experiment starts
 warmup = 5 # an offset of 5 seconds to omit pre-spike metrics
@@ -311,14 +312,16 @@ def extract_configurations_from_output_file(output_file):
         output_file = output_file + '.output'
     with open(output_file, 'r') as f:
         content = f.read()
-    if 'Charon Configurations:' in content:
+    if 'Rajomon Configurations:' in content:
         # Extract the configurations string from the file
-        start = content.find('Charon Configurations:') + len('Charon Configurations:')
+        start = content.find('Rajomon Configurations:') + len('Rajomon Configurations:')
         end = content.find(']', start) + 1
         file_config_str = content[start:end]
         return parse_configurations(file_config_str)
     else:
-        raise ValueError("Overload control configurations not found in the content")
+        # raise ValueError("Overload control configurations not found in the content")
+        print(f"Overload control configurations not found in {output_file}")
+        return None
 
 
 def extract_parameters_from_df_row(params_columns, row):
@@ -357,9 +360,9 @@ def check_parameters(params_file, filename):
     # with open(filename+'.output', 'r') as f:
     #     content = f.read()
 
-    #     if 'Charon Configurations:' in content:
+    #     if 'Rajomon Configurations:' in content:
     #         # Extract the configurations string from the file
-    #         start = content.find('Charon Configurations:') + len('Charon Configurations:')
+    #         start = content.find('Rajomon Configurations:') + len('Rajomon Configurations:')
     #         end = content.find(']', start) + 1
     #         file_config_str = content[start:end]
     #         file_config_dict = parse_configurations(file_config_str)
@@ -423,9 +426,9 @@ def load_data(method, list_of_tuples_of_experiment_timestamps, slo, given_parame
 
     # For every file in the directory
     selected_files = []
-    # For every file in the directory and another directory `~/Sync/Git/charon-experiments/json`
+    # For every file in the directory and another directory `~/Sync/Git/rajomon-experiments/json`
     for filename in glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/protobuf/ghz-results'), f'social-{method}-control-*-parallel-capacity-*.json')) \
-        + glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/charon-experiments-results/'), f'social-{method}-control-*-parallel-capacity-*.json')):
+        + glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/rajomon-experiments-results/'), f'social-{method}-control-*-parallel-capacity-*.json')):
         # Extract the date and time part from the filename
         # overload_control, method_subcall, _, capacity_str, timestamp_str = os.path.basename(filename).split('-')[3:8]
         config = extract_experiment_details_json(filename)
@@ -555,7 +558,7 @@ def load_parameters(method, given_parameter):
     return parameters
 
 
-def load_data_from_csv(file_path, method, list_of_tuples_of_experiment_timestamps, given_parameter=None):
+def load_data_from_csv(file_path, method, given_parameter=None):
     """
     Load data from a CSV file for a given method and filter according to time ranges and parameters.
 
@@ -584,12 +587,20 @@ def load_data_from_csv(file_path, method, list_of_tuples_of_experiment_timestamp
 
     # df = df[df['timestamp'].apply(lambda x: is_within_time_ranges(x, list_of_tuples_of_experiment_timestamps))]
     
+    
+    # Initialize an empty DataFrame to store filtered results
+    filtered_df = pd.DataFrame()
+
+    # Handle topdown separately (without filtering by parameters)
+    topdown_df = df[df['control_scheme'] == 'topdown']
+    filtered_df = pd.concat([filtered_df, topdown_df], ignore_index=True)
+    
     # Filter by given parameters
     if given_parameter is not None and method in given_parameter:
         control_params = load_parameters(method, given_parameter)
     
-        # Initialize an empty DataFrame to store filtered results
-        filtered_df = pd.DataFrame()
+        # # for rajomon, add one pair of parameters to the control_params: RAJOMON_TRACK_PRICE false
+        # control_params['rajomon'] = {'RAJOMON_TRACK_PRICE': 'false'}
         
         # Loop over each control scheme and filter rows based on relevant parameters
         for control_scheme, params in control_params.items():
@@ -601,12 +612,23 @@ def load_data_from_csv(file_path, method, list_of_tuples_of_experiment_timestamp
                     continue
                 # if param == 'LAZY_UPDATE' or param == 'ONLY_FRONTEND':
                 if value == 'true' or value == 'false':
-                    continue
+                    value = True if value == 'true' else False
+
+                # Ensure value types match the column types in the DataFrame
+                if isinstance(value, str):
+                    value = value.strip()
 
                 if pd.api.types.is_float_dtype(control_df[param]):
-                    control_df = control_df[np.isclose(control_df[param], value, atol=1e-3)]
+                    control_df = control_df[np.isclose(control_df[param], value, atol=1e-2)]
                 else:
+                    if len(control_df[control_df[param] == value]) == 0:
+                        print(control_df[param])
+                        print(df['PRICE_STEP'].dtype)
+                        
                     control_df = control_df[control_df[param] == value]
+
+                # Debugging: Print filtered DataFrame shape after each step
+                # print(f"After filtering by {param} == {value}, {len(control_df)} rows remain.")
 
                 # control_df = control_df[control_df[param] == value]
                 # if control_df becomes empty, print a message and break
@@ -769,25 +791,36 @@ def calculate_ratelimited(df):
     df['limited'] = limited_requests_per_second.reindex(df.index, method='bfill')
     return df
 
+def calculate_tail_latency_dynamic(df, window_size=None):
+    # Ensure that the DataFrame is not empty and contains the 'latency' column
+    if df.empty or 'latency' not in df.columns:
+        print("DataFrame is empty or missing 'latency' column.")
+        return None
 
-def calculate_tail_latency_dynamic(df):
-    # Only cound the latency of successful requests, i.e., status == 'OK'
+    # Sort the DataFrame by index to ensure correct rolling calculations
     df.sort_index(inplace=True)
-    # Assuming your DataFrame is named 'df' and the column to calculate the moving average is 'data'
-    tail_latency = df['latency'].rolling(latency_window_size).quantile(0.95)
-    df['tail_latency'] = tail_latency
-    # Calculate moving average of latency
-    df['latency_ma'] = df['latency'].rolling(latency_window_size).mean()
-
-    # calculate the average tail latency of each second 
-    # df['tail_latency_ave'] = df['tail_latency'].resample('1s').mean()
-    # print('[Average Tail Latency] ', df['tail_latency'].mean())
-
-    #  remove outliers of the tail latency (those super small values)
-
     
-    return df
+    # Use the provided window size or fall back to the global latency_window_size
+    effective_window_size = window_size if window_size else latency_window_size
+    
+    try:
+        # Calculate the 95th percentile (tail latency) for the rolling window
+        tail_latency = df['latency'].rolling(effective_window_size).quantile(0.95)
+        df['tail_latency'] = tail_latency
+        
+        # Calculate the moving average of latency
+        df['latency_ma'] = df['latency'].rolling(effective_window_size).mean()
+        
+    except Exception as e:
+        print(f"Error in calculating tail latency or moving average: {e}")
+        return None
 
+    # Check if the resulting DataFrame has valid data
+    if df['tail_latency'].isnull().all() or df['latency_ma'].isnull().all():
+        print("Tail latency or moving average calculations resulted in all NaNs.")
+        return None
+
+    return df
 
 
 def calculate_throughput_dynamic(df):
@@ -842,23 +875,355 @@ def save_iteration_details(optimizer, file_path):
         print(f"An unexpected error occurred: {e}")
 
 
-def export_all_experiments_to_csv(time_ranges, output_file='experiment_results.csv'):
+# def export_all_experiments_to_csv(time_ranges, output_file='experiment_results.csv'):
 
-    # Create a DataFrame to store the experiment results
-    base_columns = ['timestamp', 'interface', 'control_scheme', 'capacity', 'throughput', 'goodput',
-                    'latency_99', 'latency_95', 'latency_median', 'filename']
+#     # Load existing CSV if it exists
+#     if os.path.exists(output_file):
+#         existing_df = pd.read_csv(output_file)
+#         existing_entries = set(existing_df[['timestamp', 'interface']].apply(tuple, axis=1))
+#     else:
+#         existing_entries = set()
+
+#     # Create a DataFrame to store the experiment results
+#     base_columns = ['timestamp', 'interface', 'control_scheme', 'capacity', 'throughput', 'goodput',
+#                     'latency_99', 'latency_95', 'latency_median', 'filename', 'concurrency']
     
+#     experiment_data = []
+#     all_control_keys = set()
+#     selected_files = []
+
+#     # For every file in the directory and another directory `~/Sync/Git/rajomon-experiments/json`
+#     if 'alibaba' in output_file:
+#         files = glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/protobuf/ghz-results'), f'social-S_*-control-*-parallel-capacity-*.json')) 
+#     else:
+#         # take files that does not have `-S_` in the filename
+#         files = glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/protobuf/ghz-results'), f'social-*control-*-parallel-capacity-*.json'))
+#         files = [f for f in files if '-S_' not in f]
+
+#     for filename in files:
+#         # Extract the date and time part from the filename
+#         config = extract_experiment_details_json(filename)
+#         if config is None:
+#             continue
+#         timestamp_str = config['timestamp_str']
+#         method = config['interface']
+
+#         # Skip files that are already recorded
+#         if (timestamp_str, method) in existing_entries:
+#             print(f"File {filename} already recorded, skipping.")
+#             continue
+
+#         # check if the file's timestamp is given format
+#         assert len(timestamp_str) == 9, f"File {filename} is not valid"
+
+#         if is_within_any_duration(timestamp_str, time_ranges):
+#             selected_files.append(filename)
+
+#     for filename in selected_files:
+#         # Extract the metadata from the filename
+#         config = extract_experiment_details_json(filename)
+#         overload_control = config['overload_control']
+#         capacity_str = config['capacity_str']
+#         timestamp_str = config['timestamp_str']
+#         method = config['interface']
+
+#         capacity = int(capacity_str)
+
+#         # if there's no `OK` in the file, remove the file
+#         if 'OK' not in open(filename).read():
+#             print("File ", filename, " is not valid, no OK")
+#             # os.remove(filename)
+#             continue
+        
+#         # if Count is less than 10000, skip the file
+#         request_count_cutoff = 10000
+#         with open(filename, 'r') as f:
+#             try:
+#                 data = json.load(f)
+#             except json.decoder.JSONDecodeError:
+#                 continue
+#             if data['count'] < request_count_cutoff:
+#                 print("File ", filename, " is not valid, count is less than", request_count_cutoff)
+#                 continue
+
+#             # only take the files that have `load-start` < 1000
+#             if data['options']['load-start'] == 10:
+#                 print("File ", filename, " is probably for concurrent runs, load-start is less than 1000")  
+#                 concurrency = True
+#             elif data['options']['load-start'] >= 2000:
+#                 print(f"File {filename} is probably for single request, load-start is {data['options']['load-start']}")
+#                 concurrency = False
+#                 if data['options']['load-start'] == 2800:
+#                     print(f"File {filename} is probably old run with 2800 load-start, skipping")
+#                     continue
+#             else:
+#                 continue
+
+#         slo = get_slo(method=method)
+#         # # Calculate latencies and throughput using the function calculate_metrics_from_file
+#         # there are 5 return values from the function
+#         latency_99, latency_95, latency_median, throughput, goodput = calculate_metrics_from_file(filename, slo)
+
+#         # Prepare a row with base columns
+#         row = {
+#             'timestamp': timestamp_str,
+#             'interface': method,
+#             'control_scheme': overload_control,
+#             'capacity': capacity,
+#             'throughput': throughput,
+#             'goodput': goodput,
+#             'latency_99': latency_99,
+#             'latency_95': latency_95,
+#             'latency_median': latency_median,
+#             'filename': filename,
+#             'concurrency': concurrency
+#         }
+        
+#         control_parameters = extract_configurations_from_output_file(filename)
+
+#         # Add control parameters to the row
+#         for key, value in control_parameters.items():
+#             row[key] = value
+#             all_control_keys.add(key)
+
+#         experiment_data.append(row)
+
+#     # Define columns based on the base columns and control keys
+#     columns = base_columns + list(all_control_keys)
+
+#     # # Create DataFrame from the experiment_data list
+#     # df = pd.DataFrame(experiment_data, columns=columns)
+
+#     # # Export DataFrame to CSV
+#     # df.to_csv(output_file, index=False)
+#     # print(f"Experiment results successfully exported to {output_file}")
+
+#     # Create DataFrame from the experiment_data list
+#     new_df = pd.DataFrame(experiment_data, columns=columns)
+
+#     # Append to the existing CSV if it exists, otherwise create a new file
+#     if os.path.exists(output_file):
+#         new_df.to_csv(output_file, mode='a', header=False, index=False)
+#     else:
+#         new_df.to_csv(output_file, index=False)
+
+#     print(f"Experiment results successfully exported to {output_file}")
+
+
+def export_all_experiments_to_csv(folder_path, output_file='experiment_results.csv'):
+    # Base columns and experiment data initialization
+    count_empty_files = False
+
+    base_columns = ['timestamp', 'interface', 'control_scheme', 'capacity', 'throughput', 'goodput',
+                    'latency_99', 'latency_95', 'latency_median', 'filename', 'concurrency']
     experiment_data = []
     all_control_keys = set()
     selected_files = []
 
-    # For every file in the directory and another directory `~/Sync/Git/charon-experiments/json`
-    if 'alibaba' in output_file:
-        files = glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/protobuf/ghz-results'), f'social-S_*-control-*-parallel-capacity-*.json')) 
+    # # Collect files based on the conditions
+    files = glob.glob(os.path.join(os.path.expanduser(folder_path), f'social-*control-*-parallel-capacity-*.json'))
+    # 
+    # for degugging purposes, sample 100 files and run the code
+    # files = files[:1000]
+
+    for filename in files:
+        config = extract_experiment_details_json(filename)
+        if config is None:
+            continue
+        timestamp_str = config['timestamp_str']
+        method = config['interface']
+
+        assert len(timestamp_str) == 9, f"File {filename} is not valid"
+        
+        # if not is_within_any_duration(timestamp_str, time_ranges):
+        #     continue
+
+        if 'OK' not in open(filename).read() and not count_empty_files:
+            print("File ", filename, " is not valid, no OK")
+            continue
+        
+        selected_files.append(filename)
+
+    for filename in selected_files:
+        config = extract_experiment_details_json(filename)
+        overload_control = config['overload_control']
+        capacity_str = config['capacity_str']
+        timestamp_str = config['timestamp_str']
+        method = config['interface']
+        capacity = int(capacity_str)
+
+        slo = get_slo(method=method)
+
+        with open(filename, 'r') as f:
+            try:
+                data = json.load(f)
+            except json.decoder.JSONDecodeError:
+                continue
+            if data['count'] < request_count_cutoff and not count_empty_files:
+                print("File ", filename, " is not valid, count is less than", request_count_cutoff)
+                continue
+
+            if data['options']['load-start'] == 10:
+                concurrency = True
+            elif data['options']['load-start'] in [2000, 4000, 8000, 2400, 4800]:
+                concurrency = False
+            else:
+                continue
+
+        if count_empty_files and ('OK' not in open(filename).read() or data['count'] < request_count_cutoff):
+            print(f"File {filename} is not valid, no OK or count is less than {request_count_cutoff}, record as 0 goodput and 1s latency")
+            # assign latency values to nan, throughput to 0, and goodput to 0
+            latency_99, latency_95, latency_median = np.nan, np.nan, np.nan
+            throughput, goodput = 0, 0
+        else:
+            latency_99, latency_95, latency_median, throughput, goodput = calculate_metrics_from_file(filename, slo)
+
+        row = {
+            'timestamp': timestamp_str,
+            'interface': method,
+            'control_scheme': overload_control,
+            'capacity': capacity,
+            'throughput': throughput,
+            'goodput': goodput,
+            'latency_99': latency_99,
+            'latency_95': latency_95,
+            'latency_median': latency_median,
+            'filename': filename,
+            'concurrency': concurrency
+        }
+
+        control_parameters = extract_configurations_from_output_file(filename)
+        if control_parameters is None:
+            continue
+
+        for key, value in control_parameters.items():
+            row[key] = value
+            all_control_keys.add(key)
+
+        experiment_data.append(row)
+
+    # Define final columns based on existing columns or new columns
+    columns = base_columns + list(all_control_keys)
+    new_df = pd.DataFrame(experiment_data, columns=columns)
+
+    new_df.to_csv(output_file, index=False)
+
+    print(f"Experiment results successfully exported to {output_file}")
+
+
+# def append_new_experiments_to_csv(time_ranges, input_file, output_file='experiment_results.csv'):
+def append_new_experiments_to_csv(folder_path, input_file, output_file='experiment_results.csv'):
+    # Load existing CSV if it exists
+    if os.path.exists(os.path.join(folder_path, input_file)):
+        existing_df = pd.read_csv(os.path.join(folder_path, input_file))
+        existing_entries = set(existing_df[['timestamp', 'interface']].apply(tuple, axis=1))
     else:
-        # take files that does not have `-S_` in the filename
-        files = glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/protobuf/ghz-results'), f'social-*control-*-parallel-capacity-*.json'))
-        files = [f for f in files if '-S_' not in f]
+        raise FileNotFoundError(f"Input file {input_file} not found.")
+
+    # Base columns and experiment data initialization
+    experiment_data = []
+    selected_files = []
+
+    files = glob.glob(os.path.join(folder_path, f'social-*control-*-parallel-capacity-*.json'))
+
+    for filename in files:
+        config = extract_experiment_details_json(filename)
+        if config is None:
+            continue
+        timestamp_str = config['timestamp_str']
+        method = config['interface']
+
+        if (timestamp_str, method) in existing_entries:
+            print(f"File {filename} already recorded, skipping.")
+            continue
+
+        assert len(timestamp_str) == 9, f"File {filename} is not valid"
+        # if is_within_any_duration(timestamp_str, time_ranges):
+        selected_files.append(filename)
+
+    for filename in selected_files:
+        config = extract_experiment_details_json(filename)
+        overload_control = config['overload_control']
+        capacity_str = config['capacity_str']
+        timestamp_str = config['timestamp_str']
+        method = config['interface']
+        capacity = int(capacity_str)
+
+        if 'OK' not in open(filename).read():
+            print("File ", filename, " is not valid, no OK")
+            continue
+        
+        # request_count_cutoff = 10000
+        with open(filename, 'r') as f:
+            try:
+                data = json.load(f)
+            except json.decoder.JSONDecodeError:
+                continue
+            if data['count'] < request_count_cutoff:
+                print("File ", filename, " is not valid, count is less than", request_count_cutoff)
+                continue
+
+            if data['options']['load-start'] == 10:
+                concurrency = True
+            elif data['options']['load-start'] >= 1000:
+                concurrency = False
+                if data['options']['load-start'] == 2800:
+                    continue
+            else:
+                continue
+
+        slo = get_slo(method=method)
+        latency_99, latency_95, latency_median, throughput, goodput = calculate_metrics_from_file(filename, slo)
+
+        row = {
+            'timestamp': timestamp_str,
+            'interface': method,
+            'control_scheme': overload_control,
+            'capacity': capacity,
+            'throughput': throughput,
+            'goodput': goodput,
+            'latency_99': latency_99,
+            'latency_95': latency_95,
+            'latency_median': latency_median,
+            'filename': filename,
+            'concurrency': concurrency
+        }
+
+        # Fetch control parameters and update the row
+        try:
+            control_parameters = extract_configurations_from_output_file(filename)
+            if control_parameters is None:
+                print(f"Error extracting control parameters from {filename}")
+                continue
+        except Exception as e:
+            print(f"Error extracting control parameters from {filename}: {e}")
+            continue
+        for key, value in control_parameters.items():
+            row[key] = value
+
+        experiment_data.append(row)
+
+    # Define final columns based on existing columns or new columns
+    new_df = pd.DataFrame(experiment_data)
+
+    # Merge with existing data
+    combined_df = pd.concat([existing_df, new_df], ignore_index=True)
+
+    # Drop any duplicate rows based on 'timestamp' and 'interface'
+    combined_df.drop_duplicates(subset=['timestamp', 'interface'], inplace=True)
+
+    # Write back the entire DataFrame to the output file
+    combined_df.to_csv(output_file, index=False)
+
+    print(f"Experiment results successfully exported to {output_file}")
+
+
+def export_alibaba_experiments_to_csv(time_ranges, output_file='experiment_results.csv'):
+    experiment_data = []
+    selected_files = []
+
+    files = glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/protobuf/ghz-results'), f'social-*control-*-parallel-capacity-*.json'))
+    files = [f for f in files if '-S_' in f]
 
     for filename in files:
         # Extract the date and time part from the filename
@@ -873,21 +1238,6 @@ def export_all_experiments_to_csv(time_ranges, output_file='experiment_results.c
         if is_within_any_duration(timestamp_str, time_ranges):
             selected_files.append(filename)
 
-    # if 'hotel' in output_file:
-    #     # keep only the `search-hotel` files that share timestamp with `reserve-hotel`
-    #     # reserve-hotel files are the ones that have `reserve-hotel` in the filename
-    #     # search-hotel files are the ones that have `search-hotel` in the filename
-        
-    #     reserve_hotel_files = [f for f in selected_files if 'reserve-hotel' in f]
-    #     search_hotel_files = [f for f in selected_files if 'search-hotel' in f]
-    #     # get the timestamp of the reserve-hotel files
-    #     reserve_hotel_timestamps = [extract_experiment_details_json(f)['timestamp_str'] for f in reserve_hotel_files]
-    #     # filter the search-hotel files that share the same timestamp with the reserve-hotel files
-    #     selected_files = [f for f in search_hotel_files if extract_experiment_details_json(f)['timestamp_str'] in reserve_hotel_timestamps]
-
-    #     # concat the reserve-hotel files to the selected_files
-    #     selected_files += reserve_hotel_files
-
     for filename in selected_files:
         # Extract the metadata from the filename
         config = extract_experiment_details_json(filename)
@@ -901,23 +1251,22 @@ def export_all_experiments_to_csv(time_ranges, output_file='experiment_results.c
         # if there's no `OK` in the file, remove the file
         if 'OK' not in open(filename).read():
             print("File ", filename, " is not valid, no OK")
-            # os.remove(filename)
             continue
-        
+
         # if Count is less than 10000, skip the file
-        request_count_cutoff = 10000
+        # request_count_cutoff = 10000
         with open(filename, 'r') as f:
-            try:
-                data = json.load(f)
-            except json.decoder.JSONDecodeError:
-                continue
+            data = json.load(f)
             if data['count'] < request_count_cutoff:
                 print("File ", filename, " is not valid, count is less than", request_count_cutoff)
                 continue
+            # only take the files that have `load-start` > 1000
+            if data['options']['load-start'] < 1000:
+                print("File ", filename, " is probably for concurrent runs, load-start is less than 1000")  
+                continue
 
         slo = get_slo(method=method)
-        # # Calculate latencies and throughput using the function calculate_metrics_from_file
-        # there are 5 return values from the function
+        # Calculate latencies and throughput using the function calculate_metrics_from_file
         latency_99, latency_95, latency_median, throughput, goodput = calculate_metrics_from_file(filename, slo)
 
         # Prepare a row with base columns
@@ -939,31 +1288,154 @@ def export_all_experiments_to_csv(time_ranges, output_file='experiment_results.c
         # Add control parameters to the row
         for key, value in control_parameters.items():
             row[key] = value
-            all_control_keys.add(key)
 
         experiment_data.append(row)
 
     # Define columns based on the base columns and control keys
-    columns = base_columns + list(all_control_keys)
+    columns = list(row.keys())
 
     # Create DataFrame from the experiment_data list
     df = pd.DataFrame(experiment_data, columns=columns)
 
-    # Export DataFrame to CSV
+    # Export DataFrame to CSV, append to the file only, don't overwrite!
     df.to_csv(output_file, index=False)
-    print(f"Experiment results successfully exported to {output_file}")
+    print(f"All Alibaba experiment results successfully exported to {output_file}")
+
+
+
+def extract_single_concurrent_request_to_csv(concurrency, input_file='all-experiments.csv', output_file='filtered-experiments.csv'):
+    # Check if the input file exists
+    if not os.path.exists(input_file):
+        print(f"Error: Input file {input_file} does not exist.")
+        return
+
+    # Load the DataFrame from the existing CSV
+    df = pd.read_csv(input_file)
+
+    # Filter the DataFrame based on the concurrency flag
+    filtered_df = df[df['concurrency'] == concurrency]
+
+    # Print the number of selected rows
+    print(f"Number of selected experiments: {len(filtered_df)}")
+
+    # Export the filtered DataFrame to a new CSV file
+    filtered_df.to_csv(output_file, index=False)
+    print(f"Filtered experiment results successfully exported to {output_file}")
+
+
+def export_single_request_to_csv(time_ranges, output_file='experiment_results.csv'):
+
+    experiment_data = []
+    selected_files = []
+
+    files = glob.glob(os.path.join(os.path.expanduser('~/Sync/Git/protobuf/ghz-results'), f'social-*control-*-parallel-capacity-*.json'))
+    files = [f for f in files if '-S_' not in f]
+
+    for filename in files:
+        # Extract the date and time part from the filename
+        config = extract_experiment_details_json(filename)
+        if config is None:
+            continue
+        timestamp_str = config['timestamp_str']
+
+        # only consider the files that have interface `search-hotel` or `compose`
+        method = config['interface']
+        if method not in ['search-hotel', 'compose']:
+            continue
+
+        # check if the file's timestamp is given format
+        assert len(timestamp_str) == 9, f"File {filename} is not valid"
+
+        if is_within_any_duration(timestamp_str, time_ranges):
+            selected_files.append(filename)
+        
+    print(f"Number of selected files: {len(selected_files)}")
+
+    for filename in selected_files:
+        # Extract the metadata from the filename
+        config = extract_experiment_details_json(filename)
+        overload_control = config['overload_control']
+        capacity_str = config['capacity_str']
+        timestamp_str = config['timestamp_str']
+        method = config['interface']
+
+        capacity = int(capacity_str)
+
+        # if file does not exist, skip
+        if not os.path.exists(filename):
+            print("File ", filename, " does not exist")
+            continue
+        # if there's no `OK` in the file, remove the file
+        if 'OK' not in open(filename).read():
+            print("File ", filename, " is not valid, no OK")
+            continue
+
+        # if Count is less than 10000, skip the file
+        # request_count_cutoff = 1000
+        with open(filename, 'r') as f:
+            try:
+                data = json.load(f)
+            except json.decoder.JSONDecodeError:
+                print("File ", filename, " is not valid, JSONDecodeError")
+                continue
+            if data['count'] < request_count_cutoff:
+                print("File ", filename, " is not valid, count is less than", request_count_cutoff)
+                continue
+            # only take the files that have `load-start` > 1000
+            if data['options']['load-start'] < 1000:
+                print("File ", filename, " is probably for concurrent runs, load-start is less than 1000")  
+                continue
+
+        slo = get_slo(method=method)
+        # Calculate latencies and throughput using the function calculate_metrics_from_file
+        latency_99, latency_95, latency_median, throughput, goodput = calculate_metrics_from_file(filename, slo)
+
+        # Prepare a row with base columns
+        row = {
+            'timestamp': timestamp_str,
+            'interface': method,
+            'control_scheme': overload_control,
+            'capacity': capacity,
+            'throughput': throughput,
+            'goodput': goodput,
+            'latency_99': latency_99,
+            'latency_95': latency_95,
+            'latency_median': latency_median,
+            'filename': filename
+        }
+        
+        control_parameters = extract_configurations_from_output_file(filename)
+
+        # Add control parameters to the row
+        for key, value in control_parameters.items():
+            row[key] = value
+
+        experiment_data.append(row)
+
+    # Define columns based on the base columns and control keys
+    columns = list(row.keys())
+
+    # Create DataFrame from the experiment_data list
+    df = pd.DataFrame(experiment_data, columns=columns)
+
+    # Export DataFrame to CSV, append to the file only, don't overwrite!
+    df.to_csv(output_file, index=False)
+    print(f"Single experiment result successfully exported to {output_file}")
 
 
 def aggregate_concurrent_runs(input_file='experiment_results.csv', output_file='aggregated_experiment_results.csv'):
     # Read the CSV file into a DataFrame
     df = pd.read_csv(input_file)
     
+    # Group by 'timestamp' and 'capacity' and filter groups with more than one row
+    filtered_df = df.groupby(['timestamp', 'capacity']).filter(lambda x: len(x) > 1)
+
     # Define the columns to group by
-    group_columns = ['timestamp', 'control_scheme']
+    group_columns = ['timestamp', 'control_scheme', 'capacity']
     
     # Find the concurrent runs and calculate total goodput and total throughput
     aggregated_data = []
-    grouped = df.groupby(group_columns)
+    grouped = filtered_df.groupby(group_columns)
     
     for name, group in grouped:
         interfaces = tuple(sorted(group['interface'].unique()))
@@ -1003,7 +1475,8 @@ def calculate_group_statistics(file_path, output_file='group_statistics.csv',k=5
         'BREAKWATER_CLIENT_EXPIRATION', 'DAGOR_UMAX', 'BREAKWATERD_A', 
         'BREAKWATERD_LOAD_SHEDDING', 'PRICE_STRATEGY', 'BREAKWATERD_RTT', 
         'BREAKWATER_INITIAL_CREDIT', 'BREAKWATER_B', 'DAGOR_ALPHA', 'INTERCEPT', 
-        'BREAKWATERD_CLIENT_EXPIRATION', 'DAGOR_BETA', 'CHARON_TRACK_PRICE', 
+        'BREAKWATERD_CLIENT_EXPIRATION', 'DAGOR_BETA', 
+        # 'RAJOMON_TRACK_PRICE', 
         'BREAKWATER_SLO', 'BREAKWATER_RTT'
     ]
     
@@ -1026,7 +1499,7 @@ def calculate_group_statistics(file_path, output_file='group_statistics.csv',k=5
     # Function to sample k files from each group
     def sample_k_files(group, k):
         if len(group) > k:
-            return group.sample(n=k, random_state=1)  # Fixed random state for reproducibility
+            return group.sample(n=k, random_state=1)
         else:
             return group
     

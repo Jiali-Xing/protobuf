@@ -5,6 +5,7 @@ import os
 import pytz
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
 import numpy as np
 import matplotlib.dates as md
 from slo import get_slo
@@ -94,11 +95,11 @@ def plot_latency_pdf_cdf(df, filename):
     ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', bbox_to_anchor=(0, 1), ncol=2)
     ax2.legend().remove()
 
-    plt.savefig(filename + '.latency.png')
+    plt.savefig(filename + '.latency.pdf')
     plt.show()
 
 
-def calculate_average_var_goodput(filename):
+def calculate_average_var_goodput(filename, slo):
     # Insert your code for calculating average goodput here
     # Read the ghz.output file and calculate the average goodput
     # Return the average goodput
@@ -106,7 +107,7 @@ def calculate_average_var_goodput(filename):
     df = convert_to_dataframe(data)
     # print(df.head())
     # df = calculate_throughput(df)
-    goodput, goodputVar = calculate_goodput_ave_var(df, SLO)
+    goodput, goodputVar = calculate_goodput_ave_var(df, slo)
     return goodput, goodputVar
 
 
@@ -202,7 +203,7 @@ def extract_waiting_times(file_path):
 def extract_ownPrice_update(file_path):
     # Define the regular expression patterns for extracting timestamp and waiting time
     timestamp_pattern = r"LOG: (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+[-+]\d{2}:\d{2})"
-    price_update_patterns = r"Own price updated to (\d+)"
+    price_update_patterns = r"[Own price]: (\d+)"
 
     data = []
     timestamps = []
@@ -210,7 +211,7 @@ def extract_ownPrice_update(file_path):
     with open(file_path, "r") as file:
         for line in file:
             # if "Update OwnPrice" or "Update Price by Queue Delay" in line:
-            if "Own price updated to" in line:
+            if "Own price" in line:
                 match = re.search(price_update_patterns, line)
                 if match:
                     data.append(int(match.group(1)))
@@ -245,7 +246,8 @@ def extract_ownPrice_update(file_path):
 def extract_ownPrices(file_pattern):
     # Define the regular expression patterns for extracting timestamp and own price update
     timestamp_pattern = r"LOG: (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+[-+]\d{2}:\d{2})"
-    price_update_patterns = r"Own price updated to (\d+)"
+    # price_update_patterns = r"Own price (\d+)"
+    price_update_patterns = r"Own price]: (\d+)"
 
     data_dict = {}
    
@@ -273,7 +275,7 @@ def extract_ownPrices(file_pattern):
 
         with open(file_path, "r") as file:
             for line in file:
-                if "Own price updated to" in line:
+                if "Own price" in line:
                     match = re.search(price_update_patterns, line)
                     if match:
                         data.append(int(match.group(1)))
@@ -306,7 +308,7 @@ def extract_ownPrices(file_pattern):
     # Then, we sort the max_dict by the max value
     max_dict = dict(sorted(max_dict.items(), key=lambda item: item[1], reverse=True))
     # Then, we only keep the top 5 services
-    data_dict = {service_name: df for service_name, df in data_dict.items() if service_name in list(max_dict.keys())[:5]}
+    # data_dict = {service_name: df for service_name, df in data_dict.items() if service_name in list(max_dict.keys())[:3]}
 
     return data_dict
 
@@ -354,9 +356,6 @@ def extract_bw_credit(file_pattern):
 
 def extract_waiting_times_all(file_pattern):
     # Define the regular expression patterns for extracting timestamp and own price update
-    # timestamp_pattern = r"LOG: (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+[-+]\d{2}:\d{2})"
-    # price_update_patterns = r"Own price updated to (\d+)"
-
     data_dict = {}
    
     # Provide the full path to the directory containing the files
@@ -395,7 +394,7 @@ def extract_waiting_times_all(file_pattern):
     # Then, we sort the max_dict by the max value
     max_dict = dict(sorted(max_dict.items(), key=lambda item: item[1], reverse=True))
     # Then, we only keep the top 5 services
-    data_dict = {service_name: df for service_name, df in data_dict.items() if service_name in list(max_dict.keys())[:5]}           
+    data_dict = {service_name: df for service_name, df in data_dict.items() if service_name in list(max_dict.keys())[:3]}
     return data_dict
 
 
@@ -493,7 +492,7 @@ def plot_timeseries_lat(df, filename, computation_time=0):
     plt.savefig(mechanism + '.queuing-delay.png')
     plt.show()
 
-# plot 2 charon experiments in the same plot with function similar to plot_timeseries_split
+# plot 2 rajomon experiments in the same plot with function similar to plot_timeseries_split
 def plot_timeseries_split_2(df1, df2, filename):
     # similar to plot_timeseries_split, only difference is that we have 2 dataframes and 2 columns each row.
     fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(6, 4), sharex=True, gridspec_kw={'height_ratios': [1, 2]})
@@ -509,7 +508,7 @@ def plot_timeseries_split_2(df1, df2, filename):
              label='Average Latency (e2e)')
     ax1.plot(df.index, np.maximum(0.001, df['tail_latency']), linestyle='-.',
              label='99% Tail Latency (e2e)')
-    ax1.set_ylim(10, 200)
+    ax1.set_ylim(10, 500)
     ax1.set_yscale('log')
     # ax1 add legend on top of the plot 
 
@@ -556,7 +555,7 @@ def plot_timeseries_split_2(df1, df2, filename):
              label='Average Latency (e2e)')
     ax3.plot(df.index, np.maximum(0.001, df['tail_latency']), linestyle='-.',
              label='99% Tail Latency (e2e)')
-    ax3.set_ylim(10, 200)
+    ax3.set_ylim(10, 500)
     ax3.set_yscale('log')
     SLO = get_slo(method, tight=False, all_methods=False)
     ax3.axhline(y=SLO, color='c', linestyle='-.', label='SLO')
@@ -621,16 +620,26 @@ def plot_timeseries_split_2(df1, df2, filename):
     plt.show()
 
 
+def format_ticks(value, tick_number):
+    # first, divide the value by 1000, then
+    # reture 1 digit after the decimal point (float)
+    tick = f'{value/1000:.1f}'
+    # if tick is actually an integer, return it as an integer
+    if value % 1000 == 0:
+        return f'{int(value/1000)}'
+    return tick
+
+
 def plot_timeseries_split(df, filename, computation_time=0):
     # mechanism is the word after `control-` in the filename
     # e.g., breakwater in social-compose-control-breakwater-parallel-capacity-8000-1209_1620.json
     mechanism = re.findall(r"control-(\w+)-", filename)[0]
     
-    # servicePrice is true if the mechanism is charon
+    # servicePrice is true if the mechanism is rajomon
     # servicePrice take from env, default is False
     servicePrice = os.getenv('servicePrice', False)
     serviceCredit = os.getenv('BREAKWATER_TRACK_CREDIT', False)
-    narrow = False
+    narrow = True
     width = 3 if narrow else 6
     if servicePrice or serviceCredit:
         fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, figsize=(12, 12), sharex=True)
@@ -662,8 +671,11 @@ def plot_timeseries_split(df, filename, computation_time=0):
     # if alibaba:
         # ax1.set_ylim(100, 500)
     if not alibaba:
-        ax1.set_ylim(1, 200)
+        ax1.set_ylim(0.1, 500)
     ax1.set_yscale('log')
+
+    # set the hspace to be 0.1 between ax1 and ax2
+    plt.subplots_adjust(hspace=0.05)
 
     # add .fillna(0) to all the columns of df, so that we can plot the throughput and goodput
     df = df.fillna(0)
@@ -699,13 +711,18 @@ def plot_timeseries_split(df, filename, computation_time=0):
 
 
     ax2.fill_between(df.index, 0, df['goodput'], color=colors[0], alpha=0.8, label='Goodput')
-    ax2.fill_between(df.index, df['goodput'], df['throughput'], color=colors[1], alpha=0.8, label='SLO Violation')
+    ax2.fill_between(df.index, df['goodput'], df['throughput'], color=colors[1], alpha=0.8, label='SLO\nViolation')
     ax2.fill_between(df.index, df['throughput'], df['throughput'] + df['dropped'], color=colors[2], alpha=0.8, label='Dropped')
-    # if mechanism in ['charon', 'breakwater', 'breakwaterd']:
+    # if mechanism in ['rajomon', 'breakwater', 'breakwaterd']:
     #     ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], color='tab:blue', alpha=0.3, label='Rate Limited Req')
     ax2.tick_params(axis='y', labelcolor='tab:blue')
     
-    ax2.set_ylim(0, 22000)
+    ax2.set_ylim(0, 19000)
+    # if alibaba:
+    #     ax2.set_ylim(0, 1000)
+
+    # replace y axis 
+    ax2.yaxis.set_major_formatter(FuncFormatter(format_ticks))
 
     # Apply the custom formatter to the x-axis
     # use second locator to show grid lines for each second, not `09` but `9`
@@ -743,9 +760,10 @@ def plot_timeseries_split(df, filename, computation_time=0):
             for waiting_time in df_queuing_delay.columns:
                 # compare the df_latency_window_size with the latency_window_size (string), use the smaller one
                 # convert the latency_window_size (string) to milliseconds
-                latency_window_size_ms = pd.Timedelta(latency_window_size).total_seconds()
+                waiting_time_window_size = '1s'
+                latency_window_size_ms = pd.Timedelta(waiting_time_window_size).total_seconds()
                 if df_latency_window_size < latency_window_size_ms:
-                    mean_queuing_delay = df_queuing_delay[waiting_time].rolling(latency_window_size).mean()
+                    mean_queuing_delay = df_queuing_delay[waiting_time].rolling(waiting_time_window_size).mean()
                 else:
                     mean_queuing_delay = df_queuing_delay[waiting_time]
                 ax1.plot(mean_queuing_delay.index, mean_queuing_delay, label=service_name)
@@ -771,7 +789,7 @@ def plot_timeseries_split(df, filename, computation_time=0):
 
     # put legend on the top left corner
     # for ax1, don't show the box border of the legend
-    ax1.legend(loc='lower left', bbox_to_anchor=(0, 1.1), ncol=1 if narrow else 2, frameon=False)
+    ax1.legend(loc='lower left', bbox_to_anchor=(0, 0.9), ncol=1 if narrow else 2, frameon=False)
 
     if cloudlab:
         if servicePrice:
@@ -812,14 +830,14 @@ def plot_timeseries_split(df, filename, computation_time=0):
  
     # fill between total demand and throughput + dropped requests, only if total demand is larger than throughput + dropped requests
     if mechanism != 'baseline' and mechanism != 'dagor':
-        ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], where=df['total_demand'] > df['throughput'] + df['dropped'], color='tab:blue', alpha=0.3, label='Rate Limited')
+        ax2.fill_between(df.index, df['throughput'] + df['dropped'], df['total_demand'], where=df['total_demand'] > df['throughput'] + df['dropped'], color='tab:blue', alpha=0.3, label='Rate\nLimited')
     
     ax2.legend(loc='upper left', bbox_to_anchor=(0, 1), ncol=2 if narrow else 1, frameon=True)
     # concurrent_clients = re.findall(r"\d+", filename)[0]
     # plt.suptitle(f"Mechanism: {mechanism}. Number of Concurrent Clients: {concurrent_clients}")
 
     # add the ax2 a title, saying that `The Average Goodput Under Overload is: ` + calculate_average_goodput(filename)
-    goodputAve, goodputStd = calculate_average_var_goodput(filename)
+    goodputAve, goodputStd = calculate_average_var_goodput(filename, SLO)
     if not narrow:
         ax2.set_title(f"The Goodput has Mean: {goodputAve} and Std: {goodputStd}")
 
@@ -861,19 +879,21 @@ def plot_latencies(df, filename, computation_time=0):
 
     # add a horizontal line at y=SLO - computation_time
     ax1.axhline(y=SLO - computation_time, color='c', linestyle='-.', label='SLO - computation time')
-    # find the line `export LATENCY_THRESHOLD=???us` in `/home/ying/Sync/Git/service-app/cloudlab/scripts/cloudlab_run_and_fetch.sh`
-    # and add a horizontal line at y=???us
-    # with open ("/home/ying/Sync/Git/service-app/cloudlab/scripts/cloudlab_run_and_fetch.sh", "r") as file:
-    #     for line in file:
-    #         if "export LATENCY_THRESHOLD=" in line:
-    #             latency_threshold = int(re.findall(r"\d+", line)[0])
-    #             # convert the latency_threshold from us to ms
-    #             latency_threshold = latency_threshold / 1000
-    #             ax1.axhline(y=latency_threshold, color='g', linestyle='-.', label='Latency Threshold')
-    #             break
-    # read the latency_threshold from the environment variable, it looks like 5000us
-    # latency_threshold read as time delta
-    latency_threshold = os.environ.get('LATENCY_THRESHOLD')
+    
+    # find the `{LATENCY_THRESHOLD xxxus}` from the filename+'.output' and add a horizontal line at y=xxxus
+    with open (filename+'.output', "r") as file:
+        for line in file:
+            if "LATENCY_THRESHOLD" in line:
+                # match the number in the .*{LATENCY_THRESHOLD xxxus}.* using exact match
+                match = re.search(r'\{LATENCY_THRESHOLD (\d+)us\}', line)
+                if match:
+                    latency_threshold = int(match.group(1))  # Extract the number
+                    print(f"Found LATENCY_THRESHOLD: {latency_threshold}us")
+                    # convert the latency_threshold from us to ms
+                    latency_threshold = latency_threshold / 1000
+                    ax1.axhline(y=latency_threshold, color='g', linestyle='-.', label='Latency Threshold')
+                    break
+
     latency_ms = pd.Timedelta(latency_threshold).total_seconds() * 1000
     # convert the latency_threshold from 5000us to 5ms
     ax1.axhline(y=latency_ms, color='g', linestyle='-.', label='Latency Threshold')
@@ -913,9 +933,10 @@ def plot_latencies(df, filename, computation_time=0):
             for waiting_time in df_queuing_delay.columns:
                 # compare the df_latency_window_size with the latency_window_size (string), use the smaller one
                 # convert the latency_window_size (string) to milliseconds
-                latency_window_size_ms = pd.Timedelta(latency_window_size).total_seconds()
+                waiting_time_window_size = '1s'
+                latency_window_size_ms = pd.Timedelta(waiting_time_window_size).total_seconds()
                 if df_latency_window_size < latency_window_size_ms:
-                    mean_queuing_delay = df_queuing_delay[waiting_time].resample(latency_window_size).mean()
+                    mean_queuing_delay = df_queuing_delay[waiting_time].rolling(waiting_time_window_size).mean()
                 else:
                     mean_queuing_delay = df_queuing_delay[waiting_time]
 
@@ -928,7 +949,7 @@ def plot_latencies(df, filename, computation_time=0):
             # print the average queuing delay of each service
             print("average queuing delay of service", service_name, ":", mean_queuing_delay.mean())    
         
-        # if the charon is turned on, plot the sum of the queuing delay of all services
+        # if the rajomon is turned on, plot the sum of the queuing delay of all services
         # if INTERCPTOR is true 
         if INTERCEPTOR == 'true':
             # Sum the queuing delay of all services, fill the NaN with 0
@@ -961,26 +982,27 @@ def plot_latencies(df, filename, computation_time=0):
 
     # ax1.legend(loc='lower left', bbox_to_anchor=(0, 1), ncol=1, frameon=False)
 
-    goodputAve, goodputStd = calculate_average_var_goodput(filename)
+    goodputAve, goodputStd = calculate_average_var_goodput(filename, SLO)
     ax1.set_title(f"The Goodput has Mean: {goodputAve} and Std: {goodputStd}")
 
     latency_99th = read_tail_latency(filename)
+    latency_95th = read_tail_latency(filename, percentile=95)
     # latency_99th = pd.Timedelta(latency_99th).total_seconds() * 1000
     latency_median = read_tail_latency(filename, percentile=50)
     # latency_median = pd.Timedelta(latency_median).total_seconds() * 1000
-    latency_mean = read_mean_latency(filename)
+    # latency_mean = read_mean_latency(filename)
     # latency_mean = pd.Timedelta(latency_mean).total_seconds() * 1000
 
-    ax1.set_title(f"Mean, Median, 99-tile Latency: {round(latency_mean, 2)} ms, {round(latency_median, 2)} ms, {round(latency_99th, 2)} ms")
+    ax1.set_title(f"Median, 95th, 99th Latency: {round(latency_median, 2)} ms, {round(latency_95th, 2)} ms, {round(latency_99th, 2)} ms")
 
-    plt.savefig(mechanism + '.1000c.latency.png', format='png', dpi=300, bbox_inches='tight')
+    plt.savefig(mechanism + '.latency.pdf', dpi=300, bbox_inches='tight')
     if not noPlot:
         plt.show()
     plt.close()
 
 
 def analyze_data(filename):
-    # ./social-compose-control-charon-parallel-capacity-7000-1023_1521.json
+    # ./social-compose-control-rajomon-parallel-capacity-7000-1023_1521.json
     # if filename contains control, read the string after it as INTERCEPTOR
     global INTERCEPTOR, capacity 
     if "control" in filename:

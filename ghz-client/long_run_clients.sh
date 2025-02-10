@@ -59,6 +59,8 @@ echo "Service Port: $SERVICE_PORT"
 # Combine IP and port to create SERVICE_A_URL
 SERVICE_A_URL="$NODE_IP:$SERVICE_PORT"
 export SERVICE_A_URL
+# also export method
+export METHOD
 
 echo "SERVICE_A_URL: $SERVICE_A_URL"
 
@@ -95,5 +97,6 @@ while true; do
     sleep 4
     run_clientcall
     # clean disk space, empty the ../ghz-results/ folder
-    rm -rf ../ghz-results/*
+    rm -rf ../ghz-results/*output
+    rm -rf ../ghz-results/*json
 done

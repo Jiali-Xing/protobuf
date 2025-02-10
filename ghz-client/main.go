@@ -19,15 +19,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// ghz --insecure -O html -o test.html \
-//   -n 50000 \
-//   -m '{"tokens":"100"}' \
-//   --proto ./greeting.proto \
-//   --load-schedule="step" \
-//   --load-start=2000 --load-step=2000 --load-end=6000 --load-step-duration=2s \
-//   --call \
-//   0.0.0.0:50051
-
 var (
 	// logLevel     = getEnv("LOG_LEVEL", "info")
 	serviceName = getEnv("SERVICE_NAME", "Client")
@@ -35,7 +26,7 @@ var (
 	URLServiceA = getEnv("SERVICE_A_URL", "localhost:50051")
 	log         = logrus.New()
 
-	interceptor = getEnv("INTERCEPT", "charon")
+	interceptor = getEnv("INTERCEPT", "rajomon")
 
 	constantLoadStr = getEnv("CONSTANT_LOAD", "false")
 	// make it a boolean
@@ -195,8 +186,8 @@ func main() {
 		protoCall = "greeting.v3.GreetingService/Greeting"
 	}
 
-	interceptorConfigs := GetCharonConfigs()
-	fmt.Println("Charon Configurations:")
+	interceptorConfigs := GetRajomonConfigs()
+	fmt.Println("Rajomon Configurations:")
 	fmt.Println(interceptorConfigs[serviceName])
 
 	var err error
@@ -226,7 +217,7 @@ func main() {
 		}()
 	}
 
-	// Iterate over the charonConfig slice and assign values based on the Name field
+	// Iterate over the rajomonConfig slice and assign values based on the Name field
 	for _, config := range interceptorConfigs[serviceName] {
 		switch config.Name {
 		case "INTERCEPT":
@@ -270,7 +261,7 @@ func main() {
 		}
 	}
 
-	charonOptions := map[string]interface{}{
+	rajomonOptions := map[string]interface{}{
 		"rateLimiting":       rateLimiting,
 		"loadShedding":       false,
 		"pinpointQueuing":    false,
@@ -323,8 +314,8 @@ func main() {
 			"motivate-set":         1,
 			"motivate-get":         2,
 			"search-hotel":         1,
-			"store-hotel":          2,
-			"reserve-hotel":        3,
+			"reserve-hotel":        2,
+			"store-hotel":          3,
 		},
 		EntryService:                 false,
 		IsEnduser:                    true,
@@ -360,18 +351,11 @@ func main() {
 	// if loadIncrease, we will use a linear increase in load from 10% to 100% of the capacity in the first few seconds of warmup
 	if loadIncrease {
 		loadSchedule = "line"
-		// loadStart = uint(warmup_load)
-		// loadEnd = uint(capacity)
 		// load step is the difference between the end and start divided by the seconds of warmup
 		loadStep = int(loadEnd-loadStart) / 5
 	}
 
 	log.Printf("De facto load: Shape=%s, Start=%d, End=%d, Step=%d", loadSchedule, loadStart, loadEnd, loadStep)
-
-	// if method start with S_, then timeout is 10 seconds
-	if method[0] == 'S' {
-		timeOut = time.Second * 100
-	}
 
 	if loadIncrease {
 		report, err = runner.Run(
@@ -391,7 +375,7 @@ func main() {
 			runner.WithMethod(method),
 			runner.WithInterceptor(defactoInterceptor),
 			runner.WithInterceptorEntry(entry_point),
-			runner.WithCharonOptions(charonOptions),
+			runner.WithRajomonOptions(rajomonOptions),
 			runner.WithBreakwaterOptions(breakwaterOptions),
 			runner.WithDagorOptions(dagorParams),
 			runner.WithAsync(true),
@@ -417,7 +401,7 @@ func main() {
 			runner.WithMethod(method),
 			runner.WithInterceptor(defactoInterceptor),
 			runner.WithInterceptorEntry(entry_point),
-			runner.WithCharonOptions(charonOptions),
+			runner.WithRajomonOptions(rajomonOptions),
 			runner.WithBreakwaterOptions(breakwaterOptions),
 			runner.WithDagorOptions(dagorParams),
 			runner.WithAsync(true),
@@ -440,10 +424,10 @@ func main() {
 
 	// filename := fmt.Sprintf("../ghz-results/xxx json. where xxx tells us if interceptor is enabled or not")
 	// and method, constant load or not, capacity, etc.
-	// filename := fmt.Sprintf("../ghz-results/.json", enableCharon, method, constantLoadStr, capacity)
-	// enableCharonStr := strconv.FormatBool(enableCharon)
-	// filename := fmt.Sprintf("../ghz-results/charon-%s-method-%s-constantload-%s-capacity-%d.json", enableCharonStr, method, constantLoadStr, capacity)
-	// if enableCharon, name it charon-xxx, otherwise, plain-xxx
+	// filename := fmt.Sprintf("../ghz-results/.json", enableRajomon, method, constantLoadStr, capacity)
+	// enableRajomonStr := strconv.FormatBool(enableRajomon)
+	// filename := fmt.Sprintf("../ghz-results/rajomon-%s-method-%s-constantload-%s-capacity-%d.json", enableRajomonStr, method, constantLoadStr, capacity)
+	// if enableRajomon, name it rajomon-xxx, otherwise, plain-xxx
 	filename := ""
 
 	filename = fmt.Sprintf("../ghz-results/social-%s-%s-%s-capacity-%d.json", method, interceptor, subcall, capacity)

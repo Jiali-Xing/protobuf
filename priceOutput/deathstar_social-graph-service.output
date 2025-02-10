@@ -5,17 +5,17 @@ Downstreams of the Service:
 [social-graph-redis]
 Server Configurations:
 [{COMPUTATION_DISTRIBUTION constant} {PROCESS_TIME 1ms} {APP_PORT 50051} {LOG_LEVEL Info} {GREETING Hi Malaka!} {SUBCALL parallel} {PROFILING false}]
-Charon Configurations:
-[{INTERCEPT charon} {PRICE_UPDATE_RATE 16990us} {TOKEN_UPDATE_RATE 10159us} {LATENCY_THRESHOLD 3128us} {PRICE_STEP 104} {PRICE_STRATEGY proportional} {LAZY_UPDATE true} {RATE_LIMITING true} {LOAD_SHEDDING true} {CHARON_TRACK_PRICE true} {BREAKWATER_SLO 12500us} {BREAKWATER_A 0.001} {BREAKWATER_B 0.02} {BREAKWATER_CLIENT_EXPIRATION 10ms} {BREAKWATER_INITIAL_CREDIT 400} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATER_RTT 1000us} {BREAKWATERD_SLO 12500us} {BREAKWATERD_A 0.001} {BREAKWATERD_B 0.02} {BREAKWATERD_CLIENT_EXPIRATION 10ms} {BREAKWATERD_INITIAL_CREDIT 400} {BREAKWATERD_LOAD_SHEDDING true} {BREAKWATERD_RTT 1000us} {DAGOR_QUEUING_THRESHOLD 2ms} {DAGOR_ALPHA 0.05} {DAGOR_BETA 0.01} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 10ms} {DAGOR_UMAX 20}]
+Rajomon Configurations:
+[{INTERCEPT rajomon} {PRICE_UPDATE_RATE 16990us} {TOKEN_UPDATE_RATE 10159us} {LATENCY_THRESHOLD 3128us} {PRICE_STEP 104} {PRICE_STRATEGY proportional} {LAZY_UPDATE true} {RATE_LIMITING true} {LOAD_SHEDDING true} {RAJOMON_TRACK_PRICE true} {BREAKWATER_SLO 12500us} {BREAKWATER_A 0.001} {BREAKWATER_B 0.02} {BREAKWATER_CLIENT_EXPIRATION 10ms} {BREAKWATER_INITIAL_CREDIT 400} {BREAKWATER_LOAD_SHEDDING true} {BREAKWATER_RTT 1000us} {BREAKWATERD_SLO 12500us} {BREAKWATERD_A 0.001} {BREAKWATERD_B 0.02} {BREAKWATERD_CLIENT_EXPIRATION 10ms} {BREAKWATERD_INITIAL_CREDIT 400} {BREAKWATERD_LOAD_SHEDDING true} {BREAKWATERD_RTT 1000us} {DAGOR_QUEUING_THRESHOLD 2ms} {DAGOR_ALPHA 0.05} {DAGOR_BETA 0.01} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 10ms} {DAGOR_UMAX 20}]
 Price Update Rate: 16.99ms
 Latency Threshold: 3.128ms
 Price Step: 104
 Price Strategy: proportional
-Intercept: charon
+Intercept: rajomon
 Lazy Update: true
 Rate Limiting: true
 Load Shedding: true
-Charon Track Price: true
+Rajomon Track Price: true
 Breakwater SLO: 12.5ms
 Breakwater Client Timeout: 10ms
 Breakwater Initial Credit: 400
@@ -41,7 +41,7 @@ Address Listening on: 0.0.0.0:50051
 Greeting Message: Hi Malaka!
 Log Level: Info
 Subcall Pattern: parallel
-{"function":"run","level":"info","line":"652","msg":"Charon Config: map[debug:false guidePrice:-1 initprice:0 latencyThreshold:3.128ms lazyResponse:true loadShedding:true pinpointLatency:false pinpointQueuing:true pinpointThroughput:false priceAggregation:maximal priceStep:104 priceStrategy:proportional priceUpdateRate:16.99ms rateLimiting:true recordPrice:true]","time":"2024-01-29T20:34:14Z"}
+{"function":"run","level":"info","line":"652","msg":"Rajomon Config: map[debug:false guidePrice:-1 initprice:0 latencyThreshold:3.128ms lazyResponse:true loadShedding:true pinpointLatency:false pinpointQueuing:true pinpointThroughput:false priceAggregation:maximal priceStep:104 priceStrategy:proportional priceUpdateRate:16.99ms rateLimiting:true recordPrice:true]","time":"2024-01-29T20:34:14Z"}
 LOG: 2024-01-29T20:34:14.912536459+00:00|	[Update Price by Queue Delay]: Own price updated to 0
 
 LOG: 2024-01-29T20:34:14.912586451+00:00|	[Incremental Waiting Time Maximum]:	0.000000 ms.

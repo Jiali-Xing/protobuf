@@ -99,7 +99,7 @@
         }
     },
     {
-        "target": 1.0832894673115558,
+        "target": 0.43903843161147704,
         "params": {
             "latency_threshold": 418.31780788000157,
             "price_step": 203.65410123350563,
@@ -108,142 +108,142 @@
         }
     },
     {
-        "target": 1.0862356351506741,
+        "target": 0.5990397632016167,
         "params": {
-            "latency_threshold": 335.74535532546935,
-            "price_step": 214.979257686805,
-            "price_update_rate": 12928.834899987867,
-            "token_update_rate": 114900.7190982145
+            "latency_threshold": 565.5343904732774,
+            "price_step": 162.02060619011004,
+            "price_update_rate": 12834.634620499695,
+            "token_update_rate": 109768.06326300945
         }
     },
     {
-        "target": 1.1033392704263756,
+        "target": 0.4874753759908983,
+        "params": {
+            "latency_threshold": 674.0314117671525,
+            "price_step": 133.4836804902062,
+            "price_update_rate": 15713.662529162277,
+            "token_update_rate": 112187.40059880001
+        }
+    },
+    {
+        "target": 0.25899667416161226,
         "params": {
             "latency_threshold": 900.0,
             "price_step": 250.0,
             "price_update_rate": 16000.0,
-            "token_update_rate": 109663.59793788054
+            "token_update_rate": 80000.0
         }
     },
     {
-        "target": 1.0760142153294696,
+        "target": 0.6464081001408442,
         "params": {
-            "latency_threshold": 312.7237641915773,
-            "price_step": 221.18218594400818,
-            "price_update_rate": 15753.988787722317,
-            "token_update_rate": 108082.92108974382
+            "latency_threshold": 518.6515149404571,
+            "price_step": 103.35971667003392,
+            "price_update_rate": 10066.900423377245,
+            "token_update_rate": 118860.86095526011
         }
     },
     {
-        "target": 1.0987942163446427,
+        "target": 0.4840859371378385,
         "params": {
-            "latency_threshold": 639.1243020796294,
-            "price_step": 159.226529948797,
-            "price_update_rate": 12780.29283648485,
-            "token_update_rate": 115592.91031297058
+            "latency_threshold": 475.8771068538078,
+            "price_step": 100.99860721119337,
+            "price_update_rate": 13929.888665520226,
+            "token_update_rate": 114818.56294526887
         }
     },
     {
-        "target": 1.1043903605006853,
+        "target": 0.44700994113348896,
         "params": {
-            "latency_threshold": 900.0,
-            "price_step": 250.0,
-            "price_update_rate": 11912.873763701116,
-            "token_update_rate": 114599.36770337289
+            "latency_threshold": 336.56206606181314,
+            "price_step": 165.88124774863596,
+            "price_update_rate": 13773.28913858306,
+            "token_update_rate": 115258.06003827715
         }
     },
     {
-        "target": 1.1022781788087064,
+        "target": 0.6204883311546764,
+        "params": {
+            "latency_threshold": 396.0627935169379,
+            "price_step": 100.0,
+            "price_update_rate": 10110.751636932871,
+            "token_update_rate": 118983.21035187878
+        }
+    },
+    {
+        "target": 0.3923774085103917,
         "params": {
             "latency_threshold": 300.0,
-            "price_step": 100.0,
-            "price_update_rate": 14532.896582603791,
-            "token_update_rate": 109423.0163240055
-        }
-    },
-    {
-        "target": 1.0917212510731076,
-        "params": {
-            "latency_threshold": 900.0,
             "price_step": 250.0,
-            "price_update_rate": 9000.0,
-            "token_update_rate": 99762.73409436611
-        }
-    },
-    {
-        "target": 1.0948450629488886,
-        "params": {
-            "latency_threshold": 300.0,
-            "price_step": 100.0,
             "price_update_rate": 16000.0,
-            "token_update_rate": 109886.59792444293
+            "token_update_rate": 80000.0
         }
     },
     {
-        "target": 1.024070706936613,
+        "target": 0.3668061547195329,
         "params": {
-            "latency_threshold": 671.0525943409322,
-            "price_step": 189.17423934036572,
-            "price_update_rate": 12745.840769655106,
-            "token_update_rate": 115525.76440899089
+            "latency_threshold": 318.768681138238,
+            "price_step": 201.71117599053974,
+            "price_update_rate": 9065.891168991024,
+            "token_update_rate": 119535.79681404615
         }
     },
     {
-        "target": 1.0980461996966338,
-        "params": {
-            "latency_threshold": 300.0,
-            "price_step": 100.0,
-            "price_update_rate": 9000.0,
-            "token_update_rate": 100506.0001170983
-        }
-    },
-    {
-        "target": 1.1011977648387035,
+        "target": 0.25899667416161226,
         "params": {
             "latency_threshold": 900.0,
             "price_step": 250.0,
+            "price_update_rate": 16000.0,
+            "token_update_rate": 80000.0
+        }
+    },
+    {
+        "target": 0.25899667416161226,
+        "params": {
+            "latency_threshold": 900.0,
+            "price_step": 250.0,
+            "price_update_rate": 16000.0,
+            "token_update_rate": 80000.0
+        }
+    },
+    {
+        "target": 0.7195729910106091,
+        "params": {
+            "latency_threshold": 300.0,
+            "price_step": 123.02292222311118,
             "price_update_rate": 9000.0,
-            "token_update_rate": 99162.30933118449
+            "token_update_rate": 110060.03986226044
         }
     },
     {
-        "target": 1.0918641493865904,
+        "target": 0.5657555774294856,
         "params": {
-            "latency_threshold": 300.0,
-            "price_step": 143.38510437615886,
-            "price_update_rate": 11721.489973898251,
-            "token_update_rate": 106396.4434034394
+            "latency_threshold": 401.4618456935443,
+            "price_step": 238.39165386499425,
+            "price_update_rate": 9087.414582585117,
+            "token_update_rate": 118212.24169465835
         }
     },
     {
-        "target": 1.102569282723129,
+        "target": 0.18219537706613964,
         "params": {
-            "latency_threshold": 858.9162616459839,
-            "price_step": 145.62918372296176,
-            "price_update_rate": 15958.13582820941,
-            "token_update_rate": 109280.73227641548
+            "latency_threshold": 711.9048125105394,
+            "price_step": 225.1925058839448,
+            "price_update_rate": 9127.99842147421,
+            "token_update_rate": 110005.79536741163
         }
     },
     {
-        "target": 1.1032827659789408,
+        "target": 0.44293906808436484,
         "params": {
-            "latency_threshold": 769.8379092179032,
-            "price_step": 149.08810640548467,
-            "price_update_rate": 12476.670170440591,
-            "token_update_rate": 115721.26986676591
+            "latency_threshold": 821.2397834581168,
+            "price_step": 233.3836174096541,
+            "price_update_rate": 9147.276728800647,
+            "token_update_rate": 81643.9439160397
         }
     },
     {
-        "target": 1.0200179236458946,
-        "params": {
-            "latency_threshold": 300.0,
-            "price_step": 100.0,
-            "price_update_rate": 15999.999999998503,
-            "token_update_rate": 112038.97293180025
-        }
-    },
-    {
-        "target": 1.1023639852358653,
+        "target": 0.31764989176649205,
         "params": {
             "latency_threshold": 408.4731118066292,
             "price_step": 140.76569417418696,
@@ -261,39 +261,39 @@
         }
     },
     {
-        "target": 1.0972513139557898,
+        "target": 0.6658360448599505,
         "params": {
-            "latency_threshold": 422.1947018848122,
-            "price_step": 107.79262913361853,
-            "price_update_rate": 14321.547961121869,
-            "token_update_rate": 83018.73985481868
+            "latency_threshold": 390.9820832517499,
+            "price_step": 130.63961813648828,
+            "price_update_rate": 13707.329486971008,
+            "token_update_rate": 114992.4744339149
         }
     },
     {
-        "target": 1.1064225777960925,
+        "target": 0.31186040914662844,
         "params": {
-            "latency_threshold": 790.8251694070022,
-            "price_step": 124.52900681154281,
-            "price_update_rate": 9105.232522492675,
-            "token_update_rate": 86439.5483437618
+            "latency_threshold": 826.1555297415392,
+            "price_step": 234.2860930727954,
+            "price_update_rate": 9613.453321902025,
+            "token_update_rate": 81553.80848436627
         }
     },
     {
-        "target": 1.0837111874163536,
+        "target": 0.2507864177615643,
         "params": {
-            "latency_threshold": 305.10144034701403,
-            "price_step": 177.12346097077676,
-            "price_update_rate": 12734.688865913618,
-            "token_update_rate": 115451.56340516271
+            "latency_threshold": 891.6058136626489,
+            "price_step": 206.24914598474217,
+            "price_update_rate": 13077.5914959107,
+            "token_update_rate": 109844.97691099376
         }
     },
     {
-        "target": 1.1078482979867397,
+        "target": 0.5313263434342209,
         "params": {
-            "latency_threshold": 899.9999999998795,
-            "price_step": 100.0,
-            "price_update_rate": 9000.0,
-            "token_update_rate": 80000.0
+            "latency_threshold": 900.0,
+            "price_step": 250.0,
+            "price_update_rate": 9512.989578862838,
+            "token_update_rate": 118246.79577436279
         }
     }
 ]

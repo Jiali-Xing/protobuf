@@ -2,12 +2,12 @@
 
 # Function to display usage
 usage() {
-    echo "Usage: $0 [-c charon] [-b breakwater] [-d dagor] [-a breakwaterd]"
+    echo "Usage: $0 [-c rajomon] [-b breakwater] [-d dagor] [-a breakwaterd]"
     exit 1
 }
 
 # Parse command-line options
-CHARON=false
+RAJOMON=false
 BREAKWATER=false
 DAGOR=false
 BREAKWATERD=false
@@ -18,7 +18,7 @@ while getopts "acbd" opt; do
             BREAKWATERD=true
             ;;
         c )
-            CHARON=true
+            RAJOMON=true
             ;;
         b )
             BREAKWATER=true
@@ -40,10 +40,10 @@ export WARMUP_LOAD=2000
 CAPACITY_STEP=1000
 CAPACITY_START=1000
 CAPACITY_END=10000
-# CONTROLS=("charon" "breakwater")
+# CONTROLS=("rajomon" "breakwater")
 
 # Check if at least one control option is provided
-if [ "$CHARON" = false ] && [ "$BREAKWATER" = false ] && [ "$DAGOR" = false ] && [ "$BREAKWATERD" = false ]; then
+if [ "$RAJOMON" = false ] && [ "$BREAKWATER" = false ] && [ "$DAGOR" = false ] && [ "$BREAKWATERD" = false ]; then
     usage
 fi
 
@@ -58,7 +58,7 @@ run_experiments() {
         # Run the compound experiments script
         if [ -n "$PARAM_FILE" ]; then
             echo "Running experiment with control: $CONTROL, load: $LOAD, param file: $PARAM_FILE, method: $METHOD"
-            bash ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c "$LOAD" -s parallel --"$CONTROL" --param "$PARAM_FILE"
+            bash ~/Sync/Git/service-app/cloudlab/scripts/overload-experiments.sh -c "$LOAD" -s parallel --"$CONTROL" --param "$PARAM_FILE"
         else
             echo "No parameter file found for control: $CONTROL"
         fi
@@ -66,8 +66,8 @@ run_experiments() {
 }
 
 # Loop through each control
-if [ "$CHARON" = true ]; then
-    run_experiments "charon"
+if [ "$RAJOMON" = true ]; then
+    run_experiments "rajomon"
 fi
 
 if [ "$BREAKWATER" = true ]; then

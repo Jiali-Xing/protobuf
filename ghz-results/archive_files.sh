@@ -9,14 +9,14 @@ directory="$HOME/Sync/Git/protobuf/ghz-results/"
 #     capacity=$(echo "$file" | sed -n 's/.*parallel-capacity-\([0-9]\+\)-\(.*\)\.json/\1/p')
  
 #     # # Find all files with this timestamp and move them
-#     # find "$directory" -name "*$timestamp.json" -exec mv {} ~/Sync/Git/charon-experiments/old_mixed/ \;
-#     # find "$directory" -name "*$timestamp.json.output" -exec mv {} ~/Sync/Git/charon-experiments/old_mixed/ \;
+#     # find "$directory" -name "*$timestamp.json" -exec mv {} ~/Sync/Git/rajomon-experiments/old_mixed/ \;
+#     # find "$directory" -name "*$timestamp.json.output" -exec mv {} ~/Sync/Git/rajomon-experiments/old_mixed/ \;
 
 #     # Skip capacity 6000
 #     # if [ "$capacity" != "6000" ]; then
 #         # Find all files with this timestamp and move them
-#     find "$directory" -name "*$timestamp.json" -exec mv {} ~/Sync/Git/charon-experiments/old_mixed/ \;
-#     find "$directory" -name "*$timestamp.json.output" -exec mv {} ~/Sync/Git/charon-experiments/old_mixed/ \;
+#     find "$directory" -name "*$timestamp.json" -exec mv {} ~/Sync/Git/rajomon-experiments/old_mixed/ \;
+#     find "$directory" -name "*$timestamp.json.output" -exec mv {} ~/Sync/Git/rajomon-experiments/old_mixed/ \;
 #     # fi
 # done
 # # Find files and extract timestamps
@@ -25,14 +25,14 @@ directory="$HOME/Sync/Git/protobuf/ghz-results/"
 #     capacity=$(echo "$file" | sed -n 's/.*parallel-capacity-\([0-9]\+\)-\(.*\)\.json/\1/p')
  
 #     # # Find all files with this timestamp and move them
-#     # find "$directory" -name "*$timestamp.json" -exec mv {} ~/Sync/Git/charon-experiments/old_mixed/ \;
-#     # find "$directory" -name "*$timestamp.json.output" -exec mv {} ~/Sync/Git/charon-experiments/old_mixed/ \;
+#     # find "$directory" -name "*$timestamp.json" -exec mv {} ~/Sync/Git/rajomon-experiments/old_mixed/ \;
+#     # find "$directory" -name "*$timestamp.json.output" -exec mv {} ~/Sync/Git/rajomon-experiments/old_mixed/ \;
 
 #     # Skip capacity 6000
 #     # if [ "$capacity" != "6000" ]; then
 #         # Find all files with this timestamp and move them
-#     find "$directory" -name "*$timestamp.json" -exec mv {} ~/Sync/Git/charon-experiments/old_mixed/ \;
-#     find "$directory" -name "*$timestamp.json.output" -exec mv {} ~/Sync/Git/charon-experiments/old_mixed/ \;
+#     find "$directory" -name "*$timestamp.json" -exec mv {} ~/Sync/Git/rajomon-experiments/old_mixed/ \;
+#     find "$directory" -name "*$timestamp.json.output" -exec mv {} ~/Sync/Git/rajomon-experiments/old_mixed/ \;
 #     # fi
 # done
 
@@ -50,8 +50,8 @@ process_file() {
     if [ "$timestamp" \< "0128_1715" ]; then
     # if [ "$timestamp" \< "0124_1715" ]; then
         # Find all files with this timestamp and move them
-        find "$directory" -name "*$timestamp.json" -exec mv {} ~/Sync/Git/charon-experiments/old_mixed/ \;
-        find "$directory" -name "*$timestamp.json.output" -exec mv {} ~/Sync/Git/charon-experiments/old_mixed/ \;
+        find "$directory" -name "*$timestamp.json" -exec mv {} ~/Sync/Git/rajomon-experiments/old_mixed/ \;
+        find "$directory" -name "*$timestamp.json.output" -exec mv {} ~/Sync/Git/rajomon-experiments/old_mixed/ \;
     fi
 }
 

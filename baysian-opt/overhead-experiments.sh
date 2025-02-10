@@ -2,12 +2,12 @@
 
 # Function to display usage
 usage() {
-    echo "Usage: $0 [-c charon] [-b breakwater] [-d dagor] [-a breakwaterd] [-p plain]"
+    echo "Usage: $0 [-c rajomon] [-b breakwater] [-d dagor] [-a breakwaterd] [-p plain]"
     exit 1
 }
 
 # Parse command-line options
-CHARON=false
+RAJOMON=false
 BREAKWATER=false
 DAGOR=false
 BREAKWATERD=false
@@ -19,7 +19,7 @@ while getopts "pacbd" opt; do
             BREAKWATERD=true
             ;;
         c )
-            CHARON=true
+            RAJOMON=true
             ;;
         b )
             BREAKWATER=true
@@ -41,10 +41,10 @@ export WARMUP_LOAD=2000
 export LOAD=2001
 
 # Define variables
-CONTROLS=("charon" "breakwater" "dagor" "breakwaterd" "plain")
+CONTROLS=("rajomon" "breakwater" "dagor" "breakwaterd" "plain")
 
 # Check if at least one control option is provided
-if [ "$CHARON" = false ] && [ "$BREAKWATER" = false ] && [ "$DAGOR" = false ] && [ "$BREAKWATERD" = false ] && [ "$PLAIN" = false ]; then
+if [ "$RAJOMON" = false ] && [ "$BREAKWATER" = false ] && [ "$DAGOR" = false ] && [ "$BREAKWATERD" = false ] && [ "$PLAIN" = false ]; then
     usage
 fi
 
@@ -56,7 +56,7 @@ run_experiments() {
     # if PLAIN is true, then only run the plain control, no parameter file is needed
     if [ "$PLAIN" = true ]; then
         echo "Running experiment with control: $CONTROL, load: $LOAD, method: $METHOD"
-        bash ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c "$LOAD" -s parallel
+        bash ~/Sync/Git/service-app/cloudlab/scripts/overload-experiments.sh -c "$LOAD" -s parallel
         return
     fi
 
@@ -72,7 +72,7 @@ run_experiments() {
     # Run the compound experiments script
     if [ -n "$PARAM_FILE" ]; then
         echo "Running experiment with control: $CONTROL, load: $LOAD, param file: $PARAM_FILE, method: $METHOD"
-        bash ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c "$LOAD" -s parallel --"$CONTROL" --param "$PARAM_FILE"
+        bash ~/Sync/Git/service-app/cloudlab/scripts/overload-experiments.sh -c "$LOAD" -s parallel --"$CONTROL" --param "$PARAM_FILE"
     else
         echo "No parameter file found for control: $CONTROL"
     fi
@@ -93,8 +93,8 @@ fi
 for CONTROL in "${CONTROLS[@]}"; do
     for METHOD in "${METHODS[@]}"; do
         case $CONTROL in
-            "charon")
-                if [ "$CHARON" = true ]; then
+            "rajomon")
+                if [ "$RAJOMON" = true ]; then
                     run_experiments "$CONTROL" "$METHOD"
                 fi
                 ;;

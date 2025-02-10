@@ -1,5 +1,5 @@
 Total: 5.53s
-ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).LoadShedding in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/charon.go
+ROUTINE ======================== github.com/tgiannoukos/rajomon.(*PriceTable).LoadShedding in /go/pkg/mod/github.com/tgiannoukos/rajomon@v0.0.0-20231221071202-0347470ae6a2/rajomon.go
          0       10ms (flat, cum)  0.18% of Total
          .          .     98:func (pt *PriceTable) LoadShedding(ctx context.Context, tokens int64, methodName string) (int64, string, error) {
          .          .     99:	// if pt.loadShedding is false, then return tokens and nil error
@@ -14,7 +14,7 @@ ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).Loa
          .          .    108:
          .          .    109:	if pt.priceAggregation == "maximal" {
          .          .    110:		// take the max of ownPrice and downstreamPrice
-ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).UnaryInterceptor in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/charon.go
+ROUTINE ======================== github.com/tgiannoukos/rajomon.(*PriceTable).UnaryInterceptor in /go/pkg/mod/github.com/tgiannoukos/rajomon@v0.0.0-20231221071202-0347470ae6a2/rajomon.go
          0      920ms (flat, cum) 16.64% of Total
          .          .    346:func (pt *PriceTable) UnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
          .          .    347:	// This is the server side interceptor, it should check tokens, update price, do overload handling and attach price to response
@@ -144,7 +144,7 @@ ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).Una
          .          .    471:	// right now let's just propagate the corresponding price of the RPC method rather than a whole pricetable.
          .          .    472:	// if not pt.lazyResponse or if pt.lazyResponse is true but the tokenleft is smaller than
          .          .    473:	if !pt.lazyResponse || tokenleft*10 < tok {
-ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).UnaryInterceptorClient in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/charon.go
+ROUTINE ======================== github.com/tgiannoukos/rajomon.(*PriceTable).UnaryInterceptorClient in /go/pkg/mod/github.com/tgiannoukos/rajomon@v0.0.0-20231221071202-0347470ae6a2/rajomon.go
       10ms      340ms (flat, cum)  6.15% of Total
          .          .    151:func (pt *PriceTable) UnaryInterceptorClient(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
          .          .    152:	// Jiali: the following line print the method name of the req/response, will be used to update the
@@ -175,7 +175,7 @@ ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).Una
          .          .    177:// unaryInterceptor is an example unary interceptor.
          .          .    178:func (pt *PriceTable) UnaryInterceptorEnduser(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
          .          .    179:	// timer the intereceptor overhead
-ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).queuingCheck in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/overloadDetection.go
+ROUTINE ======================== github.com/tgiannoukos/rajomon.(*PriceTable).queuingCheck in /go/pkg/mod/github.com/tgiannoukos/rajomon@v0.0.0-20231221071202-0347470ae6a2/overloadDetection.go
          0       20ms (flat, cum)  0.36% of Total
          .          .     35:func (pt *PriceTable) queuingCheck() {
          .          .     36:	// init a null histogram
@@ -224,7 +224,7 @@ ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).que
          .          .     79:
          .          .     80:		if pt.priceStrategy == "step" {
          .          .     81:			pt.UpdateOwnPrice(pt.overloadDetection(ctx))
-ROUTINE ======================== github.com/tgiannoukos/charon.logger in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/logger.go
+ROUTINE ======================== github.com/tgiannoukos/rajomon.logger in /go/pkg/mod/github.com/tgiannoukos/rajomon@v0.0.0-20231221071202-0347470ae6a2/logger.go
          0       90ms (flat, cum)  1.63% of Total
          .          .      9:func logger(format string, a ...interface{}) {
          .          .     10:	if debug {
@@ -232,7 +232,7 @@ ROUTINE ======================== github.com/tgiannoukos/charon.logger in /go/pkg
          .       60ms     12:		fmt.Printf("LOG: "+timestamp+"|\t"+format+"\n", a...)
          .          .     13:	}
          .          .     14:}
-ROUTINE ======================== github.com/tgiannoukos/charon.readHistogram in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/queuingDelay.go
+ROUTINE ======================== github.com/tgiannoukos/rajomon.readHistogram in /go/pkg/mod/github.com/tgiannoukos/rajomon@v0.0.0-20231221071202-0347470ae6a2/queuingDelay.go
          0       10ms (flat, cum)  0.18% of Total
          .          .    133:func readHistogram() *metrics.Float64Histogram {
          .          .    134:	// Create a sample for metric /sched/latencies:seconds and /sync/mutex/wait/total:seconds

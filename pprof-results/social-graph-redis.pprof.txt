@@ -1,5 +1,5 @@
 Total: 3.06s
-ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).UnaryInterceptor in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/charon.go
+ROUTINE ======================== github.com/tgiannoukos/rajomon.(*PriceTable).UnaryInterceptor in /go/pkg/mod/github.com/tgiannoukos/rajomon@v0.0.0-20231221071202-0347470ae6a2/rajomon.go
          0      1.07s (flat, cum) 34.97% of Total
          .          .    346:func (pt *PriceTable) UnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
          .          .    347:	// This is the server side interceptor, it should check tokens, update price, do overload handling and attach price to response
@@ -140,7 +140,7 @@ ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).Una
          .          .    482:	if err != nil {
          .          .    483:		logger("RPC failed with error %v", err)
          .          .    484:	}
-ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).UpdatePricebyQueueDelay in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/tokenAndPrice.go
+ROUTINE ======================== github.com/tgiannoukos/rajomon.(*PriceTable).UpdatePricebyQueueDelay in /go/pkg/mod/github.com/tgiannoukos/rajomon@v0.0.0-20231221071202-0347470ae6a2/tokenAndPrice.go
          0       20ms (flat, cum)  0.65% of Total
          .          .    131:func (pt *PriceTable) UpdatePricebyQueueDelay(ctx context.Context) error {
          .          .    132:	ownPrice_string, _ := pt.priceTableMap.Load("ownprice")
@@ -170,7 +170,7 @@ ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).Upd
          .          .    156:}
          .          .    157:
          .          .    158:// UpdatePricebyQueueDelayExp uses exponential function to adjust the price step.
-ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).queuingCheck in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/overloadDetection.go
+ROUTINE ======================== github.com/tgiannoukos/rajomon.(*PriceTable).queuingCheck in /go/pkg/mod/github.com/tgiannoukos/rajomon@v0.0.0-20231221071202-0347470ae6a2/overloadDetection.go
          0       40ms (flat, cum)  1.31% of Total
          .          .     35:func (pt *PriceTable) queuingCheck() {
          .          .     36:	// init a null histogram
@@ -235,7 +235,7 @@ ROUTINE ======================== github.com/tgiannoukos/charon.(*PriceTable).que
          .          .     95:
          .          .     96:// throughputCheck decrements the counter by 2x every x milliseconds.
          .          .     97:func (pt *PriceTable) throughputCheck() {
-ROUTINE ======================== github.com/tgiannoukos/charon.logger in /go/pkg/mod/github.com/tgiannoukos/charon@v0.0.0-20231221071202-0347470ae6a2/logger.go
+ROUTINE ======================== github.com/tgiannoukos/rajomon.logger in /go/pkg/mod/github.com/tgiannoukos/rajomon@v0.0.0-20231221071202-0347470ae6a2/logger.go
          0      100ms (flat, cum)  3.27% of Total
          .          .      9:func logger(format string, a ...interface{}) {
          .          .     10:	if debug {

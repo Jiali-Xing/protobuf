@@ -26,12 +26,12 @@
    26  lscpu
    27  pwd
    28  ls
-   29  git clone git@github.com:tgiannoukos/charon.git
+   29  git clone git@github.com:tgiannoukos/rajomon.git
    30  cd k8s-istio-observe-backend/services/protobuf-grpc/
    31  ls
-   32  bash goget_charon.sh 
+   32  bash goget_rajomon.sh 
    33  export PATH=$PATH:/usr/local/go/bin
-   34  bash goget_charon.sh 
+   34  bash goget_rajomon.sh 
    35  bash start_services.sh 
    36  tmux a
    37  cd k8s-istio-observe-backend/
@@ -49,18 +49,18 @@
    49  cd -
    50  bash start_services.sh 
    51  git config --global url.git@github.com:.insteadOf https://github.com/
-   52  go env -w GOPRIVATE=github.com/tgiannoukos/charon
+   52  go env -w GOPRIVATE=github.com/tgiannoukos/rajomon
    53  bash start_services.sh 
-   54  bash goget_charon.sh 
+   54  bash goget_rajomon.sh 
    55  ls ~/.ssh/
-   56  bash goget_charon.sh 
-   57  go env -w GOPRIVATE=github.com/tgiannoukos/charon
+   56  bash goget_rajomon.sh 
+   57  go env -w GOPRIVATE=github.com/tgiannoukos/rajomon
    58  git config --global url.git@github.com:.insteadOf https://github.com/
-   59  bash goget_charon.sh 
+   59  bash goget_rajomon.sh 
    60  git config --global user.email "jiali.xing@protonmail.com"
-   61  bash goget_charon.sh 
+   61  bash goget_rajomon.sh 
    62  vim ~/.ssh/config
-   63  bash goget_charon.sh 
+   63  bash goget_rajomon.sh 
    64  cat ~/.ssh/config
    65  cat ~/.ssh/cloudlab
    66  bash start_services.sh 

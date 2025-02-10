@@ -32,7 +32,7 @@
     "data": {
       "greeting": {
         "created": "2024-01-27 22:07:45.455332537 -0700 MST",
-        "hostname": "node-0.jiali-188254.charon-pg0.utah.cloudlab.us",
+        "hostname": "node-0.jiali-188254.rajomon-pg0.utah.cloudlab.us",
         "id": "70bed181-5dee-456b-a045-b439c72bb515",
         "message": "Hello, from Client!",
         "service": "Client"

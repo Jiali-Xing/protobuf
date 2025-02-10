@@ -1,19 +1,17 @@
 {
-    "target": 0.2727113414683797,
+    "target": 2.9812952439821245,
     "parameters": {
-        "PRICE_UPDATE_RATE": "8264us",
-        "TOKEN_UPDATE_RATE": "17932us",
-        "LATENCY_THRESHOLD": "5955us",
-        "PRICE_STEP": 22,
+        "PRICE_UPDATE_RATE": "894us",
+        "TOKEN_UPDATE_RATE": "36902us",
+        "LATENCY_THRESHOLD": "762us",
+        "PRICE_STEP": 184,
         "PRICE_STRATEGY": "linear",
-        "LAZY_UPDATE": "true",
+        "LAZY_UPDATE": "false",
         "RATE_LIMITING": "true",
         "ONLY_FRONTEND": "false"
     },
-    "method": "S_149998854",
+    "method": "all-alibaba",
     "capacity": "gpt1-10000",
     "load": 10000,
-    "timestamp": "05-29",
-    "quantile": 0.1,
-    "SLO": 580
+    "timestamp": "09-12"
 }

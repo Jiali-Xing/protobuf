@@ -33,7 +33,7 @@ from slo import get_slo
 
 throughput_time_interval = '50ms'
 latency_window_size = '200ms'  # Define the window size as 100 milliseconds
-# filename = '/home/ying/Sync/Git/protobuf/ghz-results/charon_stepup_nclients_1000.json'
+# filename = '/home/ying/Sync/Git/protobuf/ghz-results/rajomon_stepup_nclients_1000.json'
 rerun = True
 offset = 2  # in seconds
 
@@ -150,7 +150,7 @@ def calculate_throughput(df):
 param_ranges = [(50, 500), (1000, 10000), (1, 20), ]  # (priceUpdateRate, delayTarget) 
   
 configDict = {
-    'charon': {
+    'rajomon': {
         'price_update_rate': 5000,  # Assuming numeric values for simplicity
         'token_update_rate': 5000,  # Assuming numeric values for simplicity
         'latency_threshold': 5000,
@@ -243,9 +243,9 @@ def check_previous_run_exists(interceptor_type, method, capacity, combined_param
             with open(filename, 'r') as file:
                 content = file.read()
 
-                if 'Charon Configurations:' in content:
+                if 'Rajomon Configurations:' in content:
                     # Extract the configurations string from the file
-                    start = content.find('Charon Configurations:') + len('Charon Configurations:')
+                    start = content.find('Rajomon Configurations:') + len('Rajomon Configurations:')
                     end = content.find(']', start) + 1
                     file_config_str = content[start:end]
                     file_config_dict = parse_configurations(file_config_str)
@@ -303,7 +303,7 @@ def run_experiments(interceptor_type, load, previous_run, **params):
     # load = np.random.randint(int(capacity.split('-')[1]), 10000)
     # Full command to source envs.sh and run the experiment
     # full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && {env_vars_command} ~/Sync/Git/service-app/cloudlab/scripts/bayesian_experiments.sh -c {capacity} -s parallel --{interceptor_type}'"
-    full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c {load} -s parallel --{interceptor_type}'"
+    full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/overload-experiments.sh -c {load} -s parallel --{interceptor_type}'"
 
     # Set environment variables in Python
     env = os.environ.copy()
@@ -348,9 +348,9 @@ def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodTo
     # Full command to source envs.sh and run the experiment
     # full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && {env_vars_command} ~/Sync/Git/service-app/cloudlab/scripts/bayesian_experiments.sh -c {capacity} -s parallel --{interceptor_type}'"
     if interceptor_type == 'plain':
-        full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c {capact} -s parallel '"
+        full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/overload-experiments.sh -c {capact} -s parallel '"
     else:
-        full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c {capact} -s parallel --{interceptor_type}'"
+        full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/overload-experiments.sh -c {capact} -s parallel --{interceptor_type}'"
 
     # Set environment variables in Python
     env = os.environ.copy()
@@ -473,11 +473,11 @@ def get_latest_file(path, pattern="*.json"):
     latest_file = max(list_of_files, key=os.path.getmtime)
     return latest_file
 
-def objective_charon(price_update_rate, token_update_rate, latency_threshold, price_step):
-    # return objective('charon', price_update_rate, latency_threshold, price_step)
-    return objective_dual('charon', price_update_rate=price_update_rate, token_update_rate=token_update_rate, latency_threshold=latency_threshold, price_step=price_step)
+def objective_rajomon(price_update_rate, token_update_rate, latency_threshold, price_step):
+    # return objective('rajomon', price_update_rate, latency_threshold, price_step)
+    return objective_dual('rajomon', price_update_rate=price_update_rate, token_update_rate=token_update_rate, latency_threshold=latency_threshold, price_step=price_step)
 
-pbounds_charon = {
+pbounds_rajomon = {
     # 'price_update_rate': (100, 500000),  # Example range
     # 'token_update_rate': (100, 500000),  # Example range
     # 'latency_threshold': (10, 50000),  # Example range
@@ -573,17 +573,17 @@ def parse_file(file_path):
     method = re.search(r'METHOD: (\w+)', content)
     intercept = re.search(r'INTERCEPT: (\w+)', content)
 
-    # Extracting Charon Configurations
-    charon_config_match = re.search(r'Charon Configurations:\s*\[(.*?)\]', content, re.DOTALL)
-    if charon_config_match:
-        charon_config_str = charon_config_match.group(1)
-        charon_config_pairs = charon_config_str.split('} {')
-        charon_config = {item.split(' ')[0]: item.split(' ')[1] for item in charon_config_pairs}
+    # Extracting Rajomon Configurations
+    rajomon_config_match = re.search(r'Rajomon Configurations:\s*\[(.*?)\]', content, re.DOTALL)
+    if rajomon_config_match:
+        rajomon_config_str = rajomon_config_match.group(1)
+        rajomon_config_pairs = rajomon_config_str.split('} {')
+        rajomon_config = {item.split(' ')[0]: item.split(' ')[1] for item in rajomon_config_pairs}
 
     return {
         'METHOD': method.group(1) if method else None,
         'INTERCEPT': intercept.group(1) if intercept else None,
-        'Charon_Configurations': charon_config
+        'Rajomon_Configurations': rajomon_config
     }
 
 
@@ -654,8 +654,8 @@ def bayesian_optimization(iterations, motivate):
 
     if motivate == 'AQM':
         optimizer = BayesianOptimization(
-            f=objective_charon,
-            pbounds=pbounds_charon,
+            f=objective_rajomon,
+            pbounds=pbounds_rajomon,
             random_state=0,
             allow_duplicate_points=True
         )
@@ -669,7 +669,7 @@ def bayesian_optimization(iterations, motivate):
         if 'params' in optimizer.max:
             best_params = optimizer.max['params']
             # combine the best_params with the specific params
-            best_params = {**configDict['charon'], **best_params}
+            best_params = {**configDict['rajomon'], **best_params}
             print(f"[Bayesian Opt] Best parameters found: {best_params}")
             results = {
                 'target': optimizer.max['target'],
@@ -766,7 +766,7 @@ def main():
         for aqmEnabled in ['nginx-web-server', 'service-6', 'all']:
             for capact in capacity_range:
                 print(f"[Motivate AQM] Analyzing file and run experiments in loop for {aqmEnabled}:", bayesian_result)
-                run_experiments_loop('charon', bayesian_result['parameters'], capact, method, aqmEnabled, n_tiers=5)
+                run_experiments_loop('rajomon', bayesian_result['parameters'], capact, method, aqmEnabled, n_tiers=5)
 
     if motivation == 'RL':
         # run the bayesian optimization
@@ -791,7 +791,7 @@ def main():
                 run_experiments_loop('plain', {}, capact, method, None, n_tiers=n_tiers)
 
 def check_goodput(file):
-    # check the goodput distribution of social-compose-control-charon-parallel-capacity-8000-1211_1804.json
+    # check the goodput distribution of social-compose-control-rajomon-parallel-capacity-8000-1211_1804.json
     dir = os.path.expanduser('~/Sync/Git/protobuf/ghz-results/')
     filename = os.path.join(dir, file)
 

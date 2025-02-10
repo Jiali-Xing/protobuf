@@ -41,11 +41,11 @@ configDict = {
         'token_update_rate': 5000,  # Assuming numeric values for simplicity
         'latency_threshold': 5000,
         'price_step': 10,
-        'price_strategy': 'expgrow',
+        'price_strategy': 'linear',
         'lazy_update': 'false',
         'rate_limiting': 'true',
         'only_frontend': 'false',
-        'fast_drop': 'true',
+        'fast_drop': 'false',
     },
     'breakwater': {
         'breakwater_slo': 12500,
@@ -541,17 +541,17 @@ def main():
         #  {DAGOR_QUEUING_THRESHOLD 1600us} {DAGOR_ALPHA 0.83} {DAGOR_BETA 6} {DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL 14000us} {DAGOR_UMAX 11}
         # use the above values as the range for the parameters, surrounding the optimal values
         pbounds_dagor = {
-            'dagor_queuing_threshold': (1000, 2000),
-            'dagor_alpha': (0, 4),
+            'dagor_queuing_threshold': (1000, 4000),
+            'dagor_alpha': (0, 1),
             'dagor_beta': (0, 10),
             'dagor_admission_level_update_interval': (1000, 24000),
-            'dagor_umax': (5, 15),
+            'dagor_umax': (10, 15),
         }
 
-        pbounds_rajomon['latency_threshold'] = (300, 700)
-        pbounds_rajomon['token_update_rate'] = (90000, 150000)
-        pbounds_rajomon['price_update_rate'] = (1000, 6000)
-        pbounds_rajomon['price_step'] = (100, 500)
+        pbounds_rajomon['latency_threshold'] = (300, 600)
+        pbounds_rajomon['token_update_rate'] = (90000, 120000)
+        pbounds_rajomon['price_update_rate'] = (4000, 7000)
+        pbounds_rajomon['price_step'] = (110, 200)
 
         # for large scale experiments, use the ranges near the optimal values below
         # "BREAKWATER_SLO": "500us",
@@ -580,18 +580,18 @@ def main():
         #     'breakwater_rtt': (1500, 2000)  # Adjusting around 1853us
         # }
         pbounds_breakwaterd = {
-            'breakwater_slo': (950, 1050),  # Marginally around 1000us
-            'breakwaterd_slo': (5700, 5900),  # Marginally around 5791us
-            'breakwater_client_expiration': (390, 410),  # Marginally around 400us
-            'breakwaterd_client_expiration': (460, 480),  # Marginally around 471us
-            'breakwater_a': (0.00009, 0.00011),  # Marginally around 0.0001
-            'breakwaterd_a': (2.8, 3.0),  # Marginally around 2.9019
-            'breakwater_b': (1.1, 1.2),  # Marginally around 1.1456
-            'breakwaterd_b': (0.75, 0.8),  # Marginally around 0.7841
-            'breakwater_rtt': (1450, 1550),  # Marginally around 1500us
-            'breakwaterd_rtt': (8500, 8700),  # Marginally around 8599us
-            'breakwater_initial_credit': (600, 630),  # Marginally around 615
-            'breakwaterd_initial_credit': (900, 930),  # Marginally around 918
+            'breakwater_slo': (50, 300),  # Marginally around 1000us
+            'breakwaterd_slo': (2000, 5000),  # Marginally around 5791us
+            'breakwater_client_expiration': (3, 410),  # Marginally around 400us
+            'breakwaterd_client_expiration': (4, 480),  # Marginally around 471us
+            'breakwater_a': (0.00001, 0.01),  # Marginally around 0.0001
+            'breakwaterd_a': (1, 3.0),  # Marginally around 2.9019
+            'breakwater_b': (0.1, 1.2),  # Marginally around 1.1456
+            'breakwaterd_b': (0.1, 0.8),  # Marginally around 0.7841
+            'breakwater_rtt': (150, 350),  # Marginally around 1500us
+            'breakwaterd_rtt': (7500, 8700),  # Marginally around 8599us
+            'breakwater_initial_credit': (60, 400),  # Marginally around 615
+            'breakwaterd_initial_credit': (200, 900),  # Marginally around 918
         }
 
         # pbounds_breakwaterd = {
@@ -615,8 +615,8 @@ def main():
         pbounds_rajomon['price_step'] = (100, 200)
         pbounds_rajomon['token_update_rate'] = (80000, 120000)
 
-        pbounds_dagor['dagor_queuing_threshold'] = (1000, 2000)
-        pbounds_dagor['dagor_alpha'] = (0, 2)
+        pbounds_dagor['dagor_queuing_threshold'] = (500, 2000)
+        pbounds_dagor['dagor_alpha'] = (0, 1)
         pbounds_dagor['dagor_beta'] = (1.5, 4)
         pbounds_dagor['dagor_admission_level_update_interval'] = (12000, 15000)
         pbounds_dagor['dagor_umax'] = (10, 20)
@@ -630,12 +630,12 @@ def main():
         # "ONLY_FRONTEND": "true",
         # "BREAKWATER_RTT": "1000us"
         pbounds_breakwater = {
-            'breakwater_slo': (10, 500),  # Adjusting around 1382us
+            'breakwater_slo': (10, 400),  # Adjusting around 1382us
             'breakwater_a': (0.0001, 0.01),  # Adjusting around 0.001
-            'breakwater_b': (0.5, 20),  # Adjusting around 0.5
+            'breakwater_b': (0.5, 5),  # Adjusting around 0.5
             'breakwater_initial_credit': (400, 800),  # Adding around 685
-            'breakwater_client_expiration': (10, 200),  # Adjusting around 592us
-            'breakwater_rtt': (50, 2000)  # Adjusting around 1853us
+            'breakwater_client_expiration': (1, 50),  # Adjusting around 592us
+            'breakwater_rtt': (100, 900)  # Adjusting around 1853us
         }
 
 
@@ -647,22 +647,36 @@ def main():
         #     'breakwater_initial_credit': (200, 800),  # Adding around 685
         #     'breakwater_rtt': (800, 2000)  # Adjusting around 1853us
         # }
-        
+   
         # explore the following ranges for the parameters
         pbounds_breakwaterd = {
-            'breakwater_slo': (1000, 11000),  # Covers 1000us to 10783us
-            'breakwaterd_slo': (5000, 9000),  # Covers 5791us to 8609us
-            'breakwater_client_expiration': (400, 2000),  # Covers 400us to 1848us
-            'breakwaterd_client_expiration': (400, 1200),  # Covers 471us to 1121us
-            'breakwater_a': (0.0001, 0.2),  # Covers 0.0001 to 0.150467
-            'breakwaterd_a': (2.5, 40),  # Covers 2.9 to 35.4929
-            'breakwater_b': (1, 10),  # Covers 1.15 to 9.0168
-            'breakwaterd_b': (0.75, 4),  # Covers 0.78 to 3.2773
-            'breakwater_rtt': (1500, 2000),  # Covers 1500us to 1757us
-            'breakwaterd_rtt': (1500, 9000),  # Covers 1757us to 8599us
-            'breakwater_initial_credit': (600, 1700),  # Covers 615 to 1630
-            'breakwaterd_initial_credit': (800, 1000),  # Covers 867 to 918
+            'breakwater_slo': (200, 1000),  # From "BREAKWATER_SLO"
+            'breakwater_a': (0.0001, 0.01),  # From "BREAKWATER_A"
+            'breakwater_b': (1, 5),  # From "BREAKWATER_B"
+            'breakwater_initial_credit': (600, 700),  # From "BREAKWATER_INITIAL_CREDIT"
+            'breakwater_client_expiration': (2, 400),  # Converted from microseconds ("BREAKWATER_CLIENT_EXPIRATION")
+            'breakwater_rtt': (400, 1500),  # Converted from microseconds ("BREAKWATER_RTT")
+            'breakwaterd_slo': (500, 6000),  # Only in the second config
+            'breakwaterd_a': (2.5, 3),  # Only in the second config
+            'breakwaterd_b': (0.5, 1),  # Only in the second config
+            'breakwaterd_initial_credit': (900, 1000),  # Only in the second config
+            'breakwaterd_client_expiration': (100, 500),  # Only in the second config
+            'breakwaterd_rtt': (5000, 9000)  # Only in the second config
         }
+        # pbounds_breakwaterd = {
+        #     'breakwater_slo': (1000, 11000),  # Covers 1000us to 10783us
+        #     'breakwaterd_slo': (5000, 9000),  # Covers 5791us to 8609us
+        #     'breakwater_client_expiration': (400, 2000),  # Covers 400us to 1848us
+        #     'breakwaterd_client_expiration': (400, 1200),  # Covers 471us to 1121us
+        #     'breakwater_a': (0.0001, 0.2),  # Covers 0.0001 to 0.150467
+        #     'breakwaterd_a': (2.5, 40),  # Covers 2.9 to 35.4929
+        #     'breakwater_b': (1, 10),  # Covers 1.15 to 9.0168
+        #     'breakwaterd_b': (0.75, 4),  # Covers 0.78 to 3.2773
+        #     'breakwater_rtt': (1500, 2000),  # Covers 1500us to 1757us
+        #     'breakwaterd_rtt': (1500, 9000),  # Covers 1757us to 8599us
+        #     'breakwater_initial_credit': (600, 1700),  # Covers 615 to 1630
+        #     'breakwaterd_initial_credit': (800, 1000),  # Covers 867 to 918
+        # }
 
 
     if 'S_16' in method:

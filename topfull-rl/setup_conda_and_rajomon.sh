@@ -25,6 +25,8 @@ fi
 
 # Step 2: Initialize conda
 echo_message "Initializing conda..."
+# run init script
+~/miniconda/bin/conda init 
 source "$CONDA_DIR/bin/activate"
 
 # Step 3: Update conda

@@ -1,5 +1,0 @@
-Label,Average Latency,Median Latency,99th %ile Latency,Throughput
-Charon,22.62,23.15,57.00,3742.54
-Breakwater,29.33,27.55,85.48,3672.69
-Breakwaterd,30.96,28.26,61.86,3096.97
-Dagor,14.67,4.49,49.12,3215.96

@@ -34,7 +34,7 @@ from slo import get_slo
 
 throughput_time_interval = '50ms'
 latency_window_size = '200ms'  # Define the window size as 100 milliseconds
-# filename = '/home/ying/Sync/Git/protobuf/ghz-results/charon_stepup_nclients_1000.json'
+# filename = '/home/ying/Sync/Git/protobuf/ghz-results/rajomon_stepup_nclients_1000.json'
 rerun = True
 # offset = 1
 offset = 2 # for the all-methods-social and all-methods-hotel
@@ -170,7 +170,7 @@ def calculate_throughput(df):
 param_ranges = [(50, 500), (1000, 10000), (1, 20), ]  # (priceUpdateRate, delayTarget) 
   
 configDict = {
-    'charon': {
+    'rajomon': {
         'price_update_rate': 5000,  # Assuming numeric values for simplicity
         'token_update_rate': 5000,  # Assuming numeric values for simplicity
         'latency_threshold': 5000,
@@ -278,9 +278,9 @@ def check_previous_run_exists(interceptor_type, method, capacity, combined_param
                 with open(files[0], 'r') as file:
                     content = file.read()
 
-                    if 'Charon Configurations:' in content:
+                    if 'Rajomon Configurations:' in content:
                         # Extract the configurations string from the file
-                        start = content.find('Charon Configurations:') + len('Charon Configurations:')
+                        start = content.find('Rajomon Configurations:') + len('Rajomon Configurations:')
                         end = content.find(']', start) + 1
                         file_config_str = content[start:end]
                         file_config_dict = parse_configurations(file_config_str)
@@ -312,9 +312,9 @@ def check_previous_run_exists(interceptor_type, method, capacity, combined_param
             with open(filename, 'r') as file:
                 content = file.read()
 
-                if 'Charon Configurations:' in content:
+                if 'Rajomon Configurations:' in content:
                     # Extract the configurations string from the file
-                    start = content.find('Charon Configurations:') + len('Charon Configurations:')
+                    start = content.find('Rajomon Configurations:') + len('Rajomon Configurations:')
                     end = content.find(']', start) + 1
                     file_config_str = content[start:end]
                     file_config_dict = parse_configurations(file_config_str)
@@ -379,7 +379,7 @@ def run_experiments(interceptor_type, load, previous_run, **params):
     # load = np.random.randint(int(capacity.split('-')[1]), 10000)
     # Full command to source envs.sh and run the experiment
     # full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && {env_vars_command} ~/Sync/Git/service-app/cloudlab/scripts/bayesian_experiments.sh -c {capacity} -s parallel --{interceptor_type}'"
-    full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c {load} -s parallel --{interceptor_type}'"
+    full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/overload-experiments.sh -c {load} -s parallel --{interceptor_type}'"
 
     # Set environment variables in Python
     env = os.environ.copy()
@@ -433,7 +433,7 @@ def run_experiments_loop(interceptor_type, interceptor_configs, capact, methodTo
 
     # Full command to source envs.sh and run the experiment
     # full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && {env_vars_command} ~/Sync/Git/service-app/cloudlab/scripts/bayesian_experiments.sh -c {capacity} -s parallel --{interceptor_type}'"
-    full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c {capact} -s parallel --{interceptor_type}'" if interceptor_type != 'plain' else f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/compound_experiments.sh -c {capact} -s parallel'"
+    full_command = f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/overload-experiments.sh -c {capact} -s parallel --{interceptor_type}'" if interceptor_type != 'plain' else f"bash -c 'source ~/Sync/Git/service-app/cloudlab/scripts/envs.sh && ~/Sync/Git/service-app/cloudlab/scripts/overload-experiments.sh -c {capact} -s parallel'"
 
     # Set environment variables in Python
     env = os.environ.copy()
@@ -554,9 +554,9 @@ def get_latest_file(path, pattern="*.json"):
     latest_file = max(list_of_files, key=os.path.getmtime)
     return latest_file
 
-def objective_charon(price_update_rate, token_update_rate, latency_threshold, price_step):
-    # return objective('charon', price_update_rate, latency_threshold, price_step)
-    return objective_dual('charon', price_update_rate=price_update_rate, token_update_rate=token_update_rate, latency_threshold=latency_threshold, price_step=price_step)
+def objective_rajomon(price_update_rate, token_update_rate, latency_threshold, price_step):
+    # return objective('rajomon', price_update_rate, latency_threshold, price_step)
+    return objective_dual('rajomon', price_update_rate=price_update_rate, token_update_rate=token_update_rate, latency_threshold=latency_threshold, price_step=price_step)
 
 
 def objective_breakwater(breakwater_slo, breakwater_a, breakwater_b, breakwater_initial_credit, breakwater_client_expiration, breakwater_rtt):
@@ -586,17 +586,17 @@ def parse_file(file_path):
     method = re.search(r'METHOD: (\w+)', content)
     intercept = re.search(r'INTERCEPT: (\w+)', content)
 
-    # Extracting Charon Configurations
-    charon_config_match = re.search(r'Charon Configurations:\s*\[(.*?)\]', content, re.DOTALL)
-    if charon_config_match:
-        charon_config_str = charon_config_match.group(1)
-        charon_config_pairs = charon_config_str.split('} {')
-        charon_config = {item.split(' ')[0]: item.split(' ')[1] for item in charon_config_pairs}
+    # Extracting Rajomon Configurations
+    rajomon_config_match = re.search(r'Rajomon Configurations:\s*\[(.*?)\]', content, re.DOTALL)
+    if rajomon_config_match:
+        rajomon_config_str = rajomon_config_match.group(1)
+        rajomon_config_pairs = rajomon_config_str.split('} {')
+        rajomon_config = {item.split(' ')[0]: item.split(' ')[1] for item in rajomon_config_pairs}
 
     return {
         'METHOD': method.group(1) if method else None,
         'INTERCEPT': intercept.group(1) if intercept else None,
-        'Charon_Configurations': charon_config
+        'Rajomon_Configurations': rajomon_config
     }
 
 
@@ -663,7 +663,7 @@ def save_iteration_details(optimizer, file_path):
 
 def main():
     
-    pbounds_charon = {
+    pbounds_rajomon = {
         # 'price_update_rate': (100, 500000),  # Example range
         # 'token_update_rate': (100, 500000),  # Example range
         # 'latency_threshold': (10, 50000),  # Example range
@@ -713,8 +713,8 @@ def main():
     }
 
     if not tightSLO:
-        # loosen the control target for charon and breakwater.
-        pbounds_charon['latency_threshold'] = (100, 10000)
+        # loosen the control target for rajomon and breakwater.
+        pbounds_rajomon['latency_threshold'] = (100, 10000)
         pbounds_breakwater['breakwater_slo'] = (100, 20000)
         pbounds_breakwaterd['breakwater_a'] = (0, 30)
         pbounds_dagor['dagor_queuing_threshold'] = (100000, 500000)  # Example range
@@ -723,17 +723,17 @@ def main():
 
         
         if 'S_16' in method:
-            pbounds_charon['latency_threshold'] = (100, 30000)
+            pbounds_rajomon['latency_threshold'] = (100, 30000)
         if 'S_14' in method:
             # pbounds_breakwater['breakwater_a'] = (0, 30)
-            pbounds_charon['price_update_rate'] = (1000, 40000)
-            pbounds_charon['token_update_rate'] = (1000, 40000)
+            pbounds_rajomon['price_update_rate'] = (1000, 40000)
+            pbounds_rajomon['token_update_rate'] = (1000, 40000)
         # if 'S_10' in method:
         #     pbounds_breakwater['breakwater_a'] = (0, 30)
 
     # if 'all' in method:
         # change the pbounds for 4 mechanisms
-        # pbounds_charon['price_step'] = (10, 80)
+        # pbounds_rajomon['price_step'] = (10, 80)
         # pbounds_breakwater = {
         #     'breakwater_slo': (100, 20000),
         #     'breakwater_a': (0, 2),
@@ -760,7 +760,7 @@ def main():
         #     'dagor_admission_level_update_interval': (10000, 20000),  # Example range
         #     'dagor_umax': (2, 20)  # Example range
         # }
-    optimizeCharon = True
+    optimizeRajomon = True
     optimizeBreakwater = True
     optimizeBreakwaterD = True
     optimizeDagor = True
@@ -782,11 +782,11 @@ def main():
 
     # if skipOptimize:
     #     # set all the optimize to False
-    #     optimizeCharon = optimizeBreakwater = optimizeBreakwaterD = optimizeDagor = False
+    #     optimizeRajomon = optimizeBreakwater = optimizeBreakwaterD = optimizeDagor = False
 
 
     optimization_config = {
-        'charon': (optimizeCharon, objective_charon, pbounds_charon, 'charon'),
+        'rajomon': (optimizeRajomon, objective_rajomon, pbounds_rajomon, 'rajomon'),
         'breakwater': (optimizeBreakwater, objective_breakwater, pbounds_breakwater, 'breakwater'),
         'breakwaterd': (optimizeBreakwaterD, objective_breakwaterd, pbounds_breakwaterd, 'breakwaterd'),
         'dagor': (optimizeDagor, objective_dagor, pbounds_dagor, 'dagor')
@@ -861,5 +861,5 @@ if __name__ == '__main__':
     # check_goodput('social-compose-control-breakwater-parallel-capacity-6807-1213_2351.json')
     # check_goodput('social-compose-control-breakwaterd-parallel-capacity-6601-1214_0006.json')
     # for load in range(4000, 10000, 500):
-    #     experiment = get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/ghz-results/'), f'social-compose-control-charon-parallel-capacity-{load}-1213*json')
+    #     experiment = get_latest_file(os.path.expanduser('~/Sync/Git/protobuf/ghz-results/'), f'social-compose-control-rajomon-parallel-capacity-{load}-1213*json')
     #     check_goodput(experiment)

@@ -14,26 +14,49 @@ from utils import (
     load_data_from_csv,
 )
 
+# ToDo: should change the 95th_percentile to the max of the warmup period and experiment period 
 
 parameter_files = {
     'search-hotel': {
-        'dagor': 'bopt_False_dagor_search-hotel_gpt0-10000_08-23.json',
-        # 'dagor': 'bopt_False_dagor_search-hotel_gpt1-10000_08-22.json',
-        'breakwater': 'bopt_False_breakwater_search-hotel_gpt1-10000_08-22.json',
-        'breakwaterd': 'bopt_False_breakwaterd_search-hotel_gpt1-10000_08-22.json',
-        'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-10000_08-24.json',
+        'dagor': 'bopt_False_dagor_search-hotel_gpt1-best.json',  # works, no need to re-tune
+        # 'breakwater': 'bopt_False_breakwater_search-hotel_gpt1-bestl.json',  # works, but should be replaced with gpt0-10000_01-02
+        # 'breakwater': 'bopt_False_breakwater_search-hotel_gpt0-10000_01-02.json',  # seems to work, but need to re-tune
+        'breakwater': 'bopt_False_breakwater_search-hotel_gpt0-10000_01-05.json',  # works.
+        # 'breakwaterd': 'bopt_False_breakwaterd_search-hotel_gpt1-bestl.json',  # not working, need to re-tune
+        # 'breakwaterd': 'bopt_False_breakwaterd_search-hotel_gpt0-10000_01-03.json',  # works for single interface, need to re-tune for all
+        'breakwaterd': 'bopt_False_breakwaterd_search-hotel_gpt0-10000_01-08.json',  # works for single interface, need to re-tune for all
+        'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-bestl.json',
+        # 'rajomon': 'bopt_False_rajomon_search-hotel_decay.json',
     },
     'compose': {
-        'dagor': 'bopt_False_dagor_compose_gpt1-5000_08-15.json',
-        'breakwater': 'bopt_False_breakwater_compose_gpt0-5000_08-27.json',
-        'breakwaterd': 'bopt_False_breakwaterd_compose_gpt0-5000_08-25.json',
-        'rajomon': 'bopt_False_rajomon_compose_gpt1-5000_08-25.json',
+        # 'dagor': 'bopt_False_dagor_compose_gpt1-bestl.json',  # not working, need to re-tune
+        'dagor': 'bopt_False_dagor_compose_gpt0-6000_01-04.json',
+        # 'breakwater': 'bopt_False_breakwater_compose_gpt1-bestl.json',  # works, but should be replaced with gpt0-6000_01-02
+        # 'breakwater': 'bopt_False_breakwater_compose_gpt0-6000_01-04.json',
+        'breakwater': 'bopt_False_breakwater_compose_gpt0-6000_01-05.json',
+        # 'breakwaterd': 'bopt_False_breakwaterd_compose_gpt1-bestl.json',  # not working, need to re-tune
+        'breakwaterd': 'bopt_False_breakwaterd_compose_gpt0-6000_01-02.json',  # working for compose but not all, need to re-tune
+        'rajomon': 'bopt_False_rajomon_compose_gpt1-bestl.json',
     },
+    # 'search-hotel': {
+    #     # 'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-12000_12-22.json',
+    #     # 'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-16000_12-26.json',
+    #     # 'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-16000_12-25.json',
+    #     'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-best-4.json',
+    #     # 'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-14000_12-26.json',
+    #     # 'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-12000_12-24.json',
+    #     # 'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-12000_12-28.json',
+    #     'dagor': 'bopt_False_dagor_search-hotel_gpt1-12000_12-24.json',
+    #     'breakwater': 'bopt_False_breakwater_search-hotel_gpt1-12000_12-24.json',
+    #     'breakwaterd': 'bopt_False_breakwaterd_search-hotel_gpt1-12000_12-24.json',
+    # },
+    # 'compose': {
+    #     'rajomon': 'bopt_False_rajomon_compose_gpt1-6000_12-21.json',
+    #     'dagor': 'bopt_False_dagor_compose_gpt1-6000_12-22.json',
+    #     'breakwater': 'bopt_False_breakwater_compose_gpt1-6000_12-29.json',
+    #     'breakwaterd': 'bopt_False_breakwaterd_compose_gpt1-6000_12-28.json',
+    # },
     'alibaba': {
-        # 'dagor': 'bopt_False_dagor_S_149998854_gpt1-20000_09-09.json',
-        # 'breakwater': 'bopt_False_breakwater_S_149998854_gpt1-20000_09-09.json',
-        # 'breakwaterd': 'bopt_False_breakwaterd_S_149998854_gpt1-20000_09-09.json',
-        # 'rajomon': 'bopt_False_rajomon_S_149998854_gpt1-10000_09-12.json',
         'dagor': 'bopt_False_dagor_all-alibaba_gpt1-10000_09-13.json',
         'breakwater': 'bopt_False_breakwater_all-alibaba_gpt1-10000_09-12.json',
         'breakwaterd': 'bopt_False_breakwaterd_all-alibaba_gpt1-10000_09-12.json',
@@ -54,8 +77,6 @@ def plot_error_bars(ax, subset, metric, control, colors, lineStyles, labelDict, 
     try:
         if error_bar:
             # fill missing y values with 0 for x values that exist in the dataframe
-            # subset = subset.set_index('Load').reindex(range(1000, 11000, 1000)).reset_index()
-            # subset = subset.fillna(0)
             ax.errorbar(subset['Load'], subset[metric], yerr=subset[metric + ' std'], fmt=control_markers[control],
                         color=colors[control], linestyle=lineStyles[control], label=labelDict[control],
                         linewidth=2, capsize=5)
@@ -108,22 +129,17 @@ def setup_axes(axs, interfaces, ali_dict, alibaba_combined, df, in_plot_legend=F
             if method == 'all-alibaba':
                 ax1.set_ylim(0, 1000)
                 ax2.set_ylim(0, 6000)
-            else:
-                ax1.set_ylim(1, 800)
-                ax2.set_ylim(0, 5000)
+            # else:
+            #     ax1.set_ylim(1, 800)
+            #     ax2.set_ylim(0, 5000)
 
             if method == 'all-social':
-                ax1.set_ylim(1, 600)
-                ax2.set_ylim(0, 6000)
+                ax1.set_ylim(1, 900)
+                ax2.set_ylim(0, 10000)
             if method == 'both-hotel':
-                ax1.set_ylim(1, 400)
-                ax2.set_ylim(0, 4000)
+                ax1.set_ylim(1, 900)
+                ax2.set_ylim(0, 6000)
 
-            # elif method == 'all-alibaba':
-            #     ax1.set_ylim(1, 500)
-            #     ax2.set_ylim(0, 5000)
-            # ax1.set_ylim(1, 250)
-            # ax2.set_ylim(0, 6000)
 
             ax1.grid(True)
             ax2.grid(True)
@@ -516,6 +532,8 @@ def load_plot_hotel(social=False, alibaba=False):
     for interface in interfaces:
         df = load_data_from_csv(csv_file, method=interface, given_parameter=parameter_files)
         assert df is not None, f"Dataframe for {interface} is None"
+        # keep only RAJOMON_TRACK_PRICE false
+        # df = df[df['RAJOMON_TRACK_PRICE'] == False]
         df['Request'] = interface
         # report the file_count column for each interface and capacity
         df['file_count'] = df['file_count'].astype(int)

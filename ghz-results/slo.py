@@ -7,7 +7,7 @@ def get_sustainable_load(method):
     # The sustainable load is determined by the stabliity of the throughput. 
     # Results here are measured under 8 nodes.  
     sustainable_load = {
-        "compose": 2500,
+        "compose": 3000,
         "user-timeline": 10000,
         "home-timeline": 10000,
         "S_102000854": 6000,
@@ -29,6 +29,7 @@ def get_sustainable_load(method):
         # "motivation-rl": 8000,
         # "all-methods-social": 8000,
         # "all-methods-hotel": 8000,
+        "all-alibaba": 10000,
     }
 
     # Return a default value or raise an error if the method is not found
@@ -76,14 +77,14 @@ def get_slo(method, tight=False, all_methods=False):
         "compose": 18, # under 3000 req/s
         "user-timeline": 4, # under 4000 req/s
         "home-timeline": 4, # under 4000 req/s
-        "S_102000854": 80,
+        "S_102000854": 50,
         "S_149998854": 120,
-        "S_161142529": 85,
+        "S_161142529": 75,
         "motivate-set": 50,
         "motivate-get": 8,
         "both-motivate": 26,
         "search-hotel": 12, # under 2000 req/s
-        "reserve-hotel": 2,
+        "reserve-hotel": 5,
         "hotels-http": 17, # under 8k req/s
         "reservation-http": 12, # under 8k req/s 
         "user-http": 7, # under 8k req/s

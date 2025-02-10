@@ -25,7 +25,7 @@ applications:
   interface: user-timeline
 nodes:
 - URL: Client:50051
-  charon:
+  rajomon:
   - name: INTERCEPT
     value: plain
   - name: PRICE_UPDATE_RATE
@@ -44,7 +44,7 @@ nodes:
     value: 'true'
   - name: LOAD_SHEDDING
     value: 'true'
-  - name: CHARON_TRACK_PRICE
+  - name: RAJOMON_TRACK_PRICE
     value: 'false'
   - name: BREAKWATER_SLO
     value: 12500us
@@ -106,7 +106,7 @@ nodes:
   - name: PROFILING
     value: 'false'
 - URL: composepost:50051
-  charon:
+  rajomon:
   - name: INTERCEPT
     value: plain
   - name: PRICE_UPDATE_RATE
@@ -125,7 +125,7 @@ nodes:
     value: 'true'
   - name: LOAD_SHEDDING
     value: 'true'
-  - name: CHARON_TRACK_PRICE
+  - name: RAJOMON_TRACK_PRICE
     value: 'false'
   - name: BREAKWATER_SLO
     value: 12500us
@@ -192,7 +192,7 @@ nodes:
   - name: PROFILING
     value: 'false'
 - URL: hometimeline:50051
-  charon:
+  rajomon:
   - name: INTERCEPT
     value: plain
   - name: PRICE_UPDATE_RATE
@@ -211,7 +211,7 @@ nodes:
     value: 'true'
   - name: LOAD_SHEDDING
     value: 'true'
-  - name: CHARON_TRACK_PRICE
+  - name: RAJOMON_TRACK_PRICE
     value: 'false'
   - name: BREAKWATER_SLO
     value: 12500us
@@ -277,7 +277,7 @@ nodes:
   - name: PROFILING
     value: 'false'
 - URL: poststorage:50051
-  charon:
+  rajomon:
   - name: INTERCEPT
     value: plain
   - name: PRICE_UPDATE_RATE
@@ -296,7 +296,7 @@ nodes:
     value: 'true'
   - name: LOAD_SHEDDING
     value: 'true'
-  - name: CHARON_TRACK_PRICE
+  - name: RAJOMON_TRACK_PRICE
     value: 'false'
   - name: BREAKWATER_SLO
     value: 12500us
@@ -360,7 +360,7 @@ nodes:
   - name: PROFILING
     value: 'false'
 - URL: socialgraph:50051
-  charon:
+  rajomon:
   - name: INTERCEPT
     value: plain
   - name: PRICE_UPDATE_RATE
@@ -379,7 +379,7 @@ nodes:
     value: 'true'
   - name: LOAD_SHEDDING
     value: 'true'
-  - name: CHARON_TRACK_PRICE
+  - name: RAJOMON_TRACK_PRICE
     value: 'false'
   - name: BREAKWATER_SLO
     value: 12500us
@@ -443,7 +443,7 @@ nodes:
   - name: PROFILING
     value: 'false'
 - URL: usertimeline:50051
-  charon:
+  rajomon:
   - name: INTERCEPT
     value: plain
   - name: PRICE_UPDATE_RATE
@@ -462,7 +462,7 @@ nodes:
     value: 'true'
   - name: LOAD_SHEDDING
     value: 'true'
-  - name: CHARON_TRACK_PRICE
+  - name: RAJOMON_TRACK_PRICE
     value: 'false'
   - name: BREAKWATER_SLO
     value: 12500us

@@ -1,17 +1,17 @@
 {
-    "target": 0.29361429398742694,
+    "target": 0.22828566155846275,
     "parameters": {
-        "PRICE_UPDATE_RATE": "3542us",
-        "TOKEN_UPDATE_RATE": "69691us",
-        "LATENCY_THRESHOLD": "233us",
-        "PRICE_STEP": 101,
+        "PRICE_UPDATE_RATE": "4626us",
+        "TOKEN_UPDATE_RATE": "107692us",
+        "LATENCY_THRESHOLD": "260us",
+        "PRICE_STEP": 146,
         "PRICE_STRATEGY": "linear",
-        "LAZY_UPDATE": "true",
+        "LAZY_UPDATE": "false",
         "RATE_LIMITING": "true",
         "ONLY_FRONTEND": "false"
     },
     "method": "compose",
-    "capacity": "gpt1-6000",
-    "load": 6000,
-    "timestamp": "07-03"
+    "capacity": "gpt1-5000",
+    "load": 5000,
+    "timestamp": "12-14"
 }

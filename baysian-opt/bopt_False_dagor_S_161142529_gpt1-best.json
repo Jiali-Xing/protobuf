@@ -1,16 +1,14 @@
 {
-    "target": 0.3860074553025087,
+    "target": -33.28722829868223,
     "parameters": {
-        "DAGOR_QUEUING_THRESHOLD": "6193us",
-        "DAGOR_ALPHA": 1.189880849637384,
-        "DAGOR_BETA": 2.0144790634632894,
-        "DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL": "3806us",
-        "DAGOR_UMAX": 9
+        "DAGOR_QUEUING_THRESHOLD": "6073us",
+        "DAGOR_ALPHA": 0.7021758812975045,
+        "DAGOR_BETA": 6.84237970328161,
+        "DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL": "2262us",
+        "DAGOR_UMAX": 13
     },
-    "method": "S_161142529",
+    "method": "all-alibaba",
     "capacity": "gpt1-10000",
     "load": 10000,
-    "timestamp": "05-29",
-    "quantile": 0.1,
-    "SLO": 355
+    "timestamp": "09-13"
 }

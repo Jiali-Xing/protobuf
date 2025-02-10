@@ -244,26 +244,26 @@ def find_latest_files(capacity, directory):
         start_time_str = "1109_0008"
         end_time_str = "1109_2300"
 
-    # List of all charon files for the given capacity
-    charon_files = glob.glob(f"{directory}social-compose-control-charon-parallel-capacity-{capacity}-*.json")
+    # List of all rajomon files for the given capacity
+    rajomon_files = glob.glob(f"{directory}social-compose-control-rajomon-parallel-capacity-{capacity}-*.json")
     plain_files = glob.glob(f"{directory}social-compose-control-plain-parallel-capacity-{capacity}-*.json")
     breakwater_files = glob.glob(f"{directory}social-compose-control-breakwater-parallel-capacity-{capacity}-*.json")
     
     # Now filter the files using the is_within_duration function
-    charon_files = [f for f in charon_files if is_within_duration(f.split('-')[-1].rstrip('.json'), start_time_str, end_time_str)]
+    rajomon_files = [f for f in rajomon_files if is_within_duration(f.split('-')[-1].rstrip('.json'), start_time_str, end_time_str)]
     plain_files = [f for f in plain_files if is_within_duration(f.split('-')[-1].rstrip('.json'), start_time_str, end_time_str)]
     breakwater_files = [f for f in breakwater_files if is_within_duration(f.split('-')[-1].rstrip('.json'), start_time_str, end_time_str)]
 
     # Sort the files by their modification time to get the latest file
-    charon_files.sort(key=os.path.getmtime, reverse=True)
+    rajomon_files.sort(key=os.path.getmtime, reverse=True)
     plain_files.sort(key=os.path.getmtime, reverse=True)
     breakwater_files.sort(key=os.path.getmtime, reverse=True)
 
     # Now you can read the latest files (if they exist)
-    if charon_files:
-        charon_file = charon_files[0]  # this will be the latest file
+    if rajomon_files:
+        rajomon_file = rajomon_files[0]  # this will be the latest file
     else:
-        print("No charon files found for the given capacity!")
+        print("No rajomon files found for the given capacity!")
 
     if plain_files:
         plain_file = plain_files[0]
@@ -275,7 +275,7 @@ def find_latest_files(capacity, directory):
     else:
         print("No breakwater files found for the given capacity!")
 
-    files = [charon_file, plain_file, breakwater_file] if charon_files and plain_files and breakwater_files else []
+    files = [rajomon_file, plain_file, breakwater_file] if rajomon_files and plain_files and breakwater_files else []
 
     print(files)
     return files
@@ -298,9 +298,9 @@ def main():
 
     # # If two arguments are provided, use them as the file names
     # if len(sys.argv) == 3:
-    #     charon_file = sys.argv[1]
+    #     rajomon_file = sys.argv[1]
     #     plain_file = sys.argv[2]
-    #     files = [charon_file, plain_file]
+    #     files = [rajomon_file, plain_file]
     #     print(files)
     # else:
     #     # Otherwise, find the latest files for the given capacity
@@ -309,14 +309,14 @@ def main():
 
     # files = [
     #     'social-compose-control-plain-parallel-capacity-8000-1209_1522.json',
-    #     'social-compose-control-charon-parallel-capacity-8000-1209_1907.json',
+    #     'social-compose-control-rajomon-parallel-capacity-8000-1209_1907.json',
     #     'social-compose-control-breakwater-parallel-capacity-8000-1209_1329.json',
     #     'social-compose-control-breakwaters-parallel-capacity-8000-1209_1439.json',
     #     'social-compose-control-dagor-parallel-capacity-8000-1209_2106.json'
     # ] these are old files for 8000 capacity
 
     files = [
-        'social-compose-control-charon-parallel-capacity-10000-1226_0453.json',
+        'social-compose-control-rajomon-parallel-capacity-10000-1226_0453.json',
         'social-compose-control-breakwater-parallel-capacity-10000-1225_0201.json',
         'social-compose-control-breakwaterd-parallel-capacity-10000-1225_0223.json',
         'social-compose-control-dagor-parallel-capacity-10000-1225_0241.json',
@@ -327,7 +327,7 @@ def main():
         'social-compose-control-breakwater-parallel-capacity-10000-0127_2053.json',
         # 'social-compose-control-breakwaterd-parallel-capacity-10000-0117_2044.json',
         'social-compose-control-breakwaterd-parallel-capacity-10000-0127_2119.json',
-        'social-compose-control-charon-parallel-capacity-10000-0116_1908.json',
+        'social-compose-control-rajomon-parallel-capacity-10000-0116_1908.json',
         'social-compose-control-dagor-parallel-capacity-10000-0118_0355.json',
     ]
     filesTightSLO = [
@@ -335,13 +335,13 @@ def main():
         'social-compose-control-breakwater-parallel-capacity-8000-0128_0236.json',
         # 'social-compose-control-breakwaterd-parallel-capacity-8000-0117_2321.json',
         'social-compose-control-breakwaterd-parallel-capacity-8000-0130_1348.json',
-        'social-compose-control-charon-parallel-capacity-8000-0117_1718.json',
+        'social-compose-control-rajomon-parallel-capacity-8000-0117_1718.json',
         'social-compose-control-dagor-parallel-capacity-8000-0117_2339.json',
     ]
 
 
 
-    # base_dir = '/home/ying/Sync/Git/charon-experiments/old_social/'
+    # base_dir = '/home/ying/Sync/Git/rajomon-experiments/old_social/'
     base_dir = '/home/ying/Sync/Git/protobuf/ghz-results/'
     lossefiles = [base_dir + f for f in filesLooseSLO] 
 

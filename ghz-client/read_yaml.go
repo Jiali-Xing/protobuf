@@ -18,7 +18,7 @@ type Node struct {
 	Name       string   `yaml:"name"`
 	Value      string   `yaml:"value"`
 	URL        string   `yaml:"URL"`
-	Charon     []Config `yaml:"charon"`
+	Rajomon     []Config `yaml:"rajomon"`
 	Downstream []string `yaml:"downstream"`
 	Server     []Config `yaml:"server"`
 	ID         string   `yaml:"id"`
@@ -266,11 +266,11 @@ func GetServerConfigs() map[string][]Config {
 	return serverConfigs
 }
 
-func GetCharonConfigs() map[string][]Config {
-	charonConfigs := make(map[string][]Config)
+func GetRajomonConfigs() map[string][]Config {
+	rajomonConfigs := make(map[string][]Config)
 
 	if _, err := os.Stat(yamlFile); os.IsNotExist(err) {
-		return charonConfigs
+		return rajomonConfigs
 	}
 
 	data, err := os.ReadFile(yamlFile)
@@ -289,10 +289,10 @@ func GetCharonConfigs() map[string][]Config {
 	}
 
 	for _, node := range cfg.Nodes {
-		charonConfigs[node.Name] = node.Charon
+		rajomonConfigs[node.Name] = node.Rajomon
 	}
 
-	return charonConfigs
+	return rajomonConfigs
 }
 
 func getCallGraphFromEnv() map[string]map[string][]string {

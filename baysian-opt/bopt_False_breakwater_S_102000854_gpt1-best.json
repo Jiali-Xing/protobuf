@@ -1,18 +1,16 @@
 {
-    "target": 0.4258685391574052,
+    "target": -7.7063092418066255,
     "parameters": {
-        "BREAKWATER_SLO": "1774us",
-        "BREAKWATER_A": 12.9173644646232,
-        "BREAKWATER_B": 0.25500104017669356,
-        "BREAKWATER_INITIAL_CREDIT": 1,
-        "BREAKWATER_CLIENT_EXPIRATION": "869us",
+        "BREAKWATER_SLO": "4618us",
+        "BREAKWATER_A": 0.2895180150248522,
+        "BREAKWATER_B": 1.2813105474595612,
+        "BREAKWATER_INITIAL_CREDIT": 1776,
+        "BREAKWATER_CLIENT_EXPIRATION": "82us",
         "ONLY_FRONTEND": "true",
-        "BREAKWATER_RTT": "5002us"
+        "BREAKWATER_RTT": "18779us"
     },
-    "method": "S_102000854",
-    "capacity": "gpt1-12000",
-    "load": 12000,
-    "timestamp": "06-03",
-    "quantile": 0.1,
-    "SLO": 215
+    "method": "all-alibaba",
+    "capacity": "gpt1-10000",
+    "load": 10000,
+    "timestamp": "09-12"
 }
