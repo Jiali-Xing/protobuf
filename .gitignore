@@ -25,3 +25,4 @@ ghz-results/.syncthing*
 ppo_model_*zip
 model*episodes.zip
 events.out.tfevents*
+diagnose-*
