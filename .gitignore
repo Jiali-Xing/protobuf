@@ -28,6 +28,7 @@ ppo_model_*zip
 model*episodes.zip
 events.out.tfevents*
 diagnose-*
+find*
 *.png
 *.csv
 .vscode/*
@@ -37,3 +38,6 @@ diagnose-*
 *.json
 *.pyc
 *.npz
+*.swp
+*.bak
+*.backup
