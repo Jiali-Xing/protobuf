@@ -17,7 +17,7 @@
 *.pdf
 .stversions/*
 google/*
-__pycache__/*
+__pycache__/
 ghz-results/.syncthing*
 *sync-conflict*
 ppo_model_*zip
@@ -27,7 +27,7 @@ diagnose-*
 find*
 *.png
 *.csv
-.vscode/*
+.vscode/
 *.output
 *.zip
 *.txt
