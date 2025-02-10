@@ -33,7 +33,8 @@ find*
 *.txt
 *.json
 *json*
-*logs*
+topfull-rl/logs*
+*log*
 *.pyc
 *.npz
 *.swp
