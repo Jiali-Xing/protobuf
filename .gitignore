@@ -14,10 +14,6 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-ghz-results/*.json
-ghz-results/*.output
-ghz-results/*.pdf
-ghz-results/*.png
 *.pdf
 .stversions/*
 google/*
@@ -36,6 +32,8 @@ find*
 *.zip
 *.txt
 *.json
+*json*
+*logs*
 *.pyc
 *.npz
 *.swp
