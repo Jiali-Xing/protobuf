@@ -20,6 +20,8 @@ ghz-results/*.pdf
 ghz-results/*.png
 *.pdf
 .stversions/*
+google/*
+__pycache__/*
 ghz-results/.syncthing*
 *sync-conflict*
 ppo_model_*zip
