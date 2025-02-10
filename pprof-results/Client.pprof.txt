@@ -1,4 +1,0 @@
-Total: 5.42s
-ROUTINE ======================== github.com/Jiali-Xing/plain.UnaryInterceptorEnduser in /home/jiali/go/pkg/mod/github.com/!jiali-!xing/plain@v0.0.0-20231227034046-b79fd58cb753/plain.go
-         0      120ms (flat, cum)  2.21% of Total
- Error: open /home/jiali/go/pkg/mod/github.com/!jiali-!xing/plain@v0.0.0-20231227034046-b79fd58cb753/plain.go: no such file or directory
