@@ -31,3 +31,7 @@ diagnose-*
 .vscode/*
 *.output
 *.zip
+*.txt
+*.json
+*.pyc
+*.npz
