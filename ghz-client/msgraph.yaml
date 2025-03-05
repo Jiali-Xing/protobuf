@@ -1,0 +1,528 @@
+applications:
+- callgraph:
+    composepost:
+    - poststorage
+    - usertimeline
+    - hometimeline
+    hometimeline: []
+    poststorage: []
+    usertimeline: []
+  entrypoint: composepost
+  interface: compose
+- callgraph:
+    hometimeline:
+    - poststorage
+    - socialgraph
+    poststorage: []
+    socialgraph: []
+  entrypoint: hometimeline
+  interface: home-timeline
+- callgraph:
+    poststorage: []
+    usertimeline:
+    - poststorage
+  entrypoint: usertimeline
+  interface: user-timeline
+nodes:
+- URL: Client:50051
+  rajomon:
+  - name: INTERCEPT
+    value: plain
+  - name: PRICE_UPDATE_RATE
+    value: 10ms
+  - name: TOKEN_UPDATE_RATE
+    value: 10ms
+  - name: LATENCY_THRESHOLD
+    value: 100us
+  - name: PRICE_STEP
+    value: '0'
+  - name: PRICE_STRATEGY
+    value: step
+  - name: LAZY_UPDATE
+    value: 'false'
+  - name: RATE_LIMITING
+    value: 'true'
+  - name: LOAD_SHEDDING
+    value: 'true'
+  - name: RAJOMON_TRACK_PRICE
+    value: 'false'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: BREAKWATER_LOAD_SHEDDING
+    value: 'true'
+  - name: BREAKWATER_RTT
+    value: 1000us
+  - name: BREAKWATER_TRACK_CREDIT
+    value: 'false'
+  - name: BREAKWATERD_SLO
+    value: 12500us
+  - name: BREAKWATERD_A
+    value: '0.001'
+  - name: BREAKWATERD_B
+    value: '0.02'
+  - name: BREAKWATERD_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATERD_INITIAL_CREDIT
+    value: '400'
+  - name: BREAKWATERD_LOAD_SHEDDING
+    value: 'true'
+  - name: BREAKWATERD_RTT
+    value: 1000us
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  - name: DAGOR_UMAX
+    value: '20'
+  downstream: []
+  id: 5
+  name: Client
+  nodeAffinity: []
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 10ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: composepost:50051
+  rajomon:
+  - name: INTERCEPT
+    value: plain
+  - name: PRICE_UPDATE_RATE
+    value: 10ms
+  - name: TOKEN_UPDATE_RATE
+    value: 10ms
+  - name: LATENCY_THRESHOLD
+    value: 100us
+  - name: PRICE_STEP
+    value: '0'
+  - name: PRICE_STRATEGY
+    value: step
+  - name: LAZY_UPDATE
+    value: 'false'
+  - name: RATE_LIMITING
+    value: 'true'
+  - name: LOAD_SHEDDING
+    value: 'true'
+  - name: RAJOMON_TRACK_PRICE
+    value: 'false'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: BREAKWATER_LOAD_SHEDDING
+    value: 'true'
+  - name: BREAKWATER_RTT
+    value: 1000us
+  - name: BREAKWATER_TRACK_CREDIT
+    value: 'false'
+  - name: BREAKWATERD_SLO
+    value: 12500us
+  - name: BREAKWATERD_A
+    value: '0.001'
+  - name: BREAKWATERD_B
+    value: '0.02'
+  - name: BREAKWATERD_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATERD_INITIAL_CREDIT
+    value: '400'
+  - name: BREAKWATERD_LOAD_SHEDDING
+    value: 'true'
+  - name: BREAKWATERD_RTT
+    value: 1000us
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  - name: DAGOR_UMAX
+    value: '20'
+  downstream:
+  - poststorage
+  - usertimeline
+  - hometimeline
+  id: 0
+  name: composepost
+  nodeAffinity:
+  - node-1
+  replicas: 1
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 10ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: hometimeline:50051
+  rajomon:
+  - name: INTERCEPT
+    value: plain
+  - name: PRICE_UPDATE_RATE
+    value: 10ms
+  - name: TOKEN_UPDATE_RATE
+    value: 10ms
+  - name: LATENCY_THRESHOLD
+    value: 100us
+  - name: PRICE_STEP
+    value: '0'
+  - name: PRICE_STRATEGY
+    value: step
+  - name: LAZY_UPDATE
+    value: 'false'
+  - name: RATE_LIMITING
+    value: 'true'
+  - name: LOAD_SHEDDING
+    value: 'true'
+  - name: RAJOMON_TRACK_PRICE
+    value: 'false'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: BREAKWATER_LOAD_SHEDDING
+    value: 'true'
+  - name: BREAKWATER_RTT
+    value: 1000us
+  - name: BREAKWATER_TRACK_CREDIT
+    value: 'false'
+  - name: BREAKWATERD_SLO
+    value: 12500us
+  - name: BREAKWATERD_A
+    value: '0.001'
+  - name: BREAKWATERD_B
+    value: '0.02'
+  - name: BREAKWATERD_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATERD_INITIAL_CREDIT
+    value: '400'
+  - name: BREAKWATERD_LOAD_SHEDDING
+    value: 'true'
+  - name: BREAKWATERD_RTT
+    value: 1000us
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  - name: DAGOR_UMAX
+    value: '20'
+  downstream:
+  - poststorage
+  - socialgraph
+  id: 1
+  name: hometimeline
+  nodeAffinity:
+  - node-4
+  replicas: 1
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 10ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: poststorage:50051
+  rajomon:
+  - name: INTERCEPT
+    value: plain
+  - name: PRICE_UPDATE_RATE
+    value: 10ms
+  - name: TOKEN_UPDATE_RATE
+    value: 10ms
+  - name: LATENCY_THRESHOLD
+    value: 100us
+  - name: PRICE_STEP
+    value: '0'
+  - name: PRICE_STRATEGY
+    value: step
+  - name: LAZY_UPDATE
+    value: 'false'
+  - name: RATE_LIMITING
+    value: 'true'
+  - name: LOAD_SHEDDING
+    value: 'true'
+  - name: RAJOMON_TRACK_PRICE
+    value: 'false'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: BREAKWATER_LOAD_SHEDDING
+    value: 'true'
+  - name: BREAKWATER_RTT
+    value: 1000us
+  - name: BREAKWATER_TRACK_CREDIT
+    value: 'false'
+  - name: BREAKWATERD_SLO
+    value: 12500us
+  - name: BREAKWATERD_A
+    value: '0.001'
+  - name: BREAKWATERD_B
+    value: '0.02'
+  - name: BREAKWATERD_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATERD_INITIAL_CREDIT
+    value: '400'
+  - name: BREAKWATERD_LOAD_SHEDDING
+    value: 'true'
+  - name: BREAKWATERD_RTT
+    value: 1000us
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  - name: DAGOR_UMAX
+    value: '20'
+  downstream: []
+  id: 4
+  name: poststorage
+  nodeAffinity:
+  - node-2
+  replicas: 1
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 10ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: socialgraph:50051
+  rajomon:
+  - name: INTERCEPT
+    value: plain
+  - name: PRICE_UPDATE_RATE
+    value: 10ms
+  - name: TOKEN_UPDATE_RATE
+    value: 10ms
+  - name: LATENCY_THRESHOLD
+    value: 100us
+  - name: PRICE_STEP
+    value: '0'
+  - name: PRICE_STRATEGY
+    value: step
+  - name: LAZY_UPDATE
+    value: 'false'
+  - name: RATE_LIMITING
+    value: 'true'
+  - name: LOAD_SHEDDING
+    value: 'true'
+  - name: RAJOMON_TRACK_PRICE
+    value: 'false'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: BREAKWATER_LOAD_SHEDDING
+    value: 'true'
+  - name: BREAKWATER_RTT
+    value: 1000us
+  - name: BREAKWATER_TRACK_CREDIT
+    value: 'false'
+  - name: BREAKWATERD_SLO
+    value: 12500us
+  - name: BREAKWATERD_A
+    value: '0.001'
+  - name: BREAKWATERD_B
+    value: '0.02'
+  - name: BREAKWATERD_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATERD_INITIAL_CREDIT
+    value: '400'
+  - name: BREAKWATERD_LOAD_SHEDDING
+    value: 'true'
+  - name: BREAKWATERD_RTT
+    value: 1000us
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  - name: DAGOR_UMAX
+    value: '20'
+  downstream: []
+  id: 3
+  name: socialgraph
+  nodeAffinity:
+  - node-5
+  replicas: 1
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 10ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'
+- URL: usertimeline:50051
+  rajomon:
+  - name: INTERCEPT
+    value: plain
+  - name: PRICE_UPDATE_RATE
+    value: 10ms
+  - name: TOKEN_UPDATE_RATE
+    value: 10ms
+  - name: LATENCY_THRESHOLD
+    value: 100us
+  - name: PRICE_STEP
+    value: '0'
+  - name: PRICE_STRATEGY
+    value: step
+  - name: LAZY_UPDATE
+    value: 'false'
+  - name: RATE_LIMITING
+    value: 'true'
+  - name: LOAD_SHEDDING
+    value: 'true'
+  - name: RAJOMON_TRACK_PRICE
+    value: 'false'
+  - name: BREAKWATER_SLO
+    value: 12500us
+  - name: BREAKWATER_A
+    value: '0.001'
+  - name: BREAKWATER_B
+    value: '0.02'
+  - name: BREAKWATER_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATER_INITIAL_CREDIT
+    value: '400'
+  - name: BREAKWATER_LOAD_SHEDDING
+    value: 'true'
+  - name: BREAKWATER_RTT
+    value: 1000us
+  - name: BREAKWATER_TRACK_CREDIT
+    value: 'false'
+  - name: BREAKWATERD_SLO
+    value: 12500us
+  - name: BREAKWATERD_A
+    value: '0.001'
+  - name: BREAKWATERD_B
+    value: '0.02'
+  - name: BREAKWATERD_CLIENT_EXPIRATION
+    value: 10ms
+  - name: BREAKWATERD_INITIAL_CREDIT
+    value: '400'
+  - name: BREAKWATERD_LOAD_SHEDDING
+    value: 'true'
+  - name: BREAKWATERD_RTT
+    value: 1000us
+  - name: DAGOR_QUEUING_THRESHOLD
+    value: 2ms
+  - name: DAGOR_ALPHA
+    value: '0.05'
+  - name: DAGOR_BETA
+    value: '0.01'
+  - name: DAGOR_ADMISSION_LEVEL_UPDATE_INTERVAL
+    value: 10ms
+  - name: DAGOR_UMAX
+    value: '20'
+  downstream:
+  - poststorage
+  id: 2
+  name: usertimeline
+  nodeAffinity:
+  - node-3
+  replicas: 1
+  server:
+  - name: COMPUTATION_DISTRIBUTION
+    value: constant
+  - name: PROCESS_TIME
+    value: 10ms
+  - name: APP_PORT
+    value: '50051'
+  - name: LOG_LEVEL
+    value: Info
+  - name: GREETING
+    value: Hi Malaka!
+  - name: SUBCALL
+    value: parallel
+  - name: PROFILING
+    value: 'false'

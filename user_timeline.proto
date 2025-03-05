@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package socialproto;
+
+option go_package = "github.com/Jiali-Xing/socialproto;socialproto";
+
+import "post.proto";
+
+service UserTimeline {
+  rpc ReadUserTimeline(ReadUserTimelineRequest) returns (ReadUserTimelineResponse);
+  rpc WriteUserTimeline(WriteUserTimelineRequest) returns (WriteUserTimelineResponse);
+}
+
+message ReadUserTimelineRequest {
+  string user_id = 1;
+}
+
+message ReadUserTimelineResponse {
+  repeated Post posts = 1;
+}
+
+message WriteUserTimelineRequest {
+  string user_id = 1;
+  repeated string post_ids = 2;
+}
+
+message WriteUserTimelineResponse {
+  bool success = 1;
+}

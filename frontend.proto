@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package hotelproto;
+
+option go_package = "github.com/Jiali-Xing/hotelproto;hotelproto";
+
+import "profile.proto";
+
+// Frontend service definition
+service FrontendService {
+  rpc SearchHotels(SearchHotelsRequest) returns (SearchHotelsResponse);
+  rpc StoreHotel(StoreHotelRequest) returns (StoreHotelResponse);
+  rpc FrontendReservation(FrontendReservationRequest) returns (FrontendReservationResponse);
+}
+
+message SearchHotelsRequest {
+  string InDate = 1;
+  string OutDate = 2;
+  string Location = 3;
+}
+
+message SearchHotelsResponse {
+  repeated HotelProfile Profiles = 1;
+}
+
+message StoreHotelRequest {
+  string HotelId = 1;
+  string Name = 2;
+  string Phone = 3;
+  string Location = 4;
+  int32 Rate = 5;
+  int32 Capacity = 6;
+  string Info = 7;
+}
+
+message StoreHotelResponse {
+  string HotelId = 1;
+}
+
+message FrontendReservationRequest {
+  string HotelId = 1;
+  string InDate = 2;
+  string OutDate = 3;
+  int32 Rooms = 4;
+  string Username = 5;
+  string Password = 6;
+}
+
+message FrontendReservationResponse {
+  bool Success = 1;
+}
+
+// message HotelProfile {
+//   string HotelId = 1;
+//   string Name = 2;
+//   string Phone = 3;
+//   string Info = 4;
+// }

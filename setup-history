@@ -1,0 +1,79 @@
+    1  ls
+    2  ls ~/.ssh/authorized_keys 
+    3  cat ~/.ssh/authorized_keys
+    4  vim ~/.ssh/authorized_keys
+    5  htop
+    6  top
+    7  ls
+    8  pkill go
+    9  ls
+   10  cd k8s-istio-observe-backend/services/protobuf-grpc/
+   11  ls
+   12  go start_services.sh 
+   13  export PATH=$PATH:/usr/local/go/bin
+   14  go start_services.sh 
+   15  go run start_services.sh 
+   16  bash start_services.sh 
+   17  bash kill_services.sh 
+   18  bash start_services.sh 
+   19  cd ~/protobuf/
+   20  wget https://github.com/bojand/ghz/releases/download/v0.114.0/ghz-linux-x86_64.tar.gz
+   21  tar -xvzf ./ghz-linux-x86_64.tar.gz 
+   22  ls
+   23  ghz --insecure  -n 100000  -m '{"tokens":"100"}'  --proto ./greeting.proto  --call greeting.v3.GreetingService/Greeting  0.0.0.0:50051
+   24  ./ghz --insecure  -n 100000  -m '{"tokens":"100"}'  --proto ./greeting.proto  --call greeting.v3.GreetingService/Greeting  0.0.0.0:50051
+   25  lscpus
+   26  lscpu
+   27  pwd
+   28  ls
+   29  git clone git@github.com:tgiannoukos/rajomon.git
+   30  cd k8s-istio-observe-backend/services/protobuf-grpc/
+   31  ls
+   32  bash goget_rajomon.sh 
+   33  export PATH=$PATH:/usr/local/go/bin
+   34  bash goget_rajomon.sh 
+   35  bash start_services.sh 
+   36  tmux a
+   37  cd k8s-istio-observe-backend/
+   38  ls
+   39  cd services/protobuf-grpc/
+   40  ls
+   41  bash start_services.sh 
+   42  ~
+   43  cd ~
+   44  wget https://go.dev/dl/go1.20.2.linux-amd64.tar.gz
+   45  ls
+   46  sudo  rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.2.linux-amd64.tar.gz
+   47  sudo su
+   48  export PATH=$PATH:/usr/local/go/bin
+   49  cd -
+   50  bash start_services.sh 
+   51  git config --global url.git@github.com:.insteadOf https://github.com/
+   52  go env -w GOPRIVATE=github.com/tgiannoukos/rajomon
+   53  bash start_services.sh 
+   54  bash goget_rajomon.sh 
+   55  ls ~/.ssh/
+   56  bash goget_rajomon.sh 
+   57  go env -w GOPRIVATE=github.com/tgiannoukos/rajomon
+   58  git config --global url.git@github.com:.insteadOf https://github.com/
+   59  bash goget_rajomon.sh 
+   60  git config --global user.email "jiali.xing@protonmail.com"
+   61  bash goget_rajomon.sh 
+   62  vim ~/.ssh/config
+   63  bash goget_rajomon.sh 
+   64  cat ~/.ssh/config
+   65  cat ~/.ssh/cloudlab
+   66  bash start_services.sh 
+   67  git config --global user.name "邢嘉力 Jiali Xing"
+   68  bash start_services.sh 
+   69  ls
+   70  cd protobuf/
+   71  ls
+   72  export PATH=$PATH:/usr/local/go/bin
+   73  cd ~/k8s-istio-observe-backend/services/protobuf-grpc/
+   74  bash start_services.sh 
+   75  ls
+   76  top
+   77  ls
+   78  history
+   79  history > ./setup-history

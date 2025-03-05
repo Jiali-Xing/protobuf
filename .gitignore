@@ -1,0 +1,42 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+*.pdf
+.stversions/*
+google/*
+__pycache__/
+ghz-results/.syncthing*
+*sync-conflict*
+ppo_model_*zip
+model*episodes.zip
+events.out.tfevents*
+diagnose-*
+find*
+*.png
+*.csv
+.vscode/
+*.output
+*.zip
+*.txt
+*.json
+*json*
+topfull-rl/logs*
+*log*
+*.pyc
+*.npz
+*.swp
+*.bak
+*.backup
