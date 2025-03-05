@@ -4,6 +4,10 @@ import re
 import os
 import pytz
 import pandas as pd
+import matplotlib
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
+
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import numpy as np
@@ -21,6 +25,8 @@ from utils import (
     read_mean_latency
 )
 from visualize import convert_to_dataframe, calculate_average_var_goodput, read_tail_latency, format_ticks
+
+
 
 throughput_time_interval = '200ms'
 latency_window_size = '500ms'
@@ -219,7 +225,7 @@ def motivate_plot():
     # Define the filenames and control mechanisms specific to the "motivate" flag
     filenames = [
         "social-compose-control-dagor-parallel-capacity-5000-0813_0209.json",
-        "social-compose-control-breakwater-parallel-capacity-5000-0831_0807.json",
+        "social-compose-control-breakwater-parallel-capacity-5000-0814_1938.json",
         "social-compose-control-topdown-parallel-capacity-5000-0901_1052.json"
     ]
     
