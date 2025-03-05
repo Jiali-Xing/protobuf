@@ -1,4 +1,8 @@
 import pandas as pd
+import matplotlib
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
+
 from matplotlib.ticker import MaxNLocator
 from matplotlib.ticker import FuncFormatter
 import matplotlib.pyplot as plt

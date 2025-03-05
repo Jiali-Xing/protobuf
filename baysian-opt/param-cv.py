@@ -2,6 +2,9 @@ import os
 import json
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -16,14 +19,12 @@ def calculate_cv(values):
     return cv
 
 # Directory containing the parameter files
+# PARAM_DIR = os.path.expanduser('/z/rajomon-nov/')
 PARAM_DIR = os.path.expanduser('~/Sync/Git/protobuf/baysian-opt')
 
 # Specific files to process
 FILES_PATTERN = [
     "bopt_False_{}_compose_gpt1-best.json",
-    # "bopt_False_{}_S_102000854_gpt1-best.json",
-    # "bopt_False_{}_S_161142529_gpt1-best.json",
-    # "bopt_False_{}_motivate-set_gpt1-best.json",
     "bopt_False_{}_all-alibaba_gpt1-best.json",
     "bopt_False_{}_search-hotel_gpt1-best.json"
 ]
@@ -45,15 +46,34 @@ cv_data = {
     "max_cv": []
 }
 
+# Specific files to process
+FILES = {
+    'bopt_False_dagor_search-hotel_gpt0-10000_08-23.json',
+    'bopt_False_breakwater_search-hotel_gpt1-10000_08-22.json',
+    'bopt_False_breakwaterd_search-hotel_gpt1-10000_08-22.json',
+    'bopt_False_rajomon_search-hotel_gpt1-10000_08-24.json',
+    'bopt_False_dagor_compose_gpt1-5000_08-15.json',
+    'bopt_False_breakwater_compose_gpt0-5000_08-27.json',
+    'bopt_False_breakwaterd_compose_gpt0-5000_08-25.json',
+    'bopt_False_rajomon_compose_gpt1-5000_08-25.json',
+    'bopt_False_dagor_all-alibaba_gpt1-10000_09-13.json',
+    'bopt_False_breakwater_all-alibaba_gpt1-10000_09-12.json',
+    'bopt_False_breakwaterd_all-alibaba_gpt1-10000_09-12.json',
+    'bopt_False_rajomon_all-alibaba_gpt1-10000_09-12.json',
+}
+
 # Loop over each control mechanism
 for control in CONTROLS:
     print(f"Calculating CV for control: {control}")
     
     params = {}
 
-    # Read parameter values from each file
-    for pattern in FILES_PATTERN:
-        filename = pattern.format(control)
+    # # Read parameter values from each file
+    # for pattern in FILES_PATTERN:
+    #     filename = pattern.format(control)
+    for filename in FILES:
+        if control not in filename:
+            continue
         filepath = os.path.join(PARAM_DIR, filename)
         if os.path.exists(filepath):
             with open(filepath, 'r') as file:

@@ -1,4 +1,7 @@
 import glob, os, sys, re, json
+import matplotlib
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 from matplotlib.ticker import MaxNLocator
 from datetime import datetime
 import pandas as pd
@@ -17,44 +20,31 @@ from utils import (
 # ToDo: should change the 95th_percentile to the max of the warmup period and experiment period 
 
 parameter_files = {
+# below are for the concurrent experiments
     'search-hotel': {
         'dagor': 'bopt_False_dagor_search-hotel_gpt1-best.json',  # works, no need to re-tune
-        # 'breakwater': 'bopt_False_breakwater_search-hotel_gpt1-bestl.json',  # works, but should be replaced with gpt0-10000_01-02
-        # 'breakwater': 'bopt_False_breakwater_search-hotel_gpt0-10000_01-02.json',  # seems to work, but need to re-tune
         'breakwater': 'bopt_False_breakwater_search-hotel_gpt0-10000_01-05.json',  # works.
-        # 'breakwaterd': 'bopt_False_breakwaterd_search-hotel_gpt1-bestl.json',  # not working, need to re-tune
-        # 'breakwaterd': 'bopt_False_breakwaterd_search-hotel_gpt0-10000_01-03.json',  # works for single interface, need to re-tune for all
         'breakwaterd': 'bopt_False_breakwaterd_search-hotel_gpt0-10000_01-08.json',  # works for single interface, need to re-tune for all
         'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-bestl.json',
-        # 'rajomon': 'bopt_False_rajomon_search-hotel_decay.json',
-    },
+},
     'compose': {
-        # 'dagor': 'bopt_False_dagor_compose_gpt1-bestl.json',  # not working, need to re-tune
         'dagor': 'bopt_False_dagor_compose_gpt0-6000_01-04.json',
-        # 'breakwater': 'bopt_False_breakwater_compose_gpt1-bestl.json',  # works, but should be replaced with gpt0-6000_01-02
-        # 'breakwater': 'bopt_False_breakwater_compose_gpt0-6000_01-04.json',
         'breakwater': 'bopt_False_breakwater_compose_gpt0-6000_01-05.json',
-        # 'breakwaterd': 'bopt_False_breakwaterd_compose_gpt1-bestl.json',  # not working, need to re-tune
         'breakwaterd': 'bopt_False_breakwaterd_compose_gpt0-6000_01-02.json',  # working for compose but not all, need to re-tune
         'rajomon': 'bopt_False_rajomon_compose_gpt1-bestl.json',
     },
+# below are for the single interface experiments
     # 'search-hotel': {
-    #     # 'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-12000_12-22.json',
-    #     # 'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-16000_12-26.json',
-    #     # 'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-16000_12-25.json',
-    #     'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-best-4.json',
-    #     # 'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-14000_12-26.json',
-    #     # 'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-12000_12-24.json',
-    #     # 'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-12000_12-28.json',
-    #     'dagor': 'bopt_False_dagor_search-hotel_gpt1-12000_12-24.json',
-    #     'breakwater': 'bopt_False_breakwater_search-hotel_gpt1-12000_12-24.json',
-    #     'breakwaterd': 'bopt_False_breakwaterd_search-hotel_gpt1-12000_12-24.json',
+    #     'dagor': 'bopt_False_dagor_search-hotel_gpt0-10000_08-23.json',
+    #     'breakwater': 'bopt_False_breakwater_search-hotel_gpt1-10000_08-22.json',
+    #     'breakwaterd': 'bopt_False_breakwaterd_search-hotel_gpt1-10000_08-22.json',
+    #     'rajomon': 'bopt_False_rajomon_search-hotel_gpt1-10000_08-24.json',
     # },
     # 'compose': {
-    #     'rajomon': 'bopt_False_rajomon_compose_gpt1-6000_12-21.json',
-    #     'dagor': 'bopt_False_dagor_compose_gpt1-6000_12-22.json',
-    #     'breakwater': 'bopt_False_breakwater_compose_gpt1-6000_12-29.json',
-    #     'breakwaterd': 'bopt_False_breakwaterd_compose_gpt1-6000_12-28.json',
+    #     'dagor': 'bopt_False_dagor_compose_gpt1-5000_08-15.json',
+    #     'breakwater': 'bopt_False_breakwater_compose_gpt0-5000_08-27.json',
+    #     'breakwaterd': 'bopt_False_breakwaterd_compose_gpt0-5000_08-25.json',
+    #     'rajomon': 'bopt_False_rajomon_compose_gpt1-5000_08-25.json',
     # },
     'alibaba': {
         'dagor': 'bopt_False_dagor_all-alibaba_gpt1-10000_09-13.json',

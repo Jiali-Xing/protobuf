@@ -96,7 +96,9 @@ def analyze_data(filename, ax1, ax2, is_first_col):
         data = read_data(filename)
     except Exception as e:
         print(f"Error: {e}")
-        filename = filename.replace("ghz-results", "archived_results")
+        # filename = filename.replace("ghz-results", "archived_results")
+        # add prefix to the filename /z/rajomon-nsdi/ghz-results/
+        filename = f"/z/rajomon-nsdi/ghz-results/{filename}"
         print(f"Trying with archived_results: {filename}")
         data = read_data(filename)
 
@@ -268,7 +270,7 @@ def motivate_plot():
 
 
 if __name__ == '__main__':
-    motivate = True
+    motivate = False
     if motivate:
         motivate_plot()
         exit(0)
