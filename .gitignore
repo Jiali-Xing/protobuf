@@ -16,7 +16,6 @@
 
 *.pdf
 .stversions/*
-google/*
 __pycache__/
 ghz-results/.syncthing*
 *sync-conflict*
